@@ -35,8 +35,16 @@ module.exports = () => {
     },
     module: {
       rules: [
-        { test: /\.vue$/, include: /ClientApp/, use: 'vue-loader' },
+        { test: /\.vue$/, include: /ClientApp/, use: 'vue-loader',  },
         { test: /\.js$/, include: /ClientApp/, use: 'babel-loader' },
+        {
+          test: /\.scss$/,
+          use: [
+            'vue-style-loader',
+            'css-loader',
+            'sass-loader'
+          ]
+        },
         { test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ExtractTextPlugin.extract({ use: 'css-loader' }) },
         { test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/, use: 'url-loader?limit=25000' }
       ]

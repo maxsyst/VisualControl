@@ -1,62 +1,99 @@
 <template>
-  <div class="cascading-dropdown">
-    
-    <div class="form-group">
-      <label for="processSelect">Название процесса:</label>
-      <select v-model="selectedProcess" class="form-control customSelect" id="processSelect">
-        <option v-for="(option,index) in processes" v-bind:value="option.processId" >{{ option.processName }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="codeProductSelect">Название шаблона:</label>
-      <select v-model="selectedCodeProduct" class="form-control customSelect" id="codeProductSelect">
-        <option v-for="(option,index) in codeproducts.filter(x => x.processId === selectedProcess)" v-bind:value="option.idCp" >{{ option.codeProductName }}</option>
-      </select>
+  <div class="">
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="mdSelect">Название измеряемого устройства:</label>
+          <select v-model="selectedMeasuredDevice" class="form-control customSelect" id="mdSelect">
+            <option v-for="(option,index) in measureddevices.filter(x => x.codeProductId === selectedCodeProduct)" v-bind:value="option.measuredDeviceId">{{ option.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="processSelect">Название процесса:</label>
+          <select v-model="selectedProcess" class="form-control customSelect" id="processSelect">
+            <option v-for="(option,index) in processes" v-bind:value="option.processId">{{ option.processName }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="codeProductSelect">Название шаблона:</label>
+          <select v-model="selectedCodeProduct" class="form-control customSelect" id="codeProductSelect">
+            <option v-for="(option,index) in codeproducts.filter(x => x.processId === selectedProcess)" v-bind:value="option.idCp">{{ option.codeProductName }}</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="mdSelect">Название измеряемого устройства:</label>
-      <select v-model="selectedMeasuredDevice" class="form-control customSelect" id="mdSelect">
-        <option v-for="(option,index) in measureddevices.filter(x => x.codeProductId === selectedCodeProduct)" v-bind:value="option.measuredDeviceId">{{ option.name }}</option>
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <label for="measurementSelect">Название измерения:</label>
-      <select v-model="selectedMeasurement" class="form-control customSelect" id="measurementSelect">
-        <option v-for="(option,index) in measurements.filter(x => x.measuredDeviceId === selectedMeasuredDevice)" v-bind:value="option.measurementId">{{ option.name }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="deviceSelect">Прибор:</label>
-      <select v-model="selectedDevice" class="form-control customSelect" id="deviceSelect">
-        <option v-for="(option,index) in devices"  v-bind:value="option.deviceId">{{ option.model + " IP:" + option.address.split("::")[1] }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="portSelect">Порт:</label>
-      <select v-model="selectedPort" class="form-control customSelect" id="portSelect">
-        <option v-for="(option,index) in ports" v-bind:value="option">{{ option }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="graphicSelect">Характеристика:</label>
-      <select v-model="selectedGraphicId" class="form-control customSelect" id="graphicSelect">
-        <option v-for="(option,index) in graphics" v-bind:value="option.graphicId">{{ option.russianName}}</option>
-      </select>
-     </div>
-      <div class="form-group">
-        <button id="newgraphicButton" class="btn btn-primary" v-on:click="getPoints">Построить график</button> <button id="addgraphicButton" class="btn btn-success" v-on:click="getPoints">Добавить измерение к графику</button>
+    <div class="row">
+      <div class="col-3">
+         <div class="form-group">
+          <label for="measurementSelect">Название измерения:</label>
+          <select v-model="selectedMeasurement" class="form-control customSelect" id="measurementSelect">
+            <option v-for="(option,index) in measurements.filter(x => x.measuredDeviceId === selectedMeasuredDevice)" v-bind:value="option.measurementId">{{ option.name }}</option>
+          </select>
+        </div>
       </div>
-    <div class="form-group">
-      <component :is="currentChart" :points="points" :graphic ="selectedGraphic" :devices ="devices"></component>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="deviceSelect">Прибор:</label>
+          <select v-model="selectedDevice" class="form-control customSelect" id="deviceSelect">
+            <option v-for="(option,index) in devices" v-bind:value="option.deviceId">{{ option.model + " IP:" + option.address.split("::")[1] }}</option>
+          </select>
+        </div>
+      </div>
     </div>
+
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="graphicSelect">Характеристика:</label>
+          <select v-model="selectedGraphicId" class="form-control customSelect" id="graphicSelect">
+            <option v-for="(option,index) in graphics" v-bind:value="option.graphicId">{{ option.russianName}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="portSelect">Порт:</label>
+          <select v-model="selectedPort" class="form-control customSelect" id="portSelect">
+            <option v-for="(option,index) in ports" v-bind:value="option">{{ option }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <button id="newgraphicButton" class="btn btn-primary" v-on:click="getPoints">Построить график</button> <button id="addgraphicButton" class="btn btn-success" v-on:click="getPoints">Добавить график</button>
+        </div>
+      </div>
+      
+    </div>
+
+   
+    <div class="row">
+      <div class="col-6"><tiptap></tiptap></div>
+    </div>
+
+    <div class="row">
+      <div class="col-9">
+        <div class="form-group">
+          <component :is="currentChart" :points="points" :graphic="selectedGraphic" :devices="devices"></component>
+        </div>
+      </div>
+    </div>
+      
     </div>
  
 </template>
 <script>
   import chart from './time-chart.vue';
- 
+  import tiptap from './editor-tiptap.vue';
+
   export default {
     data() {
       return {
@@ -82,7 +119,7 @@
       }
     },
     components: {
-      chart
+      chart, 'tiptap': tiptap
     },
     methods:
     {
@@ -227,6 +264,6 @@
 </script>
 <style>
   .customSelect{
-    width: 30%;
+    width: 80%;
   }
 </style>
