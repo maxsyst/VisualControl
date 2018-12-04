@@ -154,3 +154,4 @@
     },
   }
 </script>
+<style lang="scss" src="../scss/tiptap.scss"></style>

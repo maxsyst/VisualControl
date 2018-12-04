@@ -1,16 +1,21 @@
-const path = require('path')
-const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-const bundleOutputDir = './wwwroot/dist'
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const bundleOutputDir = './wwwroot/dist';
+
+
+
 
 module.exports = () => {
   console.log('Building for \x1b[33m%s\x1b[0m', process.env.NODE_ENV)
 
-  const isDevBuild = !(process.env.NODE_ENV && process.env.NODE_ENV === 'production')
-  const extractCSS = new ExtractTextPlugin('site.css')
+  const isDevBuild = !(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
+  const extractCSS = new ExtractTextPlugin('site.css');
 
   return [{
+      target: 'web',
+    
     stats: { modules: false },
     entry: { 'main': './ClientApp/boot-app.js' },
     resolve: {
@@ -35,7 +40,16 @@ module.exports = () => {
     },
     module: {
       rules: [
-        { test: /\.vue$/, include: /ClientApp/, use: 'vue-loader',  },
+          { test: /\.vue$/, include: /ClientApp/, use: 'vue-loader' },
+        {
+          test: /\.svg$/, include: /ClientApp/,
+          loader: 'svg-sprite-loader',
+          options: {
+            extract: true
+            
+          }
+          
+        },
         { test: /\.js$/, include: /ClientApp/, use: 'babel-loader' },
         {
           test: /\.scss$/,
@@ -46,10 +60,12 @@ module.exports = () => {
           ]
         },
         { test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ExtractTextPlugin.extract({ use: 'css-loader' }) },
-        { test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/, use: 'url-loader?limit=25000' }
+        { test: /\.(png|jpg|jpeg|gif|woff|woff2|eot|ttf)$/, use: 'url-loader?limit=25000' }
       ]
     },
     plugins: [
+      
+     
       new webpack.DllReferencePlugin({
         context: __dirname,
         manifest: require('./wwwroot/dist/vendor-manifest.json')

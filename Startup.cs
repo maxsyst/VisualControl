@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -37,11 +38,19 @@ namespace VueExample
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
 
-                // Webpack initialization with hot-reload.
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                try
                 {
-                    HotModuleReplacement = true,
-                });
+                    app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                    {
+                        HotModuleReplacement = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    var t = ex;
+                }
+                // Webpack initialization with hot-reload.
+               
             }
             else
             {

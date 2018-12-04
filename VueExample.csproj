@@ -13,13 +13,18 @@
   <ItemGroup>
     <!-- Files not to show in IDE -->
     <None Remove="ClientApp\components\btf-alert.vue" />
+    <None Remove="ClientApp\scss\variables.css" />
     <None Remove="yarn.lock" />
 
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
     <Content Remove="ClientApp\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ClientApp\images\" />
+    <Folder Include="ClientApp\images\icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientApp\scss\tiptap.scss" />
+    <None Include="ClientApp\scss\variables.scss" />
   </ItemGroup>
 
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
