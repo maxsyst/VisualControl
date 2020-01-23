@@ -14,7 +14,6 @@ namespace VueExample.Controllers
     {
         private readonly ProcessProvider processProvider = new ProcessProvider();
         private readonly IStageProvider _stageProvider;
-
         public StageController(IStageProvider stageProvider)
         {
             _stageProvider = stageProvider;
