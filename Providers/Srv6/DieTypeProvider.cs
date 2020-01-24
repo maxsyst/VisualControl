@@ -8,7 +8,6 @@ using VueExample.Contexts;
 using VueExample.Models;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
-using VueExample.ResponseObjects;
 using VueExample.ViewModels;
 
 namespace VueExample.Providers.Srv6
@@ -139,8 +138,7 @@ namespace VueExample.Providers.Srv6
                                           .AsNoTracking()
                                           .ToListAsync();
                 return _mapper.Map<List<DieType>, List<DieTypeViewModel>>(dieTypesList);
-            }
-            
+            }  
           
         }
 

@@ -142,7 +142,7 @@ export default {
       
        async getWafers() {
            await this.$http
-            .get(`/api/wafer/getall`)
+            .get(`/api/wafer/all`)
             .then((response) => {                             
                 if(response.status == 200) {  
                     this.wafers = response.data 

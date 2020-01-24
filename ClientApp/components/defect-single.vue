@@ -172,7 +172,7 @@
     async created() {
 
 
-      let response = await this.$http.get(`/api/wafer/getall`);
+      let response = await this.$http.get(`/api/wafer/all`);
       this.wafers = response.data;
       this.selectedWafer = this.wafers[0];
 

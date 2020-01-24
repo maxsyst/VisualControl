@@ -79,12 +79,12 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<WaferFolderViewModel>), StatusCodes.Status200OK)]
         [Route("folders-wafer/{codeProductFolderName}")]
-        public IActionResult GetWaferFolders([FromRoute] string codeProductFolderName)
+        public async Task<IActionResult> GetWaferFolders([FromRoute] string codeProductFolderName)
         {
             var resultList = new List<WaferFolderViewModel>();
             var directoryPath = ExtraConfiguration.UploadingPath;
             var directoriesList = _folderService.GetAllWaferInCodeProductFolder(directoryPath, codeProductFolderName);
-            var wafers = _waferProvider.GetWafers();
+            var wafers = await _waferProvider.GetWafers();
             foreach (var directoryName in directoriesList)
             {
                 var waferFolderViewModel = new WaferFolderViewModel();
