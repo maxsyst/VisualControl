@@ -126,10 +126,7 @@ export default {
         },
 
         async initialize() {
-
-            await this.getWafers()
-            
-         
+            await this.getWafers() 
         },
 
         async getStagesByWaferId(waferId) {
@@ -143,9 +140,7 @@ export default {
                         });
         },
 
-
-        async getAvElements(dieType) {
-             
+        async getAvElements(dieType) {             
             await   this.$http
                         .get(`/api/element/dietype/${dieType.id}`)
                         .then(response => {
@@ -168,7 +163,7 @@ export default {
         },
 
         async getWafers() {
-            await this.$http.get(`/api/wafer/getall`).then(response => {
+            await this.$http.get(`/api/wafer/all`).then(response => {
                  this.wafers = response.data;
             });
         },
@@ -245,7 +240,6 @@ export default {
     async mounted()
     {
         this.initialize()
-        
     }
 }
 </script>

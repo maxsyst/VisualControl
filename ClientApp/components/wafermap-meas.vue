@@ -254,7 +254,7 @@ export default {
   },
 
   async created() {
-    await this.$http.get(`/api/wafer/getall`).then(response => {
+    await this.$http.get(`/api/wafer/all`).then(response => {
       this.wafers = response.data;
     });
 

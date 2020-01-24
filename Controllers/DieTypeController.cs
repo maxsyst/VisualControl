@@ -16,11 +16,12 @@ namespace VueExample.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IDieTypeProvider _dieTypeProvider;
-        private readonly CodeProductProvider codeProductProvider = new CodeProductProvider();
-        public DieTypeController(IDieTypeProvider dieTypeProvider, IMapper mapper)
+        private readonly ICodeProductProvider _codeProductProvider;
+        public DieTypeController(IDieTypeProvider dieTypeProvider, IMapper mapper, ICodeProductProvider codeProductProvider)
         {
             _mapper = mapper;
             _dieTypeProvider = dieTypeProvider;
+            _codeProductProvider = codeProductProvider;
         }
 
         [HttpGet]
@@ -88,7 +89,7 @@ namespace VueExample.Controllers
         [Route("wafer/{waferId}")]
         public async Task<IActionResult> GetByWaferId([FromRoute] string waferId)
         {   
-            var dieTypes = await _dieTypeProvider.GetByCodeProductId((await codeProductProvider.GetByWaferId(waferId)).IdCp);
+            var dieTypes = await _dieTypeProvider.GetByCodeProductId((await _codeProductProvider.GetByWaferId(waferId)).IdCp);
             return dieTypes is null ? (IActionResult)NotFound() : Ok(dieTypes);
         }
     }

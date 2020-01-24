@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Models;
 using VueExample.Providers;
+using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 
 namespace VueExample.Controllers
@@ -12,21 +13,22 @@ namespace VueExample.Controllers
     [Route("api/[controller]")]
     public class CodeProductController : Controller
     {
-        private readonly CodeProductProvider _codeProductProvider = new CodeProductProvider();
+        private readonly ICodeProductProvider _codeProductProvider;
         private readonly IMapper _mapper;
-        public CodeProductController(IMapper mapper)
+        public CodeProductController(IMapper mapper, ICodeProductProvider codeProductProvider)
         {
             _mapper = mapper;
+            _codeProductProvider = codeProductProvider;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(CodeProductViewModel), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("getbywaferid")]
         public async Task<IActionResult> GetByWaferId([FromQuery] string waferId)
         {
             var codeProduct = await _codeProductProvider.GetByWaferId(waferId);
-            return codeProduct is null ? (IActionResult)BadRequest() : Ok(_mapper.Map<CodeProduct, CodeProductViewModel>(codeProduct));
+            return codeProduct is null ? (IActionResult)NotFound() : Ok(_mapper.Map<CodeProduct, CodeProductViewModel>(codeProduct));
         }
 
         [HttpGet]

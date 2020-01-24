@@ -2,21 +2,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VueExample.Models;
 using VueExample.Providers;
+using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class WaferController : Controller
     {
-        private readonly WaferProvider _waferProvider = new WaferProvider();
+        private readonly IWaferProvider _waferProvider;
         private readonly DefectProvider _defectProvider = new DefectProvider();
         
-        [HttpGet]
-        public IActionResult GetAll()
+        public WaferController(IWaferProvider waferProvider)
         {
-           return Ok(_waferProvider.GetWafers());
+            _waferProvider = waferProvider;
+        }
+
+        [HttpGet]
+        [ProducesResponseType (typeof(List<Wafer>), StatusCodes.Status200OK)]
+        [Route("all")]
+        public async Task<IActionResult> GetAll()
+        {
+           return Ok(await _waferProvider.GetWafers());
         }
 
         [HttpGet]

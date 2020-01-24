@@ -14,10 +14,11 @@ namespace VueExample.Providers.Srv6
         private readonly IElementService _elementService;
         private readonly IFileGraphicUploaderService _fileGraphicUploaderService;
         private readonly ProcessProvider processProvider = new ProcessProvider();
-        private readonly CodeProductProvider codeProductProvider = new CodeProductProvider();
-        public FolderService(IElementService elementService, IFileGraphicUploaderService fileGraphicUploaderService)
+        private readonly ICodeProductProvider _codeProductProvider;
+        public FolderService(IElementService elementService, ICodeProductProvider codeProductProvider, IFileGraphicUploaderService fileGraphicUploaderService)
         {
             _elementService = elementService;
+            _codeProductProvider = codeProductProvider;
             _fileGraphicUploaderService = fileGraphicUploaderService;
         }
         public List<string> GetAllCodeProductInUploaderDirectory(string directoryPath)
@@ -126,7 +127,7 @@ namespace VueExample.Providers.Srv6
         {
             var simpleOperationList = new List<SimpleOperationUploaderViewModel>(); 
             directoryPath = GetTruePath(directoryPath);
-            var fileNames = await _fileGraphicUploaderService.GetAllFileNamesByProcessId(processProvider.GetProcessIdByCodeProductId((await codeProductProvider.GetByWaferId(waferName)).IdCp));
+            var fileNames = await _fileGraphicUploaderService.GetAllFileNamesByProcessId(processProvider.GetProcessIdByCodeProductId((await _codeProductProvider.GetByWaferId(waferName)).IdCp));
             foreach (var meas in measurementRecordings)
             {
                 var directoriesArray = System.IO.Directory.GetDirectories($"{directoryPath}\\{codeProductName}\\meas\\{waferName}\\{meas}");
@@ -166,11 +167,7 @@ namespace VueExample.Providers.Srv6
                             }
                             simpleOperation.FileName.GraphicNames = graphicNamesDict.Values.ToList();
                             simpleOperation.FileName.SelectedGraphicNames = simpleOperation.FileName.GraphicNames.FirstOrDefault();
-                        }
-                        else
-                        {
-                            1.GetHashCode();
-                        }
+                        }                        
                         simpleOperationList.Add(simpleOperation);
                     }
                     

@@ -17,22 +17,24 @@ namespace VueExample.Controllers
     {
         private readonly IFolderService _folderService;
         private readonly IMapper _mapper;
-        private readonly CodeProductProvider _codeProductProvider = new CodeProductProvider();
-        private readonly WaferProvider _waferProvider = new WaferProvider();
-        public FolderController(IFolderService folderService, IMapper mapper)
+        private readonly ICodeProductProvider _codeProductProvider;
+        private readonly IWaferProvider _waferProvider;
+        public FolderController(IFolderService folderService, IMapper mapper, ICodeProductProvider codeProductProvider, IWaferProvider waferProvider)
         {
             _folderService = folderService;
+            _waferProvider = waferProvider;
+            _codeProductProvider = codeProductProvider;
             _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(List<CodeProductFolderViewModel>), StatusCodes.Status200OK)]
         [Route("folders-cp")]
-        public IActionResult GetCodeProductFoldersStrict()
+        public async Task<IActionResult> GetCodeProductFoldersStrict()
         {
             var resultList = new List<CodeProductFolderViewModel>();
             var directoryPath = ExtraConfiguration.UploadingPath; 
-            var codeProducts = _codeProductProvider.GetAll();
+            var codeProducts = await _codeProductProvider.GetAll();
             var directoriesList = _folderService.GetAllCodeProductInUploaderDirectory(directoryPath);
             foreach (var directoryName in directoriesList)
             {
@@ -79,12 +81,12 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<WaferFolderViewModel>), StatusCodes.Status200OK)]
         [Route("folders-wafer/{codeProductFolderName}")]
-        public IActionResult GetWaferFolders([FromRoute] string codeProductFolderName)
+        public async Task<IActionResult> GetWaferFolders([FromRoute] string codeProductFolderName)
         {
             var resultList = new List<WaferFolderViewModel>();
             var directoryPath = ExtraConfiguration.UploadingPath;
             var directoriesList = _folderService.GetAllWaferInCodeProductFolder(directoryPath, codeProductFolderName);
-            var wafers = _waferProvider.GetWafers();
+            var wafers = await _waferProvider.GetWafers();
             foreach (var directoryName in directoriesList)
             {
                 var waferFolderViewModel = new WaferFolderViewModel();

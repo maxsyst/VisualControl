@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using VueExample.Models;
 using VueExample.Providers;
+using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ResponseObjects;
 using VueExample.ViewModels;
 
@@ -11,10 +13,15 @@ namespace VueExample.Services
 {
     public class MassiveUploaderService
     {
-        public ResponseObjects.FullResponseObject<List<DefectViewModel>> FindDefectsInFolder(string path)
+        private readonly IWaferProvider _waferProvider;
+        public MassiveUploaderService(IWaferProvider waferProvider)
+        {
+            _waferProvider = waferProvider;
+        }
+        public async Task<ResponseObjects.FullResponseObject<List<DefectViewModel>>> FindDefectsInFolder(string path)
         {
             var response = new FullResponseObject<List<DefectViewModel>>();
-            WaferProvider waferProvider = new WaferProvider();
+           
             DieProvider dieProvider = new DieProvider();
             var dies = new List<Die>();
             
@@ -25,7 +32,7 @@ namespace VueExample.Services
                 return response;
             }
 
-            var wafer = waferProvider.GetByWaferId(path.Split("\\").Last().Split('_').FirstOrDefault());
+            var wafer = await _waferProvider.GetByWaferId(path.Split("\\").Last().Split('_').FirstOrDefault());
 
             if (wafer == null)
             {
