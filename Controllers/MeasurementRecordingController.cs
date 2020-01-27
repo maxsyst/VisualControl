@@ -61,6 +61,15 @@ namespace VueExample.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("delete/list")]        
+        public async Task<IActionResult> DeleteList([FromBody] List<int> measurementIdList)
+        {
+            await _measurementRecordingService.DeleteSet(measurementIdList);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("deletespecific/{measurementRecordingId:int}/{graphicId:int}")]        
         public async Task<IActionResult> DeleteSpecificMeasurement([FromRoute] int measurementRecordingId, [FromRoute] int graphicId)
         {

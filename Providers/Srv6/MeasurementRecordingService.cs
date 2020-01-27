@@ -148,7 +148,7 @@ namespace VueExample.Providers.Srv6
                 var measurementRecording = await srv6Context.MeasurementRecordings.FirstOrDefaultAsync(x => x.Id == measurementRecordingId) 
                                            ?? throw new RecordNotFoundException();                
                 var measurementRecordingSqlParameter = new SqlParameter("idmr", measurementRecording.Id);
-                srv6Context.MeasurementRecordings.FromSql("EXECUTE dbo.delete_full_measurement_recording @idmr", measurementRecordingSqlParameter);               
+                srv6Context.Database.ExecuteSqlCommand("EXECUTE dbo.delete_full_measurement_recording @idmr", measurementRecordingSqlParameter);         
             }
         }
 
@@ -176,6 +176,14 @@ namespace VueExample.Providers.Srv6
             {
                  return await db.FkMrGraphics.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId
                                                                                  && x.GraphicId == graphicId) ?? throw new RecordNotFoundException();
+            }
+        }
+
+        public async Task DeleteSet(IList<int> measurementRecordingIdList)
+        {
+            foreach (var measurementRecording in measurementRecordingIdList)
+            {
+               await Delete(measurementRecording);
             }
         }
     }

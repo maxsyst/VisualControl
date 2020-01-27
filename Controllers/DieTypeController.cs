@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -90,7 +91,7 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetByWaferId([FromRoute] string waferId)
         {   
             var dieTypes = await _dieTypeProvider.GetByCodeProductId((await _codeProductProvider.GetByWaferId(waferId)).IdCp);
-            return dieTypes is null ? (IActionResult)NotFound() : Ok(dieTypes);
+            return !dieTypes.Any() ? (IActionResult)NotFound() : Ok(dieTypes);
         }
     }
 }

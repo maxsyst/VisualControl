@@ -10,6 +10,7 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<List<MeasurementRecording>> GetByWaferId(string waferId);
         Task<MeasurementRecording> GetOrCreate(string name, int v, int bmrId, int? stageId);
         Task Delete(int measurementRecordingId);
+        Task DeleteSet(IList<int> measurementRecordingIdList);
         Task DeleteSpecificMeasurement(int measurementRecordingId, int graphicId);
         Task<BigMeasurementRecording> GetOrAddBigMeasurement(string name, string waferId);
         Task<FkMrP> GetOrCreateFkMrP(int measurementRecordingId, short parameterId, string waferId);

@@ -10,7 +10,7 @@ using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class WaferController : Controller
     {
         private readonly IWaferProvider _waferProvider;
@@ -30,6 +30,7 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [Route("getallwithdefects")]
         public IActionResult GetAllWithDefects()
         {
             return Ok(_defectProvider.GetAll().Select(x=>x.WaferId).Distinct());
