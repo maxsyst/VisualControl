@@ -156,6 +156,7 @@ namespace VueExample
                     Message = "An error occurred while processing your request"
                 }));
                 x.Map<RecordNotFoundException>().ToStatusCode(StatusCodes.Status404NotFound);
+                x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
             });           
 
             app.UseSignalR(options =>

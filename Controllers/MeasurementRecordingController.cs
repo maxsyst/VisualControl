@@ -61,6 +61,15 @@ namespace VueExample.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("delete/list")]        
+        public async Task<IActionResult> DeleteList([FromBody] List<int> measurementIdList)
+        {
+            await _measurementRecordingService.DeleteSet(measurementIdList);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("deletespecific/{measurementRecordingId:int}/{graphicId:int}")]        
         public async Task<IActionResult> DeleteSpecificMeasurement([FromRoute] int measurementRecordingId, [FromRoute] int graphicId)
         {
@@ -88,12 +97,26 @@ namespace VueExample.Controllers
             return Ok(bigMeasurementRecording);
         }  
 
+        [HttpPost]
+        [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
+        [Route("edit/name")]
+        public async Task<IActionResult> UpdateName([FromBody] MeasurementRecordingViewModel measurementRecordingViewModel)
+        {
+            var measurementRecording = await _measurementRecordingService.UpdateName(measurementRecordingViewModel.Id, measurementRecordingViewModel.Name);
+            return Ok(measurementRecording);  
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status200OK)]
-        [Route("wafer/{waferid}/stage")]
-        public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId)
+        [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status204NoContent)]
+        [Route("wafer/{waferid}/dietype/{dieTypeId:int}")]
+        public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId, [FromRoute] int dieTypeId)
         {
-            var measurementRecordingList = (await _measurementRecordingService.GetByWaferId(waferId)).Distinct();
+            var measurementRecordingList = (await _measurementRecordingService.GetByWaferIdAndDieType(waferId, dieTypeId)).Distinct().ToList();
+            if(measurementRecordingList.Count == 0)
+            {
+                return NoContent();
+            }
             var stagesFullViewModelList = new List<StageFullViewModel>();
             var stagesList = measurementRecordingList.Select(x => x.StageId ?? 0).Distinct().ToList();
             stagesList.Remove(0);

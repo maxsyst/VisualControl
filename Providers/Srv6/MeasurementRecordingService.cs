@@ -121,6 +121,16 @@ namespace VueExample.Providers.Srv6
             }
         }
 
+        public async Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, int dieTypeId)
+        {
+            using (Srv6Context srv6Context = new Srv6Context())
+            {
+                var waferIdSqlParameter = new SqlParameter("waferId", waferId);
+                var dieTypeSqlParameter = new SqlParameter("dieTypeId", dieTypeId);              
+                return await srv6Context.MeasurementRecordings.FromSql("EXECUTE select_all_mr_by_waferid_dietypeid @waferId, @dieTypeId", waferIdSqlParameter, dieTypeSqlParameter).ToListAsync();
+            }
+        }
+
         public async Task<MeasurementRecording> UpdateStage(int measurementRecordingId, int stageId)
         {
             using (Srv6Context srv6Context = new Srv6Context())
@@ -148,7 +158,7 @@ namespace VueExample.Providers.Srv6
                 var measurementRecording = await srv6Context.MeasurementRecordings.FirstOrDefaultAsync(x => x.Id == measurementRecordingId) 
                                            ?? throw new RecordNotFoundException();                
                 var measurementRecordingSqlParameter = new SqlParameter("idmr", measurementRecording.Id);
-                srv6Context.MeasurementRecordings.FromSql("EXECUTE dbo.delete_full_measurement_recording @idmr", measurementRecordingSqlParameter);               
+                srv6Context.Database.ExecuteSqlCommand("EXECUTE dbo.delete_full_measurement_recording @idmr", measurementRecordingSqlParameter);         
             }
         }
 
@@ -177,6 +187,28 @@ namespace VueExample.Providers.Srv6
                  return await db.FkMrGraphics.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId
                                                                                  && x.GraphicId == graphicId) ?? throw new RecordNotFoundException();
             }
+        }
+
+        public async Task DeleteSet(IList<int> measurementRecordingIdList)
+        {
+            foreach (var measurementRecording in measurementRecordingIdList)
+            {
+               await Delete(measurementRecording);
+            }
+        }
+
+        public async Task<MeasurementRecording> UpdateName(int measurementRecordingId, string newName)
+        {
+            using(var db = new Srv6Context())
+            {
+                if(newName.Contains("оп"))
+                    throw new ValidationErrorException();
+                var measurementRecording = await db.MeasurementRecordings.FirstOrDefaultAsync(x => x.Id == measurementRecordingId) ?? throw new RecordNotFoundException();
+                measurementRecording.Name = $"оп.{newName}";
+                await db.SaveChangesAsync();
+                return measurementRecording;
+            }
+            
         }
     }
 }
