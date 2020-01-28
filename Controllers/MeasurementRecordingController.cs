@@ -97,6 +97,15 @@ namespace VueExample.Controllers
             return Ok(bigMeasurementRecording);
         }  
 
+        [HttpPost]
+        [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
+        [Route("edit/name")]
+        public async Task<IActionResult> UpdateName([FromBody] MeasurementRecordingViewModel measurementRecordingViewModel)
+        {
+            var measurementRecording = await _measurementRecordingService.UpdateName(measurementRecordingViewModel.Id, measurementRecordingViewModel.Name);
+            return Ok(measurementRecording);  
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status204NoContent)]

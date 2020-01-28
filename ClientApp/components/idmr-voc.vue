@@ -61,7 +61,7 @@
                                         label
                                         color="indigo"
                                         text-color="white"
-                                        @click:close="editMeasurementRecording(idmr)">
+                                        @click:close="updateName(idmr)">
                                     {{idmr.name}}
                                     </v-chip>
                                 </v-col>
@@ -134,6 +134,21 @@
       </v-card>
     </v-dialog>
   </v-row>
+  <v-row justify="center">
+    <v-dialog v-model="editing.dialog" persistent max-width="450px">
+        <v-card>
+        <v-card-title><v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Имя операции вводить без оп.</v-chip></v-card-title>
+        <v-card-text style="height: 200px;">           
+            <v-text-field outlined label="Старое имя операции" readonly="" v-model="editing.measurementRecording.name"></v-text-field>          
+            <v-text-field outlined label="Новое имя операции" v-model="editing.newName"></v-text-field>
+        </v-card-text>
+        <v-card-actions class="d-flex justify-lg-space-between">          
+           <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
+           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording.id, editing.newName)">Обновить имя</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
     </v-container>    
 </template>
 
@@ -151,6 +166,7 @@ export default {
            avElements: [],
            stagesArray: [],
            deleting: {dialog: false, measurementRecordingList: [], selectedMeasurements: []},
+           editing: {dialog: false, measurementRecording: {}, newName: ""},
            loading: false
         }
     },
@@ -168,6 +184,16 @@ export default {
               this.deleting.selectedMeasurements = []
         },
 
+        wipeEditing() {
+              this.editing.dialog = false
+              this.editing.newName = ""
+        },
+
+        updateName(measurementRecording) {
+            this.editing.dialog = true
+            this.editing.measurementRecording = measurementRecording
+        },
+
         deleteMeasurement(stage) {
             this.deleting.dialog = true
             this.deleting.measurementRecordingList = _.cloneDeep(stage.measurementRecordingList)
@@ -178,62 +204,71 @@ export default {
         },
 
         async getStagesByWaferId(waferId, dieTypeId) {
-                await   this.$http
-                        .get(`/api/measurementrecording/wafer/${waferId}/dietype/${dieTypeId}`)
-                        .then(response => {
-                            if(response.status === 200) {
-                                this.stagesArray = response.data
-                            }                            
-                        })
-                        .catch((error) => {
-                            alert(error)
-                        });
+            await this.$http.get(`/api/measurementrecording/wafer/${waferId}/dietype/${dieTypeId}`)
+            .then(response => {
+                if(response.status === 200) {
+                    this.stagesArray = response.data
+                }                            
+            })
+            .catch((error) => {
+                this.showSnackbar(error)
+            });
         },        
 
         async getDieTypesByWaferId(waferId) {
-            await   this.$http
-                    .get(`/api/dietype/wafer/${waferId}`)
-                    .then(response => {
-                        this.dieTypes = response.data
-                        this.selectedDieType = this.dieTypes[0].id
-                    })
-                    .catch((error) => {
-                        alert(error)
-                    });
+            await this.$http.get(`/api/dietype/wafer/${waferId}`)
+            .then(response => {
+                this.dieTypes = response.data
+                this.selectedDieType = this.dieTypes[0].id
+            })
+            .catch((error) => {
+                this.showSnackbar(error)
+            });
         },
 
         async deleteSelectedMeasurements(selectedMeasurements) {
             await this.$http.delete('/api/measurementrecording/delete/list', { data: selectedMeasurements })
-                  .then(response => {           
-                        this.stagesArray[this.e1 - 1].measurementRecordingList = this.stagesArray[this.e1 - 1].measurementRecordingList.filter(x => !selectedMeasurements.includes(x.id))                  
-                        this.showSnackbar(`Удалено измерений -> ${selectedMeasurements.length}`)
-                        this.wipeDeleting()
-                  })
-                  .catch((error) => {
-                        this.showSnackbar(`Ошибка при удалении`)   
-                  });
+            .then(response => {           
+                this.stagesArray[this.e1 - 1].measurementRecordingList = this.stagesArray[this.e1 - 1].measurementRecordingList.filter(x => !selectedMeasurements.includes(x.id))                  
+                this.showSnackbar(`Удалено измерений -> ${selectedMeasurements.length}`)
+                this.wipeDeleting()
+            })
+            .catch((error) => {
+                this.showSnackbar(`Ошибка при удалении`)   
+            });
+        },
+
+        async updateMeasurementRecordingName(measurementRecording, newName) {
+            let measurementRecordingViewModel = {id: measurementRecording.Id, name: newName}
+            await this.$http.post('/api/measurementrecording/edit/name', measurementRecordingViewModel)
+            .then(function (response) {
+                this.showSnackbar("Имя изменено")
+                measurementRecording.name = newName
+                this.wipeEditing()
+            })
+            .catch(function (error) {
+                this.showSnackbar("Ошибка при изменении имени")
+            });
         },
 
         async getAvElements(dieTypeId) {             
-            await   this.$http
-                        .get(`/api/element/dietype/${dieTypeId}`)
-                        .then(response => {
-                            this.avElements = response.data
-                        })
-                        .catch((error) => {
-                            alert(error)
-                        });
+            await this.$http.get(`/api/element/dietype/${dieTypeId}`)
+            .then(response => {
+                this.avElements = response.data
+            })
+            .catch((error) => {
+                this.showSnackbar(error)
+            });
         },
 
         async getAllStages(waferId) {
-            await   this.$http
-                        .get(`/api/stage/getstagesbywaferid?waferId=${waferId}`)
-                        .then(response => {
-                            this.allStagesArray = response.data
-                        })
-                        .catch((error) => {
-                            alert(error)
-                        });
+            await this.$http.get(`/api/stage/getstagesbywaferid?waferId=${waferId}`)
+            .then(response => {
+                this.allStagesArray = response.data
+            })
+            .catch((error) => {
+               this.showSnackbar(error)
+            });
         },
 
         async getWafers() {
