@@ -121,6 +121,16 @@ namespace VueExample.Providers.Srv6
             }
         }
 
+        public async Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, int dieTypeId)
+        {
+            using (Srv6Context srv6Context = new Srv6Context())
+            {
+                var waferIdSqlParameter = new SqlParameter("waferId", waferId);
+                var dieTypeSqlParameter = new SqlParameter("dieTypeId", dieTypeId);              
+                return await srv6Context.MeasurementRecordings.FromSql("EXECUTE select_all_mr_by_waferid_dietypeid @waferId, @dieTypeId", waferIdSqlParameter, dieTypeSqlParameter).ToListAsync();
+            }
+        }
+
         public async Task<MeasurementRecording> UpdateStage(int measurementRecordingId, int stageId)
         {
             using (Srv6Context srv6Context = new Srv6Context())
@@ -186,5 +196,7 @@ namespace VueExample.Providers.Srv6
                await Delete(measurementRecording);
             }
         }
+
+       
     }
 }

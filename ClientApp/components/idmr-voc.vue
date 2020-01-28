@@ -55,11 +55,14 @@
                              <v-row v-for="idmr in stage.measurementRecordingList" :key="idmr.id">
                                 <v-col lg="2">                                    
                                     <v-chip
+                                        close
+                                        close-icon="edit"
                                         class="mt-4"                                       
                                         label
                                         color="indigo"
-                                        text-color="white">
-                                        {{idmr.name}}
+                                        text-color="white"
+                                        @click:close="editMeasurementRecording(idmr)">
+                                    {{idmr.name}}
                                     </v-chip>
                                 </v-col>
                                 <v-col lg="6">
@@ -90,6 +93,9 @@
                     </v-stepper-content>
                     </template>                          
             </v-stepper>
+            <v-alert v-else color="indigo">               
+                <div>Нет этапов для отображения</div>
+            </v-alert>
            </v-col>
         </v-row>
         <v-snackbar v-model="snackbar.visible" top>
@@ -171,11 +177,13 @@ export default {
             await this.getWafers() 
         },
 
-        async getStagesByWaferId(waferId) {
+        async getStagesByWaferId(waferId, dieTypeId) {
                 await   this.$http
-                        .get(`/api/measurementrecording/wafer/${waferId}/stage`)
+                        .get(`/api/measurementrecording/wafer/${waferId}/dietype/${dieTypeId}`)
                         .then(response => {
-                            this.stagesArray = response.data
+                            if(response.status === 200) {
+                                this.stagesArray = response.data
+                            }                            
                         })
                         .catch((error) => {
                             alert(error)
@@ -187,7 +195,7 @@ export default {
                     .get(`/api/dietype/wafer/${waferId}`)
                     .then(response => {
                         this.dieTypes = response.data
-                        this.selectedDieType = this.dieTypes[0]
+                        this.selectedDieType = this.dieTypes[0].id
                     })
                     .catch((error) => {
                         alert(error)
@@ -206,9 +214,9 @@ export default {
                   });
         },
 
-        async getAvElements(dieType) {             
+        async getAvElements(dieTypeId) {             
             await   this.$http
-                        .get(`/api/element/dietype/${dieType.id}`)
+                        .get(`/api/element/dietype/${dieTypeId}`)
                         .then(response => {
                             this.avElements = response.data
                         })
@@ -296,11 +304,14 @@ export default {
 
     watch: {
         waferId: async function(newVal, oldVal) {
-            this.loading = true
-            await this.getDieTypesByWaferId(newVal).then(async () => await this.getAvElements(this.selectedDieType))
-            await this.getAllStages(newVal)           
-            await this.getStagesByWaferId(newVal).then(() => this.loading = false)
+            await this.getDieTypesByWaferId(newVal)
+            await this.getAllStages(newVal)              
         },
+
+        selectedDieType: async function(newVal, oldVal) {
+            this.loading = true
+            await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
+        }
     },
 
     async mounted() {

@@ -99,10 +99,15 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status200OK)]
-        [Route("wafer/{waferid}/stage")]
-        public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId)
+        [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status204NoContent)]
+        [Route("wafer/{waferid}/dietype/{dieTypeId:int}")]
+        public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId, [FromRoute] int dieTypeId)
         {
-            var measurementRecordingList = (await _measurementRecordingService.GetByWaferId(waferId)).Distinct();
+            var measurementRecordingList = (await _measurementRecordingService.GetByWaferIdAndDieType(waferId, dieTypeId)).Distinct().ToList();
+            if(measurementRecordingList.Count == 0)
+            {
+                return NoContent();
+            }
             var stagesFullViewModelList = new List<StageFullViewModel>();
             var stagesList = measurementRecordingList.Select(x => x.StageId ?? 0).Distinct().ToList();
             stagesList.Remove(0);
