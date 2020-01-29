@@ -144,7 +144,7 @@
         </v-card-text>
         <v-card-actions class="d-flex justify-lg-space-between">          
            <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
-           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording.id, editing.newName)">Обновить имя</v-btn>
+           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording, editing.newName)">Обновить имя</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -157,7 +157,7 @@ export default {
     data() {
         return {
            snackbar: {visible: false, text: ""},
-           e1: 0,
+           e1: 1,
            waferId: "",
            wafers: [],
            dieTypes: [],
@@ -239,14 +239,15 @@ export default {
         },
 
         async updateMeasurementRecordingName(measurementRecording, newName) {
-            let measurementRecordingViewModel = {id: measurementRecording.Id, name: newName}
+            let measurementRecordingViewModel = {id: measurementRecording.id, name: newName}
             await this.$http.post('/api/measurementrecording/edit/name', measurementRecordingViewModel)
-            .then(function (response) {
+            .then((response) => {
                 this.showSnackbar("Имя изменено")
-                measurementRecording.name = newName
+                this.stagesArray[this.e1 - 1].measurementRecordingList.find(x => x.id == response.data.id).name = response.data.name
                 this.wipeEditing()
             })
-            .catch(function (error) {
+            .catch((error) => {
+                console.log(JSON.stringify(error))
                 this.showSnackbar("Ошибка при изменении имени")
             });
         },
