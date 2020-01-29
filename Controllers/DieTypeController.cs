@@ -57,10 +57,10 @@ namespace VueExample.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(DieTypeViewModel), StatusCodes.Status200OK)]
         [Route("update")]
-        public async Task<IActionResult> Update([FromBody] JObject dieTypeJObject)
+        public async Task<IActionResult> Update([FromBody] DieTypeViewModel dieTypeViewModel)
         {
-            var dieTypeViewModel = dieTypeJObject.ToObject<DieTypeViewModel>();
             var dieType = await _dieTypeProvider.Update(dieTypeViewModel);
             return Ok(_mapper.Map<DieType, DieTypeViewModel>(dieType));
         }

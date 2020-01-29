@@ -22,6 +22,9 @@
                                 label="Тип монитора">
                 </v-select>
             </v-col>
+            <v-col lg="2">
+                <v-checkbox v-if="waferId" class="mt-0" v-model="showAllMeasurements" label="Показать все операции на пластине"></v-checkbox>
+            </v-col>
         </v-row>
        
         <v-row>
@@ -40,7 +43,7 @@
                             </v-stepper-step>
                         </v-col>
                         <v-col lg="2">
-                            <v-btn color="indigo" class="mt-4" @click="deleteMeasurement(stage)">Удаление операций</v-btn>
+                            <v-btn v-if="index===e1-1" color="indigo" class="mt-4" @click="deleteMeasurement(stage)">Удаление операций</v-btn>
                         </v-col>
                     </v-row>
                     
@@ -137,14 +140,14 @@
   <v-row justify="center">
     <v-dialog v-model="editing.dialog" persistent max-width="450px">
         <v-card>
-        <v-card-title><v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Имя операции вводить без оп.</v-chip></v-card-title>
+        <v-card-title><v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Название операции вводить без оп.</v-chip></v-card-title>
         <v-card-text style="height: 200px;">           
-            <v-text-field outlined label="Старое имя операции" readonly="" v-model="editing.measurementRecording.name"></v-text-field>          
-            <v-text-field outlined label="Новое имя операции" v-model="editing.newName"></v-text-field>
+            <v-text-field outlined label="Старое название операции" readonly v-model="editing.measurementRecording.name"></v-text-field>          
+            <v-text-field outlined label="Новое название операции" v-model="editing.newName"></v-text-field>
         </v-card-text>
         <v-card-actions class="d-flex justify-lg-space-between">          
            <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
-           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording.id, editing.newName)">Обновить имя</v-btn>
+           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording, editing.newName)">Обновить название</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -157,7 +160,8 @@ export default {
     data() {
         return {
            snackbar: {visible: false, text: ""},
-           e1: 0,
+           e1: 1,
+           showAllMeasurements: false,
            waferId: "",
            wafers: [],
            dieTypes: [],
@@ -204,10 +208,16 @@ export default {
         },
 
         async getStagesByWaferId(waferId, dieTypeId) {
+            if(this.showAllMeasurements) {
+                 dieTypeId = 0
+            }               
             await this.$http.get(`/api/measurementrecording/wafer/${waferId}/dietype/${dieTypeId}`)
             .then(response => {
                 if(response.status === 200) {
                     this.stagesArray = response.data
+                }
+                if(response.status === 204) {
+                    this.stagesArray = []
                 }                            
             })
             .catch((error) => {
@@ -218,8 +228,8 @@ export default {
         async getDieTypesByWaferId(waferId) {
             await this.$http.get(`/api/dietype/wafer/${waferId}`)
             .then(response => {
-                this.dieTypes = response.data
-                this.selectedDieType = this.dieTypes[0].id
+                this.stagesArray = []
+                this.dieTypes = response.data               
             })
             .catch((error) => {
                 this.showSnackbar(error)
@@ -239,15 +249,15 @@ export default {
         },
 
         async updateMeasurementRecordingName(measurementRecording, newName) {
-            let measurementRecordingViewModel = {id: measurementRecording.Id, name: newName}
+            let measurementRecordingViewModel = {id: measurementRecording.id, name: newName}
             await this.$http.post('/api/measurementrecording/edit/name', measurementRecordingViewModel)
-            .then(function (response) {
-                this.showSnackbar("Имя изменено")
-                measurementRecording.name = newName
+            .then((response) => {
+                this.showSnackbar("Название изменено")
+                this.stagesArray[this.e1 - 1].measurementRecordingList.find(x => x.id == response.data.id).name = response.data.name
                 this.wipeEditing()
             })
-            .catch(function (error) {
-                this.showSnackbar("Ошибка при изменении имени")
+            .catch((error) => {
+                this.showSnackbar("Ошибка при изменении названия")
             });
         },
 
@@ -339,13 +349,22 @@ export default {
 
     watch: {
         waferId: async function(newVal, oldVal) {
-            await this.getDieTypesByWaferId(newVal)
+            this.selectedDieType = 0
+            await this.getDieTypesByWaferId(newVal).then(() => this.selectedDieType = this.dieTypes[0].id)
             await this.getAllStages(newVal)              
         },
 
         selectedDieType: async function(newVal, oldVal) {
+            if(newVal !== 0) {
+                this.loading = true
+                await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
+            }
+         
+        },
+
+        showAllMeasurements: async function(newVal) {
             this.loading = true
-            await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
+            await this.getStagesByWaferId(this.waferId, this.selectedDieType).then(async () => await this.getAvElements(this.selectedDieType)).then(() => this.loading = false)
         }
     },
 
