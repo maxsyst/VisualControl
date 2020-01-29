@@ -22,6 +22,9 @@
                                 label="Тип монитора">
                 </v-select>
             </v-col>
+            <v-col lg="2">
+                <v-checkbox v-if="waferId" class="mt-0" v-model="showAllMeasurements" label="Показать все операции на пластине"></v-checkbox>
+            </v-col>
         </v-row>
        
         <v-row>
@@ -40,7 +43,7 @@
                             </v-stepper-step>
                         </v-col>
                         <v-col lg="2">
-                            <v-btn color="indigo" class="mt-4" @click="deleteMeasurement(stage)">Удаление операций</v-btn>
+                            <v-btn v-if="index===e1-1" color="indigo" class="mt-4" @click="deleteMeasurement(stage)">Удаление операций</v-btn>
                         </v-col>
                     </v-row>
                     
@@ -158,6 +161,7 @@ export default {
         return {
            snackbar: {visible: false, text: ""},
            e1: 1,
+           showAllMeasurements: false,
            waferId: "",
            wafers: [],
            dieTypes: [],
@@ -204,10 +208,16 @@ export default {
         },
 
         async getStagesByWaferId(waferId, dieTypeId) {
+            if(this.showAllMeasurements) {
+                 dieTypeId = 0
+            }               
             await this.$http.get(`/api/measurementrecording/wafer/${waferId}/dietype/${dieTypeId}`)
             .then(response => {
                 if(response.status === 200) {
                     this.stagesArray = response.data
+                }
+                if(response.status === 204) {
+                    this.stagesArray = []
                 }                            
             })
             .catch((error) => {
@@ -218,8 +228,8 @@ export default {
         async getDieTypesByWaferId(waferId) {
             await this.$http.get(`/api/dietype/wafer/${waferId}`)
             .then(response => {
-                this.dieTypes = response.data
-                this.selectedDieType = this.dieTypes[0].id
+                this.stagesArray = []
+                this.dieTypes = response.data               
             })
             .catch((error) => {
                 this.showSnackbar(error)
@@ -340,13 +350,22 @@ export default {
 
     watch: {
         waferId: async function(newVal, oldVal) {
-            await this.getDieTypesByWaferId(newVal)
+            this.selectedDieType = 0
+            await this.getDieTypesByWaferId(newVal).then(() => this.selectedDieType = this.dieTypes[0].id)
             await this.getAllStages(newVal)              
         },
 
         selectedDieType: async function(newVal, oldVal) {
+            if(newVal !== 0) {
+                this.loading = true
+                await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
+            }
+         
+        },
+
+        showAllMeasurements: async function(newVal) {
             this.loading = true
-            await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
+            await this.getStagesByWaferId(this.waferId, this.selectedDieType).then(async () => await this.getAvElements(this.selectedDieType)).then(() => this.loading = false)
         }
     },
 
