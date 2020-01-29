@@ -2,7 +2,7 @@
   <v-container>
   <v-row class="pt-8">           
             <v-col lg="6">
-                <v-tabs v-if="dieType" vertical background-color="indigo">
+                <v-tabs v-if="Object.keys(dieType).length!==0" vertical background-color="indigo">
                     <v-tab key="cp">
                         Шаблоны
                     </v-tab>
@@ -73,18 +73,32 @@
                 <v-select v-model="dieType"
                     :items="dieTypes"
                     no-data-text="Нет данных"
+                    return-object
                     item-text="name"
-                    item-value="id"
                     outlined
                     label="Выберите монитор для редактирования"
                 ></v-select>                
             </v-col>
             <v-col lg="1">
-                <v-btn fab small outlined color="primary">
+                <v-btn v-if="Object.keys(dieType).length!==0" fab small outlined color="primary" @click="nameUpdating.dialog = true">
                     <v-icon>create</v-icon>
                 </v-btn>
-            </v-col>
-           
+            </v-col>           
+        </v-row>
+        <v-row justify="center">
+            <v-dialog v-model="nameUpdating.dialog" persistent max-width="450px">
+                <v-card>
+                    <v-card-title>Изменение названия монитора</v-card-title>
+                    <v-card-text style="height: 200px;">           
+                        <v-text-field outlined label="Старое название монитора" readonly v-model="dieType.name"></v-text-field>          
+                        <v-text-field outlined label="Новое название монитора" v-model="nameUpdating.newName"></v-text-field>
+                    </v-card-text>
+                    <v-card-actions class="d-flex justify-lg-space-between">          
+                    <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
+                    <v-btn v-if="nameUpdating.newName && nameUpdating.newName!==dieType.name" color="success" @click="updateDieTypeName(dieType, nameUpdating.newName)">Обновить название</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-row>
         <v-snackbar v-model="snackbar.visible"
                     :color="snackbar.color"
@@ -106,13 +120,14 @@ import ElementUpdating from './element-update.vue'
 export default {
     data() {
         return {
-            dieType: "",
+            dieType: {},
             selectedProcess: "",
+            nameUpdating: {dialog: false, newName: ""},
             dieTypes: [],
             processes: [],
             avCodeProducts: [],
             selectedCodeProducts: [],
-            snackbar: {text: "", color: "success", visible: false}    
+            snackbar: {text: "", visible: false}    
         }
     },
 
@@ -122,18 +137,37 @@ export default {
     },
 
     methods: {
+        wipeEditing() {
+            this.nameUpdating.dialog = false
+            this.nameUpdating.newName = ""
+        },
+        
+
         async getProcesses() {
             await this.$http
             .get(`/api/process/all`)
             .then(response => this.processes = response.data)
-            .catch(err => console.log(err)); ///err
+            .catch(err => this.showSnackBar(err));
         },
 
         async getDieTypes() {
             await this.$http
             .get(`/api/dietype/all`)
             .then(response => this.dieTypes = response.data)
-            .catch(err => console.log(err)); ///err
+            .catch(err => this.showSnackBar(err));
+        },
+
+        async updateDieTypeName(dieType, newName) {
+            let dieTypeViewModel = {id: dieType.id, name: newName}
+            await this.$http.post('/api/dietype/update', dieTypeViewModel)
+            .then((response) => {
+                this.showSnackBar("Название изменено")
+                this.dieType.name = response.data.name
+                this.wipeEditing()
+            })
+            .catch((error) => {
+               this.showSnackBar("Ошибка при изменении названия")
+            });
         },
 
         async updateDieType(dieTypeName, selectedCodeProducts, elements) {
@@ -155,7 +189,7 @@ export default {
                 this.$store.commit("elements/clearElements")
             
             })
-            .catch(error => this.showSnackBar(error.response.data[0].message, "error"));  
+            .catch(error => this.showSnackBar(error.response.data[0].message));  
         },
 
         async codeProductsChange(idcp) {
@@ -171,7 +205,7 @@ export default {
                 }
             })
             .then(response => { 
-                let dieTypeName = this.dieTypes.find(x => x.id === this.dieType).name
+                let dieTypeName = this.dieTypes.find(x => x.id === this.dieType.id).name
                 if(response.status === 201) {
                     this.showSnackBar(`Шаблон ${response.data} успешно добавлен к монитору ${dieTypeName}`)
                 }
@@ -179,7 +213,7 @@ export default {
                     this.showSnackBar(`Шаблон ${response.data} успешно отвязан от монитора ${dieTypeName}`)
                 }               
             })
-            .catch(error => this.showSnackBar(error.response.data[0].message, "error"));  
+            .catch(error => this.showSnackBar(error.response.data[0].message));  
         },
 
         async deleteElement(element) {
@@ -197,7 +231,7 @@ export default {
                     }    
                     this.deleteElementFromStore(element.name);
                 })
-                .catch(error => this.showSnackBar(error.response.data[0].message, "error"));  
+                .catch(error => this.showSnackBar(error.response.data[0].message));  
             }    
         },
 
@@ -218,7 +252,7 @@ export default {
                createdElement = response.data;
                await this.$http({
                     method: "put",
-                    url: `/api/element/${createdElement.elementId}/dietype/${this.dieType}`, 
+                    url: `/api/element/${createdElement.elementId}/dietype/${this.dieType.id}`, 
                     config: {
                         headers: {
                             'Accept': "application/json",
@@ -231,7 +265,7 @@ export default {
                     this.$store.commit("elements/addtoElements", createdElement)          
                 })                
             })
-            .catch(error => this.showSnackBar(error.response.data[0].message, "error"))
+            .catch(error => this.showSnackBar(error.response.data[0].message))
            
         },
 
@@ -251,7 +285,7 @@ export default {
                 this.showSnackBar(`Элемент ${response.data.name} успешно изменен`)
                 this.$store.commit("elements/updateElement", response.data)                         
             })
-            .catch(error => this.showSnackBar(error.response.data[0].message, "error"));
+            .catch(error => this.showSnackBar(error.response.data[0].message));
         },
 
         deleteElementFromStore(elementName)
@@ -259,10 +293,9 @@ export default {
             this.$store.commit("elements/deleteFromElements", elementName)
         },
 
-        showSnackBar(text, color)
+        showSnackBar(text)
         {
           this.snackbar.text = text
-          this.snackbar.color = color
           this.snackbar.visible = true
         }         
 
@@ -273,17 +306,17 @@ export default {
             await this.$http
             .get(`/api/codeproduct/processid/${newVal}`)
             .then(response => this.avCodeProducts = response.data)
-            .catch(err => console.log(err)) ///err
+            .catch(err => this.showSnackBar(err)) 
         },
 
         dieType: async function(newVal, oldVal) {
             await this.$http
-            .get(`/api/dietype/cp-el/${newVal}`)
+            .get(`/api/dietype/cp-el/${newVal.id}`)
             .then(response => {
                 this.selectedCodeProducts = response.data.codeProductIdsList
                 this.$store.commit("elements/fillElements", response.data.elementsList)
             })
-            .catch(err => console.log(err)) 
+            .catch(err => this.showSnackBar(err)) 
         }
 
     },

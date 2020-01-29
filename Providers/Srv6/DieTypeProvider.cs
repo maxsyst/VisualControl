@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
+using VueExample.Exceptions;
 using VueExample.Models;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
@@ -52,9 +53,11 @@ namespace VueExample.Providers.Srv6
 
         public async Task<DieType> Update(DieTypeViewModel dieTypeViewModel)
         {
-             using(var db = new Srv6Context())
+            if(String.IsNullOrEmpty(dieTypeViewModel.Name))
+                throw new ValidationErrorException();
+            using(var db = new Srv6Context())
             {
-                var dieType = await db.DieTypes.FirstOrDefaultAsync(x => x.DieTypeId == dieTypeViewModel.Id);
+                var dieType = await db.DieTypes.FirstOrDefaultAsync(x => x.DieTypeId == dieTypeViewModel.Id) ?? throw new RecordNotFoundException();
                 db.Entry(dieType).CurrentValues.SetValues(_mapper.Map<DieTypeViewModel, DieType>(dieTypeViewModel));
                 await db.SaveChangesAsync();
                 return dieType;

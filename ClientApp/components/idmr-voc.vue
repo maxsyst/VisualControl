@@ -140,14 +140,14 @@
   <v-row justify="center">
     <v-dialog v-model="editing.dialog" persistent max-width="450px">
         <v-card>
-        <v-card-title><v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Имя операции вводить без оп.</v-chip></v-card-title>
+        <v-card-title><v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Название операции вводить без оп.</v-chip></v-card-title>
         <v-card-text style="height: 200px;">           
-            <v-text-field outlined label="Старое имя операции" readonly="" v-model="editing.measurementRecording.name"></v-text-field>          
-            <v-text-field outlined label="Новое имя операции" v-model="editing.newName"></v-text-field>
+            <v-text-field outlined label="Старое название операции" readonly v-model="editing.measurementRecording.name"></v-text-field>          
+            <v-text-field outlined label="Новое название операции" v-model="editing.newName"></v-text-field>
         </v-card-text>
         <v-card-actions class="d-flex justify-lg-space-between">          
            <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
-           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording, editing.newName)">Обновить имя</v-btn>
+           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording, editing.newName)">Обновить название</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -252,13 +252,12 @@ export default {
             let measurementRecordingViewModel = {id: measurementRecording.id, name: newName}
             await this.$http.post('/api/measurementrecording/edit/name', measurementRecordingViewModel)
             .then((response) => {
-                this.showSnackbar("Имя изменено")
+                this.showSnackbar("Название изменено")
                 this.stagesArray[this.e1 - 1].measurementRecordingList.find(x => x.id == response.data.id).name = response.data.name
                 this.wipeEditing()
             })
             .catch((error) => {
-                console.log(JSON.stringify(error))
-                this.showSnackbar("Ошибка при изменении имени")
+                this.showSnackbar("Ошибка при изменении названия")
             });
         },
 
