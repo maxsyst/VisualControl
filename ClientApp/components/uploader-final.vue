@@ -273,7 +273,7 @@ export default {
 
         async getAllStages(waferId) {
             await this.$http
-            .get(`/api/stage/getstagesbywaferid?waferId=${waferId}`)
+            .get(`/api/stage/wafer/${waferId}`)
             .then(response => {
                 this.stages = response.data
             })

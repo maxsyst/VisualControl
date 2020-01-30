@@ -123,6 +123,7 @@ namespace VueExample
             services.AddTransient<IDieTypeProvider, DieTypeProvider>();
             services.AddTransient<IWaferProvider, WaferProvider>();
             services.AddTransient<ICodeProductProvider, CodeProductProvider>();
+            services.AddTransient<IProcessProvider, ProcessProvider>();
             services.AddTransient<IDeviceProvider, DeviceProvider>();
             services.AddTransient<IStageProvider, StageProvider>();
             services.AddTransient<IMeasurementSetProvider, MeasurementSetProvider>();

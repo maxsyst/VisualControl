@@ -13,11 +13,12 @@ namespace VueExample.Providers.Srv6
     {
         private readonly IElementService _elementService;
         private readonly IFileGraphicUploaderService _fileGraphicUploaderService;
-        private readonly ProcessProvider processProvider = new ProcessProvider();
+        private readonly IProcessProvider _processProvider;
         private readonly ICodeProductProvider _codeProductProvider;
-        public FolderService(IElementService elementService, ICodeProductProvider codeProductProvider, IFileGraphicUploaderService fileGraphicUploaderService)
+        public FolderService(IElementService elementService, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
         {
             _elementService = elementService;
+            _processProvider = processProvider;
             _codeProductProvider = codeProductProvider;
             _fileGraphicUploaderService = fileGraphicUploaderService;
         }
@@ -127,7 +128,7 @@ namespace VueExample.Providers.Srv6
         {
             var simpleOperationList = new List<SimpleOperationUploaderViewModel>(); 
             directoryPath = GetTruePath(directoryPath);
-            var fileNames = await _fileGraphicUploaderService.GetAllFileNamesByProcessId(processProvider.GetProcessIdByCodeProductId((await _codeProductProvider.GetByWaferId(waferName)).IdCp));
+            var fileNames = await _fileGraphicUploaderService.GetAllFileNamesByProcessId((await _processProvider.GetProcessByCodeProductId((await _codeProductProvider.GetByWaferId(waferName)).IdCp)).ProcessId);
             foreach (var meas in measurementRecordings)
             {
                 var directoriesArray = System.IO.Directory.GetDirectories($"{directoryPath}\\{codeProductName}\\meas\\{waferName}\\{meas}");
