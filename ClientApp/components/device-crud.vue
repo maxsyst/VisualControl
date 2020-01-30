@@ -31,7 +31,7 @@
                    
                     <div>
                         <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
+                            <template v-slot:activator="{on}">
                                 <v-btn icon ripple @click="openEditDialog(device)">
                                     <v-icon color="grey">edit</v-icon>
                                 </v-btn>
@@ -40,7 +40,7 @@
                         </v-tooltip>
 
                         <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
+                            <template v-slot:activator="{on}">
                                 <v-btn icon ripple @click="deleteDevice(device.id)">
                                     <v-icon color="grey">delete</v-icon>
                                 </v-btn>

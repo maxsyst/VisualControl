@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Models;
-using VueExample.Providers;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 using AutoMapper;
@@ -14,15 +12,24 @@ namespace VueExample.Controllers
     [Route("api/[controller]")]
     public class StageController: Controller
     {
-        private readonly ProcessProvider _processProvider;
+        private readonly IProcessProvider _processProvider;
         private readonly IStageProvider _stageProvider;
         private readonly IMapper _mapper;
-        public StageController(IStageProvider stageProvider, IMapper mapper)
+        public StageController(IStageProvider stageProvider, IMapper mapper, IProcessProvider processProvider)
         {
             _stageProvider = stageProvider;
+            _processProvider = processProvider;
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [ProducesResponseType (typeof(List<Stage>), StatusCodes.Status200OK)]
+        [ProducesResponseType (StatusCodes.Status404NotFound)]
+         [Route("process/{processId:int}")]
+        public async Task<IActionResult> GetStagesByProcessId([FromRoute] int processId)
+
+            => Ok(await _stageProvider.GetStagesByProcessId(processId));
+        
         [HttpGet]
         [ProducesResponseType (typeof(List<Stage>), StatusCodes.Status200OK)]
         [ProducesResponseType (StatusCodes.Status404NotFound)]

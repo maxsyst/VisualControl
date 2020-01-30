@@ -27,7 +27,7 @@ namespace VueExample.Providers
         {
             using (Srv6Context srv6Context = new Srv6Context())
             {
-                if(await srv6Context.Stages.AnyAsync(x => x.ProcessId == stage.ProcessId && x.StageName == stage.StageName))
+                if(await srv6Context.Stages.AnyAsync(x => x.ProcessId == stage.ProcessId && x.StageName == stage.StageName) || String.IsNullOrEmpty(stage.StageName))
                     throw new ValidationErrorException();
                 srv6Context.Stages.Add(stage);
                 await srv6Context.SaveChangesAsync();
