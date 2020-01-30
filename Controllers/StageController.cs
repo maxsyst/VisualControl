@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using VueExample.Models;
 using VueExample.Providers;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.ViewModels;
+using AutoMapper;
 
 namespace VueExample.Controllers
 {
@@ -14,9 +16,11 @@ namespace VueExample.Controllers
     {
         private readonly ProcessProvider _processProvider;
         private readonly IStageProvider _stageProvider;
-        public StageController(IStageProvider stageProvider)
+        private readonly IMapper _mapper;
+        public StageController(IStageProvider stageProvider, IMapper mapper)
         {
             _stageProvider = stageProvider;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -45,12 +49,38 @@ namespace VueExample.Controllers
 
         [HttpPut]
         [ProducesResponseType (typeof(Stage), StatusCodes.Status201Created)]
+        [Route("create")]
+        public async Task<IActionResult> Create([FromBody] StageViewModel stageViewModel)       
+           
+            => CreatedAtAction("create", await _stageProvider.Create(_mapper.Map<StageViewModel, Stage>(stageViewModel)));           
+
+        [HttpPut]
+        [ProducesResponseType (typeof(Stage), StatusCodes.Status201Created)]
         [Route("create/name/{name}/codeProductId/{codeProductId:int}")]
         public async Task<IActionResult> Create([FromRoute] string name, [FromRoute] int codeProductId)
         {
            var process = await _processProvider.GetProcessByCodeProductId(codeProductId);
            var newStage = await _stageProvider.Create(name, process.ProcessId);          
-           return CreatedAtAction("", newStage);
+           return CreatedAtAction("create", newStage);
+        }
+
+        [HttpPost]
+        [ProducesResponseType (typeof(Stage), StatusCodes.Status201Created)]
+        [ProducesResponseType (StatusCodes.Status404NotFound)]     
+        [Route("update")]
+        public async Task<IActionResult> Update([FromBody] StageViewModel stageViewModel) 
+        
+            => Created("update", await _stageProvider.Update(_mapper.Map<StageViewModel, Stage>(stageViewModel)));
+       
+        [HttpDelete]
+        [ProducesResponseType (StatusCodes.Status204NoContent)]
+        [ProducesResponseType (StatusCodes.Status403Forbidden)]
+        [ProducesResponseType (StatusCodes.Status404NotFound)]               
+        [Route("delete/{stageId:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int stageId)
+        {
+            await _stageProvider.Delete(stageId);
+            return NoContent();
         }
 
     }

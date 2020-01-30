@@ -23,6 +23,30 @@ namespace VueExample.Providers
             }
         }
 
+        public async Task<Stage> Create(Stage stage)
+        {
+            using (Srv6Context srv6Context = new Srv6Context())
+            {
+                if(await srv6Context.Stages.AnyAsync(x => x.ProcessId == stage.ProcessId && x.StageName == stage.StageName))
+                    throw new ValidationErrorException();
+                srv6Context.Stages.Add(stage);
+                await srv6Context.SaveChangesAsync();
+                return stage;
+            }
+        }
+
+        public async Task Delete(int stageId)
+        {
+           using (Srv6Context srv6Context = new Srv6Context())
+           {
+                if(await srv6Context.MeasurementRecordings.AnyAsync(x => x.StageId == stageId))
+                    throw new ValidationErrorException();
+                var stage = await srv6Context.Stages.FirstOrDefaultAsync(x => x.StageId == stageId) ?? throw new RecordNotFoundException();
+                srv6Context.Remove(stage);
+                await srv6Context.SaveChangesAsync();
+           }
+        }
+
         public async Task<List<Stage>> GetAll()
         {
             using (Srv6Context srv6Context = new Srv6Context())
@@ -56,6 +80,7 @@ namespace VueExample.Providers
                 return stageList.Count == 0 ? throw new RecordNotFoundException() : stageList;
             }
         }
+        
         public async Task<List<Stage>> GetStagesByWaferId(string waferId)
         {
             using (var srv6Context = new Srv6Context())
@@ -69,7 +94,17 @@ namespace VueExample.Providers
                 return stageList.Count == 0 ? throw new RecordNotFoundException() : stageList; 
             }
             
-        }  
-            
+        }
+
+        public async Task<Stage> Update(Stage stage)
+        {
+            using (var srv6Context = new Srv6Context())
+            {
+                var stageUpdate = await srv6Context.Stages.FirstOrDefaultAsync(x => x.StageId == stage.StageId) ?? throw new RecordNotFoundException();
+                srv6Context.Entry(stageUpdate).CurrentValues.SetValues(stage);
+                await srv6Context.SaveChangesAsync();
+                return stage;
+            }
+        }
     }
 }
