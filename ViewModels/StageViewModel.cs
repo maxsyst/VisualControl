@@ -2,7 +2,9 @@ namespace VueExample.ViewModels
 {
     public class StageViewModel
     {
-        public int StageId { get; set; }
-        public int Name { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int ProcessId { get; set; }
+        public int? CodeProductId { get; set; }
     }
 }

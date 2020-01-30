@@ -185,7 +185,7 @@
       //  this.defect = response.data;
       //  let stageId = this.defect.stageId;
 
-      //  this.$http.get(`/api/stage/getbyid?stageId=${stageId}`).then((response) => {
+      //  this.$http.get(`/api/stage/id/${stageId}`).then((response) => {
       //    this.stage = response.data;
       //  });
       //  let dangerLevelId = this.defect.dangerLevelId;
@@ -253,7 +253,7 @@
             this.defect = response.data;
             let stageId = this.defect.stageId;
 
-            this.$http.get(`/api/stage/getbyid?stageId=${stageId}`).then((response) => {
+            this.$http.get(`/api/stage/id/${stageId}`).then((response) => {
               this.stage = response.data;
             });
             let dangerLevelId = this.defect.dangerLevelId;

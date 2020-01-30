@@ -208,7 +208,7 @@ export default {
 
        async getAvStages(waferId, elements) {
         await   this.$http
-                .get(`/api/stage/GetStagesByWaferId?waferId=${waferId}`)
+                .get(`/api/stage/wafer/{waferId}`)
                 .then(response => {
                     elements.forEach(e => e.operation.avStages = response.data)
                 })

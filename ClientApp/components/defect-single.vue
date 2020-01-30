@@ -112,7 +112,7 @@
         this.dies = response.data;
         this.selectedDie = this.dies[0];
         var codeproductid = this.selectedWafer.codeProductId;
-        let responseStages = await this.$http.get(`/api/stage/getstagesbycodeproductid?codeproductid=${codeproductid}`);
+        let responseStages = await this.$http.get(`/api/stage/codeproductid/${codeproductid}`);
         this.stages = responseStages.data;
         this.selectedStage = this.stages[0];
       }

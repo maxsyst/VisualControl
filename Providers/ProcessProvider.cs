@@ -3,17 +3,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
+using VueExample.Exceptions;
 using VueExample.Models;
+using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Providers
 {
-    public class ProcessProvider
+    public class ProcessProvider : IProcessProvider
     {
-        public int GetProcessIdByCodeProductId(int codeProductId)
+        public async Task<Process> GetProcessByCodeProductId(int codeProductId)
         {
             using (Srv6Context srv6Context = new Srv6Context())
             {
-                return srv6Context.CodeProducts.FirstOrDefault(x => x.IdCp == codeProductId).ProcessId;
+                return await srv6Context.CodeProducts.Join(
+                    srv6Context.Processes,
+                    o => o.ProcessId,
+                    i => i.ProcessId,
+                    (o,i) => i    
+                ).FirstOrDefaultAsync() ?? throw new RecordNotFoundException();
             }
         }
 
