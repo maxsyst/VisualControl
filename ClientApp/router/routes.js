@@ -9,6 +9,7 @@ import Device from 'components/device-crud'
 import WaferMap from 'components/wafermap-full'
 import SelectBasic from 'components/select-basic'
 import Kurbatov from 'components/export-kurb'
+import StageTable from 'components/stage-table.vue'
 import VerificationSettings from 'components/verification-settings'
 import IdmrVoc from 'components/idmr-voc'
 import DefectMassiveUploader from 'components/massive-uploader'
@@ -36,6 +37,7 @@ export const routes = [
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, display: 'Просмотр измерений', nav: true },
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
+  { name: 'stagetable', path: '/stt', component: StageTable},
   { name: 'uploader', path: '/uu', component: Uploader, display: 'Загрузка измерений', nav: true, uploadingArea: true },
   { name: 'idmrvoc', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true }, 
   { name: 'dietypesettings', path: '/dts', component: DieTypeSettings, display: 'Настройка элементов', nav: true, uploadingArea: true },  
