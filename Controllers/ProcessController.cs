@@ -21,6 +21,16 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ProcessViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("waferid/{waferId}")]
+        public async Task<IActionResult> GetByWaferId([FromRoute] string waferId)
+        {
+            var process = _mapper.Map<Process, ProcessViewModel>(await _processProvider.GetByWaferId(waferId));
+            return Ok(process);
+        }
+
+        [HttpGet]
         [ProducesResponseType(typeof(IList<ProcessViewModel>), StatusCodes.Status200OK)]
         [Route("all")]
         public async Task<IActionResult> GetAll() => Ok(_mapper.Map<List<Process>, List<ProcessViewModel>>(await _processProvider.GetAll()));
