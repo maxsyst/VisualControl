@@ -161,15 +161,18 @@
 
 <script>
 export default {
+
+    props: {
+        waferId: String,
+        selectedDieType: Number
+    },
     data() {
         return {
            snackbar: {visible: false, text: ""},
            e1: 1,
            showAllMeasurements: false,
-           waferId: "",
            wafers: [],
            dieTypes: [],
-           selectedDieType: {},
            allStagesArray: [],
            avElements: [],
            stagesArray: [],
@@ -363,17 +366,28 @@ export default {
     },
 
     watch: {
-        waferId: async function(newVal, oldVal) {
-            this.selectedDieType = 0
-            this.$router.push({ name: `idmrvoc`, params: {waferId: newVal, dieTypeId: ""} })
-            await this.getDieTypesByWaferId(newVal).then(() => this.selectedDieType = this.dieTypes[0].id)
-            await this.getAllStages(newVal)              
+        waferId: {
+            immediate : true,
+            handler: 
+                async function(newVal, oldVal) {
+                    if(newVal) {
+                        if(oldVal || !this.selectedDieType) {
+                            this.selectedDieType = 0
+                            await this.getDieTypesByWaferId(newVal).then(() => this.selectedDieType = this.dieTypes[0].id)
+                        } else {
+                            await this.getDieTypesByWaferId(newVal)
+                            this.selectedDieType = +this.selectedDieType
+                        }                   
+                        await this.getAllStages(newVal)       
+                    }
+                           
+                }
         },
 
         selectedDieType: async function(newVal, oldVal) {
             if(newVal !== 0) {
                 this.loading = true
-                this.$router.push({ name: `idmrvoc`, params: {waferId: this.waferId, dieTypeId: newVal} })
+                this.$router.push({ name: `idmrvoc`, params: {waferId: this.waferId, selectedDieType: newVal} })
                 await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
             }
          
