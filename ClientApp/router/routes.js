@@ -37,7 +37,7 @@ export const routes = [
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, display: 'Просмотр измерений', nav: true },
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
-  { name: 'stagetable', path: '/stt', component: StageTable, props: true},
+  { name: 'stagetable', path: '/stt/:processId', component: StageTable, props: (route) => {return {processId: +route.params.processId}}},
   { name: 'uploader', path: '/uu', component: Uploader, display: 'Загрузка измерений', nav: true, uploadingArea: true },
   { name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true }, 
   { name: 'idmrvoc', path: '/idmr-voc/:waferId/:selectedDieType', component: IdmrVoc, display: 'Редактирование измерений', props: true }, 
