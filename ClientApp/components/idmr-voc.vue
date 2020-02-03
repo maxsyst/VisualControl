@@ -1,7 +1,7 @@
 <template>
     <v-container grid-list-lg>
         <v-row>
-            <v-col lg="3" offset-lg="1">
+            <v-col lg="2" offset-lg="1">
                 <v-autocomplete v-model="waferId"
                                     :items="wafers"
                                     no-data-text="Нет данных"
@@ -12,9 +12,10 @@
                                     label="Номер пластины">
                 </v-autocomplete>
             </v-col>
-            <v-col lg="3">
-                <v-select       v-model="selectedDieType" 
+            <v-col lg="2">
+                <v-select v-if="waferId"  v-model="selectedDieType" 
                                 :items="dieTypes"
+                                no-data-text="Нет данных"
                                 outlined
                                 filled
                                 item-text="name"
@@ -22,8 +23,11 @@
                                 label="Тип монитора">
                 </v-select>
             </v-col>
-            <v-col lg="2">
-                <v-checkbox v-if="waferId" class="mt-0" v-model="showAllMeasurements" label="Показать все операции на пластине"></v-checkbox>
+            <v-col lg="3">
+                <v-checkbox v-if="waferId" class="mt-3" v-model="showAllMeasurements" label="Показать все операции на пластине"></v-checkbox>
+            </v-col>
+            <v-col lg="3">
+                <v-btn v-if="waferId" color="indigo" class="mt-3" @click="goToStageTable(waferId)">Перейти к редактированию этапов</v-btn>
             </v-col>
         </v-row>
        
@@ -180,6 +184,17 @@ export default {
         showSnackbar(text) {
             this.snackbar.visible = true
             this.snackbar.text = text
+        },
+
+        async goToStageTable(waferId) {
+            await this.$http.get(`/api/process/waferid/${waferId}`)
+            .then(response => {
+                let processId = response.data.processId
+                this.$router.push({ name: 'stagetable', params: {processId: processId}})
+            })
+            .catch((error) => {
+                this.showSnackbar("Ошибка серевера")
+            });
         },
 
         wipeDeleting() {
@@ -350,6 +365,7 @@ export default {
     watch: {
         waferId: async function(newVal, oldVal) {
             this.selectedDieType = 0
+            this.$router.push({ name: `idmrvoc`, params: {waferId: newVal, dieTypeId: ""} })
             await this.getDieTypesByWaferId(newVal).then(() => this.selectedDieType = this.dieTypes[0].id)
             await this.getAllStages(newVal)              
         },
@@ -357,6 +373,7 @@ export default {
         selectedDieType: async function(newVal, oldVal) {
             if(newVal !== 0) {
                 this.loading = true
+                this.$router.push({ name: `idmrvoc`, params: {waferId: this.waferId, dieTypeId: newVal} })
                 await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
             }
          

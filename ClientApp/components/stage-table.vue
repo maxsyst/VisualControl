@@ -191,7 +191,7 @@ export default {
             await this.$http.delete(`/api/stage/delete/${stageId}`)
             .then(response => {
                 this.showSnackbar("Успешно удалено")
-                this.stagesList = this.stagesList.filter(x => x.stageId != stageId)
+                this.stagesList = this.stagesList.filter(x => x.stageId !== stageId)
             })
             .catch(error => {
                 error.response.status === 403 ? this.showSnackbar("Запрещено удалять этап привязанный к измерению") : this.showSnackbar("Ошибка при удалении")
@@ -200,9 +200,13 @@ export default {
     },
 
     watch: {    
-        processId: async function(newVal, oldVal) {
-            await this.getStagesByProcessId(newVal).then(data => this.stagesList = data )
-        }
+        processId: {
+            immediate: true,
+            handler: 
+                async function(newVal, oldVal) {
+                    await this.getStagesByProcessId(newVal).then(data => this.stagesList = data )
+            }
+        } 
     },
 
     async mounted() {
