@@ -2,19 +2,13 @@ using System.Globalization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using VueExample.Contexts;
-using VueExample.Entities;
 using VueExample.Models.SRV6;
-using VueExample.Parsing.Concrete;
-using VueExample.Parsing.Strategies;
 using VueExample.Providers.Srv6;
 
 namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
 {
     public abstract class SingleStatisticsServiceAbstract
     {
-        public StatParameterService StatParameterService = new StatParameterService();
         public abstract List<VueExample.StatisticsCore.DataModels.SingleStatisticData> CreateSingleStatisticData(List<long?> dieList, Graphic graphic, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList);
         public abstract List<VueExample.StatisticsCore.SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider);
         protected List<VueExample.StatisticsCore.DataModels.SingleStatisticData> StatisticDataMapping (List<Statistics> statisticList, List<long?> dieList, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticList)

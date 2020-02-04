@@ -11,9 +11,10 @@ using VueExample.ChartModels.ChartJs.Linear;
 using VueExample.Color;
 using VueExample.Models.SRV6;
 
-namespace VueExample.Providers {
-    public class ChartJSProvider : IChartJSProvider {
-
+namespace VueExample.Providers 
+{
+    public class ChartJSProvider : IChartJSProvider 
+    {
         private IDieProvider _dieProvider;
         private IColorService _colorService;
 
@@ -46,7 +47,7 @@ namespace VueExample.Providers {
             return chart;
         }
 
-        public AbstractChart GetHistogramFromDieValues (List<DieValue> dieValuesList, List<long?> dieIdList, double divider) {
+        public async Task<AbstractChart> GetHistogramFromDieValues (List<DieValue> dieValuesList, List<long?> dieIdList, double divider) {
 
             var labelsList = new List<string> ();
             var datasetList = new List<Dataset> ();
@@ -54,7 +55,7 @@ namespace VueExample.Providers {
             var dataset = new Dataset ();
             foreach (var dieValue in dieValuesList.Where (x => dieIdList.Contains (x.DieId)).ToList ()) {
 
-                labelsList.Add (Convert.ToString (_dieProvider.GetById ((long) dieValue.DieId).Code));
+                labelsList.Add (Convert.ToString ((await _dieProvider.GetById((long) dieValue.DieId)).Code));
                 dataset.BackgroundColor = _colorService.GetHexColorByDieId (dieValue.DieId);
                 dataset.Data.Add (double.Parse (dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
 

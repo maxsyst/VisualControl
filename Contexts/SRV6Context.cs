@@ -43,8 +43,10 @@ namespace VueExample.Contexts
            
            
         }
-        protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlServer (@"data source = SRV6\SRV3; Initial Catalog = db_process; persist security info = True; user id = labuser; password = zxvitr78KK; MultipleActiveResultSets = True;");
+
+        public Srv6Context(DbContextOptions<Srv6Context> options): base(options)
+        {
+            
         }
     }
 }

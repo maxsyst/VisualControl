@@ -2,11 +2,18 @@ using System.Linq;
 using System.Collections.Generic;
 using VueExample.Models.SRV6;
 using VueExample.StatisticsCore.DataModels;
+using VueExample.StatisticsCore.Services;
+using VueExample.Providers.Srv6;
 
 namespace VueExample.StatisticsCore.SingleStatisticServices
 {
     public class SingleParameterServiceHSTG : VueExample.StatisticsCore.SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract
     {
+        private readonly StatParameterService _statisticService;
+        public SingleParameterServiceHSTG(StatParameterService statisticService)
+        {
+            _statisticService = statisticService;
+        }
         public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider)
         {
                 var statisticsItem = new Statistics();
@@ -20,7 +27,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
                 }
 
                 foreach (var stat in statisticsItem.GetStatistics(valueList, graphic)) {
-                    singleParameterStatisticsList.Add (new SingleParameterStatistic (stat.StatisticsName, dieIdList, stat.FullList).CalculateDirtyCellsFixed(StatParameterService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
+                    singleParameterStatisticsList.Add (new SingleParameterStatistic (stat.StatisticsName, dieIdList, stat.FullList).CalculateDirtyCellsFixed(_statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
                 }
 
                 return singleParameterStatisticsList;

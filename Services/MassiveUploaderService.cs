@@ -14,18 +14,16 @@ namespace VueExample.Services
     public class MassiveUploaderService
     {
         private readonly IWaferProvider _waferProvider;
-        public MassiveUploaderService(IWaferProvider waferProvider)
+        private readonly IDieProvider _dieProvider;
+        public MassiveUploaderService(IWaferProvider waferProvider, IDieProvider dieProvider)
         {
+            _dieProvider = dieProvider;
             _waferProvider = waferProvider;
         }
         public async Task<ResponseObjects.FullResponseObject<List<DefectViewModel>>> FindDefectsInFolder(string path)
         {
             var response = new FullResponseObject<List<DefectViewModel>>();
-           
-            DieProvider dieProvider = new DieProvider();
             var dies = new List<Die>();
-            
-
             if (!Directory.Exists(path))
             {
                 response.ErrorList.Add(new Error("Директория не существует", "NEF001"));
@@ -41,7 +39,7 @@ namespace VueExample.Services
             }
             else
             {
-                dies = dieProvider.GetDiesByWaferId(wafer.WaferId).ToList();
+                dies = _dieProvider.GetDiesByWaferId(wafer.WaferId).ToList();
             }
 
             var foldersBadGoodList = System.IO.Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly).ToList();
@@ -110,11 +108,6 @@ namespace VueExample.Services
                     }
                 }
             }
-
-
-
-
-
             return response;
         }
     }

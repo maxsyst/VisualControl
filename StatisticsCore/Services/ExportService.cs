@@ -10,20 +10,25 @@ using VueExample.Providers;
 using VueExample.Models.SRV6.Export;
 using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.Contexts;
 
 namespace VueExample.StatisticsCore.Services
 {
     public class ExportService : IExportProvider
     {
         private readonly IAppCache _appCache;        
-        private readonly DieValueService _dieValueService = new DieValueService();
+        private readonly Srv6Context _srv6Context;
+        private readonly IDieValueService _dieValueService;
         private readonly IStageProvider _stageProvider;
-        private readonly StatisticService _statisticService = new StatisticService();
-        private readonly DieProvider _dieProvider = new DieProvider();
-        public ExportService(IAppCache appCache, IStageProvider stageProvider)
+        private readonly StatisticService _statisticService;
+        private readonly IDieProvider _dieProvider;
+        public ExportService(IAppCache appCache, Srv6Context srv6Context, IStageProvider stageProvider, IDieValueService dieValueService, IDieProvider dieProvider, ISRV6GraphicService graphicService)
         {
+            _dieValueService = dieValueService;
+            _dieProvider = dieProvider;
             _appCache = appCache;
             _stageProvider = stageProvider;
+            _statisticService = new StatisticService(graphicService, _srv6Context);
         }
         public async Task PopulateKurbatovXLSByValues(KurbatovXLS kurbatovXLS)
         {
@@ -74,7 +79,7 @@ namespace VueExample.StatisticsCore.Services
                             (
                                 new AtomicDieValue
                                 {
-                                    DieCode = Convert.ToInt32(_dieProvider.GetById((long)die).Code), 
+                                    DieCode = Convert.ToInt32((await _dieProvider.GetById((long)die)).Code), 
                                     Value = value, 
                                     Status = GetStatus(kurbatovParameter.Lower, kurbatovParameter.Upper, value)
                                 }
@@ -125,7 +130,7 @@ namespace VueExample.StatisticsCore.Services
                         for (int i = 0; i < singleParameterStatistic.dieList.Count; i++)
                         {
                             long? die = (long?)singleParameterStatistic.dieList[i];
-                            dieList.Add(Convert.ToInt32(_dieProvider.GetById((long)die).Code));
+                            dieList.Add(Convert.ToInt32((await _dieProvider.GetById((long)die)).Code));
                         }
                         for (int i = 0; i < dieList.Count; i++)
                         {

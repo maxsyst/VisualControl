@@ -44,7 +44,7 @@ namespace VueExample.Controllers
                         defectList.Select(x => x.DefectTypeId).Distinct().Contains(d.DefectTypeId)),
                     AvbStagesList = (await _stageProvider.GetAll()).FindAll(d =>
                         defectList.Select(x => x.StageId).Distinct().Contains(d.StageId)),
-                    AvbDiesList = _dieProvider.GetAll().FindAll(d =>
+                    AvbDiesList = (await _dieProvider.GetAll()).FindAll(d =>
                         defectList.Select(x => x.DieId).Distinct().Contains(d.DieId))
                 };
 

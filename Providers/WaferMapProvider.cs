@@ -5,14 +5,13 @@ using VueExample.Repository;
 
 namespace VueExample.Providers
 {
-    public class WaferMapProvider : RepositorySRV6<WaferMap>, IWaferMapProvider
+    public class WaferMapProvider : IWaferMapProvider
     {
-        public WaferMap GetByWaferId(string waferId)
+        private readonly Srv6Context _srv6Context;
+        public WaferMapProvider(Srv6Context srv6Context)
         {
-            using (Srv6Context srv6Context = new Srv6Context())
-            {
-                return srv6Context.WaferMaps.FirstOrDefault(x=>x.WaferId == waferId);
-            }
+            _srv6Context = srv6Context;
         }
+        public WaferMap GetByWaferId(string waferId) => _srv6Context.WaferMaps.FirstOrDefault(x => x.WaferId == waferId);
     }
 }

@@ -4,19 +4,24 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Providers.Srv6;
+using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class GraphicSrv6Controller : Controller
     {
-        GraphicService graphicService = new GraphicService();
+        private readonly ISRV6GraphicService _graphicService;
+        public GraphicSrv6Controller(ISRV6GraphicService graphicService)
+        {
+            _graphicService = graphicService;
+        }
 
         [HttpGet]
         public IActionResult GetGraphicNameByKeyGraphicState(string keyGraphicState)
         {
             var graphicId = Convert.ToInt32(keyGraphicState.Split('_').FirstOrDefault());
-            return Ok(graphicService.GetById(graphicId).Name);
+            return Ok(_graphicService.GetById(graphicId).Name);
         }
 
         [HttpGet]
@@ -28,7 +33,7 @@ namespace VueExample.Controllers
             {
                 var graphicWithKeyGraphicStateViewModel = new ViewModels.GraphicWithKeyGraphicStateViewModel();
                 var graphicId = Convert.ToInt32(kgs.Split('_').FirstOrDefault());
-                graphicWithKeyGraphicStateViewModel.GraphicName = graphicService.GetById(graphicId).Name;
+                graphicWithKeyGraphicStateViewModel.GraphicName = _graphicService.GetById(graphicId).Name;
                 graphicWithKeyGraphicStateViewModel.KeyGraphicState = kgs;
                 availiableGraphicList.Add(graphicWithKeyGraphicStateViewModel);
             }

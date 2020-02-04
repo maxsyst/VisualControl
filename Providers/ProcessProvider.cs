@@ -12,30 +12,23 @@ namespace VueExample.Providers
     public class ProcessProvider : IProcessProvider
     {
         private readonly ICodeProductProvider _codeProductProvider;
-        public ProcessProvider(ICodeProductProvider codeProductProvider)
+        private readonly Srv6Context _srv6Context;
+        public ProcessProvider(ICodeProductProvider codeProductProvider, Srv6Context srv6Context)
         {
+            _srv6Context = srv6Context;
             _codeProductProvider = codeProductProvider;
         }
+        
         public async Task<Process> GetProcessByCodeProductId(int codeProductId)
-        {
-            using (Srv6Context srv6Context = new Srv6Context())
-            {
-                return await srv6Context.CodeProducts.Where(x => x.IdCp == codeProductId).Join(
-                    srv6Context.Processes,
-                    o => o.ProcessId,
-                    i => i.ProcessId,
-                    (o,i) => i    
-                ).FirstOrDefaultAsync() ?? throw new RecordNotFoundException();
-            }
-        }
+            =>  await _srv6Context.CodeProducts
+                        .Where(x => x.IdCp == codeProductId)
+                        .Join(  _srv6Context.Processes,
+                                o => o.ProcessId,
+                                i => i.ProcessId,
+                                (o,i) => i)    
+                        .FirstOrDefaultAsync() ?? throw new RecordNotFoundException();
 
-        public async Task<List<Process>> GetAll() 
-        {
-            using (Srv6Context srv6Context = new Srv6Context())
-            {
-                return await srv6Context.Processes.ToListAsync();
-            }   
-        }
+        public async Task<List<Process>> GetAll() => await _srv6Context.Processes.ToListAsync();
 
         public async Task<Process> GetByWaferId(string waferId)
         {
