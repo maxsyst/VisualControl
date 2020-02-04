@@ -6,13 +6,12 @@ namespace VueExample.Providers.Srv6
 {
     public class StatParameterService
     {
-        public StatParameterForStage GetByStatParameterIdAndStageId(int statisticParameterId, int? stageId)
+        private readonly Srv6Context _srv6Context;
+        public StatParameterService(Srv6Context srv6Context)
         {
-            using (Srv6Context srv6Context = new Srv6Context())
-            {
-                var statParameter = srv6Context.StatParametersForStage.FirstOrDefault(x => x.StageId == stageId && x.StatisticParameterId == statisticParameterId);
-                return statParameter;
-            }
+            _srv6Context = srv6Context;
         }
+        public StatParameterForStage GetByStatParameterIdAndStageId(int statisticParameterId, int? stageId) 
+            => _srv6Context.StatParametersForStage.FirstOrDefault(x => x.StageId == stageId && x.StatisticParameterId == statisticParameterId);
     }
 }

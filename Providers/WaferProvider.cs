@@ -9,22 +9,12 @@ namespace VueExample.Providers
 {
     public class WaferProvider : IWaferProvider
     {
-        public async Task<List<Wafer>> GetWafers()
+        private readonly Srv6Context _srv6Context;
+        public WaferProvider(Srv6Context srv6Context)
         {
-            using (Srv6Context srv6Context = new Srv6Context())
-            {
-                return await srv6Context.Wafers.ToListAsync();
-            }
+            _srv6Context = srv6Context;
         }
-
-        public async Task<Wafer> GetByWaferId(string waferId)
-        {
-            using (Srv6Context srv6Context = new Srv6Context())
-            {
-                return await srv6Context.Wafers.FirstOrDefaultAsync(x => x.WaferId == waferId);
-            }
-        }
-
-       
+        public async Task<List<Wafer>> GetWafers() => await _srv6Context.Wafers.ToListAsync();
+        public async Task<Wafer> GetByWaferId(string waferId) => await _srv6Context.Wafers.FirstOrDefaultAsync(x => x.WaferId == waferId);
     }
 }

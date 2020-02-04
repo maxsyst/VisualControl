@@ -3,49 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using VueExample.Extensions;
 using VueExample.Contexts;
 using VueExample.Entities;
 using VueExample.Models.SRV6;
 using VueExample.Parsing.Concrete;
 using VueExample.Parsing.Strategies;
-using VueExample.Providers.Srv6;
 using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Services
 {
     public class DieValueService : IDieValueService
     {
-       
-        private readonly GraphicService _graphicService = new GraphicService();
+        private readonly ISRV6GraphicService _graphicService;
+        private readonly Srv6Context _srv6Context;
+        public DieValueService(ISRV6GraphicService graphicService, Srv6Context srv6Context)
+        {
+            _srv6Context = srv6Context;
+            _graphicService = graphicService;
+        }
         public async Task CreateDieGraphics(List<DieGraphics> dieGraphics)
         {
-            using(var db = new Srv6Context())
-            {
-                db.AddRange(dieGraphics);
-                await db.SaveChangesAsync();
-            }
+            _srv6Context.AddRange(dieGraphics);
+            await _srv6Context.SaveChangesAsync();
         }
 
         public Dictionary<string, List<DieValue>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
         {
             var dieGraphicsList = new List<DieGraphics>();
-            using (var srv6Context = new Srv6Context())
-            {
-                dieGraphicsList.AddRange(srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToList());
-            }
-
+            dieGraphicsList.AddRange(_srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToList());
             var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId, x => x).ToDictionary(x => x.Key, x => x.ToList());
             return DieGraphicsMappingParallel(dgDictionary).ToDictionary(entry => entry.Key, entry => entry.Value);;
         }
 
         public List<long?> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
         {
-            var diesList = new List<long?>();
-            using (var srv6Context = new Srv6Context())
-            {
-                return srv6Context.DiesParameterOld.Where( x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToList();
-            }
+            var diesList = new List<long?>();            
+            return _srv6Context.DiesParameterOld.Where( x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToList();
         }
 
         private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary)

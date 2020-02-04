@@ -9,6 +9,7 @@ using VueExample.Services;
 using VueExample.Providers.Srv6;
 using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.Contexts;
 
 namespace VueExample.Controllers
 {
@@ -16,12 +17,16 @@ namespace VueExample.Controllers
     public class StatisticController : Controller 
     {
         private readonly IAppCache cache;
-        private readonly DieValueService dieValueService = new DieValueService();
+        private readonly Srv6Context _srv6Context;
+        private readonly IDieValueService _dieValueService;
         private readonly IStageProvider _stageProvider;
-        private readonly StatisticsCore.Services.StatisticService statisticService = new StatisticsCore.Services.StatisticService();
-        public StatisticController (IAppCache cache, IStageProvider stageProvider) 
+        private readonly StatisticsCore.Services.StatisticService statisticService;
+        public StatisticController (IAppCache cache, IStageProvider stageProvider, Srv6Context srv6Context, IDieValueService dieValueService, ISRV6GraphicService graphicService) 
         {
+            _dieValueService = dieValueService;
             _stageProvider = stageProvider;
+            _srv6Context = srv6Context;
+            statisticService = new StatisticsCore.Services.StatisticService(graphicService, _srv6Context);
             this.cache = cache;
         }
 
@@ -30,7 +35,7 @@ namespace VueExample.Controllers
         {
             string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
-            Func<Dictionary<string, List<DieValue>>> cachedDieValueService = () => dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            Func<Dictionary<string, List<DieValue>>> cachedDieValueService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var dieValuesDictionary = cache.GetOrAdd($"V_{measurementRecordingIdAsKey}", cachedDieValueService);
             Func<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0);
             var statDictionary = cache.GetOrAdd($"S_{measurementRecordingIdAsKey}", cachedStatisticService);

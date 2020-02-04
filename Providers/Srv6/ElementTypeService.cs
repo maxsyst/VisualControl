@@ -9,12 +9,11 @@ namespace VueExample.Providers.Srv6
 {
     public class ElementTypeService : IElementTypeService
     {
-        public async Task<IList<ElementType>> GetAll()
+        private readonly Srv6Context _srv6Context;
+        public ElementTypeService(Srv6Context srv6Context)
         {
-            using(var db = new Srv6Context())
-            {
-                return await db.ElementTypes.ToListAsync();
-            }
+            _srv6Context = srv6Context;
         }
+        public async Task<IList<ElementType>> GetAll() => await _srv6Context.ElementTypes.ToListAsync();
     }
 }

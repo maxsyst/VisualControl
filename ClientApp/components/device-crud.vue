@@ -30,7 +30,7 @@
                     </v-list-item-content>
                    
                     <div>
-                        <v-tooltip bottom>
+                        <!-- <v-tooltip bottom>
                             <template v-slot:activator="{on}">
                                 <v-btn icon ripple @click="openEditDialog(device)">
                                     <v-icon color="grey">edit</v-icon>
@@ -46,7 +46,7 @@
                                 </v-btn>
                             </template>
                         <span>Удалить прибор</span>
-                        </v-tooltip>                     
+                        </v-tooltip>                      -->
                       
                     </div>
 

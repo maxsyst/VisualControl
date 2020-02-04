@@ -1,7 +1,7 @@
 {
-  "name": "VCS-SVR19",
-  "version": "0.5.0",
-  "description": "VisualControlSystem-SVR",
+  "name": "svr2.0-2020",
+  "version": "0.8.0",
+  "description": "System-SVR",
   "author": "Sergei Strelnikov",
   "license": "SVR",
   "scripts": {

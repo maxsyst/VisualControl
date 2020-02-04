@@ -18,10 +18,12 @@ namespace VueExample.Providers.ChipVerification
         private readonly IMapper _mapper;
 
         private readonly ApplicationContext _applicationContext;
-        public SimpleMeasurementProvider(IMapper mapper, ApplicationContext applicationContext) 
+        private readonly Srv6Context _srv6Context;
+        public SimpleMeasurementProvider(IMapper mapper, ApplicationContext applicationContext, Srv6Context srv6Context) 
         {
             _mapper = mapper;  
             _applicationContext = applicationContext;
+            _srv6Context = srv6Context;
         }    
         public (List<Process>, List<CodeProduct>, List<MeasuredDevice>, List<Measurement>) GetAllMeasurementInfo(int facilityId)
         {
@@ -42,19 +44,18 @@ namespace VueExample.Providers.ChipVerification
             measurementList = _applicationContext.Measurement.ToList();
             
 
-            using (Srv6Context db = new Srv6Context())
+           
+            foreach (var codeproductid in codeProductIdList.Distinct().ToList())
             {
-                foreach (var codeproductid in codeProductIdList.Distinct().ToList())
-                {
-                    processIdList.Add(db.CodeProducts.FirstOrDefault(x=>x.IdCp == codeproductid).ProcessId);
-                    codeProductList.Add(db.CodeProducts.FirstOrDefault(x => x.IdCp == codeproductid));
-                }
-
-                foreach (var processid in processIdList)
-                {
-                    processList.Add(db.Processes.FirstOrDefault(x=>x.ProcessId == processid));
-                }
+                processIdList.Add(_srv6Context.CodeProducts.FirstOrDefault(x=>x.IdCp == codeproductid).ProcessId);
+                codeProductList.Add(_srv6Context.CodeProducts.FirstOrDefault(x => x.IdCp == codeproductid));
             }
+
+            foreach (var processid in processIdList)
+            {
+                processList.Add(_srv6Context.Processes.FirstOrDefault(x=>x.ProcessId == processid));
+            }
+            
 
             measurementList.Reverse();
             return (processList.Distinct().ToList(), codeProductList.Distinct().ToList(), measuredDeviceList.Distinct().OrderBy(_ => _.Name).ToList(), measurementList);
