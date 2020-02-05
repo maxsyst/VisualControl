@@ -25,6 +25,7 @@ namespace VueExample.StatisticsCore.Services
         public ExportService(IAppCache appCache, Srv6Context srv6Context, IStageProvider stageProvider, IDieValueService dieValueService, IDieProvider dieProvider, ISRV6GraphicService graphicService)
         {
             _dieValueService = dieValueService;
+            _srv6Context = srv6Context;
             _dieProvider = dieProvider;
             _appCache = appCache;
             _stageProvider = stageProvider;

@@ -6,7 +6,7 @@ namespace VueExample.Models.SRV6
     [Table("SpecificElementType")]
     public class SpecificElementType
     {
-        [Key]         
+        [Key]        
         [Column("id_set")]
         public int Id { get; set; }         
         [Column("id_et")]
