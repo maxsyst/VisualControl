@@ -9,8 +9,8 @@ namespace VueExample.Models.SRV6
         [Key]        
         [Column("id_set")]
         public int Id { get; set; }         
-        [Column("id_et")]
-        public int ElementType { get; set; }         
+        [Column("id_te")]
+        public int ElementTypeId { get; set; }         
         [Column("Name")]
         public string Name { get; set; }
         [Column("Specification")]

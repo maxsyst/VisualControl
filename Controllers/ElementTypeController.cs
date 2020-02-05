@@ -26,7 +26,7 @@ namespace VueExample.Controllers
         [Route("id/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
             => Ok(_mapper.Map<ElementType, TypeElementViewModel>(await _elementTypeService.GetById(id)));
-            
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<TypeElementViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType (StatusCodes.Status404NotFound)]
@@ -35,7 +35,7 @@ namespace VueExample.Controllers
             => Ok(_mapper.Map<IEnumerable<ElementType>, IEnumerable<TypeElementViewModel>>(await _elementTypeService.GetAll()));
 
         [HttpPut]
-        [ProducesResponseType(typeof(TypeElementViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TypeElementViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType (StatusCodes.Status403Forbidden)]
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] TypeElementViewModel typeElementViewModel)
