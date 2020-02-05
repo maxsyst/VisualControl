@@ -21,13 +21,30 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IList<TypeElementViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TypeElementViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("id/{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+            => Ok(_mapper.Map<ElementType, TypeElementViewModel>(await _elementTypeService.GetById(id)));
+
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<TypeElementViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType (StatusCodes.Status404NotFound)]
         [Route("all")]
         public async Task<IActionResult> GetAll()
-        {
-            var elementTypesList = _mapper.Map<IList<ElementType>, IList<TypeElementViewModel>>(await _elementTypeService.GetAll());
-            return elementTypesList.Count > 0 ? Ok(elementTypesList) : (IActionResult)NotFound();
-        }
+            => Ok(_mapper.Map<IEnumerable<ElementType>, IEnumerable<TypeElementViewModel>>(await _elementTypeService.GetAll()));
+
+        [HttpPut]
+        [ProducesResponseType(typeof(TypeElementViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType (StatusCodes.Status403Forbidden)]
+        [Route("create")]
+        public async Task<IActionResult> Create([FromBody] TypeElementViewModel typeElementViewModel)
+            => CreatedAtAction("create", _mapper.Map<ElementType, TypeElementViewModel>(await _elementTypeService.Create(typeElementViewModel.Name)));
+
+        [HttpPatch]
+        [ProducesResponseType(typeof(TypeElementViewModel), StatusCodes.Status200OK)]
+        [Route("update")]
+        public async Task<IActionResult> Update([FromBody] TypeElementViewModel typeElementViewModel)
+            => Ok(_mapper.Map<ElementType, TypeElementViewModel>(await _elementTypeService.Update(_mapper.Map<TypeElementViewModel, ElementType>(typeElementViewModel))));
     }
 }

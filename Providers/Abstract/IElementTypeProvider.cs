@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Models.SRV6;
 
-namespace VueExample.Providers.Srv6.Interfaces
+namespace VueExample.Providers.Abstract
 {
-    public interface IElementTypeService
+    public interface IElementTypeProvider
     {
-         Task<ElementType> GetById(int id);
+        Task<ElementType> GetById(int id);
         Task<IEnumerable<ElementType>> GetAll();
         Task<ElementType> Create(string name);
         Task<ElementType> Update(ElementType elementType);
