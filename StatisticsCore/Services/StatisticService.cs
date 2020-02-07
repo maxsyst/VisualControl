@@ -18,7 +18,6 @@ namespace VueExample.StatisticsCore.Services
         }
         
         public Dictionary<string, List<SingleParameterStatistic>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider) {
-           
             var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
             foreach (var graphicDV in dieValues) 
             {
@@ -27,7 +26,6 @@ namespace VueExample.StatisticsCore.Services
                 var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, stageId, divider);
                 statisticsDictionary.Add (graphicDV.Key, singleParameterStatisticsList);
             }
-
             return statisticsDictionary;
         }
 
@@ -38,17 +36,18 @@ namespace VueExample.StatisticsCore.Services
             return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesList, divider, singleParameterStatisticsList);
         }
 
-        public DirtyCells GetDirtyCellsBySPSDictionary (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics) {
-            var dirtyCells = new DirtyCells ();
-            foreach (var item in singleParameterStatistics) {
-                foreach (var singleParameterStatistic in item.Value) {
-                    dirtyCells.StatList.AddRange (singleParameterStatistic.DirtyCells.StatList);
-                    dirtyCells.FixedList.AddRange (singleParameterStatistic.DirtyCells.FixedList);
+        public DirtyCells GetDirtyCellsBySPSDictionary (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics) 
+        {
+            var dirtyCells = new DirtyCells();
+            foreach (var item in singleParameterStatistics) 
+            {
+                foreach (var singleParameterStatistic in item.Value) 
+                {
+                    dirtyCells.StatList.AddRange(singleParameterStatistic.DirtyCells.StatList);
+                    dirtyCells.FixedList.AddRange(singleParameterStatistic.DirtyCells.FixedList);
                 }
             }
-
             return dirtyCells.Distinct();
-
         }
 
        private SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract SingleStatisticsServiceCreator(Graphic graphic)
@@ -61,7 +60,6 @@ namespace VueExample.StatisticsCore.Services
                 case 2:
                     return new SingleStatisticServices.SingleParameterServiceHSTG(statParameterService);
             }
-
             return new SingleStatisticServices.SingleParameterServiceLNR(statParameterService);;
 
        }
