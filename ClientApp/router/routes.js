@@ -15,6 +15,7 @@ import IdmrVoc from 'components/idmr-voc'
 import DefectMassiveUploader from 'components/massive-uploader'
 import DieTypeSettings from 'components/dietype-settings'
 import Uploader from 'components/uploader-ng'
+import ElementType from 'components/element-type'
 import UploaderFg from 'components/uploader-filegraphic'
 import UploaderFinal from 'components/uploader-final'
 // Service components
@@ -37,6 +38,7 @@ export const routes = [
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, display: 'Просмотр измерений', nav: true },
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
+  { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true }, 
   { name: 'stagetable', path: '/stt/:processId', component: StageTable, props: route => {return {processId: +route.params.processId}}},
   { name: 'uploader', path: '/uu', component: Uploader, display: 'Загрузка измерений', nav: true, uploadingArea: true },
   { name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true }, 
