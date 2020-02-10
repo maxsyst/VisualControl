@@ -227,7 +227,7 @@ namespace VueExample.Controllers
             row7.parameters.Add(new KurbatovParameter{ParameterName = "S21(5GHz)", Lower = 8, DividerId = 1, RussianParameterName="Коэффициент передачи, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>(коэффициент передачи)"});
             
             var row8 = new KurbatovXLSViewModel();
-            row8.ElementName = "TC6";
+            row8.ElementName = "TC6"; 
             row8.OperationNumber = "560.00.00";
             row8.StageName = "Снятие рабочей пластины с пластины-носителя";
             row8.parameters.Add(new KurbatovParameter{ParameterName = "S21(on)", Lower = -1.5, DividerId = 1, RussianParameterName="Коэффициент передачи в открытом состоянии на частоте 20 ГГц, дБ", ParameterNameStat="S<sub>21ON(20GHz)</sub>"});
