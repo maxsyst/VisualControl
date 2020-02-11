@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using VueExample.Entities;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Abstract;
 using VueExample.Providers.Srv6.Interfaces;
@@ -16,29 +17,16 @@ namespace VueExample.Providers.Srv6
             _mapper = mapper;
         }
 
-        public Task<StandartParameterModel> Create(StandartParameterModel standartParameterModel)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task<StandartParameterModel> Create(StandartParameterModel standartParameterModel) 
+            => _mapper.Map<StandartParameterEntity, StandartParameterModel>(await _standartParameterProvider.Create(_mapper.Map<StandartParameterModel, StandartParameterEntity>(standartParameterModel)));
 
-        public Task Delete(int standartParameterModelId)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task Delete(int standartParameterModelId) 
+            => await _standartParameterProvider.Delete(standartParameterModelId);
 
-        public Task<StandartParameterModel> GetById(int standartParameterModelId)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task<StandartParameterModel> GetById(int standartParameterModelId) 
+            => _mapper.Map<StandartParameterEntity, StandartParameterModel>(await _standartParameterProvider.GetById(standartParameterModelId));
 
-        public Task<StandartParameterModel> GetByProcess(int standartParameterModelId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<StandartParameterModel> Update(StandartParameterModel standartParameterModel)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task<StandartParameterModel> Update(StandartParameterModel standartParameterModel)
+            =>  _mapper.Map<StandartParameterEntity, StandartParameterModel>(await _standartParameterProvider.Update(_mapper.Map<StandartParameterModel, StandartParameterEntity>(standartParameterModel)));
     }
 }

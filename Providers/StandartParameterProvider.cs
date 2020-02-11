@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Entities;
+using VueExample.Exceptions;
 using VueExample.Providers.Abstract;
 
 namespace VueExample.Providers
@@ -12,29 +14,33 @@ namespace VueExample.Providers
         {
             _srv6Context = srv6Context;
         }
-        public Task<StandartParameterEntity> Create(StandartParameterEntity standartParameterModel)
+        public async Task<StandartParameterEntity> Create(StandartParameterEntity standartParameterModel)
         {
-            throw new System.NotImplementedException();
+            var standartParameter = standartParameterModel ?? throw new ValidationErrorException();
+            _srv6Context.StandartParameters.Add(standartParameterModel);
+            await _srv6Context.SaveChangesAsync();
+            return standartParameter;
         }
 
-        public Task Delete(int standartParameterModelId)
+        public async Task Delete(int standartParameterModelId)
         {
-            throw new System.NotImplementedException();
+            var standartParameter = await _srv6Context.StandartParameters.FirstOrDefaultAsync(x => x.Id == standartParameterModelId) ?? throw new RecordNotFoundException();
+            _srv6Context.Remove(standartParameter);
+            await _srv6Context.SaveChangesAsync();
         }
 
-        public Task<StandartParameterEntity> GetById(int standartParameterModelId)
+        public async Task<StandartParameterEntity> GetById(int standartParameterModelId)
         {
-            throw new System.NotImplementedException();
+            var standartParameter = await _srv6Context.StandartParameters.FirstOrDefaultAsync(x => x.Id == standartParameterModelId) ?? throw new RecordNotFoundException();
+            return standartParameter;
         }
 
-        public Task<StandartParameterEntity> GetByProcess(int standartParameterModelId)
+        public async Task<StandartParameterEntity> Update(StandartParameterEntity standartParameterModel)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<StandartParameterEntity> Update(StandartParameterEntity standartParameterModel)
-        {
-            throw new System.NotImplementedException();
+            var standartParameter = await _srv6Context.StandartParameters.FirstOrDefaultAsync(x => x.Id == standartParameterModel.Id) ?? throw new RecordNotFoundException();
+            _srv6Context.Entry(standartParameter).CurrentValues.SetValues(standartParameterModel);
+            await _srv6Context.SaveChangesAsync();
+            return standartParameterModel;
         }
     }
 }
