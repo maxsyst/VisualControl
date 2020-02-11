@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,13 @@ namespace VueExample.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(IList<StandartParameterViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("all")]
+        public async Task<IActionResult> GetAll()
+            => Ok(_mapper.Map<IList<StandartParameterModel>, IList<StandartParameterViewModel>>(await _standartParameterService.GetAll()));
+            
         [HttpGet]
         [ProducesResponseType(typeof(StandartParameterViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

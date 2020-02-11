@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using VueExample.Entities;
@@ -23,10 +24,15 @@ namespace VueExample.Providers.Srv6
         public async Task Delete(int standartParameterModelId) 
             => await _standartParameterProvider.Delete(standartParameterModelId);
 
+        public async Task<IList<StandartParameterModel>> GetAll()
+        {
+           return _mapper.Map<IList<StandartParameterEntity>, IList<StandartParameterModel>>(await _standartParameterProvider.GetAll());
+        }
+
         public async Task<StandartParameterModel> GetById(int standartParameterModelId) 
             => _mapper.Map<StandartParameterEntity, StandartParameterModel>(await _standartParameterProvider.GetById(standartParameterModelId));
 
         public async Task<StandartParameterModel> Update(StandartParameterModel standartParameterModel)
-            =>  _mapper.Map<StandartParameterEntity, StandartParameterModel>(await _standartParameterProvider.Update(_mapper.Map<StandartParameterModel, StandartParameterEntity>(standartParameterModel)));
+            => _mapper.Map<StandartParameterEntity, StandartParameterModel>(await _standartParameterProvider.Update(_mapper.Map<StandartParameterModel, StandartParameterEntity>(standartParameterModel)));
     }
 }
