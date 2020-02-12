@@ -11,6 +11,7 @@ import SelectBasic from 'components/select-basic'
 import Kurbatov from 'components/export-kurb'
 import StageTable from 'components/stage-table.vue'
 import VerificationSettings from 'components/verification-settings'
+import StandartParameter from 'components/standartparameter-view'
 import IdmrVoc from 'components/idmr-voc'
 import DefectMassiveUploader from 'components/massive-uploader'
 import DieTypeSettings from 'components/dietype-settings'
@@ -39,6 +40,7 @@ export const routes = [
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, display: 'Просмотр измерений', nav: true },
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
   { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true }, 
+  { name: 'standartparameter', path: '/standart-parameter', component: StandartParameter, display: 'StandartParameter', nav: true }, 
   { name: 'stagetable', path: '/stt/:processId', component: StageTable, props: route => {return {processId: +route.params.processId}}},
   { name: 'uploader', path: '/uu', component: Uploader, display: 'Загрузка измерений', nav: true, uploadingArea: true },
   { name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true }, 

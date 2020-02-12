@@ -6,17 +6,17 @@
                     <v-toolbar color="indigo" dark>
                         <v-row>
                             <v-col lg="3" offset-lg="1">
-                               
+                               {{'Таблица параметров'}}
                             </v-col>
                             <v-col lg="3">
-                                <v-btn class="mt-8" absolute dark fab small right color="pink" @click="openCreatingDialog()">
+                                <v-btn absolute dark fab small right color="pink" @click="openCreatingDialog">
                                     <v-icon>add</v-icon>
                                 </v-btn>                                          
                             </v-col>
                         </v-row>
                     </v-toolbar>
                     <v-list class="align-lg-center">
-                        <v-row v-for="parameter in parameterList" :key="parameter.Id" dense>
+                        <v-row v-for="parameter in parameterList" :key="parameter.id" dense>
                             <v-col lg="10" offset-lg="1">
                                 <v-hover>
                                     <template v-slot="{ hover }">
@@ -34,7 +34,7 @@
                                 <v-btn dark fab small color="indigo"  @click="openUpdateDialog(stage)">
                                     <v-icon color="white">edit</v-icon>
                                 </v-btn>
-                                <v-btn dark fab small color="indigo" @click="deleteStage(parameter.Id)">
+                                <v-btn dark fab small color="indigo" @click="deleteParameter(parameter.id)">
                                     <v-icon color="pink">delete</v-icon>
                                 </v-btn>
                             </v-col>
@@ -43,7 +43,7 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-row justify="center">
+        <!-- <v-row justify="center">
             <v-dialog v-model="editing.dialog" persistent max-width="450px">
                 <v-card>
                     <v-card-title>Редактирование параметра</v-card-title>
@@ -62,22 +62,25 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-row>
+        </v-row> -->
         <v-row justify="center">
-            <v-dialog v-model="creating.dialog" persistent max-width="450px">
+            <v-dialog v-model="creating.dialog" persistent max-width="750px">
                 <v-card v-if="creating.dialog">
-                    <v-card-title>Создание этапа</v-card-title>
+                    <v-card-title>Создание стандартного параметра</v-card-title>
                     <v-divider></v-divider>
-                    <v-card-text style="height: 200px;">  
-                        <v-text-field class="mt-8" outlined label="Название процесса" readonly v-model="processesList.find(x => x.processId == processId).processName"></v-text-field>          
-                        <v-text-field outlined label="Название этапа" v-model="creating.stage.name"></v-text-field>
+                    <v-card-text style="height: 400px;" class="mt-4">  
+                        <v-text-field outlined label="Краткое название" v-model="creating.parameter.parameterName" :rules="[rules.required, isParameterNameExist]"></v-text-field>
+                        <v-text-field outlined label="Развернутое название" v-model="creating.parameter.russianParameterName" :rules="[rules.required, isRussianParameterNameExist]"></v-text-field>
+                        <v-text-field outlined label="Системное название" v-model="creating.parameter.parameterNameStat" :rules="[rules.required, isParameterNameStatExist]"></v-text-field>
+                        <v-checkbox v-model="creating.parameter.dividerNeed" label="Нужно ли приводить к мм"></v-checkbox>
+                        <v-checkbox v-model="creating.parameter.specialRon" label="Приведение как в Ron"></v-checkbox>                      
                     </v-card-text>
                     <v-card-actions class="d-flex justify-lg-space-between">          
                         <v-btn color="indigo" @click="wipeCreating()">Закрыть</v-btn>
-                        <v-btn v-if="creating.stage.name && stagesList.every(x=>x.stageName!==creating.stage.name)" color="success" @click="createStage(processId, creating.stage.name)">Создать этап</v-btn>
+                        <v-btn v-if="readyToCreate" color="success" @click="createParameter(creating.parameter)">Создать параметр</v-btn>
                         <v-chip v-else label color="pink">
                             <v-icon left>warning</v-icon>
-                            {{!creating.stage.name ? "Введите название" : "Название совпадает с существующим"}}
+                            {{"Заполните все поля корректно"}}
                         </v-chip>
                     </v-card-actions>
                 </v-card>
@@ -91,22 +94,43 @@
 </template>
 
 <script>
+
 export default {
+    
     data() {
         return {
-           parametersList: [],
+           parameterList: [],
            snackbar: {visible: false, text: ""},
-           creating: {dialog: false, stage: {name: ""}},
-           editing: {dialog: false, stage: {}, newName: ""}
+           creating: {dialog: false, parameter: {parameterName: "", russianParameterName: "", parameterNameStat: "", dividerNeed: false, specialRon: false}},
+           editing: {dialog: false, stage: {}, newName: ""},
+           rules: {
+               required: value => !!value || 'Заполните поле'               
+           }
         }
-    },    
+    }, 
+
+    
+  
 
     methods: {
+
+        isParameterNameExist(value) { 
+            return this.parameterList.every(x => x.parameterName !== value) || 'Параметр с таким значением уже существует'
+        },
+
+        isRussianParameterNameExist(value) {
+            return this.parameterList.every(x => x.russianParameterName !== value) || 'Параметр с таким значением уже существует' 
+        },
+
+        isParameterNameStatExist(value) {
+            return this.parameterList.every(x => x.parameterNameStat !== value) || 'Параметр с таким значением уже существует'
+        },
 
         showSnackbar(text) {
             this.snackbar.visible = true
             this.snackbar.text = text
         },
+
 
         openCreatingDialog() {
             this.creating.dialog = true
@@ -118,8 +142,7 @@ export default {
         },
 
         wipeCreating() {
-            this.creating.dialog = false
-            this.creating.stage.name = ""            
+            this.creating = {dialog: false, parameter: {parameterName: "", russianParameterName: "", parameterNameStat: "", dividerNeed: false, specialRon: false}}
         },
 
         wipeEditing() {
@@ -129,39 +152,29 @@ export default {
         },
 
         async initialize() {
-            await this.getProcesses().then(data => this.processesList = data)
+            await this.getParameters().then(data => this.parameterList = data)
         },
 
-        async getProcesses() {
+        async getParameters() {
             return await this.$http
-            .get(`/api/process/all`)
-            .then(response => {return response.data})
-            .catch(error => this.showSnackbar(error))
+            .get(`/api/standartparameter/all`)
+            .then(response => {return response.data ? response.data : []})
+            .catch(error => this.showSnackbar("Параметры не найдены в БД"))
 
         },
 
-        async getStagesByProcessId(processId) {
-            return await this.$http
-            .get(`/api/stage/process/${processId}`)
-            .then(response => {return response.data})
-            .catch(error => {
-                this.stagesList = [] 
-                error.response.status === 404 ? this.showSnackbar("Этапов не найдено") : this.showSnackbar(error)
-            });
-        },
-
-        async createStage(processId, stageName) {
-            let stageViewModel = {processId: processId, name: stageName}
-            await this.$http.put('/api/stage/create', stageViewModel)
+        async createParameter() {
+            let parameterViewModel = {...this.creating.parameter}
+            await this.$http.put('/api/standartparameter/create', parameterViewModel)
             .then(response => {
-                this.showSnackbar(`Этап ${response.data.stageName} успешно добавлен`)
-                this.stagesList.push(response.data)
+                this.showSnackbar(`Этап ${response.data.parameterName} успешно добавлен`)
+                this.parameterList.push(response.data)
                 this.creating.dialog = false
             })
             .catch(error => error.response.status === 403 ? this.showSnackbar("Ошибка валидации") : this.showSnackbar("Ошибка сервера"))
         },
 
-        async updateStageName(stage, newName) {
+        async updateParameter() {
             let stageViewModel = {id: stage.stageId, name: newName, processId: this.processId}
             await this.$http.post('/api/stage/update', stageViewModel)
             .then((response) => {
@@ -174,27 +187,38 @@ export default {
             });
         },
 
-        async deleteStage(stageId) {
-            await this.$http.delete(`/api/stage/delete/${stageId}`)
+        async deleteParameter(parameterId) {
+            await this.$http.delete(`/api/standartparameter/delete/${parameterId}`)
             .then(response => {
-                this.showSnackbar("Успешно удалено")
-                this.stagesList = this.stagesList.filter(x => x.stageId !== stageId)
+                this.showSnackbar("Параметр успешно удален")
+                this.parameterList = this.parameterList.filter(x => x.id !== parameterId)
             })
             .catch(error => {
-                error.response.status === 403 ? this.showSnackbar("Запрещено удалять этап привязанный к измерению") : this.showSnackbar("Ошибка при удалении")
+                error.response.status === 403 ? this.showSnackbar("Запрещено удалять этап") : this.showSnackbar("Ошибка при удалении")
             })
         }
     },
 
+    computed: {
+        readyToCreate() {
+            return this.creating.parameter.parameterName 
+            && this.creating.parameter.russianParameterName 
+            && this.creating.parameter.parameterNameStat 
+            && this.isParameterNameExist(this.creating.parameter.parameterName)
+            && this.isRussianParameterNameExist(this.creating.parameter.russianParameterName)
+            && this.isParameterNameStatExist(this.creating.parameter.parameterNameStat )
+        }
+    },
+
     watch: {    
-        processId: {
-            immediate: true,
-            handler: 
-                async function(newVal, oldVal) {
-                    this.$router.push({ name: 'stagetable', params: {processId: newVal}})
-                    await this.getStagesByProcessId(newVal).then(data => this.stagesList = data )
-            }
-        } 
+        // processId: {
+        //     immediate: true,
+        //     handler: 
+        //         async function(newVal, oldVal) {
+        //             this.$router.push({ name: 'stagetable', params: {processId: newVal}})
+        //             await this.getStagesByProcessId(newVal).then(data => this.stagesList = data )
+        //     }
+        // } 
     },
 
     async mounted() {
