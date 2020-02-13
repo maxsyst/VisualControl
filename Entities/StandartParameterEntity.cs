@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VueExample.Entities
 {
-    [Table("ShortUrl")]
+    [Table("StandartParameter")]
     public class StandartParameterEntity
     {
         [Key]
