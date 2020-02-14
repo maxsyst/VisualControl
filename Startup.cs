@@ -140,6 +140,9 @@ namespace VueExample
             services.AddTransient<IShortLinkProvider, ShortLinkProvider>();
             services.AddTransient<IStandartParameterProvider, StandartParameterProvider>();
             services.AddTransient<IStandartParameterService, StandartParameterService>();
+            services.AddTransient<IStandartPatternProvider, StandartPatternProvider>();
+            services.AddTransient<IStandartPatternService, StandartPatternService>();
+            
         }
 
 
