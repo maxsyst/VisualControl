@@ -112,9 +112,6 @@ export default {
         }
     }, 
 
-    
-  
-
     methods: {
 
         isParameterNameExist(value) { 
@@ -214,18 +211,7 @@ export default {
             return this.ready(this.editing)
         }
 
-    },
-
-    watch: {    
-        // processId: {
-        //     immediate: true,
-        //     handler: 
-        //         async function(newVal, oldVal) {
-        //             this.$router.push({ name: 'stagetable', params: {processId: newVal}})
-        //             await this.getStagesByProcessId(newVal).then(data => this.stagesList = data )
-        //     }
-        // } 
-    },
+    },   
 
     async mounted() {
         await this.initialize()
