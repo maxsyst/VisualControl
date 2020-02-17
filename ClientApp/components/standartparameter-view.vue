@@ -131,7 +131,6 @@ export default {
             this.snackbar.text = text
         },
 
-
         openCreatingDialog() {
             this.creating.dialog = true
         },
