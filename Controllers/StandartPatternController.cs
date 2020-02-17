@@ -8,7 +8,7 @@ using VueExample.ViewModels;
 
 namespace VueExample.Controllers
 {
-    [Route("auth/[controller]")]
+    [Route("api/[controller]")]
     public class StandartPatternController : Controller
     {
         private readonly IMapper _mapper;
@@ -25,6 +25,17 @@ namespace VueExample.Controllers
         [Route("dietype/{dieTypeId:int}")]
         public async Task<IActionResult> GetByDieTypeId([FromRoute] int dieTypeId)
             => Ok(await _standartPatternService.GetByDieTypeId(dieTypeId));
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            await _standartPatternService.Delete(id);
+            return NoContent();
+        }
         
-    }
+    }   
 }

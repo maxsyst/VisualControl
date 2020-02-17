@@ -7,5 +7,6 @@ namespace VueExample.Providers.Srv6.Interfaces
     public interface IStandartPatternService
     {
         Task<IList<StandartPattern>> GetByDieTypeId(int dieTypeId);
+        Task Delete(int id);
     }
 }

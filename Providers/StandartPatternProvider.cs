@@ -16,9 +16,15 @@ namespace VueExample.Providers
         {
             _srv6Context = srv6Context;
         }
-        public async Task<IList<StandartPatternEntity>> GetByDieTypeId(int dieTypeId)
+
+        public async Task Delete(int id)
         {
-          return  await _srv6Context.StandartPatterns.Where(x => x.DieTypeId == dieTypeId).ToListAsync() ?? throw new RecordNotFoundException();
+            var pattern = await _srv6Context.StandartPatterns.FirstOrDefaultAsync(x => x.Id == id) ?? throw new RecordNotFoundException();
+            _srv6Context.StandartPatterns.Remove(pattern);
+            await _srv6Context.SaveChangesAsync();
         }
+
+        public async Task<IList<StandartPatternEntity>> GetByDieTypeId(int dieTypeId)
+           =>  await _srv6Context.StandartPatterns.Where(x => x.DieTypeId == dieTypeId).ToListAsync() ?? throw new RecordNotFoundException();
     }
 }

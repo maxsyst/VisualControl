@@ -17,6 +17,12 @@ namespace VueExample.Providers.Srv6
             _standartPatternProvider = standartPatternProvider;
             _mapper = mapper;
         }
+
+        public async Task Delete(int id)
+        {
+            await _standartPatternProvider.Delete(id);
+        }
+
         public async Task<IList<StandartPattern>> GetByDieTypeId(int dieTypeId)
             =>  _mapper.Map<IList<StandartPatternEntity>, IList<StandartPattern>>(await _standartPatternProvider.GetByDieTypeId(dieTypeId));
     }

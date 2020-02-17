@@ -2,14 +2,14 @@
     <v-container>
         <v-row>
             <v-flex lg11 offset-lg1>
-               <v-stepper v-if="elements.length>0" v-model="step" vertical>               
+               <v-stepper v-if="kpArray.length > 0" v-model="step" vertical>               
                     <template v-for="(kp, index) in kpArray">
                         <v-stepper-step 
                             :key="`${index+1}-step`"
                             :step="index + 1"
                             complete
                             editable>
-                            {{"Операция: " + element.operation.number + " Элемент: " + element.element.name}}
+                            {{}}
                         </v-stepper-step>
                         <v-stepper-content
                             :key="`${index+1}-content`"
@@ -26,11 +26,11 @@
         </v-row>
          <v-row>
             <v-dialog v-model="initialDialog" persistent max-width="400">
-               <v-card class="mx-auto">
+               <v-card>
                     <v-card-text>
-                        <v-row>
+                        <v-row class="mt-6">
                             <v-flex lg="11" offset-lg="1">
-                                <v-select class="pt-8" v-model="selectedDieType"
+                                <v-select v-model="selectedDieType"
                                     :items="dieTypes"
                                     no-data-text="Нет данных"
                                     outlined
@@ -38,24 +38,23 @@
                                 </v-select>
                             </v-flex>
                         </v-row>
-                        <v-row v-if="selectedDieType">
+                        <v-row class="mt-6"  v-if="selectedDieType">
                             <v-flex lg="11" offset-lg="1">
-                                <v-select v-if="mode==='updating'" class="pt-8" v-model="selectedPattern"
+                                <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
                                     no-data-text="Нет данных"
                                     outlined
                                     label="Выберите шаблон:">
                                 </v-select>
-                                <v-btn v-else outlined block @click="goToCreatingMode" color="indigo">Создать новый шаблон</v-btn>
+                                <v-btn v-else block @click="goToCreatingMode" color="indigo">Создать новый шаблон</v-btn>
                             </v-flex>
                         </v-row>
-                        <v-row v-if="selectedDieType">
+                        <v-row class="mt-6" v-if="selectedDieType">
                             <v-flex lg="11" offset-lg="1">
                                 <v-btn v-if="mode==='updating'" block @click="goToUpdatingMode" color="indigo">Подтвердить выбор</v-btn>
                                 <v-btn v-else block @click="goToUpdatingMode(selectedDieType)" color="indigo">Редактировать шаблон</v-btn>
                             </v-flex>
                         </v-row>
-                     
                     </v-card-text>
                 </v-card>
             </v-dialog>
