@@ -28,12 +28,19 @@ namespace VueExample.Providers
                                 (o,i) => i)    
                         .FirstOrDefaultAsync() ?? throw new RecordNotFoundException();
 
-        public async Task<List<Process>> GetAll() => await _srv6Context.Processes.ToListAsync();
+        public async Task<List<Process>> GetAll() 
+            => await _srv6Context.Processes.ToListAsync();
 
         public async Task<Process> GetByWaferId(string waferId)
         {
             var codeProduct = await _codeProductProvider.GetByWaferId(waferId) ?? throw new RecordNotFoundException();
             return await GetProcessByCodeProductId(codeProduct.IdCp) ?? throw new RecordNotFoundException();
+        }
+
+        public async Task<Process> GetProcessByDieTypeId(int dieTypeId)
+        {
+            var codeProducts = await _codeProductProvider.GetCodeProductsByDieType(dieTypeId);
+            return await GetProcessByCodeProductId(codeProducts.FirstOrDefault().IdCp) ?? throw new RecordNotFoundException();
         }
     }
 }

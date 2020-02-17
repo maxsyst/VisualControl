@@ -45,7 +45,12 @@ namespace VueExample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => { options.CacheProfiles.Add("Default60",
+                            new CacheProfile()
+                            {
+                                Duration = 60
+                            });
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAutoMapper();
             services.AddLazyCache();
             services.AddSignalR();
@@ -140,6 +145,9 @@ namespace VueExample
             services.AddTransient<IShortLinkProvider, ShortLinkProvider>();
             services.AddTransient<IStandartParameterProvider, StandartParameterProvider>();
             services.AddTransient<IStandartParameterService, StandartParameterService>();
+            services.AddTransient<IStandartPatternProvider, StandartPatternProvider>();
+            services.AddTransient<IStandartPatternService, StandartPatternService>();
+            
         }
 
 

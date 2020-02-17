@@ -16,6 +16,7 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(CacheProfileName = "Default60")]
         [ProducesResponseType(typeof(Divider), StatusCodes.Status200OK)]
         [Route("all")]
         public async Task<IActionResult> GetAll() => Ok(await _dividerService.GetAll());

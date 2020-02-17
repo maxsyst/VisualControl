@@ -34,6 +34,12 @@ namespace VueExample.Controllers
         [ProducesResponseType(typeof(IList<ProcessViewModel>), StatusCodes.Status200OK)]
         [Route("all")]
         public async Task<IActionResult> GetAll() => Ok(_mapper.Map<List<Process>, List<ProcessViewModel>>(await _processProvider.GetAll()));
-               
+
+        [HttpGet]
+        [ProducesResponseType(typeof(ProcessViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("dietype/{dieTypeId:int}")]
+        public async Task<IActionResult> GetByDieTypeId(int dieTypeId)
+            => Ok(_mapper.Map<Process, ProcessViewModel>(await _processProvider.GetProcessByDieTypeId(dieTypeId)));      
     }
 }

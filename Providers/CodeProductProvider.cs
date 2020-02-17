@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
+using VueExample.Exceptions;
 using VueExample.Models;
 using VueExample.Providers.Srv6.Interfaces;
 
@@ -29,7 +30,8 @@ namespace VueExample.Providers
             => await _srv6Context.CodeProducts.Where(x => x.ProcessId == processId).ToListAsync();
 
         public async Task<List<CodeProduct>> GetCodeProductsByDieType(int dieTypeId) 
-            => await _srv6Context.DieTypes.Join(_srv6Context.DieTypeCodeProducts, c => c.DieTypeId, p => p.DieTypeId, (c,p) => p.CodeProduct).ToListAsync();
+            => await _srv6Context.DieTypes.Join(_srv6Context.DieTypeCodeProducts, c => c.DieTypeId, p => p.DieTypeId, (c,p) => p.CodeProduct).ToListAsync() 
+               ?? throw new RecordNotFoundException();
 
         public async Task<List<CodeProduct>> GetAll() 
             => await _srv6Context.CodeProducts.ToListAsync();
