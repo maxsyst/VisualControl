@@ -45,7 +45,12 @@ namespace VueExample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => { options.CacheProfiles.Add("Default60",
+                            new CacheProfile()
+                            {
+                                Duration = 60
+                            });
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAutoMapper();
             services.AddLazyCache();
             services.AddSignalR();
