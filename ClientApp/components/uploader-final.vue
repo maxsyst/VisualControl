@@ -187,6 +187,22 @@
             </v-simple-table>
           </v-col>
       </v-row>
+       <v-dialog
+            v-model="loading"
+            hide-overlay
+            persistent
+            width="300">
+        <v-card color="indigo" dark>
+            <v-card-text>
+            Получение данных об операциях
+            <v-progress-linear
+                indeterminate
+                color="white"
+                class="mb-0"
+            ></v-progress-linear>
+            </v-card-text>
+        </v-card>
+      </v-dialog>
       <v-snackbar v-model="snackbar.visible"
                     :color="snackbar.color"
                     right
@@ -197,7 +213,7 @@
                 @click="snackbar.visible = false">
             Закрыть
             </v-btn>
-        </v-snackbar>  
+    </v-snackbar>  
   </v-container>
 </template>
 
@@ -209,6 +225,7 @@ export default {
 
     data() {
         return {
+            loading: false,
             measurementRecordingsWithStage: [],
             newStageName: "",
             selectedMonitor: "",
@@ -356,32 +373,37 @@ export default {
         },
 
         async checkUploadingStatus(simpleOperations) {
-            simpleOperations.forEach(async so => {
-                await this.$http({
-                    method: "post",
-                    url: `/api/uploading/checkUploadingStatus`, 
-                    data: {operationName: `${so.name}_${so.element.name}`, 
-                           codeProductId: this.originalCodeProduct.id, 
-                           waferId: this.wafer,                           
-                           graphicNames: so.fileName.selectedGraphicNames ? so.fileName.selectedGraphicNames.split(';') : []}, 
-                    config: {
-                        headers: {
-                            'Accept': "application/json",
-                            'Content-Type': "application/json"
-                        }
+            this.loading = true
+            let dataSo = simpleOperations.map(so => ({
+                        guid: so.guid,         
+                        operationName: `${so.name}_${so.element.name}`, 
+                        codeProductId: this.originalCodeProduct.id, 
+                        waferId: this.wafer,                           
+                        graphicNames: so.fileName.selectedGraphicNames ? so.fileName.selectedGraphicNames.split(';') : []})
+            )
+            await this.$http({
+                method: "post",
+                url: `/api/uploading/checkUploadingStatus`, 
+                data: dataSo, 
+                config: {
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': "application/json"
                     }
-                })
-                .then(response => {
-                  
-                    so.uploadStatus = "already"
-                    so.alreadyData = response.data                    
-                   
-                })
-                .catch(error => {
-                    so.uploadStatus = "initial"
-                    so.alreadyData = []
-                }); 
-            })    
+                }
+            })
+            .then(response => {
+                response.data.forEach(x => {
+                    let simpleOperation = simpleOperations.find(so => so.guid === x.guid)
+                    simpleOperation.uploadStatus = x.uploadStatus
+                    simpleOperation.alreadyData = x.alreadyData || []
+                })                 
+                this.loading = false
+            })
+            .catch(error => {
+                this.showSnackBar("Ошибка соединения с БД")
+                this.loading = false
+            }); 
         },
 
         async deleteSpecific(simpleOperation) {

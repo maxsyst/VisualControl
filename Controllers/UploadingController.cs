@@ -66,7 +66,15 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [Route("checkUploadingStatus")]
-        public async Task<IActionResult> CheckUploadingStatus([FromBody] JObject uploadingFileJObject)
+        public async Task<IActionResult> CheckUploadingStatus([FromBody] IList<UploadingFile> uploadingFileList)
+        {
+            var statusList = await _uploaderService.CheckStatus(uploadingFileList);
+            return Ok(statusList);         
+        }
+
+        [HttpPost]
+        [Route("checkUploadingStatus/single")]
+        public async Task<IActionResult> CheckUploadingStatusSingle([FromBody] JObject uploadingFileJObject)
         {
             var uploadingFile = uploadingFileJObject.ToObject<UploadingFile>();
             var measurementRecording = await _measurementRecordingService.GetByNameAndWaferId("оп." + uploadingFile.OperationName, uploadingFile.WaferId);

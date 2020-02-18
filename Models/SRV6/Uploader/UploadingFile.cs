@@ -10,6 +10,7 @@ namespace VueExample.Models.SRV6.Uploader
         public int? StageId { get; set; }
         public int ElementId { get; set; }
         public int CodeProductId { get; set; }
+        public string Guid { get; set; }
         public string WaferId { get; set; }
         public string UserName { get; set; }
         public string Map { get; set; }

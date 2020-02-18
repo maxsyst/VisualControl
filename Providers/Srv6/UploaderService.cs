@@ -14,17 +14,46 @@ namespace VueExample.Providers.Srv6
     {
         private readonly IStandartWaferService _standartWaferService;
         private readonly IDieProvider _dieProvider;
+        private readonly ISRV6GraphicService _graphicService;
         private readonly IDieValueService _dieValueService;
         private readonly IShortLinkProvider _shortLinkProvider;
         private readonly IMeasurementRecordingService _measurementRecordingService;
-        public UploaderService (IStandartWaferService standartWaferService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider) 
+        public UploaderService (IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider) 
         {
             _standartWaferService = standartWaferService;
+            _graphicService = graphicService;
             _measurementRecordingService = measurementRecordingService;
             _dieProvider = dieProvider;
             _shortLinkProvider = shortLinkProvider;
             _dieValueService = dieValueService;
         }
+
+        public async Task<IList<UploadingFileStatus>> CheckStatus(IList<UploadingFile> uploadingFiles)
+        {
+            var uploadingFileStatusList = new List<UploadingFileStatus>();
+            foreach (var uploadingFile in uploadingFiles)
+            {
+                try
+                {
+                    var measurementRecording = await _measurementRecordingService.GetByNameAndWaferId("оп." + uploadingFile.OperationName, uploadingFile.WaferId);
+                    var fkMrGraphicsList = new List<FkMrGraphic>();
+                    foreach (var graphicName in uploadingFile.GraphicNames)
+                    {
+                        var graphic = await _graphicService.GetByCodeProductAndName(uploadingFile.CodeProductId, graphicName);
+                        var fkMrGraphics = await _measurementRecordingService.GetFkMrGraphics(measurementRecording?.Id, graphic.Id);
+                        fkMrGraphicsList.Add(fkMrGraphics);
+                    }
+                    uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, UploadStatus = "already"});             
+                }
+                catch(Exception)
+                {
+                    uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, UploadStatus = "initial"});
+                }
+                    
+            }
+            return uploadingFileStatusList;
+        }
+
         public async Task<string> Uploading (UploadingFile uploadingFile, int type) 
         {
             DateTime modifieddate = DateTime.Now;
