@@ -175,9 +175,6 @@
                                         Ожидает загрузки
                                     </v-chip>
                                     <v-chip v-else color="indigo" text-color="white" >
-                                        <v-avatar left>
-                                            <v-progress-circular size="16" width="3" indeterminate color="white"></v-progress-circular>
-                                        </v-avatar>
                                         Обновление статуса
                                     </v-chip>       
                                 </td>                           
@@ -188,13 +185,13 @@
           </v-col>
       </v-row>
        <v-dialog
-            v-model="loading"
+            v-model="loading.dialog"
             hide-overlay
             persistent
             width="300">
         <v-card color="indigo" dark>
             <v-card-text>
-            Получение данных об операциях
+            {{loading.text}}
             <v-progress-linear
                 indeterminate
                 color="white"
@@ -225,7 +222,7 @@ export default {
 
     data() {
         return {
-            loading: false,
+            loading: {dialog: false, text: ""},
             measurementRecordingsWithStage: [],
             newStageName: "",
             selectedMonitor: "",
@@ -245,6 +242,8 @@ export default {
 
     watch: {
         selectedMonitor: async function(newVal, oldVal) {
+            this.loading.dialog = true
+            this.loading.text = "Получение списка измерений"
             this.$http.get(`/api/folder/simpleoperation/${this.codeProduct}/${this.wafer}/${newVal}`, 
             {
                 params: {
@@ -373,7 +372,8 @@ export default {
         },
 
         async checkUploadingStatus(simpleOperations) {
-            this.loading = true
+            this.loading.dialog = true
+            this.loading.text = "Получение статуса измерений"
             let dataSo = simpleOperations.map(so => ({
                         guid: so.guid,         
                         operationName: `${so.name}_${so.element.name}`, 
@@ -398,11 +398,11 @@ export default {
                     simpleOperation.uploadStatus = x.uploadStatus
                     simpleOperation.alreadyData = x.alreadyData || []
                 })                 
-                this.loading = false
+                this.loading.dialog = false
             })
             .catch(error => {
                 this.showSnackBar("Ошибка соединения с БД")
-                this.loading = false
+                this.loading.dialog = false
             }); 
         },
 
