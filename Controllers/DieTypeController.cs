@@ -27,6 +27,7 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<DieTypeViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResponseCache(CacheProfileName = "Default60")]
         [Route("all")]
         public async Task<IActionResult> GetAll()
         {

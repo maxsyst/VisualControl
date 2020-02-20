@@ -175,9 +175,6 @@
                                         Ожидает загрузки
                                     </v-chip>
                                     <v-chip v-else color="indigo" text-color="white" >
-                                        <v-avatar left>
-                                            <v-progress-circular size="16" width="3" indeterminate color="white"></v-progress-circular>
-                                        </v-avatar>
                                         Обновление статуса
                                     </v-chip>       
                                 </td>                           
@@ -187,6 +184,22 @@
             </v-simple-table>
           </v-col>
       </v-row>
+       <v-dialog
+            v-model="loading.dialog"
+            hide-overlay
+            persistent
+            width="300">
+        <v-card color="indigo" dark>
+            <v-card-text>
+            {{loading.text}}
+            <v-progress-linear
+                indeterminate
+                color="white"
+                class="mb-0"
+            ></v-progress-linear>
+            </v-card-text>
+        </v-card>
+      </v-dialog>
       <v-snackbar v-model="snackbar.visible"
                     :color="snackbar.color"
                     right
@@ -197,7 +210,7 @@
                 @click="snackbar.visible = false">
             Закрыть
             </v-btn>
-        </v-snackbar>  
+    </v-snackbar>  
   </v-container>
 </template>
 
@@ -209,6 +222,7 @@ export default {
 
     data() {
         return {
+            loading: {dialog: false, text: ""},
             measurementRecordingsWithStage: [],
             newStageName: "",
             selectedMonitor: "",
@@ -228,6 +242,8 @@ export default {
 
     watch: {
         selectedMonitor: async function(newVal, oldVal) {
+            this.loading.dialog = true
+            this.loading.text = "Получение списка измерений"
             this.$http.get(`/api/folder/simpleoperation/${this.codeProduct}/${this.wafer}/${newVal}`, 
             {
                 params: {
@@ -356,32 +372,38 @@ export default {
         },
 
         async checkUploadingStatus(simpleOperations) {
-            simpleOperations.forEach(async so => {
-                await this.$http({
-                    method: "post",
-                    url: `/api/uploading/checkUploadingStatus`, 
-                    data: {operationName: `${so.name}_${so.element.name}`, 
-                           codeProductId: this.originalCodeProduct.id, 
-                           waferId: this.wafer,                           
-                           graphicNames: so.fileName.selectedGraphicNames ? so.fileName.selectedGraphicNames.split(';') : []}, 
-                    config: {
-                        headers: {
-                            'Accept': "application/json",
-                            'Content-Type': "application/json"
-                        }
+            this.loading.dialog = true
+            this.loading.text = "Получение статуса измерений"
+            let dataSo = simpleOperations.map(so => ({
+                        guid: so.guid,         
+                        operationName: `${so.name}_${so.element.name}`, 
+                        codeProductId: this.originalCodeProduct.id, 
+                        waferId: this.wafer,                           
+                        graphicNames: so.fileName.selectedGraphicNames ? so.fileName.selectedGraphicNames.split(';') : []})
+            )
+            await this.$http({
+                method: "post",
+                url: `/api/uploading/checkUploadingStatus`, 
+                data: dataSo, 
+                config: {
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': "application/json"
                     }
-                })
-                .then(response => {
-                  
-                    so.uploadStatus = "already"
-                    so.alreadyData = response.data                    
-                   
-                })
-                .catch(error => {
-                    so.uploadStatus = "initial"
-                    so.alreadyData = []
-                }); 
-            })    
+                }
+            })
+            .then(response => {
+                response.data.forEach(x => {
+                    let simpleOperation = simpleOperations.find(so => so.guid === x.guid)
+                    simpleOperation.uploadStatus = x.uploadStatus
+                    simpleOperation.alreadyData = x.alreadyData || []
+                })                 
+                this.loading.dialog = false
+            })
+            .catch(error => {
+                this.showSnackBar("Ошибка соединения с БД")
+                this.loading.dialog = false
+            }); 
         },
 
         async deleteSpecific(simpleOperation) {

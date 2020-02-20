@@ -17,7 +17,7 @@
                 <v-btn v-if="!isElementReady" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
                 <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>       
             </v-col>
-             <v-col lg="3" offset-lg="2">                
+             <v-col lg="1" offset-lg="1">                
                 <v-menu
                     v-model="menu"
                     :close-on-content-click="false"
@@ -95,14 +95,14 @@
                             :step="index + 1">
                             <div>
                                 
-                                    <v-row class="pa-4">
+                                    <v-row>
                                         <v-col lg="3">
-                                            <v-text-field class="pt-4" v-model="parameter.parameterName.value" 
+                                            <v-text-field v-model="parameter.parameterName.value" 
                                                             :error-messages="parameter.parameterName.isValidDirty 
                                                                              &&!parameter.parameterName.isValid 
                                                                              ? defaultRequiredMessage 
                                                                              : []" 
-                                                            @change="validateParameter(parameter)" outlined label="Буквенное обозначение:">
+                                                            @change="validateParameter(parameter)" label="Буквенное обозначение:">
                                             </v-text-field>
                                         </v-col>
                                         <v-col lg="6" offset-lg="1">
@@ -111,7 +111,7 @@
                                                                              &&!parameter.russianParameterName.isValid 
                                                                              ? defaultRequiredMessage 
                                                                              : []" 
-                                                            @change="validateParameter(parameter)" outlined label="Наименование:">
+                                                            @change="validateParameter(parameter)" label="Наименование:">
                                             </v-text-field>
                                         </v-col>          
                                         <v-col lg="1" offset-lg="1">
@@ -125,7 +125,7 @@
                                         </v-tooltip>   
                                         </v-col>
                                     </v-row>
-                                    <v-row class="pa-4" v-if="!parameter.shortLink.success">
+                                    <v-row v-if="!parameter.shortLink.success">
                                         <v-col lg="3">
                                             <v-text-field   v-model="parameter.shortLink.value" 
                                                             :error-messages="$v.$dirty && !parameter.shortLink.success ? [parameter.shortLink.errorMessage] : []" 
@@ -133,7 +133,7 @@
                                             </v-text-field>
                                         </v-col>                                               
                                     </v-row>
-                                    <v-row class="pa-4" v-else>
+                                    <v-row v-else>
                                         <v-col lg="3">
                                             <v-text-field v-model="parameter.waferId" 
                                                           readonly label="Номер пластины:">
@@ -149,7 +149,7 @@
                                             </v-select>
                                         </v-col>
                                     </v-row>
-                                    <v-row class="pa-4" v-if="parameter.shortLink.success">
+                                    <v-row v-if="parameter.shortLink.success">
                                         <v-col lg="3">
                                              <v-select  v-if="measurementRecordings.length > 1" v-model="parameter.measurementRecording"
                                                         :items="measurementRecordings"

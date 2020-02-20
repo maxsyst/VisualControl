@@ -25,7 +25,8 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType (typeof(List<Stage>), StatusCodes.Status200OK)]
         [ProducesResponseType (StatusCodes.Status404NotFound)]
-         [Route("process/{processId:int}")]
+        [ResponseCache(CacheProfileName = "Default60")]
+        [Route("process/{processId:int}")]
         public async Task<IActionResult> GetStagesByProcessId([FromRoute] int processId)
 
             => Ok(await _stageProvider.GetStagesByProcessId(processId));

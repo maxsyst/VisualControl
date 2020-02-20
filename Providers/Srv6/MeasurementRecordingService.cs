@@ -81,11 +81,21 @@ namespace VueExample.Providers.Srv6
             return measurementRecordingsList;
         }
 
+        // public async Task<MeasurementRecording> GetByNameAndWaferId(string name, string waferId) 
+        // {
+        //     var mrList = await _srv6Context.FkMrPs.Where(x => x.WaferId == waferId).ToListAsync();
+        //     return mrList.Select(measurementRecording => _srv6Context.MeasurementRecordings.FirstOrDefault(x => x.Id == measurementRecording.MeasurementRecordingId)).FirstOrDefault(mr => mr != null && mr.Name == name);                
+        // }
+
         public async Task<MeasurementRecording> GetByNameAndWaferId(string name, string waferId) 
         {
-            var mrList = await _srv6Context.FkMrPs.Where(x => x.WaferId == waferId).ToListAsync();
-            return mrList.Select(measurementRecording => _srv6Context.MeasurementRecordings.FirstOrDefault(x => x.Id == measurementRecording.MeasurementRecordingId)).FirstOrDefault(mr => mr != null && mr.Name == name);                
+              return await _srv6Context.FkMrPs  .Where(f => f.WaferId == waferId)
+                                                .Join(_srv6Context.MeasurementRecordings, 
+                                                c => c.MeasurementRecordingId, 
+                                                p => p.Id, 
+                                                (c,p) => p).Where(x => x.Name == name).FirstOrDefaultAsync();            
         }
+
 
         public async Task<MeasurementRecording> GetByBmrIdAndName(int bmrId, string name) 
             => await _srv6Context.MeasurementRecordings.FirstOrDefaultAsync(x => x.Name == name && x.BigMeasurementRecordingId == bmrId);
