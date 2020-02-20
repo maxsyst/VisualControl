@@ -8,6 +8,7 @@ import { wafermeas } from './modules/wafermeas.module'
 import { exportkurb } from './modules/exportkurb.module'
 import { smpstorage } from './modules/smpstorage.module'
 import { elements } from './modules/elements.module'
+import { dividers } from './modules/dividers.module'
 
 Vue.config.devtools = true
 Vue.use(Vuex)
@@ -21,7 +22,8 @@ export default new Vuex.Store({
     wafermeas, 
     exportkurb,
     smpstorage,
-    elements
+    elements,
+    dividers
   }
 
 })

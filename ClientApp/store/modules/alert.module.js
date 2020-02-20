@@ -2,7 +2,8 @@ export const alert = {
   namespaced: true,
   state: {
     type: null,
-    message: null
+    message: null,
+    visible: false
   },
   actions: {
     success ({ commit }, message) {
@@ -12,13 +13,14 @@ export const alert = {
       commit('error', message)
     },
     clear ({ commit }, message) {
-      commit('success', message)
+      commit('clear', message)
     }
   },
   mutations: {
     success (state, message) {
       state.type = 'alert-success'
       state.message = message
+      state.visible = true
     },
     error (state, message) {
       state.type = 'alert-danger'

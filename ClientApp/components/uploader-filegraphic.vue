@@ -37,17 +37,6 @@
             </v-card>
         </v-col>
       </v-row>
-      <v-snackbar v-model="snackbar.visible"
-                    :color="snackbar.color"
-                    right
-                    top>
-            {{ snackbar.text }}
-            <v-btn color="pink"
-                text
-                @click="snackbar.visible = false">
-            Закрыть
-            </v-btn>
-      </v-snackbar>  
   </v-container>
 </template>
 
@@ -60,7 +49,6 @@ export default {
         return {
             processes: [],
             selectedProcessId: "",
-            snackbar: {text: "", color: "indigo", visible: false},
             selectedFileName: "",
             graphics: [],
             fileNames: []
@@ -83,7 +71,7 @@ export default {
             })
             .catch(error => {                
                 if(error.response.status === 404) {
-                    this.showSnackBar("Имена файлов не найдены", "pink")
+                    this.showSnackBar("Имена файлов не найдены")
                 }
             })
         }
@@ -99,7 +87,7 @@ export default {
             })
             .catch(error => {                
                 if(error.response.status === 404) {
-                    this.showSnackBar("Процессы не найдены", "pink")
+                    this.showSnackBar("Процессы не найдены")
                 }
             })
         },
@@ -113,11 +101,9 @@ export default {
             this.selectedFileName = 'create'
         },       
 
-        showSnackBar(text, color)
+        showSnackBar(text)
         {
-          this.snackbar.text = text
-          this.snackbar.color = color
-          this.snackbar.visible = true
+            this.$store.dispatch("alert/success", text)
         }
     },
 

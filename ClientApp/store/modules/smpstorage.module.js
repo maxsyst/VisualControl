@@ -8,8 +8,8 @@ export const smpstorage = {
         createSmp ({ commit }, smp) {
             commit('createSmp', smp)
         },
-        deleteSmp ({ commit, getters }, guid) {
-            commit('deleteSmp', getters.currentSmp(guid))
+        deleteSmp ({ commit }, smp) {
+            commit('deleteSmp', smp)
         },
         updateElementSmp ({ commit, getters }, {guid, element}) {
             commit('updateElementSmp', {smp: getters.currentSmp(guid), element})
@@ -32,17 +32,25 @@ export const smpstorage = {
     },
   
     getters: {
+        currentSmpArray: state => {
+            return state.smpArray
+        },
+
+        existInSmpArray: state => name => {
+            return state.smpArray.find(s => s.name === name) || false
+        },
+
         currentSmp: state => guid => {           
             return state.smpArray.find(s => s.guid === guid)
         }
     },
 
     mutations: {
-        createSmp(state, {smp}) {
+        createSmp(state, smp) {
             state.smpArray.push(smp)
         },
-        deleteSmp(state, {smp}) {
-            state.smpArray = state.smpArray.filter(s => s.guid !== smp.guid)
+        deleteSmp(state, {guid}) {
+            state.smpArray = state.smpArray.filter(s => s.guid !== guid)
         },
         updateElementSmp(state, {smp, element}) {
             smp.element = {...element}

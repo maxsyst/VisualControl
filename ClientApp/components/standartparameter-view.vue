@@ -89,10 +89,6 @@
                 </v-card>
             </v-dialog>
         </v-row>
-        <v-snackbar v-model="snackbar.visible" top>
-            {{ snackbar.text }}
-            <v-btn color="pink" text @click="snackbar.visible = false">Закрыть</v-btn>
-        </v-snackbar>
     </v-container>
 </template>
 
@@ -103,7 +99,6 @@ export default {
     data() {
         return {
            parameterList: [],
-           snackbar: {visible: false, text: ""},
            creating: {dialog: false, parameter: {}},
            editing: {dialog: false, parameter: {}},
            rules: {
@@ -127,8 +122,7 @@ export default {
         },
 
         showSnackbar(text) {
-            this.snackbar.visible = true
-            this.snackbar.text = text
+            this.$store.dispatch("alert/success", text)
         },
 
         openCreatingDialog() {

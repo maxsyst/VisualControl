@@ -200,17 +200,6 @@
             </v-card-text>
         </v-card>
       </v-dialog>
-      <v-snackbar v-model="snackbar.visible"
-                    :color="snackbar.color"
-                    right
-                    top>
-            {{ snackbar.text }}
-            <v-btn color="white"
-                text
-                @click="snackbar.visible = false">
-            Закрыть
-            </v-btn>
-    </v-snackbar>  
   </v-container>
 </template>
 
@@ -232,7 +221,6 @@ export default {
             simpleOperations: [],
             stages: [],
             monitors: [],
-            snackbar: {text: "", color: "indigo", visible: false}
         }
     },
 
@@ -450,11 +438,9 @@ export default {
             })
         },
 
-        showSnackBar(text, color)
+        showSnackBar(text)
         {
-          this.snackbar.text = text
-          this.snackbar.color = color
-          this.snackbar.visible = true
+            this.$store.dispatch("alert/success", text)        
         }
     },
 
