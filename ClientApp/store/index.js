@@ -6,6 +6,7 @@ import { authentication } from './modules/authentication.module'
 import { users } from './modules/users.module'
 import { wafermeas } from './modules/wafermeas.module'
 import { exportkurb } from './modules/exportkurb.module'
+import { smpstorage } from './modules/smpstorage.module'
 import { elements } from './modules/elements.module'
 
 Vue.config.devtools = true
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     users, 
     wafermeas, 
     exportkurb,
+    smpstorage,
     elements
   }
 
