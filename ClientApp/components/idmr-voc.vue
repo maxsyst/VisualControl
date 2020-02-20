@@ -105,10 +105,6 @@
             </v-alert>
            </v-col>
         </v-row>
-        <v-snackbar v-model="snackbar.visible" top>
-        {{ snackbar.text }}
-        <v-btn color="pink" text @click="snackbar.visible = false">Закрыть</v-btn>
-        </v-snackbar>
         <v-dialog
             v-model="loading"
             hide-overlay
@@ -168,7 +164,6 @@ export default {
     },
     data() {
         return {
-           snackbar: {visible: false, text: ""},
            e1: 1,
            showAllMeasurements: false,
            wafers: [],
@@ -185,8 +180,7 @@ export default {
     methods: 
     {       
         showSnackbar(text) {
-            this.snackbar.visible = true
-            this.snackbar.text = text
+            this.$store.dispatch("alert/success", text)
         },
 
         async goToStageTable(waferId) {

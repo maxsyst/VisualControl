@@ -1,3 +1,4 @@
+
 <template>
     <v-container>
          <v-row v-if="!initialDialog" class="alwaysOnTop">
@@ -9,21 +10,21 @@
         </v-row>
         <v-row>
             <v-flex lg11 offset-lg1>
-               <v-stepper v-if="kpArray.length > 0" v-model="step" vertical>               
-                    <template v-for="(kp, index) in kpArray">
+               <v-stepper v-if="smpArray.length > 0" v-model="step" vertical>               
+                    <template v-for="(smp, index) in smpArray">
                         <v-stepper-step 
                             :key="`${index+1}-step`"
                             :step="index + 1"
                             complete
                             editable>
-                            {{}}
+                            {{smp.name}}
                         </v-stepper-step>
                         <v-stepper-content
                             :key="`${index+1}-content`"
                             :step="index + 1">
                             <v-card>
                                 <v-card-text>
-                                <single-kp></single-kp>
+                                <single-kp :key="smp.guid"></single-kp>
                                 </v-card-text>
                             </v-card>                                        
                         </v-stepper-content>
@@ -116,37 +117,31 @@
                 </v-card>
             </v-dialog>
         </v-row>
-        <v-snackbar v-model="snackbar.visible" top>
-            {{ snackbar.text }}
-            <v-btn color="pink" text @click="snackbar.visible = false">Закрыть</v-btn>
-        </v-snackbar>
+        
     </v-container>
 </template>
 
 <script>
 import singleKp from './kurbatovparametersingle-view.vue';
+import { uuid } from 'vue-uuid';
 export default {
     data() {
         return {
-            snackbar: {visible: false, text: ""},
             initialDialog: true,
             selectedDieTypeId: "",
             dieTypes: [],
             selectedPattern: {},
             patterns: [],
             step: 0,
-            kpArray: [],           
             mode: "",
-
-            //SMP
+                        //SMP
             smpCreateDialog: false,
             selectedElementSMP: {},
             selectedStageSMP: {},
             selectedDividerSMP: {},
             process: {},
             elementsArray: [],
-            stagesArray: [],
-            dividersArray: []
+            stagesArray: []
         }
     },
 
@@ -161,12 +156,21 @@ export default {
         },
 
         showSnackbar(text) {
-            this.snackbar.visible = true
-            this.snackbar.text = text
+            this.$store.dispatch("alert/success", text)
         },
 
         createStandartMeasurementPattern() {
             this.smpCreateDialog = true
+        },
+
+        createSMP() {
+            if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
+                this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
+                this.smpCreateDialog = false
+            }
+            else {
+                this.showSnackbar("Параметр с таким именем уже добавлен")
+            }           
         },
 
         async goToCreatingMode() {
@@ -214,17 +218,22 @@ export default {
             .catch(error => this.showSnackbar(error.response.data[0].message))
         },
 
-        async getDividers() {
-            await this.$http
-            .get(`/api/divider/all`)
-            .then(response => this.dividersArray = response.data)
-            .catch(error => this.showSnackbar(error.response.data[0].message))
+        getDividers() {
+            this.$store.dispatch("dividers/getAllDividers", this)
         }
     },
 
     computed: {
         readyToCreateSMP() {
             return !_.isEmpty(this.selectedElementSMP) && !_.isEmpty(this.selectedStageSMP) && !_.isEmpty(this.selectedDividerSMP)
+        },
+
+        smpArray() {
+            return this.$store.getters['smpstorage/currentSmpArray']
+        },
+
+        dividersArray() {
+            return this.$store.getters['dividers/getAll']
         },
 
         smpName() {

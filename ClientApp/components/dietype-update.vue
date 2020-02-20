@@ -100,17 +100,6 @@
                 </v-card>
             </v-dialog>
         </v-row>
-        <v-snackbar v-model="snackbar.visible"
-                    :color="snackbar.color"
-                    right
-                    top>
-            {{ snackbar.text }}
-            <v-btn color="pink"
-                text
-                @click="snackbar.visible = false">
-            Закрыть
-            </v-btn>
-        </v-snackbar>        
     </v-container>
 </template>
 
@@ -127,7 +116,6 @@ export default {
             processes: [],
             avCodeProducts: [],
             selectedCodeProducts: [],
-            snackbar: {text: "", visible: false}    
         }
     },
 
@@ -295,8 +283,7 @@ export default {
 
         showSnackBar(text)
         {
-          this.snackbar.text = text
-          this.snackbar.visible = true
+            this.$store.dispatch("alert/success", text)
         }         
 
     },

@@ -25,7 +25,6 @@
 export default {
     data() {
         return {
-            snackbar: {visible: false, text: ""},
             elementTypes: [],
             selectedElementType: {},
             specificElementTypes: []
@@ -35,8 +34,7 @@ export default {
     methods: {
 
         showSnackbar(text) {
-            this.snackbar.visible = true
-            this.snackbar.text = text
+            this.$store.dispatch("alert/success", text)
         },
 
         async initialize() {

@@ -18,17 +18,6 @@
               <v-btn v-show="selectedCodeProductFolder && selectedWaferFolder && selectedMeasurementRecordings.length > 0" color="success" block @click="goToUploading(selectedCodeProductFolder, selectedWaferFolder, selectedMeasurementRecordings)">Перейти к загрузке</v-btn> 
           </v-col>
       </v-row>
-       <v-snackbar v-model="snackbar.visible"
-                    :color="snackbar.color"
-                    right
-                    top>
-            {{ snackbar.text }}
-            <v-btn color="pink"
-                text
-                @click="snackbar.visible = false">
-            Закрыть
-            </v-btn>
-        </v-snackbar>        
   </v-container>
 </template>
 
@@ -43,7 +32,6 @@ export default {
             selectedCodeProductFolder: "",
             selectedWaferFolder: "",
             selectedMeasurementRecordings: [],
-            snackbar: {text: "", color: "indigo", visible: false}    
         }
     },
 
@@ -71,17 +59,12 @@ export default {
            
         },
 
-        showSnackBar(text, color)
+        showSnackBar(text)
         {
-          this.snackbar.text = text
-          this.snackbar.color = color
-          this.snackbar.visible = true
+          this.$store.dispatch("alert/success", text)
         }
     },
 
-    computed: {
-
-    },
 
     watch: {
         
@@ -96,7 +79,7 @@ export default {
             })
             .catch(error => {                
                 if(error.response.status === 500) {
-                    this.showSnackBar("Ошибка при поиске папки", "pink")
+                    this.showSnackBar("Ошибка при поиске папки")
                 }
             })
             
@@ -113,7 +96,7 @@ export default {
                 })
                 .catch(error => {                
                     if(error.response.status === 500) {
-                        this.showSnackBar("Ошибка при поиске папки", "pink")
+                        this.showSnackBar("Ошибка при поиске папки")
                     }
                 })
             }

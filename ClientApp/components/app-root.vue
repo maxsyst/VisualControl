@@ -69,11 +69,16 @@
 
         <v-container fluid>
 
-          <v-layout justify-start
+          <v-row justify-start
                     align-center>
             <router-view>
             </router-view>
-          </v-layout>
+          </v-row>
+
+          <v-snackbar v-model="$store.state.alert.visible" top>
+            {{ $store.state.alert.message }}
+            <v-btn color="pink" timeout="1500" text @click="$store.state.alert.visible = false">Закрыть</v-btn>
+        </v-snackbar>
 
         </v-container>
 

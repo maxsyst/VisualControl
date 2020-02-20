@@ -72,17 +72,6 @@
             </v-flex>
            
         </v-layout>
-        <v-snackbar v-model="snackbar.visible"
-                    :color="snackbar.color"
-                    right
-                    top>
-            {{ snackbar.text }}
-            <v-btn color="pink"
-                text
-                @click="snackbar.visible = false">
-            Закрыть
-            </v-btn>
-        </v-snackbar>        
     </v-container>
 </template>
 <script>
@@ -95,7 +84,6 @@ export default {
             processes: [],
             avCodeProducts: [],
             selectedCodeProducts: [],
-            snackbar: {text: "", color: "success", visible: false},
         }
     },
 
@@ -130,7 +118,7 @@ export default {
                 this.$store.commit("elements/clearElements")
             
             })
-            .catch(error => this.showSnackBar(error.response.data[0].message, "error"));  
+            .catch(error => this.showSnackBar(error.response.data[0].message));  
         },            
 
         deleteElement(element) {
@@ -139,11 +127,9 @@ export default {
 
        
 
-        showSnackBar(text, color)
+        showSnackBar(text)
         {
-          this.snackbar.text = text
-          this.snackbar.color = color
-          this.snackbar.visible = true
+            this.$store.dispatch("alert/success", text)
         }
     },
 
