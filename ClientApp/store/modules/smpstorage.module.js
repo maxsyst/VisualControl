@@ -1,7 +1,9 @@
 export const smpstorage = {
     namespaced: true,
     state: {
-       smpArray: []
+       smpArray: [],
+       elements: [],
+       stages: []
     },
 
     actions: {
@@ -28,6 +30,16 @@ export const smpstorage = {
         },
         updateKpList ({ commit, getters }, {guid, kp}) {
             commit('updateKpList', {smp: getters.currentSmp(guid), kp})
+        },
+        async getElementsByDieType({commit}, {ctx, selectedDieTypeId}) {
+            await ctx.$http
+            .get(`/api/element/dietype/${selectedDieTypeId}`)
+            .then(response => commit('updateElements', response.data), error => error)
+        },
+        async getStagesByProcessId({commit}, {ctx, process}) {
+            await ctx.$http
+            .get(`/api/stage/process/${process.processId}`)
+            .then(response => commit('updateStages', response.data), error => error)
         }
     },
   
@@ -42,6 +54,14 @@ export const smpstorage = {
 
         currentSmp: state => guid => {           
             return state.smpArray.find(s => s.guid === guid)
+        },
+
+        elements: state => {
+            return state.elements
+        },
+
+        stages: state => {
+            return state.stages
         }
     },
 
@@ -70,6 +90,12 @@ export const smpstorage = {
         updateKpList(state, {smp, kp}) {
             let kpNew = smp.kpList.find(k => k.key === kp.key)
             kpNew = {...kp}
+        },
+        updateElements(state, elements) {
+            state.elements = [...elements]
+        },
+        updateStages(state, stages) {
+            state.stages = [...stages]
         }
     }
 }

@@ -184,22 +184,6 @@
             </v-simple-table>
           </v-col>
       </v-row>
-       <v-dialog
-            v-model="loading.dialog"
-            hide-overlay
-            persistent
-            width="300">
-        <v-card color="indigo" dark>
-            <v-card-text>
-            {{loading.text}}
-            <v-progress-linear
-                indeterminate
-                color="white"
-                class="mb-0"
-            ></v-progress-linear>
-            </v-card-text>
-        </v-card>
-      </v-dialog>
   </v-container>
 </template>
 
@@ -230,8 +214,7 @@ export default {
 
     watch: {
         selectedMonitor: async function(newVal, oldVal) {
-            this.loading.dialog = true
-            this.loading.text = "Получение списка измерений"
+            this.showLoading("Получение списка измерений")
             this.$http.get(`/api/folder/simpleoperation/${this.codeProduct}/${this.wafer}/${newVal}`, 
             {
                 params: {
@@ -360,8 +343,7 @@ export default {
         },
 
         async checkUploadingStatus(simpleOperations) {
-            this.loading.dialog = true
-            this.loading.text = "Получение статуса измерений"
+            this.showLoading("Получение статуса измерений")
             let dataSo = simpleOperations.map(so => ({
                         guid: so.guid,         
                         operationName: `${so.name}_${so.element.name}`, 
@@ -386,11 +368,11 @@ export default {
                     simpleOperation.uploadStatus = x.uploadStatus
                     simpleOperation.alreadyData = x.alreadyData || []
                 })                 
-                this.loading.dialog = false
+                this.closeLoading()
             })
             .catch(error => {
                 this.showSnackBar("Ошибка соединения с БД")
-                this.loading.dialog = false
+                this.closeLoading()
             }); 
         },
 
@@ -438,9 +420,16 @@ export default {
             })
         },
 
-        showSnackBar(text)
-        {
+        showSnackBar(text) {
             this.$store.dispatch("alert/success", text)        
+        },
+
+        showLoading(text) {
+            this.$store.dispatch("loading/show", text)        
+        },
+
+        closeLoading() {
+            this.$store.dispatch("loading/cloak")        
         }
     },
 

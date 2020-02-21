@@ -205,17 +205,11 @@ export default {
         },
 
         async getElementsByDieType(selectedDieTypeId) {
-            await this.$http
-            .get(`/api/element/dietype/${selectedDieTypeId}`)
-            .then(response => this.elementsArray = response.data)
-            .catch(error => this.showSnackbar(error.response.data[0].message))
+            this.$store.dispatch("getElementsByDieType", {ctx: this, selectedDieTypeId})
         },
 
         async getStagesByProcessId(process) {
-            await this.$http
-            .get(`/api/stage/process/${process.processId}`)
-            .then(response => this.stagesArray = response.data)
-            .catch(error => this.showSnackbar(error.response.data[0].message))
+            this.$store.dispatch("dividers/getStagesByProcessId", {ctx: this, process})
         },
 
         getDividers() {

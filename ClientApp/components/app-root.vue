@@ -80,6 +80,23 @@
             <v-btn color="pink" timeout="1500" text @click="$store.state.alert.visible = false">Закрыть</v-btn>
         </v-snackbar>
 
+        <v-dialog
+            v-model="$store.state.loading.visible"
+            hide-overlay
+            persistent
+            width="500">
+          <v-card color="indigo" dark>
+              <v-card-text>
+                {{$store.state.loading.text}}
+                <v-progress-linear
+                  indeterminate
+                  color="white"
+                  class="mb-0">
+                </v-progress-linear>
+              </v-card-text>
+          </v-card>
+        </v-dialog>
+
         </v-container>
 
       </v-content>
