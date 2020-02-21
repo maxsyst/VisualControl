@@ -24,7 +24,7 @@
                             :step="index + 1">
                             <v-card>
                                 <v-card-text>
-                                <single-kp :key="smp.guid"></single-kp>
+                                <single-kp :guid="smp.guid"></single-kp>
                                 </v-card-text>
                             </v-card>                                        
                         </v-stepper-content>
@@ -51,7 +51,7 @@
                                 </v-select>
                             </v-flex>
                             <v-flex lg="11" offset-lg="1">
-                                <v-select v-model="selectedStageSMP"
+                                <v-select v-model.trim="selectedStageSMP"
                                     :items="stagesArray"
                                     item-text="stageName"
                                     no-data-text="Нет данных"
@@ -67,7 +67,7 @@
                                     no-data-text="Нет данных"
                                     return-object
                                     outlined
-                                    label="Выберите приведение:">
+                                    label="Выберите перифирию:">
                                 </v-select>
                             </v-flex>
                         </v-row>
@@ -96,7 +96,7 @@
                                 </v-select>
                             </v-flex>
                         </v-row>
-                        <v-row class="mt-6"  v-if="selectedDieTypeId">
+                        <v-row class="mt-6" v-if="selectedDieTypeId">
                             <v-flex lg="11" offset-lg="1">
                                 <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
@@ -139,9 +139,7 @@ export default {
             selectedElementSMP: {},
             selectedStageSMP: {},
             selectedDividerSMP: {},
-            process: {},
-            elementsArray: [],
-            stagesArray: []
+            process: {}
         }
     },
 
@@ -157,6 +155,14 @@ export default {
 
         showSnackbar(text) {
             this.$store.dispatch("alert/success", text)
+        },
+
+        showLoading(text) {
+            this.$store.dispatch("loading/show", text)        
+        },
+
+        closeLoading() {
+            this.$store.dispatch("loading/cloak")        
         },
 
         createStandartMeasurementPattern() {
@@ -205,11 +211,11 @@ export default {
         },
 
         async getElementsByDieType(selectedDieTypeId) {
-            this.$store.dispatch("getElementsByDieType", {ctx: this, selectedDieTypeId})
+            this.$store.dispatch("smpstorage/getElementsByDieType", {ctx: this, selectedDieTypeId})
         },
 
         async getStagesByProcessId(process) {
-            this.$store.dispatch("dividers/getStagesByProcessId", {ctx: this, process})
+            this.$store.dispatch("smpstorage/getStagesByProcessId", {ctx: this, process})
         },
 
         getDividers() {
@@ -230,15 +236,24 @@ export default {
             return this.$store.getters['dividers/getAll']
         },
 
+        elementsArray() {
+            return this.$store.getters['smpstorage/elements']
+        },
+
+        stagesArray() {
+            return this.$store.getters['smpstorage/stages']
+        },
+
         smpName() {
             if(this.readyToCreateSMP)
-                return `${this.selectedElementSMP.name}_D${this.selectedDividerSMP.name}_${this.selectedStageSMP.stageName.split(' ').join('')}` 
+                return `${this.selectedElementSMP.name}_${this.selectedStageSMP.stageName.split(' ').join('+')}_${this.selectedDividerSMP.name === "Нет" ? "No" : this.selectedDividerSMP.name}µm` 
             return ""
         }
     },
 
     async mounted() {
-        await this.initialize()
+        this.showLoading("Загрузка...")
+        await this.initialize().then(() => this.closeLoading())
     }
 }
 </script>

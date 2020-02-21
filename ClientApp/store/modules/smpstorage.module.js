@@ -15,12 +15,15 @@ export const smpstorage = {
         },
         updateElementSmp ({ commit, getters }, {guid, element}) {
             commit('updateElementSmp', {smp: getters.currentSmp(guid), element})
+            commit('updateName', {smp: getters.currentSmp(guid)})
         },
         updateStageSmp ({ commit, getters }, {guid, stage}) {
             commit('updateStageSmp', {smp: getters.currentSmp(guid), stage})
+            commit('updateName', {smp: getters.currentSmp(guid)})
         },
         updateDividerSmp ({ commit, getters }, {guid, divider}) {
             commit('updateDividerSmp', {smp: getters.currentSmp(guid), divider})
+            commit('updateName', {smp: getters.currentSmp(guid)})
         },
         addToKpList ({ commit, getters }, {guid, kp}) {
             commit('addToKpList', {smp: getters.currentSmp(guid), kp})
@@ -71,6 +74,9 @@ export const smpstorage = {
         },
         deleteSmp(state, {guid}) {
             state.smpArray = state.smpArray.filter(s => s.guid !== guid)
+        },
+        updateName(state, {smp}) {
+            smp.name = `${smp.element.name}_${smp.stage.stageName.split(' ').join('+')}_${smp.divider.name === "Нет" ? "No" : smp.divider.name}µm` 
         },
         updateElementSmp(state, {smp, element}) {
             smp.element = {...element}

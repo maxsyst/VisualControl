@@ -69,8 +69,7 @@
 
         <v-container fluid>
 
-          <v-row justify-start
-                    align-center>
+          <v-row justify-start align-center>
             <router-view>
             </router-view>
           </v-row>
