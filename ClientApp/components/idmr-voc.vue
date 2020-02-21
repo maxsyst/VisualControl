@@ -105,22 +105,6 @@
             </v-alert>
            </v-col>
         </v-row>
-        <v-dialog
-            v-model="loading"
-            hide-overlay
-            persistent
-            width="300">
-        <v-card color="indigo" dark>
-            <v-card-text>
-            Формирование этапов измерений
-            <v-progress-linear
-                indeterminate
-                color="white"
-                class="mb-0"
-            ></v-progress-linear>
-            </v-card-text>
-        </v-card>
-    </v-dialog>
     <v-row justify="center">
     <v-dialog v-model="deleting.dialog" scrollable max-width="450px">
       <v-card>
@@ -172,8 +156,7 @@ export default {
            avElements: [],
            stagesArray: [],
            deleting: {dialog: false, measurementRecordingList: [], selectedMeasurements: []},
-           editing: {dialog: false, measurementRecording: {}, newName: ""},
-           loading: false
+           editing: {dialog: false, measurementRecording: {}, newName: ""}
         }
     },
 
@@ -181,6 +164,14 @@ export default {
     {       
         showSnackbar(text) {
             this.$store.dispatch("alert/success", text)
+        },
+
+        showLoading(text) {
+            this.$store.dispatch("loading/show", text)        
+        },
+
+        closeLoading() {
+            this.$store.dispatch("loading/cloak")        
         },
 
         async goToStageTable(waferId) {
@@ -380,16 +371,16 @@ export default {
 
         selectedDieType: async function(newVal, oldVal) {
             if(newVal !== 0) {
-                this.loading = true
+                this.showLoading("Загрузка...")
                 this.$router.push({ name: `idmrvoc`, params: {waferId: this.waferId, selectedDieType: newVal} })
-                await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.loading = false)
+                await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.closeLoading())
             }
          
         },
 
         showAllMeasurements: async function(newVal) {
-            this.loading = true
-            await this.getStagesByWaferId(this.waferId, this.selectedDieType).then(async () => await this.getAvElements(this.selectedDieType)).then(() => this.loading = false)
+            this.showLoading("Загрузка...")
+            await this.getStagesByWaferId(this.waferId, this.selectedDieType).then(async () => await this.getAvElements(this.selectedDieType)).then(() => this.closeLoading())
         }
     },
 
