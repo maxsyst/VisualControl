@@ -151,6 +151,7 @@ export default {
     methods: {
         async initialize() {
             await this.getAllDieTypes()
+            await this.getStandartParameters()
         },
 
         showSnackbar(text) {
@@ -186,6 +187,8 @@ export default {
                  .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
                  .then(async () => await this.getStagesByProcessId(this.process))
             await this.getDividers()
+           
+           
         },
 
         async goToUpdatingMode(selectedDieType) {
@@ -216,6 +219,10 @@ export default {
 
         async getStagesByProcessId(process) {
             this.$store.dispatch("smpstorage/getStagesByProcessId", {ctx: this, process})
+        },
+
+        async getStandartParameters() {
+            this.$store.dispatch("smpstorage/getStandartParameters", {ctx: this})
         },
 
         getDividers() {

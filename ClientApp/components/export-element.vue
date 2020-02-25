@@ -71,7 +71,6 @@
                     <span>Автозаполнение</span>
                 </v-tooltip>   
              </v-col>
-               
          </v-row>
          <v-row>
             <v-col lg="12">
@@ -94,10 +93,9 @@
                             :key="`${parameter}-content`"
                             :step="index + 1">
                             <div>
-                                
                                     <v-row>
                                         <v-col lg="3">
-                                            <v-text-field v-model="parameter.parameterName.value" 
+                                            <v-text-field   v-model="parameter.parameterName.value" 
                                                             :error-messages="parameter.parameterName.isValidDirty 
                                                                              &&!parameter.parameterName.isValid 
                                                                              ? defaultRequiredMessage 
@@ -336,6 +334,7 @@ export default {
             this.deleteParameterDialog = false
             this.e1--            
         },        
+        
         validateElement() {     
             this.$v.$touch();     
             if(!this.$v.operation.number.required|| !this.$v.element.name.required)
