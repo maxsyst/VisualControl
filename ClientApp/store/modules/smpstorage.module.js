@@ -65,6 +65,11 @@ export const smpstorage = {
             return state.smpArray.find(s => s.guid === guid)
         },
 
+        validationIsCorrect: state => guid => {           
+            let smp = state.smpArray.find(s => s.guid === guid)
+            return smp.kpList.every(k => Object.values(k.validationRules).every(item => item))
+        },
+
         elements: state => {
             return state.elements
         },
@@ -105,7 +110,7 @@ export const smpstorage = {
         },
         updateKp(state, {objName, smp, kpKey, obj}) {
             let kpOld = smp.kpList.find(k => k.key === kpKey)
-            kpOld[objName] = {...obj}
+            kpOld[objName] = {...kpOld[objName], ...obj}
         },
         updateElements(state, elements) {
             state.elements = [...elements]

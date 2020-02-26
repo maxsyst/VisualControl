@@ -34,6 +34,10 @@
                     label="Выберите периферию:">
                 </v-select>
             </v-col>
+             <v-col lg="3">
+                <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
+                <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>       
+            </v-col>
         </v-row>
         <v-row>
             <v-col lg="12">
@@ -70,37 +74,41 @@
                                         </v-col>
                                         <v-col lg="4">
                                             <v-text-field   :value="parameter.standartParameter.russianParameterName"
+                                                            :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
+                                                                            : 'Выберите параметр'"
                                                             readonly outlined label="Расширенное название:">
                                             </v-text-field>
                                         </v-col>
                                         <v-col lg="4">
                                             <v-text-field   :value="parameter.standartParameter.parameterNameStat" 
+                                                            :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
+                                                                                            : 'Выберите параметр'"
                                                             readonly outlined label="Системное название:">
                                             </v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>                                        
                                          <v-col lg="2">
-                                            <v-text-field   :value="parameter.bounds.lower" 
+                                            <v-text-field :value="parameter.bounds.lower" :error-messages="validationBoundsErrors(parameter.validationRules)"
+                                                            :readonly="!parameter.withBounds.value"
                                                             @change="updateBounds($event, 'lower', parameter)" outlined label="Нижняя граница:">
                                             </v-text-field>
                                         </v-col>
                                         <v-col lg="2">
-                                            <v-text-field   :value="parameter.bounds.upper" 
+                                            <v-text-field :value="parameter.bounds.upper" :error-messages="validationBoundsErrors(parameter.validationRules)"
+                                                            :readonly="!parameter.withBounds.value"
                                                             @change="updateBounds($event, 'upper', parameter)" outlined label="Верхняя граница:">
                                             </v-text-field>
                                         </v-col>        
                                         <v-col lg="3">
                                              <v-switch
-                                                v-model="parameter.withBounds"
+                                                :value="parameter.withBounds.value"
                                                 color='primary'
-                                                :label="parameter.withBounds ? `Включить границы` : `Не включать границы`">
+                                                @change="updateWithBounds($event, parameter)"
+                                                :label="parameter.withBounds.value ? `Включить границы` : `Не включать границы`">
                                             </v-switch>
                                         </v-col>      
                                     </v-row>      
-                                   
-                                
-                            
                             <v-tooltip v-if="index > 0" bottom>
                                 <template v-slot:activator="{ on }">
                                     <v-btn fab dark small color="indigo" v-on="on" @click="prevStep(index + 1)">
@@ -174,6 +182,8 @@ export default {
             let kp = {
                 standartParameter: {parameterName: "", russianParameterName: "", parameterNameStat: "", specialRon: false, dividerNeed: false},
                 bounds: {lower: "", upper: ""},
+                withBounds: {value: false},
+                validationRules: {boundsRq: true, parameterRq: false, lowerBoundLowerThanUpperBound: true},
                 key: this.$uuid.v1()
             }
             this.$store.dispatch("smpstorage/addToKpList", {guid: this.guid, kp})
@@ -182,11 +192,24 @@ export default {
 
         updateStandartParameter(standartParameter, kp) {
             this.$store.dispatch("smpstorage/updateKp", {objName: 'standartParameter', guid: this.guid, kpKey: kp.key, obj: standartParameter})
+            this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: {parameterRq: true}})
+        },
+
+        updateWithBounds(withBounds, kp) {
+            let validationRules = !withBounds ? {boundsRq: true, lowerBoundLowerThanUpperBound: true} : kp.bounds.lower === "" &&  kp.bounds.upper === "" ? {boundsRq: false} : {}
+            validationRules = kp.bounds.lower !== "" && kp.bounds.upper !== "" && +kp.bounds.lower >= +kp.bounds.upper ? {...validationRules, lowerBoundLowerThanUpperBound: false} : {...validationRules}
+            this.$store.dispatch("smpstorage/updateKp", {objName: 'withBounds', guid: this.guid, kpKey: kp.key, obj: {value: withBounds}})
+            this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
         },
 
         updateBounds(newBound, bound, kp) {
             let bounds = bound === "upper" ? {lower: kp.bounds.lower, upper: newBound} : {lower: newBound, upper: kp.bounds.upper}
+            let validationRules = bound === "upper" 
+                                    ? kp.bounds.lower === "" && newBound === "" ? {boundsRq: false} : kp.bounds.lower !== "" && newBound !== "" && +kp.bounds.lower >= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundLowerThanUpperBound: true}
+                                    : kp.bounds.upper === "" && newBound === "" ? {boundsRq: false} : kp.bounds.upper !== "" && newBound !== "" && +kp.bounds.upper <= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundLowerThanUpperBound: true}
             this.$store.dispatch("smpstorage/updateKp", {objName: 'bounds', guid: this.guid, kpKey: kp.key, obj: bounds})
+            this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
+               
         },
 
         deleteParameter(step) {
@@ -201,12 +224,24 @@ export default {
         
         prevStep (n) {              
             this.step = n === 1 ? this.smp.kpList.length : n - 1
+        },
+
+        validationBoundsErrors(validationRules) {
+            if(!validationRules.boundsRq)
+                return ["Выберите хотя бы одну границу"]
+            if(!validationRules.lowerBoundLowerThanUpperBound)
+                return ["Нижняя граница должна быть меньше"]
+            return []
         }
     },
 
     computed: {
         smp() {
             return this.$store.getters['smpstorage/currentSmp'](this.guid)
+        },
+
+        validationIsCorrect() {
+            return this.$store.getters['smpstorage/validationIsCorrect'](this.guid)
         },
 
         standartParameters() {
@@ -219,4 +254,5 @@ export default {
     }
 }
 </script>
+
 
