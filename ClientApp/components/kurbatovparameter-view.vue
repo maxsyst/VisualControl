@@ -24,7 +24,7 @@
                             :step="index + 1">
                             <v-card>
                                 <v-card-text>
-                                <single-kp :guid="smp.guid"></single-kp>
+                                <single-kp :guid="smp.guid" @show-snackbar="showSnackbar" @copy-smp="copySmp"></single-kp>
                                 </v-card-text>
                             </v-card>                                        
                         </v-stepper-content>
@@ -117,7 +117,6 @@
                 </v-card>
             </v-dialog>
         </v-row>
-        
     </v-container>
 </template>
 
@@ -134,7 +133,7 @@ export default {
             patterns: [],
             step: 0,
             mode: "",
-                        //SMP
+            //SMP
             smpCreateDialog: false,
             selectedElementSMP: {},
             selectedStageSMP: {},
@@ -151,6 +150,7 @@ export default {
     methods: {
         async initialize() {
             await this.getAllDieTypes()
+            await this.getStandartParameters()
         },
 
         showSnackbar(text) {
@@ -163,6 +163,15 @@ export default {
 
         closeLoading() {
             this.$store.dispatch("loading/cloak")        
+        },
+
+        copySmp(selectedElementIds, parentSmp) {
+            selectedElementIds.forEach(elementId => {
+                const element = this.elementsArray.find(e => e.elementId === elementId)
+                const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === "Нет" ? "No" : parentSmp.divider.name}µm`
+                this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
+            })
+            this.showSnackbar("Копирование завершено")
         },
 
         createStandartMeasurementPattern() {
@@ -186,6 +195,8 @@ export default {
                  .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
                  .then(async () => await this.getStagesByProcessId(this.process))
             await this.getDividers()
+           
+           
         },
 
         async goToUpdatingMode(selectedDieType) {
@@ -216,6 +227,10 @@ export default {
 
         async getStagesByProcessId(process) {
             this.$store.dispatch("smpstorage/getStagesByProcessId", {ctx: this, process})
+        },
+
+        async getStandartParameters() {
+            this.$store.dispatch("smpstorage/getStandartParameters", {ctx: this})
         },
 
         getDividers() {

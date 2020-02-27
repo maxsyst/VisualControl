@@ -106,20 +106,14 @@
            </v-col>
         </v-row>
     <v-row justify="center">
-    <v-dialog v-model="deleting.dialog" scrollable max-width="450px">
-      <v-card>
-        <v-card-title>Выберите измерения для удаления</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text style="height: 300px;" >
-            <v-checkbox v-for="measurement in deleting.measurementRecordingList" :key="measurement.id" v-model="deleting.selectedMeasurements" :label="measurement.name" :value="measurement.id"></v-checkbox>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions class="d-flex justify-lg-space-between">
-          <v-btn color="indigo" @click="wipeDeleting()">Закрыть</v-btn>
-          <v-btn color="success" v-if="deleting.selectedMeasurements.length>0" @click="deleteSelectedMeasurements(deleting.selectedMeasurements)">Удалить</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        <chbx-dialog :initialArray="deleting.measurementRecordingList" 
+                     :state="deleting.dialog" 
+                     keyProp="id" labelProp="name" 
+                     title="Выберите измерения для удаления" 
+                     confirmText="Удалить"
+                     @confirm="deleteSelectedMeasurements"
+                     @cancel="wipeDeleting">
+        </chbx-dialog>
   </v-row>
   <v-row justify="center">
     <v-dialog v-model="editing.dialog" persistent max-width="450px">
@@ -140,12 +134,16 @@
 </template>
 
 <script>
+import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 export default {
-
+    components: {
+        "chbx-dialog" : checkboxSelectDialog
+    },
     props: {
         waferId: String,
         selectedDieType: Number
     },
+
     data() {
         return {
            e1: 1,
