@@ -37,7 +37,7 @@
              <v-col lg="3">
                 <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
                 <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
-                <v-btn v-if="validationIsCorrect" color="indigo" block class="mt-4" @click="copySmp(smp)">Копирование элементов</v-btn> 
+                <v-btn v-if="validationIsCorrect" color="indigo" block class="mt-4" @click="copyDialog = true">Копирование элементов</v-btn> 
             </v-col>
         </v-row>
         <v-row>
@@ -90,13 +90,13 @@
                                     </v-row>
                                     <v-row>                                        
                                          <v-col lg="2">
-                                            <v-text-field :value="parameter.bounds.lower" :error-messages="validationBoundsErrors(parameter.validationRules, `lower`)"
+                                            <v-text-field :key="`bndl-`+ parameter.key" :value="parameter.bounds.lower" :error-messages="validationBoundsErrors(parameter.validationRules, `lower`)"
                                                             :readonly="!parameter.withBounds.value"
                                                             @change="updateBounds($event, 'lower', parameter)" outlined label="Нижняя граница:">
                                             </v-text-field>
                                         </v-col>
                                         <v-col lg="2">
-                                            <v-text-field :value="parameter.bounds.upper" :error-messages="validationBoundsErrors(parameter.validationRules, `upper`)"
+                                            <v-text-field :key="`bndu-`+ parameter.key" :value="parameter.bounds.upper" :error-messages="validationBoundsErrors(parameter.validationRules, `upper`)"
                                                             :readonly="!parameter.withBounds.value"
                                                             @change="updateBounds($event, 'upper', parameter)" outlined label="Верхняя граница:">
                                             </v-text-field>
@@ -151,13 +151,13 @@
           </v-col>
          </v-row>
          <v-row justify="center">
-            <chbx-dialog :initialArray="deleting.measurementRecordingList" 
-                     :state="deleting.dialog" 
-                     keyProp="id" labelProp="name" 
-                     title="Выберите измерения для удаления" 
-                     confirmText="Удалить"
-                     @confirm="deleteSelectedMeasurements"
-                     @cancel="wipeDeleting">
+            <chbx-dialog :initialArray="elementsToCopy" 
+                         :state="copyDialog" 
+                         keyProp="elementId" valueProp="elementId" 
+                         title="Выберите элементы для копирования" 
+                         confirmText="Скопировать"
+                         @confirm="copySmp"
+                         @cancel="wipeCopy">
             </chbx-dialog>
          </v-row>       
     </v-container>
@@ -165,15 +165,20 @@
 
 <script>
 import { uuid } from 'vue-uuid';
-import { is } from '@amcharts/amcharts4/.internal/themes/ITheme';
+import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 export default {
+    components: {
+        "chbx-dialog" : checkboxSelectDialog
+    },
+
     props: {
         guid: String
     },
 
     data() {
        return {
-           step: 0
+           step: 0,
+           copyDialog: false
        }
     },
 
@@ -234,8 +239,13 @@ export default {
             this.step--            
         },
         
-        copySmp(smp) {
-            
+        copySmp(selectedElements) {
+            this.copyDialog = false
+            this.$emit('copy-smp', selectedElements, this.smp)
+        },
+
+        wipeCopy() {
+            this.$emit('show-snackbar', 'Копирование отменено')
         },
 
         nextStep (n) {       
@@ -262,6 +272,10 @@ export default {
     computed: {
         smp() {
             return this.$store.getters['smpstorage/currentSmp'](this.guid)
+        },
+
+        elementsToCopy() {
+             return this.$store.getters['smpstorage/elementsToCopy'](this.guid)
         },
 
         validationIsCorrect() {

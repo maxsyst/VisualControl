@@ -65,6 +65,13 @@ export const smpstorage = {
             return state.smpArray.find(s => s.guid === guid)
         },
 
+        elementsToCopy: state => guid => {
+            let smp = state.smpArray.find(s => s.guid === guid)
+            let currentStage = smp.stage
+            let usedElementIds = state.smpArray.filter(s => s.stage.stageId === currentStage.stageId).map(x => x.element.elementId);
+            return state.elements.filter(e => !usedElementIds.includes(e.elementId))
+        },
+
         validationIsCorrect: state => guid => {           
             let smp = state.smpArray.find(s => s.guid === guid)
             return smp.kpList.every(k => Object.values(k.validationRules).every(item => item))

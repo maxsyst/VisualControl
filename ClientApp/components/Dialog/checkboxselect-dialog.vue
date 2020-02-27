@@ -60,6 +60,10 @@ export default {
             this.state = false
             this.$emit('cancel', selected)
         }
+    },
+
+    mounted() {
+        this.selected = []
     }
 }
 </script>

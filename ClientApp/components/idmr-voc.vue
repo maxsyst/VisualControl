@@ -136,7 +136,6 @@
 <script>
 import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 export default {
-
     components: {
         "chbx-dialog" : checkboxSelectDialog
     },
