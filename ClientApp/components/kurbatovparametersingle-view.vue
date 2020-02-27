@@ -89,13 +89,13 @@
                                     </v-row>
                                     <v-row>                                        
                                          <v-col lg="2">
-                                            <v-text-field :value="parameter.bounds.lower" :error-messages="validationBoundsErrors(parameter.validationRules)"
+                                            <v-text-field :value="parameter.bounds.lower" :error-messages="validationBoundsErrors(parameter.validationRules, `lower`)"
                                                             :readonly="!parameter.withBounds.value"
                                                             @change="updateBounds($event, 'lower', parameter)" outlined label="Нижняя граница:">
                                             </v-text-field>
                                         </v-col>
                                         <v-col lg="2">
-                                            <v-text-field :value="parameter.bounds.upper" :error-messages="validationBoundsErrors(parameter.validationRules)"
+                                            <v-text-field :value="parameter.bounds.upper" :error-messages="validationBoundsErrors(parameter.validationRules, `upper`)"
                                                             :readonly="!parameter.withBounds.value"
                                                             @change="updateBounds($event, 'upper', parameter)" outlined label="Верхняя граница:">
                                             </v-text-field>
@@ -154,6 +154,7 @@
 
 <script>
 import { uuid } from 'vue-uuid';
+import { is } from '@amcharts/amcharts4/.internal/themes/ITheme';
 export default {
     props: {
         guid: String
@@ -183,7 +184,7 @@ export default {
                 standartParameter: {parameterName: "", russianParameterName: "", parameterNameStat: "", specialRon: false, dividerNeed: false},
                 bounds: {lower: "", upper: ""},
                 withBounds: {value: false},
-                validationRules: {boundsRq: true, parameterRq: false, lowerBoundLowerThanUpperBound: true},
+                validationRules: {boundsRq: true, lowerBoundIsNumeric: true, upperBoundIsNumeric: true, parameterRq: false, lowerBoundLowerThanUpperBound: true},
                 key: this.$uuid.v1()
             }
             this.$store.dispatch("smpstorage/addToKpList", {guid: this.guid, kp})
@@ -196,8 +197,10 @@ export default {
         },
 
         updateWithBounds(withBounds, kp) {
-            let validationRules = !withBounds ? {boundsRq: true, lowerBoundLowerThanUpperBound: true} : kp.bounds.lower === "" &&  kp.bounds.upper === "" ? {boundsRq: false} : {}
-            validationRules = kp.bounds.lower !== "" && kp.bounds.upper !== "" && +kp.bounds.lower >= +kp.bounds.upper ? {...validationRules, lowerBoundLowerThanUpperBound: false} : {...validationRules}
+            let validationRules = withBounds === null ? {boundsRq: true, lowerBoundIsNumeric: true, upperBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true} : kp.bounds.lower === "" &&  kp.bounds.upper === "" ? {boundsRq: false} : {}
+            validationRules = withBounds && kp.bounds.lower !== "" && kp.bounds.upper !== "" && +kp.bounds.lower >= +kp.bounds.upper ? {...validationRules, lowerBoundLowerThanUpperBound: false} : {...validationRules}
+            validationRules = withBounds && isNaN(kp.bounds.lower) ? {...validationRules, lowerBoundIsNumeric: false} : {...validationRules}
+            validationRules = withBounds && isNaN(kp.bounds.upper) ? {...validationRules, upperBoundIsNumeric: false} : {...validationRules}
             this.$store.dispatch("smpstorage/updateKp", {objName: 'withBounds', guid: this.guid, kpKey: kp.key, obj: {value: withBounds}})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
         },
@@ -205,8 +208,10 @@ export default {
         updateBounds(newBound, bound, kp) {
             let bounds = bound === "upper" ? {lower: kp.bounds.lower, upper: newBound} : {lower: newBound, upper: kp.bounds.upper}
             let validationRules = bound === "upper" 
-                                    ? kp.bounds.lower === "" && newBound === "" ? {boundsRq: false} : kp.bounds.lower !== "" && newBound !== "" && +kp.bounds.lower >= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundLowerThanUpperBound: true}
-                                    : kp.bounds.upper === "" && newBound === "" ? {boundsRq: false} : kp.bounds.upper !== "" && newBound !== "" && +kp.bounds.upper <= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundLowerThanUpperBound: true}
+                                    ? kp.bounds.lower === "" && newBound === "" ? {boundsRq: false} : kp.bounds.lower !== "" && newBound !== "" && +kp.bounds.lower >= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, upperBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true}
+                                    : kp.bounds.upper === "" && newBound === "" ? {boundsRq: false} : kp.bounds.upper !== "" && newBound !== "" && +kp.bounds.upper <= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true}
+            validationRules = bound === "upper" && isNaN(newBound) ? {...validationRules, upperBoundIsNumeric: false} : {...validationRules}   
+            validationRules = bound === "lower" && isNaN(newBound) ? {...validationRules, lowerBoundIsNumeric: false} : {...validationRules}                    
             this.$store.dispatch("smpstorage/updateKp", {objName: 'bounds', guid: this.guid, kpKey: kp.key, obj: bounds})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
                
@@ -226,11 +231,15 @@ export default {
             this.step = n === 1 ? this.smp.kpList.length : n - 1
         },
 
-        validationBoundsErrors(validationRules) {
+        validationBoundsErrors(validationRules, bound) {
             if(!validationRules.boundsRq)
                 return ["Выберите хотя бы одну границу"]
             if(!validationRules.lowerBoundLowerThanUpperBound)
                 return ["Нижняя граница должна быть меньше"]
+            if(!validationRules.lowerBoundIsNumeric && bound === 'lower')
+                return ["Значение границы должно быть числом"]
+            if(!validationRules.upperBoundIsNumeric && bound === 'upper')
+                return ["Значение границы должно быть числом"]
             return []
         }
     },
