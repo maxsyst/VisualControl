@@ -11,8 +11,8 @@ export const smpstorage = {
         createSmp ({ commit }, smp) {
             commit('createSmp', smp)
         },
-        deleteSmp ({ commit }, smp) {
-            commit('deleteSmp', smp)
+        deleteSmp ({ commit }, guid) {
+            commit('deleteSmp', guid)
         },
         updateElementSmp ({ commit, getters }, {guid, element}) {
             commit('updateElementSmp', {smp: getters.currentSmp(guid), element})
@@ -94,7 +94,7 @@ export const smpstorage = {
         createSmp(state, smp) {
             state.smpArray.push(smp)
         },
-        deleteSmp(state, {guid}) {
+        deleteSmp(state, guid) {
             state.smpArray = state.smpArray.filter(s => s.guid !== guid)
         },
         updateName(state, {smp}) {

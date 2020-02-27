@@ -37,7 +37,14 @@
              <v-col lg="3">
                 <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
                 <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
-                <v-btn v-if="validationIsCorrect" color="indigo" block class="mt-4" @click="copyDialog = true">Копирование элементов</v-btn> 
+            </v-col>             
+            <v-col lg="1">
+                <v-btn v-if="validationIsCorrect" fab dark small color="indigo" @click="copyDialog = true">
+                    <v-icon dark color="primary">file_copy</v-icon>
+                </v-btn>
+                 <v-btn fab dark small color="indigo" @click="deleteSmp(guid)">
+                    <v-icon dark color="primary">delete</v-icon>
+                </v-btn>
             </v-col>
         </v-row>
         <v-row>
@@ -231,6 +238,11 @@ export default {
             this.$store.dispatch("smpstorage/updateKp", {objName: 'bounds', guid: this.guid, kpKey: kp.key, obj: bounds})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
                
+        },
+
+        deleteSmp(guid) {
+            this.$store.dispatch("smpstorage/deleteSmp", guid)
+            this.$emit('show-snackbar', 'Удаление успешно')
         },
 
         deleteParameter(step) {
