@@ -36,7 +36,8 @@
             </v-col>
              <v-col lg="3">
                 <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
-                <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>       
+                <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
+                <v-btn v-if="validationIsCorrect" color="indigo" block class="mt-4" @click="copySmp(smp)">Копирование элементов</v-btn> 
             </v-col>
         </v-row>
         <v-row>
@@ -148,7 +149,17 @@
                </div>
             </v-stepper>
           </v-col>
-         </v-row>        
+         </v-row>
+         <v-row justify="center">
+            <chbx-dialog :initialArray="deleting.measurementRecordingList" 
+                     :state="deleting.dialog" 
+                     keyProp="id" labelProp="name" 
+                     title="Выберите измерения для удаления" 
+                     confirmText="Удалить"
+                     @confirm="deleteSelectedMeasurements"
+                     @cancel="wipeDeleting">
+            </chbx-dialog>
+         </v-row>       
     </v-container>
 </template>
 
@@ -221,7 +232,11 @@ export default {
             let kp = this.smp.kpList[step - 1]
             this.$store.dispatch("smpstorage/deleteFromKpList", {guid: this.guid, kp})
             this.step--            
-        },        
+        },
+        
+        copySmp(smp) {
+            
+        },
 
         nextStep (n) {       
             this.step = n === this.smp.kpList.length ? 1 : n + 1
