@@ -15,6 +15,7 @@
                         <v-stepper-step 
                             :key="`${index+1}-step`"
                             :step="index + 1"
+                            :color="$store.getters['smpstorage/validationIsCorrect'](smp.guid) ? 'green' : 'red'"
                             complete
                             editable>
                             {{smp.name}}

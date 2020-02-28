@@ -300,7 +300,8 @@ export default {
     },
 
     mounted() {
-        this.createParameter()
+        if(this.smp.kpList.length === 0)
+            this.createParameter()
     }
 }
 </script>

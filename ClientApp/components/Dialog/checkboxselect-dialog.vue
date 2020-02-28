@@ -9,7 +9,7 @@
         <v-divider></v-divider>
         <v-card-actions class="d-flex justify-lg-space-between">
           <v-btn color="indigo" @click="close(selected)">Отменить</v-btn>
-          <v-btn color="success" v-if="selected.length > 0" @click="$emit('confirm', selected)">{{confirmText}}</v-btn>
+          <v-btn color="success" v-if="selected.length > 0" @click="confirm(selected)">{{confirmText}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -51,19 +51,21 @@ export default {
     },
 
     methods: {
-        confirm(selected) {
+        confirm(selected) {           
+            this.$emit('confirm', [...selected])
+            this.clearSelected()
             this.state = false
-            this.$emit('confirm', selected)
         },
 
         close(selected) {
+            this.$emit('cancel', [...selected])
+            this.clearSelected()
             this.state = false
-            this.$emit('cancel', selected)
-        }
-    },
+        },
 
-    mounted() {
-        this.selected = []
+        clearSelected() {
+            this.selected = []
+        }
     }
 }
 </script>
