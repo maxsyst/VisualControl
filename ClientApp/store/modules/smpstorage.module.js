@@ -66,7 +66,8 @@ export const smpstorage = {
         },
 
         elementsToCopy: state => guid => {
-            let smp = state.smpArray.find(s => s.guid === guid)
+            let smp = state.smpArray.find(s => s.guid === guid) || false
+            if(!smp) return []
             let currentStage = smp.stage
             let usedElementIds = state.smpArray.filter(s => s.stage.stageId === currentStage.stageId).map(x => x.element.elementId);
             return state.elements.filter(e => !usedElementIds.includes(e.elementId))

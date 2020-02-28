@@ -39,7 +39,7 @@
                 <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
             </v-col>             
             <v-col lg="1">
-                <v-btn v-if="validationIsCorrect" fab dark small color="indigo" @click="copyDialog = true">
+                <v-btn v-if="validationIsCorrect" fab dark small color="indigo" @click="$emit('chbx-dialog', guid)">
                     <v-icon dark color="primary">file_copy</v-icon>
                 </v-btn>
                  <v-btn fab dark small color="indigo" @click="deleteSmp(guid)">
@@ -157,35 +157,20 @@
             </v-stepper>
           </v-col>
          </v-row>
-         <v-row justify="center">
-            <chbx-dialog :initialArray="elementsToCopy" 
-                         :state="copyDialog" 
-                         keyProp="elementId" valueProp="elementId" 
-                         title="Выберите элементы для копирования" 
-                         confirmText="Скопировать"
-                         @confirm="copySmp"
-                         @cancel="wipeCopy">
-            </chbx-dialog>
-         </v-row>       
     </v-container>
 </template>
 
 <script>
 import { uuid } from 'vue-uuid';
-import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
-export default {
-    components: {
-        "chbx-dialog" : checkboxSelectDialog
-    },
 
+export default {
     props: {
         guid: String
     },
 
     data() {
        return {
-           step: 0,
-           copyDialog: false
+           step: 0
        }
     },
 
@@ -251,15 +236,6 @@ export default {
             this.step--            
         },
         
-        copySmp(selectedElements) {
-            this.copyDialog = false
-            this.$emit('copy-smp', selectedElements, this.smp)
-        },
-
-        wipeCopy() {
-            this.$emit('show-snackbar', 'Копирование отменено')
-        },
-
         nextStep (n) {       
             this.step = n === this.smp.kpList.length ? 1 : n + 1
         },
@@ -284,10 +260,6 @@ export default {
     computed: {
         smp() {
             return this.$store.getters['smpstorage/currentSmp'](this.guid)
-        },
-
-        elementsToCopy() {
-             return this.$store.getters['smpstorage/elementsToCopy'](this.guid)
         },
 
         validationIsCorrect() {

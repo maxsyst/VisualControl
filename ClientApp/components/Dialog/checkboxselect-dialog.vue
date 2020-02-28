@@ -8,7 +8,7 @@
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="d-flex justify-lg-space-between">
-          <v-btn color="indigo" @click="close(selected)">Отменить</v-btn>
+          <v-btn color="indigo" @click="close">Отменить</v-btn>
           <v-btn color="success" v-if="selected.length > 0" @click="confirm(selected)">{{confirmText}}</v-btn>
         </v-card-actions>
       </v-card>
@@ -54,13 +54,11 @@ export default {
         confirm(selected) {           
             this.$emit('confirm', [...selected])
             this.clearSelected()
-            this.state = false
         },
 
         close(selected) {
-            this.$emit('cancel', [...selected])
+            this.$emit('cancel')
             this.clearSelected()
-            this.state = false
         },
 
         clearSelected() {
