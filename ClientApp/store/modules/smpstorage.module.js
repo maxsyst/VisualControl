@@ -73,6 +73,10 @@ export const smpstorage = {
             return state.elements.filter(e => !usedElementIds.includes(e.elementId))
         },
 
+        patternValidation: (state , getters) => {
+            return state.smpArray.every(x => getters.validationIsCorrect(x.guid))
+        },
+
         validationIsCorrect: state => guid => {           
             let smp = state.smpArray.find(s => s.guid === guid)
             return smp.kpList.every(k => Object.values(k.validationRules).every(item => item))

@@ -1,8 +1,13 @@
 
 <template>
     <v-container>
-         <v-row v-if="!initialDialog" class="alwaysOnTop">           
-            <v-col lg="2" offset-lg="6">
+         <v-row v-if="!initialDialog" class="alwaysOnTop">     
+            <v-col lg="2" offset-lg="1">
+                <v-btn v-if="validation && patternName" color="success" block @click="savePattern">
+                    Сохранить шаблон
+                </v-btn>   
+            </v-col>      
+            <v-col lg="2" offset-lg="3">
                 <v-text-field outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
                                                                             : 'Выберите название шаблона'" label="Название шаблона"></v-text-field>
             </v-col>
@@ -42,10 +47,10 @@
                 <v-card>
                     <v-card-text>
                         <v-row>
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-text-field readonly v-model="smpName" label="Код"></v-text-field>
                             </v-col>
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-select v-model="selectedElementSMP"
                                     :items="elementsArray"
                                     item-text="name"
@@ -55,7 +60,7 @@
                                     label="Выберите элемент:">
                                 </v-select>
                             </v-col>
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-select v-model.trim="selectedStageSMP"
                                     :items="stagesArray"
                                     item-text="stageName"
@@ -65,7 +70,7 @@
                                     label="Выберите этап:">
                                 </v-select>
                             </v-col>
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-select v-model="selectedDividerSMP"
                                     :items="dividersArray"
                                     item-text="name"
@@ -100,7 +105,7 @@
                <v-card>
                     <v-card-text>
                         <v-row class="mt-6">
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-select v-model="selectedDieTypeId"
                                     :items="dieTypes"
                                     item-text="name"
@@ -112,7 +117,7 @@
                             </v-col>
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
                                     no-data-text="Нет данных"
@@ -123,7 +128,7 @@
                             </v-col>
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
-                            <v-col lg="11">
+                            <v-col lg="12">
                                 <v-btn v-if="mode==='updating'" block @click="goToUpdatingMode" color="indigo">Подтвердить выбор</v-btn>
                                 <v-btn v-else block @click="goToUpdatingMode(selectedDieType)" color="indigo">Редактировать шаблон</v-btn>
                             </v-col>
@@ -286,7 +291,11 @@ export default {
         smpArray() {
             return this.$store.getters['smpstorage/currentSmpArray']
         },
-
+        
+        validation() {
+            return this.$store.getters['smpstorage/patternValidation']
+        },
+        
         dividersArray() {
             return this.$store.getters['dividers/getAll']
         },

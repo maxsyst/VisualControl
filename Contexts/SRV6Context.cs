@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VueExample.Entities;
+using VueExample.Entities.Configurations;
 using VueExample.Models;
 using VueExample.Models.SRV6;
 using VueExample.Models.SRV6.Uploader;
@@ -41,9 +42,12 @@ namespace VueExample.Contexts
         public DbSet<Divider> Dividers { get; set; }
         public DbSet<StatParameterForStage> StatParametersForStage { get; set; }
 
-        protected override void OnModelCreating (ModelBuilder modelBuilder) {
-           
-           
+        protected override void OnModelCreating (ModelBuilder modelBuilder) 
+        {
+            modelBuilder.ApplyConfiguration(new KurbatovParameterBordersConfiguration());
+            modelBuilder.ApplyConfiguration(new KurbatovParameterConfiguration());
+            modelBuilder.ApplyConfiguration(new StandartMeasurementPatternConfiguration());
+            modelBuilder.ApplyConfiguration(new StandartPatternConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)
