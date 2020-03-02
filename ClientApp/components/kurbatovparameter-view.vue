@@ -1,20 +1,30 @@
 
 <template>
     <v-container>
-         <v-row v-if="!initialDialog" class="alwaysOnTop">
-            <v-flex lg="3" offset-lg="1">
-                <v-btn color="indigo" @click="createStandartMeasurementPattern">
+         <v-row v-if="!initialDialog" class="alwaysOnTop">     
+            <v-col lg="2" offset-lg="1">
+                <v-btn v-if="validation && patternName" color="success" block @click="savePattern">
+                    Сохранить шаблон
+                </v-btn>   
+            </v-col>      
+            <v-col lg="2" offset-lg="3">
+                <v-text-field outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
+                                                                            : 'Выберите название шаблона'" label="Название шаблона"></v-text-field>
+            </v-col>
+             <v-col lg="2">
+                <v-btn color="indigo" block @click="createStandartMeasurementPattern">
                     Добавить элемент
                 </v-btn>   
-            </v-flex>
+            </v-col>
         </v-row>
-        <v-row>
-            <v-flex lg11 offset-lg1>
+        <v-row style="margin-top: 64px;"> 
+            <v-col lg="11" offset-lg="1">
                <v-stepper v-if="smpArray.length > 0" v-model="step" vertical>               
                     <template v-for="(smp, index) in smpArray">
                         <v-stepper-step 
                             :key="`${index+1}-step`"
                             :step="index + 1"
+                            :color="$store.getters['smpstorage/validationIsCorrect'](smp.guid) ? 'green' : 'red'"
                             complete
                             editable>
                             {{smp.name}}
@@ -24,23 +34,23 @@
                             :step="index + 1">
                             <v-card>
                                 <v-card-text>
-                                <single-kp :guid="smp.guid" @show-snackbar="showSnackbar" @copy-smp="copySmp"></single-kp>
+                                <single-kp :guid="smp.guid" @chbx-dialog="showCopyDialog" @delete-smp="deleteSmp"></single-kp>
                                 </v-card-text>
                             </v-card>                                        
                         </v-stepper-content>
                     </template>                          
             </v-stepper>
-           </v-flex>
+           </v-col>
         </v-row>
         <v-row>
             <v-dialog v-model="smpCreateDialog" persistent max-width="400">
                 <v-card>
                     <v-card-text>
                         <v-row>
-                            <v-flex lg="11" offset-lg="1">
+                            <v-col lg="12">
                                 <v-text-field readonly v-model="smpName" label="Код"></v-text-field>
-                            </v-flex>
-                            <v-flex lg="11" offset-lg="1">
+                            </v-col>
+                            <v-col lg="12">
                                 <v-select v-model="selectedElementSMP"
                                     :items="elementsArray"
                                     item-text="name"
@@ -49,8 +59,8 @@
                                     outlined
                                     label="Выберите элемент:">
                                 </v-select>
-                            </v-flex>
-                            <v-flex lg="11" offset-lg="1">
+                            </v-col>
+                            <v-col lg="12">
                                 <v-select v-model.trim="selectedStageSMP"
                                     :items="stagesArray"
                                     item-text="stageName"
@@ -59,8 +69,8 @@
                                     outlined
                                     label="Выберите этап:">
                                 </v-select>
-                            </v-flex>
-                            <v-flex lg="11" offset-lg="1">
+                            </v-col>
+                            <v-col lg="12">
                                 <v-select v-model="selectedDividerSMP"
                                     :items="dividersArray"
                                     item-text="name"
@@ -69,23 +79,33 @@
                                     outlined
                                     label="Выберите перифирию:">
                                 </v-select>
-                            </v-flex>
+                            </v-col>
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="indigo" @click="smpCreateDialog = false">Закрыть</v-btn>
-                        <v-btn v-if="readyToCreateSMP" color="indigo" @click="createSMP">Добавить</v-btn>
+                        <v-btn v-if="readyToCreateSMP" color="indigo" @click="createSmp">Добавить</v-btn>
                    </v-card-actions>
                 </v-card>
             </v-dialog>
         </v-row>
+        <v-row justify="center">
+            <chbx-dialog :initialArray="$store.getters['smpstorage/elementsToCopy'](copyguid)" 
+                         :state="copyDialog" 
+                         keyProp="elementId" valueProp="elementId" 
+                         title="Выберите элементы для копирования" 
+                         confirmText="Скопировать"
+                         @confirm="copySmp"
+                         @cancel="wipeCopy">
+            </chbx-dialog>
+         </v-row>       
         <v-row>
             <v-dialog v-model="initialDialog" persistent max-width="400">
                <v-card>
                     <v-card-text>
                         <v-row class="mt-6">
-                            <v-flex lg="11" offset-lg="1">
+                            <v-col lg="12">
                                 <v-select v-model="selectedDieTypeId"
                                     :items="dieTypes"
                                     item-text="name"
@@ -94,10 +114,10 @@
                                     outlined
                                     label="Выберите тип кристалла:">
                                 </v-select>
-                            </v-flex>
+                            </v-col>
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
-                            <v-flex lg="11" offset-lg="1">
+                            <v-col lg="12">
                                 <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
                                     no-data-text="Нет данных"
@@ -105,13 +125,13 @@
                                     label="Выберите шаблон:">
                                 </v-select>
                                 <v-btn v-else block @click="goToCreatingMode" color="indigo">Создать новый шаблон</v-btn>
-                            </v-flex>
+                            </v-col>
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
-                            <v-flex lg="11" offset-lg="1">
+                            <v-col lg="12">
                                 <v-btn v-if="mode==='updating'" block @click="goToUpdatingMode" color="indigo">Подтвердить выбор</v-btn>
                                 <v-btn v-else block @click="goToUpdatingMode(selectedDieType)" color="indigo">Редактировать шаблон</v-btn>
-                            </v-flex>
+                            </v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -123,28 +143,34 @@
 <script>
 import singleKp from './kurbatovparametersingle-view.vue';
 import { uuid } from 'vue-uuid';
+import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
+
 export default {
     data() {
         return {
             initialDialog: true,
+            copyDialog: false,
             selectedDieTypeId: "",
             dieTypes: [],
             selectedPattern: {},
             patterns: [],
             step: 0,
             mode: "",
+            patternName: "",
             //SMP
             smpCreateDialog: false,
             selectedElementSMP: {},
             selectedStageSMP: {},
             selectedDividerSMP: {},
-            process: {}
+            process: {},
+            copyguid: ""
         }
     },
 
     components:
     {
         "single-kp": singleKp,
+        "chbx-dialog" : checkboxSelectDialog
     },
 
     methods: {
@@ -165,20 +191,33 @@ export default {
             this.$store.dispatch("loading/cloak")        
         },
 
-        copySmp(selectedElementIds, parentSmp) {
+        wipeCopy() {
+            this.copyDialog = false
+            this.showSnackbar("Копирование отменено")
+        },
+
+        showCopyDialog(guid) {
+            this.copyDialog = true
+            this.copyguid = guid
+        },
+
+        copySmp(selectedElementIds) {
+            let parentSmp = this.$store.getters['smpstorage/currentSmp'](this.copyguid)
             selectedElementIds.forEach(elementId => {
                 const element = this.elementsArray.find(e => e.elementId === elementId)
                 const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === "Нет" ? "No" : parentSmp.divider.name}µm`
                 this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
             })
             this.showSnackbar("Копирование завершено")
+            this.copyDialog = false
+            this.copyguid = ""
         },
 
         createStandartMeasurementPattern() {
             this.smpCreateDialog = true
         },
 
-        createSMP() {
+        createSmp() {
             if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
                 this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
                 this.smpCreateDialog = false
@@ -186,6 +225,12 @@ export default {
             else {
                 this.showSnackbar("Параметр с таким именем уже добавлен")
             }           
+        },
+
+        deleteSmp(guid) {
+            this.$store.dispatch("smpstorage/deleteSmp", guid)
+            this.step = 0
+            this.showSnackbar("Удаление успешно")
         },
 
         async goToCreatingMode() {
@@ -246,7 +291,11 @@ export default {
         smpArray() {
             return this.$store.getters['smpstorage/currentSmpArray']
         },
-
+        
+        validation() {
+            return this.$store.getters['smpstorage/patternValidation']
+        },
+        
         dividersArray() {
             return this.$store.getters['dividers/getAll']
         },
