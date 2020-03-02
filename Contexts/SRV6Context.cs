@@ -28,6 +28,9 @@ namespace VueExample.Contexts
         public DbSet<GraphicName> GraphicNames { get; set; }
         public DbSet<StandartParameterEntity> StandartParameters { get; set; }
         public DbSet<StandartPatternEntity> StandartPatterns { get; set; }
+        public DbSet<StandartMeasurementPatternEntity> StandartMeasurementPatterns { get; set; }
+        public DbSet<KurbatovParameterEntity> KurbatovParameters { get; set; }
+        public DbSet<KurbatovParameterBordersEntity> KurbatovBorders { get; set; }
         public DbSet<FileNameGraphic> FileNameGraphics { get; set; }
         public DbSet<DieParameterOld> DiesParameterOld { get; set; }
         public DbSet<Entities.DieTypeElement> DieTypeElements{ get; set; }

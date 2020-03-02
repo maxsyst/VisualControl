@@ -147,6 +147,8 @@ namespace VueExample
             services.AddTransient<IStandartParameterService, StandartParameterService>();
             services.AddTransient<IStandartPatternProvider, StandartPatternProvider>();
             services.AddTransient<IStandartPatternService, StandartPatternService>();
+            services.AddTransient<IKurbatovParameterBordersProvider, KurbatovParameterBordersProvider>();
+            services.AddTransient<IKurbatovParameterBordersService, KurbatovParameterBordersService>();
             
         }
 
