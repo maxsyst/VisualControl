@@ -29,7 +29,7 @@
                             :step="index + 1">
                             <v-card>
                                 <v-card-text>
-                                <single-kp :guid="smp.guid" @chbx-dialog="showCopyDialog"></single-kp>
+                                <single-kp :guid="smp.guid" @chbx-dialog="showCopyDialog" @delete-smp="deleteSmp"></single-kp>
                                 </v-card-text>
                             </v-card>                                        
                         </v-stepper-content>
@@ -42,10 +42,10 @@
                 <v-card>
                     <v-card-text>
                         <v-row>
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-text-field readonly v-model="smpName" label="Код"></v-text-field>
                             </v-col>
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-select v-model="selectedElementSMP"
                                     :items="elementsArray"
                                     item-text="name"
@@ -55,7 +55,7 @@
                                     label="Выберите элемент:">
                                 </v-select>
                             </v-col>
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-select v-model.trim="selectedStageSMP"
                                     :items="stagesArray"
                                     item-text="stageName"
@@ -65,7 +65,7 @@
                                     label="Выберите этап:">
                                 </v-select>
                             </v-col>
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-select v-model="selectedDividerSMP"
                                     :items="dividersArray"
                                     item-text="name"
@@ -80,7 +80,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="indigo" @click="smpCreateDialog = false">Закрыть</v-btn>
-                        <v-btn v-if="readyToCreateSMP" color="indigo" @click="createSMP">Добавить</v-btn>
+                        <v-btn v-if="readyToCreateSMP" color="indigo" @click="createSmp">Добавить</v-btn>
                    </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -100,7 +100,7 @@
                <v-card>
                     <v-card-text>
                         <v-row class="mt-6">
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-select v-model="selectedDieTypeId"
                                     :items="dieTypes"
                                     item-text="name"
@@ -112,7 +112,7 @@
                             </v-col>
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
                                     no-data-text="Нет данных"
@@ -123,7 +123,7 @@
                             </v-col>
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
-                            <v-col lg="11" offset-lg="1">
+                            <v-col lg="11">
                                 <v-btn v-if="mode==='updating'" block @click="goToUpdatingMode" color="indigo">Подтвердить выбор</v-btn>
                                 <v-btn v-else block @click="goToUpdatingMode(selectedDieType)" color="indigo">Редактировать шаблон</v-btn>
                             </v-col>
@@ -212,7 +212,7 @@ export default {
             this.smpCreateDialog = true
         },
 
-        createSMP() {
+        createSmp() {
             if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
                 this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
                 this.smpCreateDialog = false
@@ -220,6 +220,12 @@ export default {
             else {
                 this.showSnackbar("Параметр с таким именем уже добавлен")
             }           
+        },
+
+        deleteSmp(guid) {
+            this.$store.dispatch("smpstorage/deleteSmp", guid)
+            this.step = 0
+            this.showSnackbar("Удаление успешно")
         },
 
         async goToCreatingMode() {

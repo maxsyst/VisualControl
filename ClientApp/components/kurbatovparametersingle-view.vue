@@ -42,7 +42,7 @@
                 <v-btn v-if="validationIsCorrect" fab dark small color="indigo" @click="$emit('chbx-dialog', guid)">
                     <v-icon dark color="primary">file_copy</v-icon>
                 </v-btn>
-                 <v-btn fab dark small color="indigo" @click="deleteSmp(guid)">
+                 <v-btn fab dark small color="indigo" @click="$emit('delete-smp', guid)">
                     <v-icon dark color="primary">delete</v-icon>
                 </v-btn>
             </v-col>
@@ -223,12 +223,7 @@ export default {
             this.$store.dispatch("smpstorage/updateKp", {objName: 'bounds', guid: this.guid, kpKey: kp.key, obj: bounds})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
                
-        },
-
-        deleteSmp(guid) {
-            this.$store.dispatch("smpstorage/deleteSmp", guid)
-            this.$emit('show-snackbar', 'Удаление успешно')
-        },
+        },      
 
         deleteParameter(step) {
             let kp = this.smp.kpList[step - 1]
