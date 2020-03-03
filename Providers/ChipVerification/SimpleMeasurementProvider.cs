@@ -16,7 +16,6 @@ namespace VueExample.Providers.ChipVerification
     public class SimpleMeasurementProvider : IMeasurementProvider
     {
         private readonly IMapper _mapper;
-
         private readonly ApplicationContext _applicationContext;
         private readonly Srv6Context _srv6Context;
         public SimpleMeasurementProvider(IMapper mapper, ApplicationContext applicationContext, Srv6Context srv6Context) 

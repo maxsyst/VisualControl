@@ -19,6 +19,15 @@ namespace VueExample.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> Create([FromBody] StandartMeasurementPatternFullViewModel standartMeasurementPatternFullViewModel)
+        {
+            //TODO: Implement Realistic Implementation
+            await Task.Yield();
+            return Created("", null);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(IList<StandartPatternViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

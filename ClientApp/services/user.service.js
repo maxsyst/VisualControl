@@ -11,7 +11,6 @@ export const userService = {
 
 function login(username, password) {
 
-
     return axios({
     method: 'post',
     url: 'auth/user/authenticate',

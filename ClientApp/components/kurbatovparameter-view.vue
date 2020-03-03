@@ -142,6 +142,7 @@
 
 <script>
 import singleKp from './kurbatovparametersingle-view.vue';
+import { KurbatovParameterBorders } from '../models/kurbatovparameter.js'
 import { uuid } from 'vue-uuid';
 import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 
