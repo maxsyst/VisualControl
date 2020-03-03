@@ -12,7 +12,7 @@ namespace VueExample.Entities
         [Column("id_sp")]
         public int StandartParameterId { get; set; }
         [Column("id_b")]
-        public int BordersId { get; set; }
+        public int? BordersId { get; set; }
         [Column("id_smp")]
         public int SmpId { get; set; }
 
