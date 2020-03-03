@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VueExample.ViewModels
 {
     public class StandartMeasurementPatternFullViewModel
     {
         public StandartPatternViewModel StandartPattern { get; set; }
-        IList<StandartMeasurementPatternViewModel> standartMeasurementPatternList = new List<StandartMeasurementPatternViewModel>();
+        
+        [JsonProperty(PropertyName = "standartMeasurementPatternList")]
+        public List<StandartMeasurementPatternViewModel> standartMeasurementPatternList { get; set; } = new List<StandartMeasurementPatternViewModel>();
     }
     
     public class StandartMeasurementPatternViewModel
@@ -16,11 +19,13 @@ namespace VueExample.ViewModels
         public int DividerId { get; set; }
         public int PatternId { get; set; }
         public string Name { get; set; }
-        IList<KurbatovParameterViewModel> kpList = new List<KurbatovParameterViewModel>();
+        [JsonProperty(PropertyName = "kpList")]
+        public List<KurbatovParameterViewModel> kpList { get; set; } = new List<KurbatovParameterViewModel>();
     }
 
     public class KurbatovParameterViewModel
     {
+        public int Id { get; set; }
         public KurbatovParameterBordersViewModel KurbatovParameterBorders { get; set; }
         public StandartParameterViewModel StandartParameter { get; set; }
     }

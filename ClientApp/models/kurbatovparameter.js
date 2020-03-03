@@ -1,8 +1,9 @@
 class StandartMeasurementPatternFullViewModel {
-    constructor(standartpattern, smpList) {
+    constructor(standartpattern, smpList = []) {
         this.standartPattern = standartpattern,
         this.standartMeasurementPatternList = [...smpList]
     }
+
 }
 
 class StandartPattern {
@@ -19,6 +20,7 @@ class StandartMeasurementPattern {
         this.stageId = smp.stage.stageId
         this.dividerId = smp.divider.id
         this.name = smp.name
+        this.patternId = 0
         this.kpList = [...kpList]
         this.id = id    
     }
@@ -34,8 +36,8 @@ class KurbatovParameter {
 
 class KurbatovParameterBorders {
     constructor(lower, upper, id = 0) {
-      this.lower = lower
-      this.upper = upper
+      this.lower = lower || null
+      this.upper = upper || null
       this.id = id
     }
 }

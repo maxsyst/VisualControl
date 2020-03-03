@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 
@@ -21,8 +22,9 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> Create([FromBody] StandartMeasurementPatternFullViewModel standartMeasurementPatternFullViewModel)
+        public async Task<IActionResult> Create([FromBody] JObject standartMeasurementPatternFullJObject)
         {
+            var standartMeasurementPatternFullViewModel = standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>();
             //TODO: Implement Realistic Implementation
             await Task.Yield();
             return Created("", null);

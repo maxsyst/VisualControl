@@ -3,7 +3,7 @@
     <v-container>
          <v-row v-if="!initialDialog" class="alwaysOnTop">     
             <v-col lg="2" offset-lg="1">
-                <v-btn v-if="validation && patternName" color="success" block @click="savePattern">
+                <v-btn v-if="validation && patternName" color="success" block @click="savePattern(smpArray)">
                     Сохранить шаблон
                 </v-btn>   
             </v-col>      
@@ -142,7 +142,7 @@
 
 <script>
 import singleKp from './kurbatovparametersingle-view.vue';
-import { KurbatovParameterBorders } from '../models/kurbatovparameter.js'
+import { StandartMeasurementPatternFullViewModel, StandartPattern, StandartMeasurementPattern, KurbatovParameter, KurbatovParameterBorders } from '../models/kurbatovparameter.js'
 import { uuid } from 'vue-uuid';
 import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 
@@ -232,6 +232,29 @@ export default {
             this.$store.dispatch("smpstorage/deleteSmp", guid)
             this.step = 0
             this.showSnackbar("Удаление успешно")
+        },
+
+        async savePattern(smpArray) {
+            this.showLoading("Сохранение...")
+            await this.$http({
+                method: "post",
+                url: `/api/standartpattern/create`, 
+                data: new StandartMeasurementPatternFullViewModel(new StandartPattern(this.patternName, this.selectedDieTypeId), smpArray.map(smp => new StandartMeasurementPattern(smp, smp.kpList.map(k => new KurbatovParameter(new KurbatovParameterBorders(k.bounds.lower, k.bounds.upper), k.standartParameter))))), 
+                config: {
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': "application/json"
+                    }
+                }
+            })
+            .then(response => {
+                this.showSnackbar("Успешно сохранено")
+                this.closeLoading()
+            })
+            .catch(error => {
+                this.showSnackbar("Ошибка соединения с БД")
+                this.closeLoading()
+            });
         },
 
         async goToCreatingMode() {
