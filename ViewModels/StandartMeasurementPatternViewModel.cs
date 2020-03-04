@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AutoMapper;
 using Newtonsoft.Json;
 
 namespace VueExample.ViewModels
@@ -19,6 +20,8 @@ namespace VueExample.ViewModels
         public int DividerId { get; set; }
         public int PatternId { get; set; }
         public string Name { get; set; }
+        
+        [IgnoreMap]
         [JsonProperty(PropertyName = "kpList")]
         public List<KurbatovParameterViewModel> kpList { get; set; } = new List<KurbatovParameterViewModel>();
     }

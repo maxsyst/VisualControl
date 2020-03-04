@@ -25,9 +25,8 @@ namespace VueExample.Controllers
         public async Task<IActionResult> Create([FromBody] JObject standartMeasurementPatternFullJObject)
         {
             var standartMeasurementPatternFullViewModel = standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>();
-            //TODO: Implement Realistic Implementation
-            await Task.Yield();
-            return Created("", null);
+            await _standartPatternService.CreateFull(standartMeasurementPatternFullViewModel);
+            return CreatedAtAction("Create", null);
         }
 
         [HttpGet]
