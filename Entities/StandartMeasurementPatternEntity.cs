@@ -10,6 +10,7 @@ namespace VueExample.Entities
     public class StandartMeasurementPatternEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_smp")]
         public int Id { get; set; }
         [Column("id_et")]
@@ -23,10 +24,10 @@ namespace VueExample.Entities
         [Column("Name")]
         public string Name { get; set; }
         
-        public StandartPatternEntity StandartPattern { get; set; }
-        public Divider Divider { get; set; }
-        public Stage Stage { get; set; }
-        public Element Element { get; set; }
-        public ICollection<KurbatovParameterEntity> KurbatovParameters { get; set; }
+        public virtual StandartPatternEntity StandartPattern { get; set; }
+        public virtual Divider Divider { get; set; }
+        public virtual Stage Stage { get; set; }
+        public virtual Element Element { get; set; }
+        public virtual ICollection<KurbatovParameterEntity> KurbatovParameters { get; set; }
     }
 }

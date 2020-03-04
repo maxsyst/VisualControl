@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Entities;
 using VueExample.Exceptions;
+using VueExample.Models.SRV6;
 using VueExample.Providers.Abstract;
 
 namespace VueExample.Providers
@@ -15,6 +16,14 @@ namespace VueExample.Providers
         public StandartPatternProvider(Srv6Context srv6Context)
         {
             _srv6Context = srv6Context;
+        }
+
+        public async Task<StandartPatternEntity> Create(StandartPattern standartPattern)
+        {
+            var standartPatternEntity = new StandartPatternEntity{Name = standartPattern.Name, DieTypeId = standartPattern.DieTypeId};
+            _srv6Context.StandartPatterns.Add(standartPatternEntity);
+            await _srv6Context.SaveChangesAsync();
+            return standartPatternEntity;
         }
 
         public async Task Delete(int id)

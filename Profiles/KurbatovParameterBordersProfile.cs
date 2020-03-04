@@ -1,6 +1,7 @@
 using AutoMapper;
 using VueExample.Entities;
 using VueExample.Models.SRV6;
+using VueExample.ViewModels;
 
 namespace VueExample.Profiles
 {
@@ -9,6 +10,7 @@ namespace VueExample.Profiles
         public KurbatovParameterBordersProfile()
         {
             CreateMap<KurbatovParameterBordersEntity, KurbatovParameterBordersModel>().ReverseMap();
+            CreateMap<KurbatovParameterBordersModel, KurbatovParameterBordersViewModel>().ReverseMap();
         }
     }
 }
