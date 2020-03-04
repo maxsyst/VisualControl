@@ -9,7 +9,7 @@ namespace VueExample.Providers.Srv6.Interfaces
     {
         Task<IList<StandartPattern>> GetByDieTypeId(int dieTypeId);
         Task<StandartPattern> Create(StandartPatternViewModel standartPattern);  
-        Task CreateFull(StandartMeasurementPatternFullViewModel standartMeasurementPatternFull);
+        Task<StandartPattern> CreateFull(StandartMeasurementPatternFullViewModel standartMeasurementPatternFull);
         Task Delete(int id);
     }
 }

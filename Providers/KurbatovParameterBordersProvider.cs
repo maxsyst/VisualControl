@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using VueExample.Contexts;
 using VueExample.Entities;
@@ -16,7 +17,9 @@ namespace VueExample.Providers
         }
         public async Task<KurbatovParameterBordersEntity> Create(KurbatovParameterBordersModel kurbatovBordersModel)
         {
-            var kurbatovBorders = new KurbatovParameterBordersEntity{Upper = kurbatovBordersModel.Upper, Lower = kurbatovBordersModel.Upper};
+            var kurbatovBorders = new KurbatovParameterBordersEntity{Upper = kurbatovBordersModel.Upper, Lower = kurbatovBordersModel.Lower};
+            if(String.IsNullOrEmpty(kurbatovBorders.Lower) && String.IsNullOrEmpty(kurbatovBordersModel.Upper))
+                return new KurbatovParameterBordersEntity{Id = 0};
             _srv6Context.KurbatovBorders.Add(kurbatovBorders);
             await _srv6Context.SaveChangesAsync();
             return kurbatovBorders;

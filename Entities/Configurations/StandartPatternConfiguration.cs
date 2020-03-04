@@ -8,7 +8,7 @@ namespace VueExample.Entities.Configurations
         public void Configure(EntityTypeBuilder<StandartPatternEntity> builder)
         {
             builder.HasOne(k => k.DieType).WithMany().HasForeignKey(fk => fk.DieTypeId);
-            builder.HasMany(k => k.StandartMeasurementPatterns).WithOne().HasPrincipalKey(pk => pk.Id);
+            builder.HasMany(k => k.StandartMeasurementPatterns).WithOne(s => s.StandartPattern).HasForeignKey(fk => fk.PatternId);
         }
     }
 }

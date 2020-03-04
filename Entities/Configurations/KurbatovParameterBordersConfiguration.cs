@@ -7,7 +7,7 @@ namespace VueExample.Entities.Configurations
     {
         public void Configure(EntityTypeBuilder<KurbatovParameterBordersEntity> builder)
         {
-            builder.HasMany(k => k.KurbatovParameters).WithOne().HasPrincipalKey(pk => pk.Id);
+            builder.HasMany(k => k.KurbatovParameters).WithOne();
         }
     }
 }

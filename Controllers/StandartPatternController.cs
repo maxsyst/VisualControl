@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 
@@ -21,12 +22,12 @@ namespace VueExample.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(StandartPattern), StatusCodes.Status201Created)]
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] JObject standartMeasurementPatternFullJObject)
         {
-            var standartMeasurementPatternFullViewModel = standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>();
-            await _standartPatternService.CreateFull(standartMeasurementPatternFullViewModel);
-            return CreatedAtAction("Create", null);
+            var standartPattern = await _standartPatternService.CreateFull(standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>());
+            return CreatedAtAction("Create", standartPattern);
         }
 
         [HttpGet]

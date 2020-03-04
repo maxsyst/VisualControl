@@ -16,7 +16,7 @@ namespace VueExample.Entities
         [Column("id_dt")]
         public int DieTypeId { get; set; }
 
-        public DieType DieType { get; set; }
-        public ICollection<StandartMeasurementPatternEntity> StandartMeasurementPatterns { get; set; }
+        public virtual DieType DieType { get; set; }
+        public virtual ICollection<StandartMeasurementPatternEntity> StandartMeasurementPatterns { get; set; }
     }
 }

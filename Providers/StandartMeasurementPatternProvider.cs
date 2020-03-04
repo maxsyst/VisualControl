@@ -16,11 +16,11 @@ namespace VueExample.Providers
         }
         public async Task<StandartMeasurementPatternEntity> Create(StandartMeasurementPatternModel standartMeasurementPatternModel)
         {
-            var standartMeasurementPattern = new StandartMeasurementPatternEntity{ElementId = standartMeasurementPatternModel.ElementId, 
-                                                                                              StageId = standartMeasurementPatternModel.StageId, 
-                                                                                              DividerId = standartMeasurementPatternModel.DividerId, 
-                                                                                              PatternId = standartMeasurementPatternModel.PatternId, 
-                                                                                              Name = standartMeasurementPatternModel.Name};
+            var standartMeasurementPattern = new StandartMeasurementPatternEntity{  ElementId = standartMeasurementPatternModel.ElementId, 
+                                                                                    StageId = standartMeasurementPatternModel.StageId, 
+                                                                                    DividerId = standartMeasurementPatternModel.DividerId, 
+                                                                                    PatternId = standartMeasurementPatternModel.PatternId, 
+                                                                                    Name = standartMeasurementPatternModel.Name};
             _srv6Context.StandartMeasurementPatterns.Add(standartMeasurementPattern);
             await _srv6Context.SaveChangesAsync();
             return standartMeasurementPattern;

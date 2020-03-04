@@ -14,6 +14,6 @@ namespace VueExample.Entities
         public string Lower { get; set; }
         [Column("UpperF")]
         public string Upper { get; set; }
-        public ICollection<KurbatovParameterEntity> KurbatovParameters { get; set; }
+        public virtual ICollection<KurbatovParameterEntity> KurbatovParameters { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace VueExample.Entities.Configurations
             builder.HasOne(k => k.Divider).WithMany().HasForeignKey(fk => fk.DividerId);
             builder.HasOne(k => k.Stage).WithMany().HasForeignKey(fk => fk.StageId);
             builder.HasOne(k => k.Element).WithMany().HasForeignKey(fk => fk.ElementId);
-            builder.HasOne(k => k.StandartPattern).WithMany().HasForeignKey(fk => fk.PatternId);
+            builder.HasOne(k => k.StandartPattern).WithMany(p => p.StandartMeasurementPatterns).HasForeignKey(fk => fk.PatternId);
         }
     }
 }

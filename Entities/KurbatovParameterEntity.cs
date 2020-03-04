@@ -16,9 +16,9 @@ namespace VueExample.Entities
         [Column("id_smp")]
         public int SmpId { get; set; }
 
-        public StandartMeasurementPatternEntity StandartMeasurementPatternEntity { get; set; }
-        public StandartParameterEntity StandartParameterEntity { get; set; }
-        public KurbatovParameterBordersEntity KurbatovParameterBordersEntity { get; set; }
+        public virtual StandartMeasurementPatternEntity StandartMeasurementPatternEntity { get; set; }
+        public virtual StandartParameterEntity StandartParameterEntity { get; set; }
+        public virtual KurbatovParameterBordersEntity KurbatovParameterBordersEntity { get; set; }
 
 
     }

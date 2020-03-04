@@ -32,19 +32,19 @@ namespace VueExample.Providers.Srv6
             return _mapper.Map<StandartPatternEntity, StandartPattern>(standartPatternEntity);
         }
 
-        public async Task CreateFull(StandartMeasurementPatternFullViewModel standartMeasurementPatternFull)
+        public async Task<StandartPattern> CreateFull(StandartMeasurementPatternFullViewModel standartMeasurementPatternFull)
         {
-            var standartPatternId = (await Create(standartMeasurementPatternFull.StandartPattern)).Id;
+            var standartPattern = (await Create(standartMeasurementPatternFull.StandartPattern));
             await standartMeasurementPatternFull.standartMeasurementPatternList.ForEachAsync(async smp => {
-                smp.PatternId = standartPatternId;
+                smp.PatternId = standartPattern.Id;
                 var smpId = (await _standartMeasurementPatternProvider.Create(_mapper.Map<StandartMeasurementPatternViewModel, StandartMeasurementPatternModel>(smp))).Id;
                 await smp.kpList.ForEachAsync(async kp => {
-                    var bordersId = (await _kurbatovParameterBordersProvider.Create(_mapper.Map<KurbatovParameterBordersViewModel, KurbatovParameterBordersModel>(kp.KurbatovParameterBorders))).Id;
-                    await _kurbatovParameterProvider.Create(bordersId, kp.StandartParameter.Id, smpId);
+                    var borders = (await _kurbatovParameterBordersProvider.Create(_mapper.Map<KurbatovParameterBordersViewModel, KurbatovParameterBordersModel>(kp.KurbatovParameterBorders)));
+                    await _kurbatovParameterProvider.Create(borders.Id == 0 ? (int?)null : borders.Id, kp.StandartParameter.Id, smpId);
                 });
             });
+            return standartPattern;
         }
-
 
         public async Task Delete(int id)
         {

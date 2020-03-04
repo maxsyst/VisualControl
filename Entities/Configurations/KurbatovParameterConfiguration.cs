@@ -8,8 +8,8 @@ namespace VueExample.Entities.Configurations
         public void Configure(EntityTypeBuilder<KurbatovParameterEntity> builder)
         {
             builder.HasOne(k => k.StandartParameterEntity).WithMany().HasForeignKey(fk => fk.StandartParameterId);
-            builder.HasOne(k => k.StandartMeasurementPatternEntity).WithMany().HasForeignKey(fk => fk.SmpId);
-            builder.HasOne(k => k.KurbatovParameterBordersEntity).WithMany().HasForeignKey(fk => fk.BordersId);
+            builder.HasOne(k => k.StandartMeasurementPatternEntity).WithMany(k => k.KurbatovParameters).HasForeignKey(fk => fk.SmpId);
+            builder.HasOne(k => k.KurbatovParameterBordersEntity).WithMany(k => k.KurbatovParameters).HasForeignKey(fk => fk.BordersId);
         }
     }
 }

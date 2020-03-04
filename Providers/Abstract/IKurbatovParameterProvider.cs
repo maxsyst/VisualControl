@@ -5,6 +5,6 @@ namespace VueExample.Providers.Abstract
 {
     public interface IKurbatovParameterProvider
     {
-        Task<KurbatovParameterEntity> Create(int bordersId, int standartParameterId, int standartMeasurementPatternId);
+        Task<KurbatovParameterEntity> Create(int? bordersId, int standartParameterId, int standartMeasurementPatternId);
     }
 }
