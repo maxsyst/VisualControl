@@ -252,7 +252,11 @@ export default {
                 this.closeLoading()
             })
             .catch(error => {
-                this.showSnackbar("Ошибка соединения с БД")
+                if(error.response.status === 403) {
+                    this.showSnackbar("Шаблон с таким именем уже существует")   
+                } else {
+                    this.showSnackbar("Ошибка соединения с БД")
+                }                 
                 this.closeLoading()
             });
         },

@@ -9,6 +9,7 @@ namespace VueExample.Providers.Abstract
     {
         Task<StandartPatternEntity> Create(StandartPattern standartPattern);
         Task<IList<StandartPatternEntity>> GetByDieTypeId(int dieTypeId);
+        Task<StandartPatternEntity> GetByName(string name);
         Task Delete(int id);
     }
 }

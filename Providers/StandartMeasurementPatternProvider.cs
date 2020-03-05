@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Contexts;
 using VueExample.Entities;
@@ -24,6 +25,13 @@ namespace VueExample.Providers
             _srv6Context.StandartMeasurementPatterns.Add(standartMeasurementPattern);
             await _srv6Context.SaveChangesAsync();
             return standartMeasurementPattern;
+        }
+
+        public async Task<List<StandartMeasurementPatternEntity>> CreateFull(List<StandartMeasurementPatternEntity> smpList)
+        {
+            _srv6Context.StandartMeasurementPatterns.AddRange(smpList);
+            await _srv6Context.SaveChangesAsync();
+            return smpList;
         }
 
         public async Task Delete(int standartMeasurementPatternId)

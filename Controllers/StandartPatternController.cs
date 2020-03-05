@@ -23,11 +23,21 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(StandartPattern), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] JObject standartMeasurementPatternFullJObject)
         {
             var standartPattern = await _standartPatternService.CreateFull(standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>());
             return CreatedAtAction("Create", standartPattern);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(StandartPatternViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("name/{name}")]
+        public async Task<IActionResult> GetByName([FromRoute] string name)
+        {
+            return Ok(_mapper.Map<StandartPattern, StandartPatternViewModel>(await _standartPatternService.GetByName(name)));
         }
 
         [HttpGet]

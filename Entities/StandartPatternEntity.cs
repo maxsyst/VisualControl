@@ -15,6 +15,8 @@ namespace VueExample.Entities
         public string Name { get; set; }
         [Column("id_dt")]
         public int DieTypeId { get; set; }
+        [NotMapped]
+        public bool IsNullObject { get; set; } = false;
 
         public virtual DieType DieType { get; set; }
         public virtual ICollection<StandartMeasurementPatternEntity> StandartMeasurementPatterns { get; set; }

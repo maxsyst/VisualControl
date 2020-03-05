@@ -35,5 +35,10 @@ namespace VueExample.Providers
 
         public async Task<IList<StandartPatternEntity>> GetByDieTypeId(int dieTypeId)
            =>  await _srv6Context.StandartPatterns.Where(x => x.DieTypeId == dieTypeId).ToListAsync() ?? throw new RecordNotFoundException();
+
+        public async Task<StandartPatternEntity> GetByName(string name)
+        {
+            return await _srv6Context.StandartPatterns.FirstOrDefaultAsync(x => x.Name == name) ?? new StandartPatternEntity{IsNullObject = true};
+        }
     }
 }
