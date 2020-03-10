@@ -9,6 +9,7 @@ namespace VueExample.Providers.Abstract
     {
         Task<StandartMeasurementPatternEntity> Create(StandartMeasurementPatternModel standartMeasurementPatternModel);
         Task<List<StandartMeasurementPatternEntity>> CreateFull(List<StandartMeasurementPatternEntity> smpList);
+        Task<List<StandartMeasurementPatternEntity>> GetFullList(int patternId);
         Task Delete(int standartMeasurementPatternId);
     }
 }

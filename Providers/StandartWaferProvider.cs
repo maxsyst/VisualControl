@@ -26,7 +26,7 @@ namespace VueExample.Providers
         public async Task Delete(int codeProductId)
         {
             _srv6Context.CodeProductStandartWafers.RemoveRange(_srv6Context.CodeProductStandartWafers.Where(x => x.CodeProductId == codeProductId));
-            await _srv6Context.SaveChangesAsync()
+            await _srv6Context.SaveChangesAsync();
         }
 
         public async Task<List<CodeProductStandartWafer>> GetByCodeProduct(int codeProductId)

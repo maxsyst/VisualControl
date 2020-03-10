@@ -32,6 +32,16 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(StandartMeasurementPatternFullViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("smp/{patternId:int}")]
+        public async Task<IActionResult> GetSmpByPatternId([FromRoute] int patternId)
+        {
+            var standartPatternFull = await _standartPatternService.GetFull(patternId);
+            return Ok(standartPatternFull);
+        }
+
+        [HttpGet]
         [ProducesResponseType(typeof(StandartPatternViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("name/{name}")]

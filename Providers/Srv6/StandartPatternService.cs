@@ -78,5 +78,33 @@ namespace VueExample.Providers.Srv6
             }
             return _mapper.Map<StandartPatternEntity, StandartPattern>(standartPatternEntity);
         }
+
+        public async Task<StandartMeasurementPatternFullViewModel> GetFull(int patternId)
+        {
+            var standartPatternFull = new StandartMeasurementPatternFullViewModel();
+            var standartPattern = await _standartPatternProvider.GetById(patternId);
+            if(standartPattern.IsNullObject)
+                throw new RecordNotFoundException();
+            standartPatternFull.StandartPattern = _mapper.Map<StandartPattern, StandartPatternViewModel>(_mapper.Map<StandartPatternEntity, StandartPattern>(standartPattern));
+            var smpList = await _standartMeasurementPatternProvider.GetFullList(patternId);   
+            if(smpList.Count == 0)
+                throw new CollectionIsEmptyException();
+            foreach (var smp in smpList)
+            {
+                var smpVm = _mapper.Map<StandartMeasurementPatternModel, StandartMeasurementPatternViewModel>(_mapper.Map<StandartMeasurementPatternEntity, StandartMeasurementPatternModel>(smp));
+                foreach (var kp in smp.KurbatovParameters)
+                {
+                    var kpVm = new KurbatovParameterViewModel();
+                    kpVm.Id = kp.Id;
+                    kpVm.KurbatovParameterBorders = new KurbatovParameterBordersViewModel{Id = kp.KurbatovParameterBordersEntity.Id, 
+                                                                                          Lower = kp.KurbatovParameterBordersEntity.Lower, 
+                                                                                          Upper = kp.KurbatovParameterBordersEntity.Upper};
+                    kpVm.StandartParameter = _mapper.Map<StandartParameterModel, StandartParameterViewModel>(_mapper.Map<StandartParameterEntity, StandartParameterModel>(kp.StandartParameterEntity));                
+                    smpVm.kpList.Add(kpVm);
+                }
+                standartPatternFull.standartMeasurementPatternList.Add(smpVm);
+            }
+            return standartPatternFull;
+        }
     }
 }

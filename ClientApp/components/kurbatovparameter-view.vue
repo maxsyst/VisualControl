@@ -121,6 +121,8 @@
                                 <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
                                     no-data-text="Нет данных"
+                                    return-object
+                                    item-text="name"
                                     outlined
                                     label="Выберите шаблон:">
                                 </v-select>
@@ -129,8 +131,8 @@
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
                             <v-col lg="12">
-                                <v-btn v-if="mode==='updating'" block @click="goToUpdatingMode" color="indigo">Подтвердить выбор</v-btn>
-                                <v-btn v-else block @click="goToUpdatingMode(selectedDieType)" color="indigo">Редактировать шаблон</v-btn>
+                                <v-btn v-if="mode==='updating'" block @click="getSelectedPattern(selectedPattern)" color="indigo">Подтвердить выбор</v-btn>
+                                <v-btn v-else block @click="goToUpdatingMode(selectedDieTypeId)" color="indigo">Редактировать шаблон</v-btn>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -272,12 +274,19 @@ export default {
            
         },
 
-        async goToUpdatingMode(selectedDieType) {
+        async goToUpdatingMode(selectedDieTypeId) {
             this.mode = 'updating'
             await this.$http
-            .get(`/api/standartpattern/dietype/${selectedDieType.id}`)
+            .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
             .then(response => {this.patterns = response.data; this.selectedPattern = response.data[0] || {}})
             .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))
+        },
+
+        async getSelectedPattern(selectedPattern) {
+            await this.$http
+            .get(`/api/standartpattern/smp/${selectedPattern.id}`)
+            .then(response => response)
+            .catch(error => this.showSnackbar("В шаблоне не содержатся данные"))
         },
 
         async getAllDieTypes() {
