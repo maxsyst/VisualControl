@@ -110,7 +110,7 @@
                                         </v-col>        
                                         <v-col lg="3">
                                              <v-switch
-                                                :value="parameter.withBounds.value"
+                                                :input-value="parameter.withBounds.value"
                                                 color='primary'
                                                 @change="updateWithBounds($event, parameter)"
                                                 :label="parameter.withBounds.value ? `Включить границы` : `Не включать границы`">
@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { uuid } from 'vue-uuid';
+import { createKurbatovParameter as createKurbatovParameterFromService } from '../services/kurbatovparameter.service.js'
 
 export default {
     props: {
@@ -175,6 +175,8 @@ export default {
     },
 
     methods: {
+        createKurbatovParameter: createKurbatovParameterFromService,
+
         updateElement(element) {
             this.$store.dispatch("smpstorage/updateElementSmp", {guid: this.guid, element})        
         },
@@ -188,14 +190,7 @@ export default {
         },
 
         createParameter() {
-            let kp = {
-                standartParameter: {parameterName: "", russianParameterName: "", parameterNameStat: "", specialRon: false, dividerNeed: false},
-                bounds: {lower: "", upper: ""},
-                withBounds: {value: false},
-                validationRules: {boundsRq: true, lowerBoundIsNumeric: true, upperBoundIsNumeric: true, parameterRq: false, lowerBoundLowerThanUpperBound: true},
-                key: this.$uuid.v1()
-            }
-            this.$store.dispatch("smpstorage/addToKpList", {guid: this.guid, kp})
+            this.createKurbatovParameter(this.guid)
             this.step++
         },
 

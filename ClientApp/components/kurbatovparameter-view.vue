@@ -3,8 +3,8 @@
     <v-container>
          <v-row v-if="!initialDialog" class="alwaysOnTop">     
             <v-col lg="2" offset-lg="1">
-                <v-btn v-if="validation && patternName" color="success" block @click="savePattern(smpArray)">
-                    Сохранить шаблон
+                <v-btn v-if="validation && patternName" color="success" block @click="savePattern(smpArray)"> 
+                    {{mode==='creating' ? 'Сохранить шаблон' : 'Обновить шаблон'}}                   
                 </v-btn>   
             </v-col>      
             <v-col lg="2" offset-lg="3">
@@ -144,8 +144,8 @@
 
 <script>
 import singleKp from './kurbatovparametersingle-view.vue';
+import { createSmp as createSmpFromService, restoreFromVm as restoreFromVmFromService } from '../services/smp.service.js'
 import { StandartMeasurementPatternFullViewModel, StandartPattern, StandartMeasurementPattern, KurbatovParameter, KurbatovParameterBorders } from '../models/kurbatovparameter.js'
-import { uuid } from 'vue-uuid';
 import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 
 export default {
@@ -177,6 +177,10 @@ export default {
     },
 
     methods: {
+
+        createSmpFromService: createSmpFromService,
+        restoreFromVm: restoreFromVmFromService,
+
         async initialize() {
             await this.getAllDieTypes()
             await this.getStandartParameters()
@@ -209,7 +213,7 @@ export default {
             selectedElementIds.forEach(elementId => {
                 const element = this.elementsArray.find(e => e.elementId === elementId)
                 const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === "Нет" ? "No" : parentSmp.divider.name}µm`
-                this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
+                this.createSmpFromService({name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
             })
             this.showSnackbar("Копирование завершено")
             this.copyDialog = false
@@ -222,7 +226,7 @@ export default {
 
         createSmp() {
             if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
-                this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
+                this.createSmpFromService({ name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
                 this.smpCreateDialog = false
             }
             else {
@@ -266,12 +270,14 @@ export default {
         async goToCreatingMode() {
             this.initialDialog = false
             this.mode = 'creating'
+            await this.fillSmpStorage()
+        },
+
+        async fillSmpStorage() {
             await this.getProcessByDieId(this.selectedDieTypeId)
                  .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
                  .then(async () => await this.getStagesByProcessId(this.process))
             await this.getDividers()
-           
-           
         },
 
         async goToUpdatingMode(selectedDieTypeId) {
@@ -283,10 +289,14 @@ export default {
         },
 
         async getSelectedPattern(selectedPattern) {
-            await this.$http
-            .get(`/api/standartpattern/smp/${selectedPattern.id}`)
-            .then(response => response)
-            .catch(error => this.showSnackbar("В шаблоне не содержатся данные"))
+            await this.fillSmpStorage()
+            await this.$http.get(`/api/standartpattern/smp/${selectedPattern.id}`)
+            .then(response => {
+                this.patternName = response.data.standartPattern.name
+                this.restoreFromVm(response.data.standartMeasurementPatternList)
+                this.initialDialog = false
+            })
+            .catch(error =>{console.log(error); this.showSnackbar("В шаблоне не содержатся данные")})
         },
 
         async getAllDieTypes() {

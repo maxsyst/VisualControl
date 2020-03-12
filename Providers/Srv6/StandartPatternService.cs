@@ -96,9 +96,9 @@ namespace VueExample.Providers.Srv6
                 {
                     var kpVm = new KurbatovParameterViewModel();
                     kpVm.Id = kp.Id;
-                    kpVm.KurbatovParameterBorders = new KurbatovParameterBordersViewModel{Id = kp.KurbatovParameterBordersEntity.Id, 
-                                                                                          Lower = kp.KurbatovParameterBordersEntity.Lower, 
-                                                                                          Upper = kp.KurbatovParameterBordersEntity.Upper};
+                    kpVm.KurbatovParameterBorders = new KurbatovParameterBordersViewModel{Id = kp.KurbatovParameterBordersEntity?.Id, 
+                                                                                          Lower = kp.KurbatovParameterBordersEntity?.Lower, 
+                                                                                          Upper = kp.KurbatovParameterBordersEntity?.Upper};
                     kpVm.StandartParameter = _mapper.Map<StandartParameterModel, StandartParameterViewModel>(_mapper.Map<StandartParameterEntity, StandartParameterModel>(kp.StandartParameterEntity));                
                     smpVm.kpList.Add(kpVm);
                 }
