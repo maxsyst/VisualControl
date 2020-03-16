@@ -59,8 +59,8 @@ namespace VueExample
             services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
             }));
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -131,6 +131,7 @@ namespace VueExample
             services.AddTransient<IFolderService, FolderService>();
             services.AddTransient<IDieTypeProvider, DieTypeProvider>();
             services.AddTransient<IWaferProvider, WaferProvider>();
+            services.AddTransient<IStandartWaferProvider, StandartWaferProvider>();
             services.AddTransient<ICodeProductProvider, CodeProductProvider>();
             services.AddTransient<IProcessProvider, ProcessProvider>();
             services.AddTransient<IDeviceProvider, DeviceProvider>();
@@ -177,6 +178,7 @@ namespace VueExample
                     Message = "An error occurred while processing your request"
                 }));
                 x.Map<RecordNotFoundException>().ToStatusCode(StatusCodes.Status404NotFound);
+                x.Map<CollectionIsEmptyException>().ToStatusCode(StatusCodes.Status404NotFound);
                 x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
             });           
 

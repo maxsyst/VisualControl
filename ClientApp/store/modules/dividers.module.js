@@ -15,6 +15,9 @@ export const dividers = {
     getters: {
         getAll: state => {
             return state.dividers
+        },
+        getById: state => id => {
+            return state.dividers.find(x => x.id === id)
         }
     },
 

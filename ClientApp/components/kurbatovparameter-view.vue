@@ -3,13 +3,23 @@
     <v-container>
          <v-row v-if="!initialDialog" class="alwaysOnTop">     
             <v-col lg="2" offset-lg="1">
-                <v-btn v-if="validation && patternName" color="success" block @click="savePattern(smpArray)">
-                    Сохранить шаблон
+                <v-btn v-if="validation && patternName" color="success" block @click="savePattern(smpArray)"> 
+                    {{mode==='creating' ? 'Сохранить шаблон' : 'Обновить шаблон'}}                   
                 </v-btn>   
             </v-col>      
             <v-col lg="2" offset-lg="3">
-                <v-text-field outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
-                                                                            : 'Выберите название шаблона'" label="Название шаблона"></v-text-field>
+                <v-text-field v-if="mode==='creating'" outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
+                                                                            : 'Введите название шаблона'" label="Название шаблона"></v-text-field>
+                 <v-select  v-else   
+                            v-model="selectedPattern"
+                            :items="patterns"
+                            no-data-text="Нет данных"
+                            return-object
+                            item-text="name"
+                            outlined
+                            @change="getSelectedPattern(selectedPattern)"
+                            label="Выберите шаблон:">
+                </v-select>
             </v-col>
              <v-col lg="2">
                 <v-btn color="indigo" block @click="createStandartMeasurementPattern">
@@ -121,6 +131,8 @@
                                 <v-select v-if="mode==='updating'" v-model="selectedPattern"
                                     :items="patterns"
                                     no-data-text="Нет данных"
+                                    return-object
+                                    item-text="name"
                                     outlined
                                     label="Выберите шаблон:">
                                 </v-select>
@@ -129,8 +141,8 @@
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
                             <v-col lg="12">
-                                <v-btn v-if="mode==='updating'" block @click="goToUpdatingMode" color="indigo">Подтвердить выбор</v-btn>
-                                <v-btn v-else block @click="goToUpdatingMode(selectedDieType)" color="indigo">Редактировать шаблон</v-btn>
+                                <v-btn v-if="mode==='updating'" block @click="getSelectedPattern(selectedPattern)" color="indigo">Подтвердить выбор</v-btn>
+                                <v-btn v-else block @click="goToUpdatingMode(selectedDieTypeId)" color="indigo">Редактировать шаблон</v-btn>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -142,8 +154,8 @@
 
 <script>
 import singleKp from './kurbatovparametersingle-view.vue';
+import { createSmp as createSmpFromService, restoreFromVm as restoreFromVmFromService } from '../services/smp.service.js'
 import { StandartMeasurementPatternFullViewModel, StandartPattern, StandartMeasurementPattern, KurbatovParameter, KurbatovParameterBorders } from '../models/kurbatovparameter.js'
-import { uuid } from 'vue-uuid';
 import checkboxSelectDialog from './Dialog/checkboxselect-dialog.vue' 
 
 export default {
@@ -175,6 +187,10 @@ export default {
     },
 
     methods: {
+
+        createSmpFromService: createSmpFromService,
+        restoreFromVm: restoreFromVmFromService,
+
         async initialize() {
             await this.getAllDieTypes()
             await this.getStandartParameters()
@@ -207,7 +223,7 @@ export default {
             selectedElementIds.forEach(elementId => {
                 const element = this.elementsArray.find(e => e.elementId === elementId)
                 const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === "Нет" ? "No" : parentSmp.divider.name}µm`
-                this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
+                this.createSmpFromService({name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
             })
             this.showSnackbar("Копирование завершено")
             this.copyDialog = false
@@ -220,7 +236,7 @@ export default {
 
         createSmp() {
             if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
-                this.$store.dispatch("smpstorage/createSmp", { guid: this.$uuid.v1(), name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
+                this.createSmpFromService({ name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
                 this.smpCreateDialog = false
             }
             else {
@@ -252,7 +268,11 @@ export default {
                 this.closeLoading()
             })
             .catch(error => {
-                this.showSnackbar("Ошибка соединения с БД")
+                if(error.response.status === 403) {
+                    this.showSnackbar("Шаблон с таким именем уже существует")   
+                } else {
+                    this.showSnackbar("Ошибка соединения с БД")
+                }                 
                 this.closeLoading()
             });
         },
@@ -260,20 +280,36 @@ export default {
         async goToCreatingMode() {
             this.initialDialog = false
             this.mode = 'creating'
-            await this.getProcessByDieId(this.selectedDieTypeId)
-                 .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
-                 .then(async () => await this.getStagesByProcessId(this.process))
-            await this.getDividers()
-           
-           
+            await this.fillSmpStorage()
         },
 
-        async goToUpdatingMode(selectedDieType) {
+        async fillSmpStorage() {
+            await this.getProcessByDieId(this.selectedDieTypeId)
+                .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
+                .then(async () => await this.getStagesByProcessId(this.process))
+            await this.getDividers()
+        },
+
+        async goToUpdatingMode(selectedDieTypeId) {
             this.mode = 'updating'
             await this.$http
-            .get(`/api/standartpattern/dietype/${selectedDieType.id}`)
+            .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
             .then(response => {this.patterns = response.data; this.selectedPattern = response.data[0] || {}})
             .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))
+        },
+
+        async getSelectedPattern(selectedPattern) {
+            this.showLoading("Загрузка...")
+            this.$store.dispatch("smpstorage/resetSmp")
+            await this.fillSmpStorage()
+            await this.$http.get(`/api/standartpattern/smp/${selectedPattern.id}`)
+            .then(response => {
+                this.patternName = response.data.standartPattern.name
+                this.restoreFromVm(response.data.standartMeasurementPatternList)
+                this.initialDialog = false
+                this.closeLoading()
+            })
+            .catch(error =>{console.log(error); this.showSnackbar("В шаблоне не содержатся данные"); this.closeLoading()})
         },
 
         async getAllDieTypes() {
@@ -342,6 +378,10 @@ export default {
     async mounted() {
         this.showLoading("Загрузка...")
         await this.initialize().then(() => this.closeLoading())
+    },
+
+    beforeDestroy() {
+        this.$store.dispatch("smpstorage/reset")
     }
 }
 </script>

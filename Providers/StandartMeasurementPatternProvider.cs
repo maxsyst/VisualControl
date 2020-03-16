@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Entities;
 using VueExample.Exceptions;
@@ -26,11 +29,24 @@ namespace VueExample.Providers
             return standartMeasurementPattern;
         }
 
+        public async Task<List<StandartMeasurementPatternEntity>> CreateFull(List<StandartMeasurementPatternEntity> smpList)
+        {
+            _srv6Context.StandartMeasurementPatterns.AddRange(smpList);
+            await _srv6Context.SaveChangesAsync();
+            return smpList;
+        }
+
         public async Task Delete(int standartMeasurementPatternId)
         {
             var standartMeasurementPattern = _srv6Context.StandartMeasurementPatterns.FindAsync(standartMeasurementPatternId) ?? throw new RecordNotFoundException();
             _srv6Context.Remove(standartMeasurementPattern);
             await _srv6Context.SaveChangesAsync();
+        }
+
+        public async Task<List<StandartMeasurementPatternEntity>> GetFullList(int patternId)
+        {
+            return await _srv6Context.StandartMeasurementPatterns.Where(x => x.PatternId == patternId).Include(x => x.KurbatovParameters).ThenInclude(k => k.StandartParameterEntity)
+                                                                                                      .Include(x => x.KurbatovParameters).ThenInclude(k => k.KurbatovParameterBordersEntity).ToListAsync();
         }
     }
 }
