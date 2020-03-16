@@ -8,8 +8,18 @@
                 </v-btn>   
             </v-col>      
             <v-col lg="2" offset-lg="3">
-                <v-text-field outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
-                                                                            : 'Выберите название шаблона'" label="Название шаблона"></v-text-field>
+                <v-text-field v-if="mode==='creating'" outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
+                                                                            : 'Введите название шаблона'" label="Название шаблона"></v-text-field>
+                 <v-select  v-else   
+                            v-model="selectedPattern"
+                            :items="patterns"
+                            no-data-text="Нет данных"
+                            return-object
+                            item-text="name"
+                            outlined
+                            @change="getSelectedPattern(selectedPattern)"
+                            label="Выберите шаблон:">
+                </v-select>
             </v-col>
              <v-col lg="2">
                 <v-btn color="indigo" block @click="createStandartMeasurementPattern">
@@ -275,8 +285,8 @@ export default {
 
         async fillSmpStorage() {
             await this.getProcessByDieId(this.selectedDieTypeId)
-                 .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
-                 .then(async () => await this.getStagesByProcessId(this.process))
+                .then(async () => await this.getElementsByDieType(this.selectedDieTypeId))
+                .then(async () => await this.getStagesByProcessId(this.process))
             await this.getDividers()
         },
 
@@ -289,14 +299,17 @@ export default {
         },
 
         async getSelectedPattern(selectedPattern) {
+            this.showLoading("Загрузка...")
+            this.$store.dispatch("smpstorage/resetSmp")
             await this.fillSmpStorage()
             await this.$http.get(`/api/standartpattern/smp/${selectedPattern.id}`)
             .then(response => {
                 this.patternName = response.data.standartPattern.name
                 this.restoreFromVm(response.data.standartMeasurementPatternList)
                 this.initialDialog = false
+                this.closeLoading()
             })
-            .catch(error =>{console.log(error); this.showSnackbar("В шаблоне не содержатся данные")})
+            .catch(error =>{console.log(error); this.showSnackbar("В шаблоне не содержатся данные"); this.closeLoading()})
         },
 
         async getAllDieTypes() {
@@ -365,6 +378,10 @@ export default {
     async mounted() {
         this.showLoading("Загрузка...")
         await this.initialize().then(() => this.closeLoading())
+    },
+
+    beforeDestroy() {
+        this.$store.dispatch("smpstorage/reset")
     }
 }
 </script>

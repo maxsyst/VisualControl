@@ -1,13 +1,22 @@
+const defaultState = () => {
+    return {
+        smpArray: [],
+        elements: [],
+        stages: [],
+        standartParameters: []
+    }
+}
+
 export const smpstorage = {
     namespaced: true,
-    state: {
-       smpArray: [],
-       elements: [],
-       stages: [],
-       standartParameters: []
-    },
-
+    state: defaultState(),
     actions: {
+        reset({commit}) {
+            commit('reset')
+        },
+        resetSmp({commit}) {
+            commit('resetSmp')
+        },
         createSmp ({ commit }, smp) {
             commit('createSmp', smp)
         },
@@ -96,6 +105,12 @@ export const smpstorage = {
     },
 
     mutations: {
+        reset(state) {
+            Object.assign(state, defaultState())
+        },
+        resetSmp(state) {
+            state.smpArray = []
+        },
         createSmp(state, smp) {
             state.smpArray.push(smp)
         },
