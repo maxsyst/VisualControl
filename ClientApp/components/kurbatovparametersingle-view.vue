@@ -200,10 +200,14 @@ export default {
         },
 
         updateWithBounds(withBounds, kp) {
-            let validationRules = withBounds === null ? {boundsRq: true, lowerBoundIsNumeric: true, upperBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true} : kp.bounds.lower === "" &&  kp.bounds.upper === "" ? {boundsRq: false} : {}
+            console.log("wb")
+            console.log("upper" + kp.bounds.upper)
+            console.log("lower" + kp.bounds.lower)
+            let validationRules = (withBounds === null || !withBounds) ? {boundsRq: true, lowerBoundIsNumeric: true, upperBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true} : _.isEmpty(kp.bounds.lower) && _.isEmpty(kp.bounds.upper) ? {boundsRq: false} : {}
             validationRules = withBounds && kp.bounds.lower !== "" && kp.bounds.upper !== "" && +kp.bounds.lower >= +kp.bounds.upper ? {...validationRules, lowerBoundLowerThanUpperBound: false} : {...validationRules}
             validationRules = withBounds && isNaN(kp.bounds.lower) ? {...validationRules, lowerBoundIsNumeric: false} : {...validationRules}
             validationRules = withBounds && isNaN(kp.bounds.upper) ? {...validationRules, upperBoundIsNumeric: false} : {...validationRules}
+            console.log(validationRules)
             this.$store.dispatch("smpstorage/updateKp", {objName: 'withBounds', guid: this.guid, kpKey: kp.key, obj: {value: withBounds}})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
         },
@@ -211,10 +215,12 @@ export default {
         updateBounds(newBound, bound, kp) {
             let bounds = bound === "upper" ? {lower: kp.bounds.lower, upper: newBound} : {lower: newBound, upper: kp.bounds.upper}
             let validationRules = bound === "upper" 
-                                    ? kp.bounds.lower === "" && newBound === "" ? {boundsRq: false} : kp.bounds.lower !== "" && newBound !== "" && +kp.bounds.lower >= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, upperBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true}
-                                    : kp.bounds.upper === "" && newBound === "" ? {boundsRq: false} : kp.bounds.upper !== "" && newBound !== "" && +kp.bounds.upper <= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true}
+                                    ? _.isEmpty(kp.bounds.lower) && _.isEmpty(newBound) ? {boundsRq: false} : !_.isEmpty(kp.bounds.lower) && !_.isEmpty(newBound) && +kp.bounds.lower >= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, upperBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true}
+                                    : _.isEmpty(kp.bounds.upper) && _.isEmpty(newBound) ? {boundsRq: false} : !_.isEmpty(kp.bounds.upper) && !_.isEmpty(newBound) && +kp.bounds.upper <= +newBound ? {boundsRq: true, lowerBoundLowerThanUpperBound: false} : {boundsRq: true, lowerBoundIsNumeric: true, lowerBoundLowerThanUpperBound: true}
             validationRules = bound === "upper" && isNaN(newBound) ? {...validationRules, upperBoundIsNumeric: false} : {...validationRules}   
-            validationRules = bound === "lower" && isNaN(newBound) ? {...validationRules, lowerBoundIsNumeric: false} : {...validationRules}                    
+            validationRules = bound === "lower" && isNaN(newBound) ? {...validationRules, lowerBoundIsNumeric: false} : {...validationRules}  
+            console.log("ub")
+            console.log(validationRules)                  
             this.$store.dispatch("smpstorage/updateKp", {objName: 'bounds', guid: this.guid, kpKey: kp.key, obj: bounds})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
                
