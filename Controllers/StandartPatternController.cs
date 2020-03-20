@@ -31,6 +31,16 @@ namespace VueExample.Controllers
             return CreatedAtAction("Create", standartPattern);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(StandartPattern), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Route("update")]
+        public async Task<IActionResult> Update([FromBody] JObject standartMeasurementPatternFullJObject)
+        {
+            var standartPattern = await _standartPatternService.Update(standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>());
+            return CreatedAtAction("Update", standartPattern);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(StandartMeasurementPatternFullViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

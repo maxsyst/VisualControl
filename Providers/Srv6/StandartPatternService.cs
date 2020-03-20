@@ -58,7 +58,12 @@ namespace VueExample.Providers.Srv6
                 smpList.Add(smpFull);
             }
             await _standartMeasurementPatternProvider.CreateFull(smpList);
-            return new StandartPattern();
+            return _mapper.Map<StandartPatternEntity, StandartPattern>(standartPattern);
+        }
+
+        public Task<StandartPattern> Update(StandartMeasurementPatternFullViewModel standartMeasurementPatternFullViewModel)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task Delete(int id)

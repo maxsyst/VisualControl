@@ -3,7 +3,7 @@
     <v-container>
          <v-row v-if="!initialDialog" class="alwaysOnTop">     
             <v-col lg="2" offset-lg="1">
-                <v-btn v-if="validation && patternName" color="success" block @click="savePattern(smpArray)"> 
+                <v-btn v-if="validation && patternName && smpArray.length > 0" color="success" block @click="savePattern(smpArray)"> 
                     {{mode==='creating' ? 'Сохранить шаблон' : 'Обновить шаблон'}}                   
                 </v-btn>   
             </v-col>      
@@ -264,8 +264,13 @@ export default {
                 }
             })
             .then(response => {
-                this.showSnackbar("Успешно сохранено")
                 this.closeLoading()
+                return response.data
+            })
+            .then(async pattern => {               
+                await this.goToUpdatingMode(this.selectedDieTypeId)
+                this.selectedPattern = pattern
+                this.showSnackbar("Успешно сохранено")               
             })
             .catch(error => {
                 if(error.response.status === 403) {
