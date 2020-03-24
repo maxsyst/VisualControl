@@ -184,7 +184,7 @@ namespace VueExample
 
             app.UseSignalR(options =>
             {
-                options.MapHub<LivePointHub>("/livepoint");
+                options.MapHub<LivePointHub>("/livepoint");                
             });
 
             app.UseCors("DefaultPolicy");
