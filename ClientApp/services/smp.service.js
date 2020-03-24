@@ -15,11 +15,12 @@ export const createSmp = (smp) => {
 }
 
 const restoreFromSingleVm = (smpVm) => {
-    const {elementId, stageId, dividerId, name} = smpVm;   
+    const {elementId, stageId, dividerId, name, id} = smpVm;   
     let smp = {name, kpList: []}
     smp.element = store.state.smpstorage.elements.find(x => x.elementId === elementId)
     smp.stage = store.state.smpstorage.stages.find(x => x.stageId === stageId)
     smp.divider = store.state.dividers.dividers.find(x => x.id === dividerId)
+    smp.id = id
     restoreKpListFromSmpVm(createSmp(smp), smpVm.kpList)    
 }
 

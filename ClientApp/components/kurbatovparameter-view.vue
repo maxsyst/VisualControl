@@ -251,11 +251,12 @@ export default {
         },
 
         async savePattern(smpArray) {
+            let mode = this.mode
             this.showLoading("Сохранение...")
             await this.$http({
                 method: "post",
-                url: `/api/standartpattern/create`, 
-                data: new StandartMeasurementPatternFullViewModel(new StandartPattern(this.patternName, this.selectedDieTypeId), smpArray.map(smp => new StandartMeasurementPattern(smp, smp.kpList.map(k => new KurbatovParameter(new KurbatovParameterBorders(k.bounds.lower, k.bounds.upper), k.standartParameter))))), 
+                url: `/api/standartpattern/${mode}`, 
+                data: new StandartMeasurementPatternFullViewModel(new StandartPattern(this.patternName, this.selectedDieTypeId, this.selectedPattern.id), smpArray.map(smp => new StandartMeasurementPattern(smp, smp.kpList.map(k => new KurbatovParameter(new KurbatovParameterBorders(k.bounds.lower, k.bounds.upper, k.bounds.id), k.standartParameter, k.id)), this.selectedPattern.id, smp.id))), 
                 config: {
                     headers: {
                         'Accept': "application/json",
