@@ -6,8 +6,13 @@
                 <v-btn v-if="validation && patternName && smpArray.length > 0" color="success" block @click="savePattern(smpArray)"> 
                     {{mode==='creating' ? 'Сохранить шаблон' : 'Обновить шаблон'}}                   
                 </v-btn>   
-            </v-col>      
-            <v-col lg="2" offset-lg="3">
+            </v-col>  
+            <v-col lg="2">
+                <v-btn v-if="mode==='updating'" color="pink" block @click="deletePattern(selectedPattern)"> 
+                    Удалить шаблон                 
+                </v-btn>   
+            </v-col>         
+            <v-col lg="2" offset-lg="1">
                 <v-text-field v-if="mode==='creating'" outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
                                                                             : 'Введите название шаблона'" label="Название шаблона"></v-text-field>
                  <v-select  v-else   
@@ -281,6 +286,30 @@ export default {
                 }                 
                 this.closeLoading()
             });
+        },
+
+        async deletePattern(selectedPattern) {
+            await this.$http({
+                method: "delete",
+                url: `/api/standartpattern/${selectedPattern.id}`, 
+                config: {
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': "application/json"
+                    }
+                }
+            })
+            .then(response => {
+                this.patterns = this.patterns.filter(x => x.id !== selectedPattern.id)
+                this.selectedPattern = this.patterns[0] || null
+                this.showSnackbar("Успешно удалено")  
+            })
+            .then(async r => {
+                await this.getSelectedPattern(this.selectedPattern)                
+            })
+            .catch(error => {
+                this.showSnackbar("Ошибка при удалении")    
+            })
         },
 
         async goToCreatingMode() {

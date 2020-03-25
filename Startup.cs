@@ -156,8 +156,6 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
             
         }
-
-
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
           
