@@ -23,6 +23,8 @@ namespace VueExample.Entities
         public int PatternId { get; set; }
         [Column("Name")]
         public string Name { get; set; }
+        [Column("mslName")]
+        public string MslName { get; set; }
         
         public virtual StandartPatternEntity StandartPattern { get; set; }
         public virtual Divider Divider { get; set; }

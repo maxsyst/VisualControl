@@ -23,6 +23,12 @@
                     label="Выберите этап:">
                 </v-select>
             </v-col>
+            <v-col lg="3">
+                    <v-text-field   :value="smp.mslName"
+                                    @change="updateMslName($event)"
+                                    readonly outlined label="Номер операции в МСЛ:">
+                    </v-text-field>
+            </v-col>    
             <v-col lg="2">
                 <v-select :value="smp.divider"
                     :items="$store.getters['dividers/getAll']"
@@ -34,7 +40,7 @@
                     label="Выберите периферию:">
                 </v-select>
             </v-col>
-             <v-col lg="3">
+            <v-col lg="3">
                 <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
                 <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
             </v-col>             
@@ -179,6 +185,10 @@ export default {
     methods: {
         createKurbatovParameter: createKurbatovParameterFromService,
 
+        updateMslName(mslName) {
+            this.$store.dispatch("smpstorage/updateMslNameSmp", {guid: this.guid, mslName})      
+        },
+
         updateElement(element) {
             this.$store.dispatch("smpstorage/updateElementSmp", {guid: this.guid, element})        
         },
@@ -220,6 +230,7 @@ export default {
             this.$store.dispatch("smpstorage/updateKp", {objName: 'withBounds', guid: this.guid, kpKey: kp.key, obj: {value: withBounds}})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
         },
+
 
         updateBounds(newBound, bound, kp) {
             let bounds = bound === "upper" ? {lower: kp.bounds.lower, upper: newBound} : {lower: newBound, upper: kp.bounds.upper}

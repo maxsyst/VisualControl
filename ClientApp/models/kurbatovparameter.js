@@ -20,6 +20,7 @@ class StandartMeasurementPattern {
         this.stageId = smp.stage.stageId
         this.dividerId = smp.divider.id
         this.name = smp.name
+        this.mslName = smp.mslName
         this.patternId = patternId || 0
         this.kpList = [...kpList]
         this.id = id || 0   

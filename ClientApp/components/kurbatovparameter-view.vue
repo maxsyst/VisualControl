@@ -228,7 +228,7 @@ export default {
             selectedElementIds.forEach(elementId => {
                 const element = this.elementsArray.find(e => e.elementId === elementId)
                 const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === "Нет" ? "No" : parentSmp.divider.name}µm`
-                this.createSmpFromService({name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
+                this.createSmpFromService({name: name, mslName: "", element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
             })
             this.showSnackbar("Копирование завершено")
             this.copyDialog = false
@@ -241,7 +241,7 @@ export default {
 
         createSmp() {
             if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
-                this.createSmpFromService({ name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
+                this.createSmpFromService({ name: this.smpName, mslName: "", element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
                 this.smpCreateDialog = false
             }
             else {
