@@ -71,7 +71,7 @@
                                     <v-row>
                                         <v-col lg="3">
                                             <v-select   :value="parameter.standartParameter"
-                                                        :items="standartParameters"
+                                                        :items="standartParameters.filter(x => !forbiddenStandartParameters.find(f => f.key === parameter.key).forbiddenIds.includes(x.id))"
                                                         no-data-text="Нет данных"
                                                         return-object
                                                         item-text="parameterName"
@@ -87,7 +87,7 @@
                                                             readonly outlined label="Расширенное название:">
                                             </v-text-field>
                                         </v-col>
-                                        <v-col lg="4">
+                                        <v-col lg="5">
                                             <v-text-field   :value="parameter.standartParameter.parameterNameStat" 
                                                             :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
                                                                                             : 'Выберите параметр'"
@@ -171,7 +171,8 @@ export default {
     data() {
        return {
            step: 0,
-           stepperKey: 0
+           stepperKey: 0,
+           forbiddenStandartParameters: []
        }
     },
 
@@ -191,13 +192,22 @@ export default {
         },
 
         createParameter() {
-            this.createKurbatovParameter(this.guid)
+            let kp = this.createKurbatovParameter(this.guid)
             this.step++
             this.stepperKeyUpdate()
-            
+            this.forbiddenStandartParameters.push({key: kp.key, forbiddenIds: this.forbiddenStandartParameters.map(x => x.selectedId), selectedId: 0})
         },
 
         updateStandartParameter(standartParameter, kp) {
+            let oldStandartParameterId = kp.standartParameter.id
+            this.forbiddenStandartParameters.forEach(f => {
+                f.forbiddenIds = f.forbiddenIds.filter(x => x !== oldStandartParameterId)
+                if(f.key !== kp.key) {
+                    f.forbiddenIds.push(standartParameter.id)
+                } else {
+                    f.selectedId = standartParameter.id
+                }
+            })
             this.$store.dispatch("smpstorage/updateKp", {objName: 'standartParameter', guid: this.guid, kpKey: kp.key, obj: standartParameter})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: {parameterRq: true}})
         },
@@ -227,6 +237,10 @@ export default {
             let kp = this.smp.kpList[step - 1]
             this.$store.dispatch("smpstorage/deleteFromKpList", {guid: this.guid, kp})
             this.step--            
+            this.forbiddenStandartParameters = this.forbiddenStandartParameters.filter(x => x.key !== kp.key)
+            this.forbiddenStandartParameters.forEach(f => {
+                f.forbiddenIds = f.forbiddenIds.filter(x => x !== kp.standartParameter.id)
+            })
         },
 
         stepperKeyUpdate() {

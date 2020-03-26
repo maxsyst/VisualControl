@@ -92,14 +92,14 @@
                                     no-data-text="Нет данных"
                                     return-object
                                     outlined
-                                    label="Выберите перифирию:">
+                                    label="Выберите периферию:">
                                 </v-select>
                             </v-col>
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="indigo" @click="smpCreateDialog = false">Закрыть</v-btn>
+                        <v-btn color="pink" @click="smpCreateDialog = false">Закрыть</v-btn>
                         <v-btn v-if="readyToCreateSMP" color="indigo" @click="createSmp">Добавить</v-btn>
                    </v-card-actions>
                 </v-card>

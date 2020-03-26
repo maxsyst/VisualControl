@@ -7,7 +7,7 @@ export const kurbatovParameterService = {
 
 export const restoreKpListFromSmpVm = (guid, kpVmList) => kpVmList.forEach(kpVm => {createKurbatovParameter(guid, restoreKurbatovParameterFromViewModel(kpVm))})
 
-export const createKurbatovParameter = (guid, kp = createInitialKurbatovParameter()) => store.dispatch("smpstorage/addToKpList",  {guid, kp})
+export const createKurbatovParameter = (guid, kp = createInitialKurbatovParameter()) => { store.dispatch("smpstorage/addToKpList",  {guid, kp}); return kp}
 
 const restoreKurbatovParameterFromViewModel = (kpVm) => {
     let kp = createInitialKurbatovParameter()
