@@ -23,10 +23,10 @@
                     label="Выберите этап:">
                 </v-select>
             </v-col>
-            <v-col lg="3">
+            <v-col lg="2">
                     <v-text-field   :value="smp.mslName"
                                     @change="updateMslName($event)"
-                                    readonly outlined label="Номер операции в МСЛ:">
+                                    outlined label="Номер операции в МСЛ:">
                     </v-text-field>
             </v-col>    
             <v-col lg="2">
@@ -40,17 +40,17 @@
                     label="Выберите периферию:">
                 </v-select>
             </v-col>
-            <v-col lg="3">
-                <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
-                <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
-            </v-col>             
-            <v-col lg="1">
+            <v-col lg="1">                
                 <v-btn v-if="validationIsCorrect" fab dark small color="indigo" @click="$emit('chbx-dialog', guid)">
                     <v-icon dark color="primary">file_copy</v-icon>
                 </v-btn>
                  <v-btn fab dark small color="indigo" @click="$emit('delete-smp', guid)">
                     <v-icon dark color="primary">delete</v-icon>
                 </v-btn>
+            </v-col>
+            <v-col lg="1">
+                <v-btn v-if="!validationIsCorrect" fab dark small color="pink"><v-icon dark color="white">error_outline</v-icon></v-btn>
+                <v-btn v-else fab dark small color="green"><v-icon dark color="white">done_outline</v-icon></v-btn>      
             </v-col>
         </v-row>
         <v-row>
