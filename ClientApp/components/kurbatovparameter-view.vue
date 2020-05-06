@@ -22,7 +22,7 @@
                             return-object
                             item-text="name"
                             outlined
-                            @change="getSelectedPattern(selectedPattern)"
+                            @change="changeSelectedPattern(selectedPattern)"
                             label="Выберите шаблон:">
                 </v-select>
             </v-col>
@@ -255,6 +255,38 @@ export default {
             this.showSnackbar("Удаление успешно")
         },
 
+        async routeHandler(routeName) {
+            if(routeName === "kurbatovparameter") {
+                this.initialDialog = true
+                this.selectedDieTypeId = ""
+            }
+            if(routeName === "kurbatovparameter-initial-typeisselected") {
+                this.initialDialog = true
+                this.selectedDieTypeId = this.$route.params.dieType
+            }
+            if(routeName === "kurbatovparameter-creating") {
+                this.initialDialog = false
+                this.selectedDieTypeId = this.$route.params.dieType
+                await goToCreatingMode()
+            }
+            if(routeName === "kurbatovparameter-updating") {
+                this.initialDialog = false
+                this.selectedDieTypeId = this.$route.params.dieType
+                let selectedPatternId = this.$route.params.patternId
+                this.mode = 'updating'
+                await this.$http
+                    .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
+                    .then(response => {this.patterns = response.data;  this.selectedPattern = this.patterns.find(x => x.id === selectedPatternId)})
+                    .then(async () =>  await getSelectedPattern(selectedPattern))
+                    .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))               
+            }
+        },
+
+        async changeSelectedPattern(selectedPattern) {
+            this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: this.selectedDieTypeId, patternId: selectedPattern.id }});
+            await getSelectedPattern(selectedPattern)
+        },
+
         async savePattern(smpArray) {
             let mode = this.mode
             this.showLoading("Сохранение...")
@@ -318,7 +350,7 @@ export default {
         async goToCreatingMode() {
             this.initialDialog = false
             this.mode = 'creating'
-            await this.fillSmpStorage().then(r => this.$router.push({ name: 'kurbatovparameter-creating', params: { dieType: this.selectedDieTypeId } }))
+            await this.fillSmpStorage().then(r => this.$router.push({ name: 'kurbatovparameter-creating', params: { dieType: this.selectedDieTypeId }}))
         },
 
         async fillSmpStorage() {
