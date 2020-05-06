@@ -303,9 +303,12 @@ export default {
                 this.patterns = this.patterns.filter(x => x.id !== selectedPattern.id)
                 this.selectedPattern = this.patterns[0] || null
                 this.showSnackbar("Успешно удалено")  
+                return this.selectedPattern
             })
-            .then(async r => {
-                await this.getSelectedPattern(this.selectedPattern)                
+            .then(async selectedPattern => {
+                selectedPattern 
+                    ? await this.getSelectedPattern(selectedPattern)        
+                    : Promise.resolve()        
             })
             .catch(error => {
                 this.showSnackbar("Ошибка при удалении")    
