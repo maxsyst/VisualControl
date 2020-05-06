@@ -156,8 +156,6 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
             
         }
-
-
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
           
@@ -184,7 +182,7 @@ namespace VueExample
 
             app.UseSignalR(options =>
             {
-                options.MapHub<LivePointHub>("/livepoint");
+                options.MapHub<LivePointHub>("/livepoint");                
             });
 
             app.UseCors("DefaultPolicy");

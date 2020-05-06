@@ -7,11 +7,12 @@ export const kurbatovParameterService = {
 
 export const restoreKpListFromSmpVm = (guid, kpVmList) => kpVmList.forEach(kpVm => {createKurbatovParameter(guid, restoreKurbatovParameterFromViewModel(kpVm))})
 
-export const createKurbatovParameter = (guid, kp = createInitialKurbatovParameter()) => store.dispatch("smpstorage/addToKpList",  {guid, kp})
+export const createKurbatovParameter = (guid, kp = createInitialKurbatovParameter()) => { store.dispatch("smpstorage/addToKpList",  {guid, kp}); return kp}
 
 const restoreKurbatovParameterFromViewModel = (kpVm) => {
     let kp = createInitialKurbatovParameter()
-    kp.bounds = {lower: kpVm.kurbatovParameterBorders.lower, upper: kpVm.kurbatovParameterBorders.upper}
+    kp.id = kpVm.id
+    kp.bounds = {id: kpVm.kurbatovParameterBorders.id || 0, lower: kpVm.kurbatovParameterBorders.lower || "", upper: kpVm.kurbatovParameterBorders.upper || ""}
     kp.withBounds.value = Boolean(kpVm.kurbatovParameterBorders.id)
     kp.validationRules.parameterRq = true
     kp.standartParameter = {...kpVm.standartParameter}
@@ -19,8 +20,9 @@ const restoreKurbatovParameterFromViewModel = (kpVm) => {
 }
 
 const createInitialKurbatovParameter = () => ({
+    id: 0,
     standartParameter: {parameterName: "", russianParameterName: "", parameterNameStat: "", specialRon: false, dividerNeed: false},
-    bounds: {lower: "", upper: ""},
+    bounds: {id: 0, lower: "", upper: ""},
     withBounds: {value: false},
     validationRules: {boundsRq: true, lowerBoundIsNumeric: true, upperBoundIsNumeric: true, parameterRq: false, lowerBoundLowerThanUpperBound: true},
     key: newGuid()

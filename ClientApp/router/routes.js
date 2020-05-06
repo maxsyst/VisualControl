@@ -42,7 +42,25 @@ export const routes = [
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
   { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true }, 
   { name: 'standartparameter', path: '/standart-parameter', component: StandartParameter, display: 'StandartParameter'}, 
-  { name: 'kurbatovparameter', path: '/kb-parameter', component: KurbatovParameter, display: 'KParameter', nav: true}, 
+  { name: 'kurbatovparameter', path: '/kb-parameter', component: KurbatovParameter, display: 'KParameter', nav: true,
+    children: [
+      {
+        name: "kurbatovparameter-initial-typeisselected",
+        path: 'dieType/:dieType',
+        component: KurbatovParameter
+      },
+      {
+        name: "kurbatovparameter-creating",
+        path: 'dieType/:dieType/mode/creating',
+        component: KurbatovParameter
+      },
+      {
+        name: "kurbatovparameter-updating",
+        path: 'dieType/:dieType/mode/updating/patternId/:patternId',
+        component: KurbatovParameter
+      }
+    ]
+  }, 
   { name: 'stagetable', path: '/stt/:processId', component: StageTable, props: route => {return {processId: +route.params.processId}}},
   { name: 'uploader', path: '/uu', component: Uploader, display: 'Загрузка измерений', nav: true, uploadingArea: true },
   { name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true }, 

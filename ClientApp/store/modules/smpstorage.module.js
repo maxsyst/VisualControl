@@ -27,6 +27,9 @@ export const smpstorage = {
             commit('updateElementSmp', {smp: getters.currentSmp(guid), element})
             commit('updateName', {smp: getters.currentSmp(guid)})
         },
+        updateMslNameSmp ({ commit, getters }, {guid, mslName}) {
+            commit('updateMslNameSmp', {smp: getters.currentSmp(guid), mslName})
+        },
         updateStageSmp ({ commit, getters }, {guid, stage}) {
             commit('updateStageSmp', {smp: getters.currentSmp(guid), stage})
             commit('updateName', {smp: getters.currentSmp(guid)})
@@ -119,6 +122,9 @@ export const smpstorage = {
         },
         updateName(state, {smp}) {
             smp.name = `${smp.element.name}_${smp.stage.stageName.split(' ').join('+')}_${smp.divider.name === "Нет" ? "No" : smp.divider.name}µm` 
+        },
+        updateMslNameSmp(state, {smp, mslName}) {
+            smp.mslName = mslName
         },
         updateElementSmp(state, {smp, element}) {
             smp.element = {...element}

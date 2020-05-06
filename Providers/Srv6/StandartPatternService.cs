@@ -41,6 +41,7 @@ namespace VueExample.Providers.Srv6
                                                                     StageId = smp.StageId, 
                                                                     DividerId = smp.DividerId, 
                                                                     PatternId = smp.PatternId, 
+                                                                    MslName = smp.MslName,
                                                                     Name = smp.Name};
                 smpFull.StandartPattern = standartPattern;
                 smpFull.KurbatovParameters = new List<KurbatovParameterEntity>();
@@ -61,9 +62,37 @@ namespace VueExample.Providers.Srv6
             return _mapper.Map<StandartPatternEntity, StandartPattern>(standartPattern);
         }
 
-        public Task<StandartPattern> Update(StandartMeasurementPatternFullViewModel standartMeasurementPatternFullViewModel)
+        public async Task<StandartPattern> Update(StandartMeasurementPatternFullViewModel standartMeasurementPatternFull)
         {
-            throw new NotImplementedException();
+            var standartPattern = await _standartPatternProvider.GetById(standartMeasurementPatternFull.StandartPattern.Id);
+            if(standartPattern.IsNullObject)
+                throw new RecordNotFoundException();
+            var smpList = new List<StandartMeasurementPatternEntity>();
+            foreach(var smp in standartMeasurementPatternFull.standartMeasurementPatternList)
+            {
+                var smpFull = new StandartMeasurementPatternEntity{ Id = smp.Id,
+                                                                    ElementId = smp.ElementId, 
+                                                                    StageId = smp.StageId, 
+                                                                    DividerId = smp.DividerId, 
+                                                                    PatternId = smp.PatternId, 
+                                                                    MslName = smp.MslName,
+                                                                    Name = smp.Name};
+                smpFull.KurbatovParameters = new List<KurbatovParameterEntity>();
+                foreach (var kp in smp.kpList)
+                {
+                    if (String.IsNullOrEmpty(kp.KurbatovParameterBorders.Lower) && String.IsNullOrEmpty(kp.KurbatovParameterBorders.Upper))
+                    {
+                        smpFull.KurbatovParameters.Add(new KurbatovParameterEntity{Id = kp.Id, StandartParameterId = kp.StandartParameter.Id});
+                    }
+                    else
+                    {
+                        smpFull.KurbatovParameters.Add(new KurbatovParameterEntity{Id = kp.Id, KurbatovParameterBordersEntity = new KurbatovParameterBordersEntity{Id = (int)kp.KurbatovParameterBorders.Id, Upper = kp.KurbatovParameterBorders.Upper, Lower = kp.KurbatovParameterBorders.Lower}, StandartParameterId = kp.StandartParameter.Id});
+                    }
+                }
+                smpList.Add(smpFull);
+            }
+            await _standartMeasurementPatternProvider.UpdateFull(smpList);
+            return _mapper.Map<StandartPatternEntity, StandartPattern>(standartPattern);
         }
 
         public async Task Delete(int id)

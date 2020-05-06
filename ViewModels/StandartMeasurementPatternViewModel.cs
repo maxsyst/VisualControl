@@ -20,6 +20,7 @@ namespace VueExample.ViewModels
         public int DividerId { get; set; }
         public int PatternId { get; set; }
         public string Name { get; set; }
+        public string MslName { get; set; }
         
         [IgnoreMap]
         [JsonProperty(PropertyName = "kpList")]

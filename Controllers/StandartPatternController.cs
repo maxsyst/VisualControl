@@ -24,21 +24,23 @@ namespace VueExample.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(StandartPattern), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [Route("create")]
+        [Route("creating")]
         public async Task<IActionResult> Create([FromBody] JObject standartMeasurementPatternFullJObject)
         {
-            var standartPattern = await _standartPatternService.CreateFull(standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>());
-            return CreatedAtAction("Create", standartPattern);
+            var smpViewModel = standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>();
+            var standartPattern = await _standartPatternService.CreateFull(smpViewModel);
+            return CreatedAtAction("Creating", standartPattern);
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(StandartPattern), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(StandartPattern), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [Route("update")]
+        [Route("updating")]
         public async Task<IActionResult> Update([FromBody] JObject standartMeasurementPatternFullJObject)
         {
-            var standartPattern = await _standartPatternService.Update(standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>());
-            return CreatedAtAction("Update", standartPattern);
+            var smpViewModel = standartMeasurementPatternFullJObject.ToObject<StandartMeasurementPatternFullViewModel>();
+            var standartPattern = await _standartPatternService.Update(smpViewModel);
+            return CreatedAtAction("Updating", standartPattern);
         }
 
         [HttpGet]

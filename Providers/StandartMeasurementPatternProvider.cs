@@ -48,5 +48,25 @@ namespace VueExample.Providers
             return await _srv6Context.StandartMeasurementPatterns.Where(x => x.PatternId == patternId).Include(x => x.KurbatovParameters).ThenInclude(k => k.StandartParameterEntity)
                                                                                                       .Include(x => x.KurbatovParameters).ThenInclude(k => k.KurbatovParameterBordersEntity).ToListAsync();
         }
+
+        public async Task<List<StandartMeasurementPatternEntity>> UpdateFull(List<StandartMeasurementPatternEntity> smpList)
+        {
+            var smpOldIdList = await _srv6Context.StandartMeasurementPatterns.Where(x => x.PatternId == smpList.First().PatternId).Select(x => x.Id).ToListAsync();
+            foreach (var smp in smpList)
+            {
+                if(smp.Id == 0)
+                {
+                    _srv6Context.StandartMeasurementPatterns.Add(smp);
+                }
+                else 
+                {
+                    _srv6Context.StandartMeasurementPatterns.Update(smp);
+                    smpOldIdList.Remove(smp.Id);
+                }
+            }
+            _srv6Context.StandartMeasurementPatterns.RemoveRange(_srv6Context.StandartMeasurementPatterns.Where(x => smpOldIdList.Contains(x.Id)));
+            await _srv6Context.SaveChangesAsync();
+            return smpList;
+        }
     }
 }

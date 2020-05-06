@@ -6,8 +6,13 @@
                 <v-btn v-if="validation && patternName && smpArray.length > 0" color="success" block @click="savePattern(smpArray)"> 
                     {{mode==='creating' ? 'Сохранить шаблон' : 'Обновить шаблон'}}                   
                 </v-btn>   
-            </v-col>      
-            <v-col lg="2" offset-lg="3">
+            </v-col>  
+            <v-col lg="2">
+                <v-btn v-if="mode==='updating'" color="pink" block @click="deletePattern(selectedPattern)"> 
+                    Удалить шаблон                 
+                </v-btn>   
+            </v-col>         
+            <v-col lg="2" offset-lg="1">
                 <v-text-field v-if="mode==='creating'" outlined v-model="patternName" :error-messages="patternName ? []                                                                                                          
                                                                             : 'Введите название шаблона'" label="Название шаблона"></v-text-field>
                  <v-select  v-else   
@@ -17,7 +22,7 @@
                             return-object
                             item-text="name"
                             outlined
-                            @change="getSelectedPattern(selectedPattern)"
+                            @change="changeSelectedPattern(selectedPattern)"
                             label="Выберите шаблон:">
                 </v-select>
             </v-col>
@@ -87,14 +92,14 @@
                                     no-data-text="Нет данных"
                                     return-object
                                     outlined
-                                    label="Выберите перифирию:">
+                                    label="Выберите периферию:">
                                 </v-select>
                             </v-col>
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="indigo" @click="smpCreateDialog = false">Закрыть</v-btn>
+                        <v-btn color="pink" @click="smpCreateDialog = false">Закрыть</v-btn>
                         <v-btn v-if="readyToCreateSMP" color="indigo" @click="createSmp">Добавить</v-btn>
                    </v-card-actions>
                 </v-card>
@@ -223,7 +228,7 @@ export default {
             selectedElementIds.forEach(elementId => {
                 const element = this.elementsArray.find(e => e.elementId === elementId)
                 const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === "Нет" ? "No" : parentSmp.divider.name}µm`
-                this.createSmpFromService({name: name, element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
+                this.createSmpFromService({name: name, mslName: "", element: {...element}, stage: {...parentSmp.stage}, divider: {...parentSmp.divider}, kpList: [...parentSmp.kpList]})
             })
             this.showSnackbar("Копирование завершено")
             this.copyDialog = false
@@ -236,7 +241,7 @@ export default {
 
         createSmp() {
             if(!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
-                this.createSmpFromService({ name: this.smpName, element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
+                this.createSmpFromService({ name: this.smpName, mslName: "", element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: []})
                 this.smpCreateDialog = false
             }
             else {
@@ -250,12 +255,45 @@ export default {
             this.showSnackbar("Удаление успешно")
         },
 
+        async routeHandler(routeName) {
+            if(routeName === "kurbatovparameter") {
+                this.initialDialog = true
+                this.selectedDieTypeId = ""
+            }
+            if(routeName === "kurbatovparameter-initial-typeisselected") {
+                this.initialDialog = true
+                this.selectedDieTypeId = this.$route.params.dieType
+            }
+            if(routeName === "kurbatovparameter-creating") {
+                this.initialDialog = false
+                this.selectedDieTypeId = this.$route.params.dieType
+                await goToCreatingMode()
+            }
+            if(routeName === "kurbatovparameter-updating") {
+                this.initialDialog = false
+                this.selectedDieTypeId = this.$route.params.dieType
+                let selectedPatternId = this.$route.params.patternId
+                this.mode = 'updating'
+                await this.$http
+                    .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
+                    .then(response => {this.patterns = response.data;  this.selectedPattern = this.patterns.find(x => x.id === selectedPatternId)})
+                    .then(async () =>  await getSelectedPattern(selectedPattern))
+                    .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))               
+            }
+        },
+
+        async changeSelectedPattern(selectedPattern) {
+            this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: this.selectedDieTypeId, patternId: selectedPattern.id }});
+            await getSelectedPattern(selectedPattern)
+        },
+
         async savePattern(smpArray) {
+            let mode = this.mode
             this.showLoading("Сохранение...")
             await this.$http({
                 method: "post",
-                url: `/api/standartpattern/create`, 
-                data: new StandartMeasurementPatternFullViewModel(new StandartPattern(this.patternName, this.selectedDieTypeId), smpArray.map(smp => new StandartMeasurementPattern(smp, smp.kpList.map(k => new KurbatovParameter(new KurbatovParameterBorders(k.bounds.lower, k.bounds.upper), k.standartParameter))))), 
+                url: `/api/standartpattern/${mode}`, 
+                data: new StandartMeasurementPatternFullViewModel(new StandartPattern(this.patternName, this.selectedDieTypeId, this.selectedPattern.id), smpArray.map(smp => new StandartMeasurementPattern(smp, smp.kpList.map(k => new KurbatovParameter(new KurbatovParameterBorders(k.bounds.lower, k.bounds.upper, k.bounds.id), k.standartParameter, k.id)), this.selectedPattern.id, smp.id))), 
                 config: {
                     headers: {
                         'Accept': "application/json",
@@ -282,10 +320,37 @@ export default {
             });
         },
 
+        async deletePattern(selectedPattern) {
+            await this.$http({
+                method: "delete",
+                url: `/api/standartpattern/${selectedPattern.id}`, 
+                config: {
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': "application/json"
+                    }
+                }
+            })
+            .then(response => {
+                this.patterns = this.patterns.filter(x => x.id !== selectedPattern.id)
+                this.selectedPattern = this.patterns[0] || null
+                this.showSnackbar("Успешно удалено")  
+                return this.selectedPattern
+            })
+            .then(async selectedPattern => {
+                selectedPattern 
+                    ? await this.getSelectedPattern(selectedPattern)        
+                    : Promise.resolve(this.$router.push({ name: 'kurbatovparameter' }))      
+            })
+            .catch(error => {
+                this.showSnackbar("Ошибка при удалении")    
+            })
+        },
+
         async goToCreatingMode() {
             this.initialDialog = false
             this.mode = 'creating'
-            await this.fillSmpStorage()
+            await this.fillSmpStorage().then(r => this.$router.push({ name: 'kurbatovparameter-creating', params: { dieType: this.selectedDieTypeId }}))
         },
 
         async fillSmpStorage() {
@@ -299,7 +364,9 @@ export default {
             this.mode = 'updating'
             await this.$http
             .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
-            .then(response => {this.patterns = response.data; this.selectedPattern = response.data[0] || {}})
+            .then(response => {this.patterns = response.data; 
+                               this.selectedPattern = response.data[0] || {}; 
+                               this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: selectedDieTypeId, patternId: this.selectedPattern.id }});})
             .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))
         },
 
@@ -345,6 +412,12 @@ export default {
 
         getDividers() {
             this.$store.dispatch("dividers/getAllDividers", this)
+        }
+    },
+
+    watch: {
+        selectedDieTypeId: function(newValue) {
+            this.$router.push({ name: 'kurbatovparameter-initial-typeisselected', params: { dieType: newValue } });
         }
     },
 

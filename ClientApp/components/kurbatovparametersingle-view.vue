@@ -2,7 +2,8 @@
     <v-container>
         <v-row>
             <v-col lg="2">
-                <v-select :value="smp.element"
+                <v-select 
+                    :value="smp.element"
                     :items="this.$store.getters['smpstorage/elements']"
                     item-text="name"
                     no-data-text="Нет данных"
@@ -13,7 +14,8 @@
                 </v-select>
             </v-col>
             <v-col lg="4">
-                <v-select :value="smp.stage"
+                <v-select 
+                    :value="smp.stage"
                     :items="this.$store.getters['smpstorage/stages']"
                     item-text="stageName"
                     no-data-text="Нет данных"
@@ -24,7 +26,16 @@
                 </v-select>
             </v-col>
             <v-col lg="2">
-                <v-select :value="smp.divider"
+                <v-text-field  
+                    :value="smp.mslName"
+                    :key="`msl-${guid}`"
+                    @change="updateMslName($event)"
+                    outlined label="Номер операции в МСЛ:">
+                </v-text-field>
+            </v-col>    
+            <v-col lg="2">
+                <v-select 
+                    :value="smp.divider"
                     :items="$store.getters['dividers/getAll']"
                     item-text="name"
                     no-data-text="Нет данных"
@@ -34,17 +45,17 @@
                     label="Выберите периферию:">
                 </v-select>
             </v-col>
-             <v-col lg="3">
-                <v-btn v-if="!validationIsCorrect" large block outlined color="pink">Элемент заполнен некорректно</v-btn>
-                <v-btn v-else large block outlined color="green" >Элемент заполнен корректно</v-btn>      
-            </v-col>             
-            <v-col lg="1">
+            <v-col lg="1">                
                 <v-btn v-if="validationIsCorrect" fab dark small color="indigo" @click="$emit('chbx-dialog', guid)">
                     <v-icon dark color="primary">file_copy</v-icon>
                 </v-btn>
                  <v-btn fab dark small color="indigo" @click="$emit('delete-smp', guid)">
                     <v-icon dark color="primary">delete</v-icon>
                 </v-btn>
+            </v-col>
+            <v-col lg="1">
+                <v-btn v-if="!validationIsCorrect" fab dark small color="pink"><v-icon dark color="white">error_outline</v-icon></v-btn>
+                <v-btn v-else fab dark small color="green"><v-icon dark color="white">done_outline</v-icon></v-btn>      
             </v-col>
         </v-row>
         <v-row>
@@ -71,7 +82,10 @@
                                     <v-row>
                                         <v-col lg="3">
                                             <v-select   :value="parameter.standartParameter"
-                                                        :items="standartParameters"
+                                                        :items="forbiddenStandartParameters.length === 0 
+                                                                    ? [] 
+                                                                    : standartParameters
+                                                                        .filter(x => !forbiddenStandartParameters.find(f => f.key === parameter.key).forbiddenIds.includes(x.id))"
                                                         no-data-text="Нет данных"
                                                         return-object
                                                         item-text="parameterName"
@@ -82,15 +96,17 @@
                                         </v-col>
                                         <v-col lg="4">
                                             <v-text-field   :value="parameter.standartParameter.russianParameterName"
-                                                            :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
-                                                                            : 'Выберите параметр'"
+                                                            :error-messages="parameter.validationRules.parameterRq 
+                                                                                ? []                                                                                                          
+                                                                                : 'Выберите параметр'"
                                                             readonly outlined label="Расширенное название:">
                                             </v-text-field>
                                         </v-col>
-                                        <v-col lg="4">
+                                        <v-col lg="5">
                                             <v-text-field   :value="parameter.standartParameter.parameterNameStat" 
-                                                            :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
-                                                                                            : 'Выберите параметр'"
+                                                            :error-messages="parameter.validationRules.parameterRq 
+                                                                                ? []                                                                                                          
+                                                                                : 'Выберите параметр'"
                                                             readonly outlined label="Системное название:">
                                             </v-text-field>
                                         </v-col>
@@ -171,12 +187,18 @@ export default {
     data() {
        return {
            step: 0,
-           stepperKey: 0
+           stepperKey: 0,
+           forbiddenStandartParameters: []
        }
     },
 
     methods: {
         createKurbatovParameter: createKurbatovParameterFromService,
+
+        updateMslName(mslName) {
+            console.log(mslName)
+            this.$store.dispatch("smpstorage/updateMslNameSmp", {guid: this.guid, mslName})      
+        },
 
         updateElement(element) {
             this.$store.dispatch("smpstorage/updateElementSmp", {guid: this.guid, element})        
@@ -191,13 +213,22 @@ export default {
         },
 
         createParameter() {
-            this.createKurbatovParameter(this.guid)
-            this.step++
+            let kp = this.createKurbatovParameter(this.guid)
+            this.step = this.smp.kpList.length
             this.stepperKeyUpdate()
-            
+            this.forbiddenStandartParameters.push({key: kp.key, forbiddenIds: this.forbiddenStandartParameters.map(x => x.selectedId), selectedId: 0})
         },
 
         updateStandartParameter(standartParameter, kp) {
+            let oldStandartParameterId = kp.standartParameter.id
+            this.forbiddenStandartParameters.forEach(f => {
+                f.forbiddenIds = f.forbiddenIds.filter(x => x !== oldStandartParameterId)
+                if(f.key !== kp.key) {
+                    f.forbiddenIds.push(standartParameter.id)
+                } else {
+                    f.selectedId = standartParameter.id
+                }
+            })
             this.$store.dispatch("smpstorage/updateKp", {objName: 'standartParameter', guid: this.guid, kpKey: kp.key, obj: standartParameter})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: {parameterRq: true}})
         },
@@ -210,6 +241,7 @@ export default {
             this.$store.dispatch("smpstorage/updateKp", {objName: 'withBounds', guid: this.guid, kpKey: kp.key, obj: {value: withBounds}})
             this.$store.dispatch("smpstorage/updateKp", {objName: 'validationRules', guid: this.guid, kpKey: kp.key, obj: validationRules})
         },
+
 
         updateBounds(newBound, bound, kp) {
             let bounds = bound === "upper" ? {lower: kp.bounds.lower, upper: newBound} : {lower: newBound, upper: kp.bounds.upper}
@@ -227,6 +259,10 @@ export default {
             let kp = this.smp.kpList[step - 1]
             this.$store.dispatch("smpstorage/deleteFromKpList", {guid: this.guid, kp})
             this.step--            
+            this.forbiddenStandartParameters = this.forbiddenStandartParameters.filter(x => x.key !== kp.key)
+            this.forbiddenStandartParameters.forEach(f => {
+                f.forbiddenIds = f.forbiddenIds.filter(x => x !== kp.standartParameter.id)
+            })
         },
 
         stepperKeyUpdate() {
@@ -239,6 +275,11 @@ export default {
         
         prevStep (n) {              
             this.step = n === 1 ? this.smp.kpList.length : n - 1
+        },
+
+        recalculateForbiddenStandartParameters(kpList) {
+            let selectedStandartParameters = kpList.map(x => x.standartParameter.id)
+            return kpList.map(kp => ({forbiddenIds: selectedStandartParameters.filter(x => x !== kp.standartParameter.id), key: kp.key, selectedId: kp.standartParameter.id}))            
         },
 
         validationBoundsErrors(validationRules, bound) {
@@ -269,8 +310,9 @@ export default {
     },
 
     mounted() {
-        if(this.smp.kpList.length === 0)
-            this.createParameter()
+        this.smp.kpList.length === 0 
+            ? this.createParameter() 
+            : this.forbiddenStandartParameters = [...this.forbiddenStandartParameters, ...this.recalculateForbiddenStandartParameters(this.smp.kpList)]
     }
 }
 </script>
