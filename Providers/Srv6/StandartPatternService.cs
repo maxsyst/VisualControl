@@ -41,6 +41,7 @@ namespace VueExample.Providers.Srv6
                                                                     StageId = smp.StageId, 
                                                                     DividerId = smp.DividerId, 
                                                                     PatternId = smp.PatternId, 
+                                                                    MslName = smp.MslName,
                                                                     Name = smp.Name};
                 smpFull.StandartPattern = standartPattern;
                 smpFull.KurbatovParameters = new List<KurbatovParameterEntity>();
@@ -74,6 +75,7 @@ namespace VueExample.Providers.Srv6
                                                                     StageId = smp.StageId, 
                                                                     DividerId = smp.DividerId, 
                                                                     PatternId = smp.PatternId, 
+                                                                    MslName = smp.MslName,
                                                                     Name = smp.Name};
                 smpFull.KurbatovParameters = new List<KurbatovParameterEntity>();
                 foreach (var kp in smp.kpList)

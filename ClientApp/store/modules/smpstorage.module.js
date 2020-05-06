@@ -123,7 +123,7 @@ export const smpstorage = {
         updateName(state, {smp}) {
             smp.name = `${smp.element.name}_${smp.stage.stageName.split(' ').join('+')}_${smp.divider.name === "Нет" ? "No" : smp.divider.name}µm` 
         },
-        updateMslName(state, {smp, mslName}) {
+        updateMslNameSmp(state, {smp, mslName}) {
             smp.mslName = mslName
         },
         updateElementSmp(state, {smp, element}) {
