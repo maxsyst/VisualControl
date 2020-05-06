@@ -308,7 +308,7 @@ export default {
             .then(async selectedPattern => {
                 selectedPattern 
                     ? await this.getSelectedPattern(selectedPattern)        
-                    : Promise.resolve()        
+                    : Promise.resolve(this.$router.push({ name: 'kurbatovparameter' }))      
             })
             .catch(error => {
                 this.showSnackbar("Ошибка при удалении")    
@@ -318,7 +318,7 @@ export default {
         async goToCreatingMode() {
             this.initialDialog = false
             this.mode = 'creating'
-            await this.fillSmpStorage()
+            await this.fillSmpStorage().then(r => this.$router.push({ name: 'kurbatovparameter-creating', params: { dieType: this.selectedDieTypeId } }))
         },
 
         async fillSmpStorage() {
@@ -332,7 +332,9 @@ export default {
             this.mode = 'updating'
             await this.$http
             .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
-            .then(response => {this.patterns = response.data; this.selectedPattern = response.data[0] || {}})
+            .then(response => {this.patterns = response.data; 
+                               this.selectedPattern = response.data[0] || {}; 
+                               this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: selectedDieTypeId, patternId: this.selectedPattern.id }});})
             .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))
         },
 
@@ -378,6 +380,12 @@ export default {
 
         getDividers() {
             this.$store.dispatch("dividers/getAllDividers", this)
+        }
+    },
+
+    watch: {
+        selectedDieTypeId: function(newValue) {
+            this.$router.push({ name: 'kurbatovparameter-initial-typeisselected', params: { dieType: newValue } });
         }
     },
 
