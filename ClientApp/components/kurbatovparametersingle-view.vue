@@ -88,15 +88,17 @@
                                         </v-col>
                                         <v-col lg="4">
                                             <v-text-field   :value="parameter.standartParameter.russianParameterName"
-                                                            :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
-                                                                            : 'Выберите параметр'"
+                                                            :error-messages="parameter.validationRules.parameterRq 
+                                                                                ? []                                                                                                          
+                                                                                : 'Выберите параметр'"
                                                             readonly outlined label="Расширенное название:">
                                             </v-text-field>
                                         </v-col>
                                         <v-col lg="5">
                                             <v-text-field   :value="parameter.standartParameter.parameterNameStat" 
-                                                            :error-messages=" parameter.validationRules.parameterRq ? []                                                                                                          
-                                                                                            : 'Выберите параметр'"
+                                                            :error-messages="parameter.validationRules.parameterRq 
+                                                                                ? []                                                                                                          
+                                                                                : 'Выберите параметр'"
                                                             readonly outlined label="Системное название:">
                                             </v-text-field>
                                         </v-col>
@@ -203,7 +205,7 @@ export default {
 
         createParameter() {
             let kp = this.createKurbatovParameter(this.guid)
-            this.step++
+            this.step = this.smp.kpList.length
             this.stepperKeyUpdate()
             this.forbiddenStandartParameters.push({key: kp.key, forbiddenIds: this.forbiddenStandartParameters.map(x => x.selectedId), selectedId: 0})
         },
@@ -266,6 +268,11 @@ export default {
             this.step = n === 1 ? this.smp.kpList.length : n - 1
         },
 
+        recalculateForbiddenStandartParameters(kpList) {
+            let selectedStandartParameters = kpList.map(x => x.standartParameter.id)
+            return kpList.map(kp => ({forbiddenIds: selectedStandartParameters.filter(x => x !== kp.standartParameter.id), key: kp.key, selectedId: kp.standartParameter.id}))            
+        },
+
         validationBoundsErrors(validationRules, bound) {
             if(!validationRules.boundsRq)
                 return ["Выберите хотя бы одну границу"]
@@ -294,8 +301,9 @@ export default {
     },
 
     mounted() {
-        if(this.smp.kpList.length === 0)
-            this.createParameter()
+        this.smp.kpList.length === 0 
+            ? this.createParameter() 
+            : this.forbiddenStandartParameters = [...this.forbiddenStandartParameters, ...this.recalculateForbiddenStandartParameters(this.smp.kpList)]
     }
 }
 </script>
