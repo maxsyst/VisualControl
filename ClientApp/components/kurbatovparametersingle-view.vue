@@ -2,7 +2,8 @@
     <v-container>
         <v-row>
             <v-col lg="2">
-                <v-select :value="smp.element"
+                <v-select 
+                    :value="smp.element"
                     :items="this.$store.getters['smpstorage/elements']"
                     item-text="name"
                     no-data-text="Нет данных"
@@ -13,7 +14,8 @@
                 </v-select>
             </v-col>
             <v-col lg="4">
-                <v-select :value="smp.stage"
+                <v-select 
+                    :value="smp.stage"
                     :items="this.$store.getters['smpstorage/stages']"
                     item-text="stageName"
                     no-data-text="Нет данных"
@@ -24,13 +26,16 @@
                 </v-select>
             </v-col>
             <v-col lg="2">
-                    <v-text-field   :value="smp.mslName"
-                                    @change="updateMslName($event)"
-                                    outlined label="Номер операции в МСЛ:">
-                    </v-text-field>
+                <v-text-field  
+                    :value="smp.mslName"
+                    :key="`msl-${guid}`"
+                    @change="updateMslName($event)"
+                    outlined label="Номер операции в МСЛ:">
+                </v-text-field>
             </v-col>    
             <v-col lg="2">
-                <v-select :value="smp.divider"
+                <v-select 
+                    :value="smp.divider"
                     :items="$store.getters['dividers/getAll']"
                     item-text="name"
                     no-data-text="Нет данных"
@@ -77,7 +82,10 @@
                                     <v-row>
                                         <v-col lg="3">
                                             <v-select   :value="parameter.standartParameter"
-                                                        :items="standartParameters.filter(x => !forbiddenStandartParameters.find(f => f.key === parameter.key).forbiddenIds.includes(x.id))"
+                                                        :items="forbiddenStandartParameters.length === 0 
+                                                                    ? [] 
+                                                                    : standartParameters
+                                                                        .filter(x => !forbiddenStandartParameters.find(f => f.key === parameter.key).forbiddenIds.includes(x.id))"
                                                         no-data-text="Нет данных"
                                                         return-object
                                                         item-text="parameterName"
