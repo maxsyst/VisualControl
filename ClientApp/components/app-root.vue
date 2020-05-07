@@ -152,7 +152,7 @@
 
      watch: {
        $route(to, from) {
-          this.$store.dispatch('alert/clear');
+          
        }
      },
 
