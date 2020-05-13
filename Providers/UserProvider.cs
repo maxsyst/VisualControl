@@ -19,7 +19,7 @@ namespace VueExample.Providers
         private readonly AppSettings _appSettings;
         private readonly List<User> _usersList;
 
-        public UserProvider(IOptions<AppSettings> appSettings)
+        public UserProvider(IOptions<AppSettings> appSettings, Srv6Context srv6Context)
         {
             _appSettings = appSettings.Value;
             _usersList = GetUsers();

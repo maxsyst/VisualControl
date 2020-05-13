@@ -5,7 +5,7 @@
   "author": "Sergei Strelnikov",
   "license": "SVR",
   "scripts": {
-    "dev": "cross-env ASPNETCORE_ENVIRONMENT=Development NODE_ENV=development dotnet run",
+    "dev": "cross-env ASPNETCORE_ENVIRONMENT=dev NODE_ENV=development dotnet run",
     "build": "npm run build-vendor:prod && npm run build:prod",
     "build:prod": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "build-vendor:prod": "cross-env NODE_ENV=production webpack --config webpack.config.vendor.js --progress",

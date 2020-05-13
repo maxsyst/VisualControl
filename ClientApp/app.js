@@ -12,10 +12,6 @@ import AsyncComputed from 'vue-async-computed'
 import UUID from 'vue-uuid'
  
 
-
-
-
-
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'vuetify/dist/vuetify.min.css'
 
