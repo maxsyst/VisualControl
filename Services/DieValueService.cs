@@ -29,10 +29,10 @@ namespace VueExample.Services
 
         public Dictionary<string, List<DieValue>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
         {
-            var dieGraphicsList = new List<DieGraphics>();
-            dieGraphicsList.AddRange(_srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToList());
+            var dieGraphicsList = _srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId);
             var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId, x => x).ToDictionary(x => x.Key, x => x.ToList());
-            return DieGraphicsMappingParallel(dgDictionary).ToDictionary(entry => entry.Key, entry => entry.Value);;
+            var mappedDictionary = this.DieGraphicsMapping(dgDictionary).ToDictionary(entry => entry.Key, entry => entry.Value);
+            return mappedDictionary;
         }
 
         public List<long?> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
@@ -40,6 +40,27 @@ namespace VueExample.Services
             var diesList = new List<long?>();            
             return _srv6Context.DiesParameterOld.Where( x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToList();
         }
+
+        private Dictionary<string, List<DieValue>> DieGraphicsMapping(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary)
+        {
+            var dieValueDictionary = new Dictionary<string, List<DieValue>>();
+            foreach(var dieGraphicList in dieGraphicsDictionary)
+            {
+                
+                foreach(var dieGraphic in dieGraphicList.Value)
+                {
+                    var afterParseDictionary = SelectGraphicSrv6ParsingStrategy(dieGraphic.GraphicId).ParseStringGraphic(dieGraphic);
+                    foreach (var item in afterParseDictionary)
+                    {
+                        dieValueDictionary.TryAdd(item.Key, new List<DieValue>());
+                        dieValueDictionary[item.Key].Add(item.Value);                            
+                    }
+                                       
+                }               
+            }
+           return dieValueDictionary;
+        }
+        
 
         private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary)
         {
