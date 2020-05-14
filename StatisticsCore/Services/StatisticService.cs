@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VueExample.Contexts;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6;
@@ -17,22 +18,22 @@ namespace VueExample.StatisticsCore.Services
             _graphicService = graphicService;
         }
         
-        public Dictionary<string, List<SingleParameterStatistic>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider) {
+        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider) {
             var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
             foreach (var graphicDV in dieValues) 
             {
              
-                var graphic = _graphicService.GetById(Convert.ToInt32(graphicDV.Key.Split('_')[0]));
+                var graphic = await _graphicService.GetById(Convert.ToInt32(graphicDV.Key.Split('_')[0]));
                 var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, stageId, divider);
-                statisticsDictionary.Add (graphicDV.Key, singleParameterStatisticsList);
+                statisticsDictionary.Add(graphicDV.Key, singleParameterStatisticsList);
             }
             return statisticsDictionary;
         }
 
-        public List<VueExample.StatisticsCore.DataModels.SingleStatisticData> GetStatisticsDataByGraphicState (List<long?> dieList, string keyGraphicState, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList) 
+        public async Task<List<VueExample.StatisticsCore.DataModels.SingleStatisticData>> GetStatisticsDataByGraphicState (List<long?> dieList, string keyGraphicState, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList) 
         {
             var graphicId = Convert.ToInt32(keyGraphicState.Split('_')[0]);
-            var graphic = _graphicService.GetById(graphicId);                          
+            var graphic = await _graphicService.GetById(graphicId);                          
             return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesList, divider, singleParameterStatisticsList);
         }
 

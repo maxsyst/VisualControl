@@ -15,7 +15,7 @@ namespace VueExample.Providers.Srv6
         {
             _srv6Context = srv6Context;
         }
-        public Graphic GetById(int graphicId) => _srv6Context.Graphics.FirstOrDefault(x => x.Id == graphicId);
+        public async Task<Graphic> GetById(int graphicId) => await _srv6Context.Graphics.FirstOrDefaultAsync(x => x.Id == graphicId);
         
         public async Task<Graphic> GetByCodeProductAndName(int codeProductId, string name)
         {

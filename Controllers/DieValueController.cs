@@ -26,18 +26,18 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetByMeasurementRecordingId(int measurementRecordingId)
+        public async Task<IActionResult> GetByMeasurementRecordingId(int measurementRecordingId)
         {
             string measurementRecordingIdAsKey = "V_" + Convert.ToString(measurementRecordingId);
-            Func<Dictionary<string, List<DieValue>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            var dieValuesDictionary = cache.GetOrAdd(measurementRecordingIdAsKey, cachedService);
+            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            var dieValuesDictionary = await cache.GetOrAddAsync(measurementRecordingIdAsKey, cachedService);
             return Ok(JsonConvert.SerializeObject(dieValuesDictionary));
         }
 
         [HttpGet]
-        public IActionResult GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
+        public async Task<IActionResult> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
         {
-            var diesList = _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
+            var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
             return Ok(JsonConvert.SerializeObject(diesList));
         }
     }

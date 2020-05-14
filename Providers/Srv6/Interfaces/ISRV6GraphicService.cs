@@ -6,6 +6,6 @@ namespace VueExample.Providers.Srv6.Interfaces
     public interface ISRV6GraphicService
     {
         Task<Graphic> GetByCodeProductAndName(int codeProductId, string name);
-        Graphic GetById(int graphicId);
+        Task<Graphic> GetById(int graphicId);
     }
 }
