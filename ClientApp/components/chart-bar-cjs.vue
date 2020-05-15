@@ -1,11 +1,11 @@
 <template>
 <v-card>
-  <v-container class="graphContainer"> 
-    <bar-chart
-      v-if="loaded"
-      :chartdata="chartdata"
-      :options="options"/>
-  </v-container>
+    <v-container> 
+        <bar-chart
+        v-if="loaded"
+        :chartdata="chartdata"
+        :options="options"/>
+    </v-container>
   </v-card>
 </template>
 
@@ -75,9 +75,5 @@ export default {
 </script>
 
 <style>
-    .graphContainer
-    {
-        height: 400px;
-        width: 350px;
-    }
+   
 </style>

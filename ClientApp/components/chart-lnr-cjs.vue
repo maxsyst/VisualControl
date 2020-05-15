@@ -1,6 +1,6 @@
 <template>
 <v-card>
-  <v-container class="graphContainer"> 
+  <v-container> 
     <line-chart
       v-if="loaded"
       :chartdata="chartdata"
@@ -73,11 +73,3 @@ export default {
     
 }
 </script>
-
-<style>
-    .graphContainer
-    {
-        height: 400px;
-        width: 350px;
-    }
-</style>

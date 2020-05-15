@@ -2,8 +2,8 @@
 <v-card>
      
           <v-container  fluid>
-              <v-layout class="charts" ref="chartdiv">
-              </v-layout>
+              <v-row class="charts" ref="chartdiv">
+              </v-row>
               
           </v-container>
    

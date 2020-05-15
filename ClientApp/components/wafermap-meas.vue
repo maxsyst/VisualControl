@@ -9,10 +9,10 @@
       loader="bars"
       :is-full-page="true"
     ></loading>
-    <v-layout row wrap>
-      <v-flex d-flex lg4>
-        <v-layout justify-center column>
-          <v-flex d-flex>
+    <v-row wrap>
+      <v-col lg="4">
+        <v-row justify-center column>
+          <v-col>
             <v-tabs background-color="indigo" dark slider-color="primary" icons-and-text>
               <v-tab href="#wafer">
                 Выбор пластины
@@ -60,8 +60,8 @@
               <v-tab-item value="extra">
                 <v-card color="#303030" dark>
                   <v-card-text>
-                    <v-layout justify-center column>
-                      <v-flex d-flex lg6>
+                    <v-row justify-center column>
+                      <v-col lg="6">
                         <v-select
                           v-model="selectedGraphics"
                           :items="availiableGraphics"
@@ -92,8 +92,8 @@
                             </v-chip>
                           </template>
                         </v-select>
-                      </v-flex>
-                      <v-flex d-flex lg6>
+                      </v-col>
+                      <v-col lg="6">
                         <v-select
                           v-model="selectedDivider"
                           :items="dividers"
@@ -104,17 +104,17 @@
                           outlined
                           label="Выберите приведение к мм"
                         ></v-select>
-                      </v-flex>
-                    </v-layout>
+                      </v-col>
+                    </v-row>
                   </v-card-text>
                 </v-card>
               </v-tab-item>
               <v-tab-item value="statistics">
-                <v-layout>
-                  <v-flex d-flex>
+                <v-row>
+                  <v-col>
                     <v-card color="#303030" dark>
                       <v-card-title primary-title>
-                        <span class="font-weight-light">Годные по статистике</span>
+                       <v-chip color="indigo" label dark>Годные по статистике</v-chip>
                       </v-card-title>
                       <v-card-text>
                         <v-progress-circular
@@ -129,11 +129,11 @@
                         </v-btn>
                       </v-card-text>
                     </v-card>
-                  </v-flex>
-                  <v-flex d-flex>
+                  </v-col>
+                  <v-col>
                     <v-card color="#303030" dark>
                       <v-card-title primary-title>
-                        <span class="font-weight-light">Годные по границам</span>
+                        <v-chip color="indigo" label dark>Годные по границам</v-chip>
                       </v-card-title>
                       <v-card-text>
                         <v-progress-circular
@@ -152,14 +152,14 @@
                         </v-btn>
                       </v-card-text>
                     </v-card>
-                  </v-flex>
-                </v-layout>
+                  </v-col>
+                </v-row>
               </v-tab-item>
             </v-tabs>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex d-flex lg4 offset-lg2>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col lg="4" offset-lg="1">
         <wafermap-svg
           :waferId="selectedWafer"
           :avbSelectedDies="avbSelectedDies"
@@ -167,13 +167,11 @@
           :fieldHeight="fieldHeight"
           :fieldWidth="fieldWidth"
         ></wafermap-svg>
-      </v-flex>
-      <v-flex d-flex lg2>
+      </v-col>
+      <v-col lg="2">
         <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">
           <v-card-title primary-title>
-            <span
-              class="font-weight-light"
-            >{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</span>
+            <v-chip color="indigo" label dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
           </v-card-title>
           <v-card-text class="pa-3">
             <v-progress-circular
@@ -188,19 +186,19 @@
             <v-btn outlined color="primary" @click="selectAllDies()">Выбрать все кристаллы</v-btn>
           </v-card-actions>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
-    <v-layout row wrap v-for="(keyGraphicState, key) in selectedGraphics" :key="`kgs-${key}`">
-      <v-flex d-flex lg8>
-        <stat-single
+    <v-row v-for="(keyGraphicState, key) in selectedGraphics" :key="`kgs-${key}`">
+      <v-col lg="8" class="d-flex">
+        <stat-single 
           :measurementId="selectedMeasurementId"
           :keyGraphicState="keyGraphicState"
           :divider="selectedDivider"
         ></stat-single>
         <v-divider light></v-divider>
-      </v-flex>
-      <v-flex d-flex lg4>
+      </v-col>
+      <v-col lg="4" class="d-flex align-self-center">
         <chart-lnr
           v-if="keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
@@ -214,8 +212,8 @@
           :divider="selectedDivider"
         ></chart-hstg>
         <v-divider light></v-divider>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

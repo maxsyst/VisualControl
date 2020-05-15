@@ -1,135 +1,92 @@
 <template>
- 
-    <v-card>
-      <v-container grid-list-lg>
-        <v-layout align-start justify-space-between>
-          <v-toolbar>
-            <v-toolbar-title>{{graphicName}}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items class="hidden-sm-and-down">
-              <v-progress-circular
-                :rotate="360"
-                :size="60"
-                :width="6"
-                :value="mode === `stat` ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
-                :color="mode === `stat` ? 'primary' : 'indigo lighten-4'"
-              >{{  mode === `stat` ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}</v-progress-circular>
-              <v-btn text icon :color="mode === `stat` ? 'primary' : 'indigo lighten-4'" @click="delDirtyCells(dirtyCells)">
-                <v-icon>cached</v-icon>
-              </v-btn>
-              <v-switch
-                color="primary"
-                v-model="switchMode"
-                :label="mode"
-              ></v-switch>
-               <!-- <v-btn
-          color="indigo"
-          dark
-          @click="showPopoverClick"
-        >
-          Menu as Popover
-        </v-btn>
-        <v-menu
-      v-model="showPopover"
-      :close-on-content-click="false"
-      
-      
-    >
-     <v-card>
-        <v-list>
-          <v-list-item avatar>
-            <v-list-item-avatar>
-              <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
-            </v-list-item-avatar>
-
-           
-          </v-list-item>
-        </v-list>
-
-        
-      </v-card>
-    </v-menu> -->
-            </v-toolbar-items>
-          </v-toolbar>
-        </v-layout>
-        <v-layout align-start justify-space-between>
-          <v-flex lg12>
-          <v-tabs v-model="activeTab" color="indigo" dark slider-color="primary">
-            <v-tab href="#commonTable">
-              Сводная таблица
-             
-            </v-tab>
+    <v-container fluid>
+      <v-row align-start justify-space-between>
+        <v-toolbar>
+          <v-toolbar-title>{{graphicName}}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items class="hidden-sm-and-down">
+            <v-progress-circular
+              :rotate="360"
+              :size="60"
+              :width="6"
+              :value="mode === `stat` ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
+              :color="mode === `stat` ? 'primary' : 'indigo lighten-4'"
+            >{{ mode === `stat` ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}</v-progress-circular>
+            <v-btn
+              text
+              icon
+              :color="mode === `stat` ? 'primary' : 'indigo lighten-4'"
+              @click="delDirtyCells(dirtyCells)"
+            >
+              <v-icon>cached</v-icon>
+            </v-btn>
+            <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch>
+          </v-toolbar-items>
+        </v-toolbar>
+      </v-row>
+      <v-row>
+        <v-col lg="12">
+          <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
+            <v-tab href="#commonTable">Сводная таблица</v-tab>
 
             <v-tab
               v-for="stat in statArray"
               :key="stat.statisticsName"
               :href="'#' + stat.statisticsName"
-            >
-            
-             {{ stat.statisticsName }}
-            
+              v-html="stat.statisticsName">
             </v-tab>
 
             <v-tab-item
-        v-for="stat in statArray"
-        :key="stat.statisticsName"
-        :value="stat.statisticsName"
-      >
-        <v-card flat>
-          <v-card-text>{{ stat.statisticsName }}</v-card-text>
-        </v-card>
-      </v-tab-item>
-
+              v-for="stat in statArray"
+              :key="stat.statisticsName"
+              :value="stat.statisticsName"
+            >
+              <v-card flat>
+                <v-card-text>{{ stat.statisticsName }}</v-card-text>
+              </v-card>
+            </v-tab-item>
             <v-tab-item value="commonTable">
               <v-card flat>
                 <v-card-text>
-                  <v-layout>
-                    <v-flex lg12>
-                    <v-data-table
-                      :headers="headers"
-                      :items="statArray"
-                      no-data-text = "Нет данных"
-                      class="elevation-2 pa-0"
-                      :loading="loading"
-                      hide-actions
-                      dark
-                    >
-                      <template v-slot:items="props">
-                        <tr @click="showStatTab(props.item.statisticsName)">
-                        <td class="text-sm-center pa-0" v-html="props.item.statisticsName"></td>
-                        <td class="text-sm-center pa-0">{{ props.item.expectedValue }}</td>
-                        <td class="text-xs-center pa-0">{{ props.item.standartDeviation }}</td>
-                        <td class="text-xs-center pa-0">{{ props.item.minimum }}</td>
-                        <td class="text-xs-center pa-0">{{ props.item.maximum }}</td>
-                        <td class="text-xs-center pa-0">{{ props.item.median }}</td>
-
+                  <v-row>
+                    <v-col lg="12">
+                      <v-data-table 
+                        :headers="headers"
+                        :items="statArray"
+                        no-data-text="Нет данных"
+                        class="elevation-2 pa-0"  
+                        :loading="loading"
+                        hide-default-footer
+                        dark
+                      >
+                        <template v-slot:item.statisticsName="{ item }">
+                          <v-chip color="indigo" label v-html="item.statisticsName" dark></v-chip>
+                        </template>
+                        <template v-slot:item.dirtyCells="{item}">
                         <td class="text-xs-center">
                           <v-progress-circular
                             :rotate="360"
                             :size="45"
                             :width="4"
-                            :value = "mode === `stat` ? Math.ceil((1.0 - props.item.dirtyCells.statPercentage) * 100) : Math.ceil((1.0 - props.item.dirtyCells.fixedPercentage) * 100)"
+                            :value = "mode === `stat` ? Math.ceil((1.0 - item.dirtyCells.statPercentage) * 100) : Math.ceil((1.0 - item.dirtyCells.fixedPercentage) * 100)"
                             :color= "mode === `stat` ? 'primary' : 'indigo lighten-4'"
-                          >{{ mode === `stat` ? Math.ceil((1.0 - props.item.dirtyCells.statPercentage) * 100) + '%' : Math.ceil((1.0 - props.item.dirtyCells.fixedPercentage) * 100) + '%' }}</v-progress-circular>
+                          >{{ mode === `stat` ? Math.ceil((1.0 - item.dirtyCells.statPercentage) * 100) + '%' : Math.ceil((1.0 - item.dirtyCells.fixedPercentage) * 100) + '%' }}</v-progress-circular>
 
-                          <v-btn text icon :color="mode === `stat` ? 'primary' : 'indigo lighten-4'" @click="delDirtyCells(props.item.dirtyCells)">
+                          <v-btn text icon :color="mode === `stat` ? 'primary' : 'indigo lighten-4'" @click="delDirtyCells(item.dirtyCells)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </td>
-                        </tr>
-                      </template>
-                    </v-data-table>
-                    </v-flex>
-                  </v-layout>
+                        </template>
+                      </v-data-table>
+                    </v-col>
+                  </v-row>
                 </v-card-text>
               </v-card>
             </v-tab-item>
           </v-tabs>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-card>
-  
+        </v-col>
+      </v-row>
+    </v-container>
 </template>
 
 <script>
@@ -144,7 +101,7 @@ export default {
       switchMode: true,
       statArray: [],
       graphicName: "",
-      activeTab : "commonTable",
+      activeTab: "commonTable",
       loading: false,
       headers: [
         {
@@ -154,196 +111,170 @@ export default {
           value: "statisticsName"
         },
         {
-          text: "Мат.ожидание",
+          text: "μ",
           align: "center",
           sortable: false,
           value: "expectedValue"
         },
         {
-          text: "Ст.отклонение",
+          text: "σ",
           align: "center",
           sortable: false,
           value: "standartDeviation"
         },
         {
-          text: "Минимум",
+          text: "Min",
           align: "center",
           sortable: false,
           value: "minimum"
         },
         {
-          text: "Максимум",
+          text: "Max",
           align: "center",
           sortable: false,
           value: "maximum"
         },
         {
-          text: "Медиана",
+          text: "Med",
           align: "center",
           sortable: false,
           value: "median"
         },
         {
-          text: "Годные по статистике",
+          text: "Correct,%",
           align: "center",
           sortable: false,
-          value: "dirtyCells.statPercentage"
+          value: "dirtyCells"
         }
       ]
     };
   },
 
-  created()
-  {
-       this.$http
-            .get(`api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`)
-            .then(response => {
-              this.graphicName = response.data;
-              this.getStatArray();
-            }).catch(error => {});
+  created() {
+    this.$http
+      .get(
+        `api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`
+      )
+      .then(response => {
+        this.graphicName = response.data;
+        this.getStatArray();
+      })
+      .catch(error => {});
   },
 
   methods: {
-    delDirtyCells: function(dirtyCells)
-    {
-       let deletedDies = []; 
-       if(this.mode === "stat")
-       {
-           deletedDies = dirtyCells.statList;
-       }
-       else
-       {
-           deletedDies = dirtyCells.fixedList;
-       }
-       
+    delDirtyCells: function(dirtyCells) {
+      let deletedDies = [];
+      if (this.mode === "stat") {
+        deletedDies = dirtyCells.statList;
+      } else {
+        deletedDies = dirtyCells.fixedList;
+      }
 
-       let selectedDies = this.selectedDies.filter((el) => !deletedDies.includes( el ) );
-       this.$store.commit('wafermeas/updateSelectedDies', selectedDies);
+      let selectedDies = this.selectedDies.filter(
+        el => !deletedDies.includes(el)
+      );
+      this.$store.commit("wafermeas/updateSelectedDies", selectedDies);
     },
 
-    showStatTab(statisticsName)
-    {
-        this.activeTab = statisticsName;
+    showStatTab(statisticsName) {
+      this.activeTab = statisticsName;
     },
 
-    showPopoverClick(e)
-    {
-     
-        e.preventDefault()
-        this.showPopover = false
-        this.PopoverX = e.clientX
-        this.PopoverY = e.clientY
-        this.$nextTick(() => {
-          this.showPopover = true
-        })
-      
+    showPopoverClick(e) {
+      e.preventDefault();
+      this.showPopover = false;
+      this.PopoverX = e.clientX;
+      this.PopoverY = e.clientY;
+      this.$nextTick(() => {
+        this.showPopover = true;
+      });
     },
 
-    getStatArray: function()
-    { 
-          if (this.measurementId != 0 && this.selectedDies.length > 0 ) {
-          this.loading = true;
-          var singlestatModel = {};
-          singlestatModel.divider = this.divider;
-          singlestatModel.keyGraphicState = this.keyGraphicState;
-          singlestatModel.measurementId = this.measurementId;
-          singlestatModel.dieIdList = this.selectedDies;
-          this.$http
-            .get(
-              `api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(
+    getStatArray: function() {
+      if (this.measurementId != 0 && this.selectedDies.length > 0) {
+        this.loading = true;
+        var singlestatModel = {};
+        singlestatModel.divider = this.divider;
+        singlestatModel.keyGraphicState = this.keyGraphicState;
+        singlestatModel.measurementId = this.measurementId;
+        singlestatModel.dieIdList = this.selectedDies;
+        this.$http
+          .get(
+            `api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(
               singlestatModel
             )}`
-            )
-            .then(response => {
-              var singleStat = response.data;
-              this.loading = false;
-              this.statArray = singleStat;
-             
-            }).catch(error => {});
-            
+          )
+          .then(response => {
+            var singleStat = response.data;
+            this.loading = false;
+            this.statArray = singleStat;
+          })
+          .catch(error => {});
       }
-       
     }
-
   },
 
-  watch:
-  {
-     
-      
+  watch: {
+    divider: function() {
+      this.getStatArray();
+    },
 
-      divider: function()
-      {
-          this.getStatArray();
-      },
-      
-      selectedDies: function()
-      {
-          this.getStatArray();
+    selectedDies: function() {
+      this.getStatArray();
+    }
+  },
+
+  computed: {
+    mode() {
+      if (this.switchMode) {
+        return "stat";
+      } else {
+        return "fixed";
       }
+    },
 
-          
+    selectedDies() {
+      return this.$store.state.wafermeas.selectedDies;
+    },
 
-  },
+    dirtyCells() {
+      var statArray = [];
+      var fixedArray = [];
+      this.statArray.forEach(s => {
+        (statArray = statArray.concat(s.dirtyCells.statList)),
+          (fixedArray = fixedArray.concat(s.dirtyCells.fixedList));
+      });
+      return {
+        statList: [...new Set(statArray)],
+        fixedList: [...new Set(fixedArray)]
+      };
+    },
 
-  computed: 
-  {  
+    dirtyCellsStatPercentage() {
+      var percentage = Math.ceil(
+        (1.0 - this.dirtyCells.statList.length / this.selectedDies.length) * 100
+      );
+      if (isNaN(percentage)) {
+        return 0;
+      } else {
+        return percentage;
+      }
+    },
 
-
-     mode()
-     {
-        if(this.switchMode)
-        {
-           return "stat";
-        } 
-        else
-        {
-            return "fixed";  
-        }
-     },
-     
-     selectedDies()
-     {
-         return this.$store.state.wafermeas.selectedDies
-     },
-
-     dirtyCells()
-     {
-         var statArray = [];
-         var fixedArray = [];
-         this.statArray.forEach(s => { statArray = statArray.concat(s.dirtyCells.statList), fixedArray = fixedArray.concat(s.dirtyCells.fixedList)});
-         return { statList: [...new Set(statArray)], fixedList: [...new Set(fixedArray)]}
-     },
-
-     dirtyCellsStatPercentage()
-     {
-          var percentage =  Math.ceil((1.0 - this.dirtyCells.statList.length / this.selectedDies.length) * 100)
-          if(isNaN(percentage))
-          {
-              return 0;
-          }
-          else
-          {
-             return percentage;
-          }
-     },
-
-     dirtyCellsFixedPercentage()
-     {    
-          var percentage = Math.ceil((1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) * 100)
-          if(isNaN(percentage))
-          {
-              return 0;
-          }
-          else
-          {
-             return percentage;
-          }
-     }
+    dirtyCellsFixedPercentage() {
+      var percentage = Math.ceil(
+        (1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) *
+          100
+      );
+      if (isNaN(percentage)) {
+        return 0;
+      } else {
+        return percentage;
+      }
+    }
   }
-
- 
-  };
+};
 </script>
 
 <style>
