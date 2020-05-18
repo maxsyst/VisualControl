@@ -60,7 +60,13 @@
                         dark
                       >
                         <template v-slot:item.shortStatisticsName="{ item }">
-                          <v-chip color="indigo" label v-html="item.shortStatisticsName + ', ' + item.unit" dark></v-chip>
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-chip color="indigo" v-on="on" label v-html="item.shortStatisticsName + ', ' + item.unit" dark></v-chip>
+                            </template>
+                            <span v-html="item.statisticsName"></span>
+                          </v-tooltip>
+                       
                         </template>
                         <template v-slot:item.dirtyCells="{item}">
                         <td class="text-xs-center">
