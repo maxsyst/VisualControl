@@ -50,7 +50,12 @@ namespace VueExample.Controllers
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphic];
             var singleParameterStatisticList = 
                 (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}"))[keyGraphic];
-            var statisticDataList = await statisticService.GetStatisticsDataByGraphicState(statisticSingleGraphicViewModel.dieIdList, statisticSingleGraphicViewModel.KeyGraphicState, dieValueList, double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), singleParameterStatisticList);
+            var statisticDataList = await statisticService
+                                          .GetStatisticsDataByGraphicState(statisticSingleGraphicViewModel.dieIdList, 
+                                                                           statisticSingleGraphicViewModel.KeyGraphicState, 
+                                                                           dieValueList, 
+                                                                           double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), 
+                                                                           singleParameterStatisticList);
             return Ok(statisticDataList);
         }
         

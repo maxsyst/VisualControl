@@ -31,18 +31,18 @@
 
             <v-tab
               v-for="stat in statArray"
-              :key="stat.statisticsName"
-              :href="'#' + stat.statisticsName"
-              v-html="stat.statisticsName">
+              :key="stat.shortStatisticsName"
+              :href="'#' + stat.shortStatisticsName"
+              v-html="stat.shortStatisticsName">
             </v-tab>
 
             <v-tab-item
               v-for="stat in statArray"
-              :key="stat.statisticsName"
-              :value="stat.statisticsName"
+              :key="stat.shortStatisticsName"
+              :value="stat.shortStatisticsName"
             >
               <v-card flat>
-                <v-card-text>{{ stat.statisticsName }}</v-card-text>
+                <v-card-text>{{ stat.shortStatisticsName }}</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item value="commonTable">
@@ -59,8 +59,8 @@
                         hide-default-footer
                         dark
                       >
-                        <template v-slot:item.statisticsName="{ item }">
-                          <v-chip color="indigo" label v-html="item.statisticsName" dark></v-chip>
+                        <template v-slot:item.shortStatisticsName="{ item }">
+                          <v-chip color="indigo" label v-html="item.shortStatisticsName + ', ' + item.unit" dark></v-chip>
                         </template>
                         <template v-slot:item.dirtyCells="{item}">
                         <td class="text-xs-center">
@@ -108,7 +108,7 @@ export default {
           text: "Название",
           align: "center",
           sortable: false,
-          value: "statisticsName"
+          value: "shortStatisticsName"
         },
         {
           text: "μ",
@@ -164,17 +164,9 @@ export default {
 
   methods: {
     delDirtyCells: function(dirtyCells) {
-      let deletedDies = [];
-      if (this.mode === "stat") {
-        deletedDies = dirtyCells.statList;
-      } else {
-        deletedDies = dirtyCells.fixedList;
-      }
-
-      let selectedDies = this.selectedDies.filter(
-        el => !deletedDies.includes(el)
-      );
-      this.$store.commit("wafermeas/updateSelectedDies", selectedDies);
+      let deletedDies = this.mode === "stat" ? dirtyCells.statList : dirtyCells.fixedList
+      let selectedDies = this.selectedDies.filter(el => !deletedDies.includes(el))
+      this.$store.commit("wafermeas/updateSelectedDies", selectedDies)
     },
 
     showStatTab(statisticsName) {

@@ -37,7 +37,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
                 singleStatisticData.Unit = statisticsItem.Unit;
                 singleStatisticData.ExpectedValue = statisticsItem.ExpectedValue;
                 singleStatisticData.StatisticsName = statisticsItem.StatisticsName;
-               
+                singleStatisticData.ShortStatisticsName = $"{statisticsItem.StatisticsName.Split('(').FirstOrDefault()}";
                 singleStatisticDataList.Add(singleStatisticData);
 
            } 
