@@ -33,20 +33,20 @@ export default {
 
     watch:
     {
-        selectedDies: function()
+        selectedDies: async function()
         {
-            this.getChartData();
+            await this.getChartData();
         },
 
-        divider: function()
+        divider: async function()
         {
-            this.getChartData();
+            await this.getChartData();
         }
     },
 
-     methods:
+    methods:
     {
-         getChartData()
+        async getChartData()
          {
                this.loaded = false
      
@@ -55,7 +55,7 @@ export default {
                 singlestatModel.keyGraphicState = this.keyGraphicState;
                 singlestatModel.measurementId = this.measurementId;
                 singlestatModel.dieIdList = this.selectedDies;
-                this.$http
+                await this.$http
                     .get(`api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
                     let chart = response.data;
@@ -66,7 +66,6 @@ export default {
                 })
                 .catch(error => {});
        
-      
          }
     }
 

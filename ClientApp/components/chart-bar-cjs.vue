@@ -33,40 +33,37 @@ export default {
 
     watch:
     {
-        selectedDies: function()
+        selectedDies: async function() 
         {
-            this.getChartData();
+            await this.getChartData();
         },
 
-        divider: function()
+        divider: async function()
         {
-            this.getChartData();
+            await this.getChartData();
         }
     },
 
-     methods:
+    methods:
     {
-         getChartData()
+         async getChartData()
          {
-               this.loaded = false
-     
-                var singlestatModel = {};
+                this.loaded = false     
+                let singlestatModel = {};
                 singlestatModel.divider = this.divider;
                 singlestatModel.keyGraphicState = this.keyGraphicState;
                 singlestatModel.measurementId = this.measurementId;
                 singlestatModel.dieIdList = this.selectedDies;
-                this.$http
+                await this.$http
                     .get(`api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
-                    let chart = response.data;
-                    this.chartdata = chart.chartData;
-                    this.options = chart.options;                                                   
-                    this.loaded = true       
+                        let chart = response.data;
+                        this.chartdata = chart.chartData;
+                        this.options = chart.options;                                                   
+                        this.loaded = true       
                   
                 })
-                .catch(error => {});
-       
-      
+                .catch(error => {});     
          }
     }
 

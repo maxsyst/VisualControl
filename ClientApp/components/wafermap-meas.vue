@@ -51,7 +51,7 @@
                         item-value="id"
                         filled
                         outlined
-                        label="Выберите измерение"
+                        label="Выберите измерение:"
                       ></v-select>
                     </v-layout>
                   </v-card-text>
@@ -70,7 +70,7 @@
                           item-text="graphicName"
                           item-value="keyGraphicState"
                           item-disabled="disabled"
-                          label="Выберите графики"
+                          label="Выберите графики:"
                           multiple
                         >
                           <template v-slot:prepend-item>
@@ -252,13 +252,8 @@ export default {
   },
 
   async created() {
-    await this.$http.get(`/api/wafer/all`).then(response => {
-      this.wafers = response.data;
-    });
-
-    await this.$http.get(`/api/divider/all`).then(response => {
-      this.dividers = response.data;
-    });
+    this.wafers = (await this.$http.get(`/api/wafer/all`)).data
+    this.dividers = (await this.$http.get(`/api/divider/all`)).data
   },
 
   computed: {
@@ -304,59 +299,22 @@ export default {
   },
 
   watch: {
-    selectedWafer: function() {
+    selectedWafer: async function(newValue) {
       this.availiableGraphics = []
-      this.$http
-        .get(`/api/measurementrecording?waferId=${this.selectedWafer}`)
-        .then(response => {
-          this.measurementRecordings = response.data;
-        });
+      this.measurementRecordings = (await this.$http.get(`/api/measurementrecording?waferId=${newValue}`)).data     
     },
 
-    selectedMeasurementId: function() {
+    selectedMeasurementId: async function(newValue) {
       this.availiableGraphics = []
       this.loading = true
-      this.$http.get(`api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${this.selectedMeasurementId}`)
-        .then(response => {
-          ///Можно и не считывать DieValueList
-          var dieValues = response.data;
-          var keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues));
-
-          this.$http
-            .get(
-              `api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`
-            )
-            .then(response => {
-              this.availiableGraphics = response.data;
-            })
-            .catch(error => {});
-
-          this.$http
-            .get(
-              `api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${
-                this.selectedMeasurementId
-              }`
-            )
-            .then(response => {
-              var dirtyCells = response.data;
-              this.dirtyCells = dirtyCells;
-              this.loading = false;
-              this.$http
-                .get(
-                  `api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${
-                    this.selectedMeasurementId
-                  }`
-                )
-                .then(response => {
-                  var diesList = response.data;
-                  this.avbSelectedDies = diesList.slice();
-                  this.$store.commit("wafermeas/updateSelectedDies", diesList);
-                })
-                .catch(error => {});
-            })
-            .catch(error => {});
-        })
-        .catch(error => {});
+      let dieValues = (await this.$http.get(`api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
+      let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
+      this.availiableGraphics = (await this.$http.get(`api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
+      this.dirtyCells = (await this.$http.get(`api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}`)).data      
+      let diesList = (await this.$http.get(`api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
+      this.avbSelectedDies = diesList.slice()
+      this.$store.commit("wafermeas/updateSelectedDies", diesList)
+      this.loading = false
     },
 
     availiableGraphics: function() {
@@ -365,21 +323,10 @@ export default {
       }
     },
 
-    selectedDies: function() {
-      var statList = this.dirtyCells.statList;
-      var fixedList = this.dirtyCells.fixedList;
-      this.dirtyCells.statPercentage = Math.ceil(
-        (1.0 -
-          this.selectedDies.filter(value => statList.includes(value)).length /
-            this.selectedDies.length) *
-          100
-      );
-      this.dirtyCells.fixedPercentage = Math.ceil(
-        (1.0 -
-          this.selectedDies.filter(value => fixedList.includes(value)).length /
-            this.selectedDies.length) *
-          100
-      );
+    selectedDies: function(newValue) {
+      let {statList, fixedList} = this.dirtyCells;
+      this.dirtyCells.statPercentage = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
+      this.dirtyCells.fixedPercentage = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
     }
   }
 };
