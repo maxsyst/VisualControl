@@ -156,16 +156,10 @@ export default {
     };
   },
 
-  created() {
-    this.$http
-      .get(
-        `api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`
-      )
-      .then(response => {
-        this.graphicName = response.data;
-        this.getStatArray();
-      })
-      .catch(error => {});
+  async created() {
+    this.graphicName  = (await this.$http
+      .get(`api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`)).data
+    await this.getStatArray();
   },
 
   methods: {
@@ -189,7 +183,7 @@ export default {
       });
     },
 
-    getStatArray: function() {
+    getStatArray: async function() {
       if (this.measurementId != 0 && this.selectedDies.length > 0) {
         this.loading = true;
         var singlestatModel = {};
@@ -197,18 +191,9 @@ export default {
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
-        this.$http
-          .get(
-            `api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(
-              singlestatModel
-            )}`
-          )
-          .then(response => {
-            var singleStat = response.data;
-            this.loading = false;
-            this.statArray = singleStat;
-          })
-          .catch(error => {});
+        this.statArray = (await this.$http
+          .get(`api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data
+        this.loading = false;
       }
     }
   },
@@ -225,15 +210,11 @@ export default {
 
   computed: {
     mode() {
-      if (this.switchMode) {
-        return "stat";
-      } else {
-        return "fixed";
-      }
+      return this.switchMode ? "stat" : "fixed"
     },
 
     selectedDies() {
-      return this.$store.state.wafermeas.selectedDies;
+      return this.$store.getters['wafermeas/selectedDies']
     },
 
     dirtyCells() {

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VueExample.Models.SRV6;
-using VueExample.Providers.Srv6;
 
 namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
 {
@@ -37,7 +36,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
                 singleStatisticData.Unit = statisticsItem.Unit;
                 singleStatisticData.ExpectedValue = statisticsItem.ExpectedValue;
                 singleStatisticData.StatisticsName = statisticsItem.StatisticsName;
-                singleStatisticData.ShortStatisticsName = $"{statisticsItem.StatisticsName.Split('(').FirstOrDefault()}";
+                singleStatisticData.ShortStatisticsName = $"{statisticsItem.StatisticsName.Split(' ').FirstOrDefault()}";
                 singleStatisticDataList.Add(singleStatisticData);
 
            } 
