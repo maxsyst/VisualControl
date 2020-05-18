@@ -122,18 +122,10 @@
        
       }
     },
-
-    
-   
     
     watch:
     {
-    
-
-      
       waferId: {
-
-       
         immediate: true,
         handler(newVal, oldVal) {
           this.isloading = true;
@@ -222,9 +214,8 @@
 
     computed:
     {
-      selectedDies()
-      {
-            return this.$store.state.wafermeas.selectedDies
+      selectedDies() {
+        return this.$store.getters['wafermeas/selectedDies']
       },
       cutting()
       {

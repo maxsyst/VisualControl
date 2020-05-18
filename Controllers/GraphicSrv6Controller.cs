@@ -19,6 +19,7 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(CacheProfileName = "Default60")]
         public async Task<IActionResult> GetGraphicNameByKeyGraphicState(string keyGraphicState)
         {
             var graphicId = Convert.ToInt32(keyGraphicState.Split('_').FirstOrDefault());

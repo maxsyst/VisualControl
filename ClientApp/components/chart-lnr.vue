@@ -39,9 +39,8 @@
 
     computed:
     {
-        selectedDies()
-        {
-            return this.$store.state.wafermeas.selectedDies;
+        selectedDies() {
+          return this.$store.getters['wafermeas/selectedDies']
         }
     },
 

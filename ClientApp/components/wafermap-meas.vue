@@ -124,7 +124,7 @@
                           :value="dirtyCells.statPercentage"
                           color="primary"
                         >{{ dirtyCells.statPercentage + "%" }}</v-progress-circular>
-                        <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList)">
+                        <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList, selectedDies)">
                           <v-icon>cached</v-icon>
                         </v-btn>
                       </v-card-text>
@@ -146,8 +146,7 @@
                         <v-btn
                           outlined
                           color="indigo lighten-4"
-                          @click="delDirtyCells(dirtyCells.fixedList)"
-                        >
+                          @click="delDirtyCells(dirtyCells.fixedList, selectedDies)">
                           <v-icon>cached</v-icon>
                         </v-btn>
                       </v-card-text>
@@ -183,7 +182,7 @@
             >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
           </v-card-text>
           <v-card-actions>
-            <v-btn outlined color="primary" @click="selectAllDies()">Выбрать все кристаллы</v-btn>
+            <v-btn outlined color="primary" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -269,19 +268,12 @@ export default {
   },
 
   methods: {
-    delDirtyCells: function(dirtyCellsList) {
-      var deletedDies = dirtyCellsList;
-      var selectedDies = this.selectedDies.filter(
-        el => !deletedDies.includes(el)
-      );
-      this.$store.commit("wafermeas/updateSelectedDies", selectedDies);
+    delDirtyCells: function(dirtyCellsList, selectedDies) {
+      this.$store.commit("wafermeas/updateSelectedDies", selectedDies.filter(die => !dirtyCellsList.includes(die)))
     },
 
-    selectAllDies: function() {
-      this.$store.commit(
-        "wafermeas/updateSelectedDies",
-        this.avbSelectedDies.slice()
-      );
+    selectAllDies: function(avbSelectedDies) {
+      this.$store.commit("wafermeas/updateSelectedDies", [...avbSelectedDies])
     },
 
     selectAllGraphics: function() {
@@ -312,8 +304,10 @@ export default {
       this.availiableGraphics = (await this.$http.get(`api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
       this.dirtyCells = (await this.$http.get(`api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}`)).data      
       let diesList = (await this.$http.get(`api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
-      this.avbSelectedDies = diesList.slice()
+      this.avbSelectedDies = [...diesList]
       this.$store.commit("wafermeas/updateSelectedDies", diesList)
+      this.selectAllGraphics() 
+      this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
       this.loading = false
     },
 

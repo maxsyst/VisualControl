@@ -5,6 +5,11 @@
       v-if="loaded"
       :chartdata="chartdata"
       :options="options"/>
+    <v-progress-circular v-else
+        :size="50"
+        color="primary"
+        indeterminate
+    ></v-progress-circular>
   </v-container>
   </v-card>
 </template>
@@ -23,38 +28,36 @@ export default {
    
   }),
 
+   async mounted() {
+        await this.getChartData(this.selectedDies);
+   },
+
    computed:
     {
-        selectedDies()
-        {
-            return this.$store.state.wafermeas.selectedDies;
+        selectedDies() {
+            return this.$store.getters['wafermeas/selectedDies']
         }
     },
 
     watch:
     {
-        selectedDies: async function()
-        {
-            await this.getChartData();
+        selectedDies: async function() {
+            await this.getChartData(this.selectedDies);
         },
-
-        divider: async function()
-        {
-            await this.getChartData();
+        divider: async function() {
+            await this.getChartData(this.selectedDies);
         }
     },
 
     methods:
     {
-        async getChartData()
-         {
-               this.loaded = false
-     
-                var singlestatModel = {};
+        async getChartData(selectedDies) {
+                this.loaded = false     
+                let singlestatModel = {};
                 singlestatModel.divider = this.divider;
                 singlestatModel.keyGraphicState = this.keyGraphicState;
                 singlestatModel.measurementId = this.measurementId;
-                singlestatModel.dieIdList = this.selectedDies;
+                singlestatModel.dieIdList = selectedDies;
                 await this.$http
                     .get(`api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {

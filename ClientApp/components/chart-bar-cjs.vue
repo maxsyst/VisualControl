@@ -2,18 +2,21 @@
 <v-card>
     <v-container> 
         <bar-chart
-        v-if="loaded"
-        :chartdata="chartdata"
-        :options="options"/>
+            v-if="loaded"
+            :chartdata="chartdata"
+            :options="options"/>
+        <v-progress-circular v-else
+        :size="50"
+        color="primary"
+        indeterminate
+        ></v-progress-circular>
     </v-container>
   </v-card>
 </template>
 
 <script>
 import BarChart from './barchart-cjs.vue'
-
 export default {
-  
   props: ["keyGraphicState", "measurementId", "divider"],
   components: { BarChart },
   data: () => ({
@@ -23,31 +26,31 @@ export default {
    
   }),
 
+  async mounted() {
+    await this.getChartData(this.selectedDies);
+  },
+
    computed:
     {
-        selectedDies()
-        {
-            return this.$store.state.wafermeas.selectedDies;
+        selectedDies() {
+            return this.$store.getters['wafermeas/selectedDies']
         }
     },
 
     watch:
     {
-        selectedDies: async function() 
-        {
-            await this.getChartData();
+        selectedDies: async function() {
+            await this.getChartData(this.selectedDies);
         },
 
-        divider: async function()
-        {
-            await this.getChartData();
+        divider: async function() {
+            await this.getChartData(this.selectedDies);
         }
     },
 
     methods:
     {
-         async getChartData()
-         {
+         async getChartData() {
                 this.loaded = false     
                 let singlestatModel = {};
                 singlestatModel.divider = this.divider;
@@ -70,7 +73,3 @@ export default {
     
 }
 </script>
-
-<style>
-   
-</style>
