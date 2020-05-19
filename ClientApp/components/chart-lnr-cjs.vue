@@ -23,14 +23,13 @@ export default {
   components: { LineChart },
   data: () => ({
     loaded: false,
-    chartdata: null,
-    options: null
-   
+    chartdata: {},
+    options: {}
   }),
 
-   async mounted() {
-        await this.getChartData(this.selectedDies);
-   },
+  async mounted() {
+    await this.getChartData(this.selectedDies);
+  },
 
    computed:
     {
@@ -61,15 +60,37 @@ export default {
                 await this.$http
                     .get(`api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
-                    let chart = response.data;
-                    this.chartdata = chart.chartData;
-                    this.options = chart.options;                                                   
+                    let chart = response.data
+                    this.calculateOptions(chart.options)
+                    this.chartdata = chart.chartData
                     this.loaded = true       
                   
                 })
                 .catch(error => {});
        
-         }
+         },
+
+        calculateOptions(chartOptions) {
+          this.options = {
+            legend: {
+              display: chartOptions.legend.display
+            },
+            scales: {
+              xAxes: [{
+                scaleLabel: {
+                  display: chartOptions.xAxis.display,
+                  labelString: chartOptions.xAxis.label
+                }
+              }],
+              yAxes: [{
+                scaleLabel: {
+                  display: chartOptions.yAxis.display,
+                  labelString: chartOptions.yAxis.label
+                }
+              }]
+            }
+          }   
+        }
     }
 
     

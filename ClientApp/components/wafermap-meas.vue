@@ -202,6 +202,7 @@
           v-if="keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
           :keyGraphicState="keyGraphicState"
+          :chartOptions="chartOptions"
           :divider="selectedDivider"
         ></chart-lnr>
         <chart-hstg
@@ -238,7 +239,7 @@ export default {
       dirtyCells: [],
       streetSize: 3,
       fieldHeight: 320,
-      fieldWidth: 320
+      fieldWidth: 320      
     };
   },
 
@@ -257,7 +258,7 @@ export default {
 
   computed: {
     selectedDies() {
-      return this.$store.state.wafermeas.selectedDies;
+      return this.$store.getters['wafermeas/selectedDies']
     },
     selectedGraphicsIcon() {
       if (this.availiableGraphics.length === this.selectedGraphics.length)

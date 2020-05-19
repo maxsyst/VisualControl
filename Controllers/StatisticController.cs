@@ -8,10 +8,11 @@ using VueExample.Models.SRV6;
 using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Contexts;
+using System.Linq;
 
 namespace VueExample.Controllers
 {
-    [Route ("api/[controller]/[action]")]
+    [Route ("api/[controller]")]
     public class StatisticController : Controller 
     {
         private readonly IAppCache cache;
@@ -28,8 +29,10 @@ namespace VueExample.Controllers
             this.cache = cache;
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording (int measurementRecordingId) 
+        [Route("GetDirtyCellsByMeasurementRecording")]
+        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId) 
         {
             string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
@@ -41,7 +44,8 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStatisticSingleGraphic(string statisticSingleGraphicViewModelJSON)
+        [Route("GetStatisticSingleGraphic")]
+        public async Task<IActionResult> GetStatisticSingleGraphic([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
@@ -58,9 +62,30 @@ namespace VueExample.Controllers
                                                                            singleParameterStatisticList);
             return Ok(statisticDataList);
         }
+
+        [HttpGet]
+        [Route("GetStatisticSingleGraphicFullWafer")]
+        [ResponseCache(CacheProfileName = "Default60")]
+        public async Task<IActionResult> GetStatisticSingleGraphicFullWafer ([FromQuery] int measurementRecordingId, [FromQuery] string keyGraphicState) 
+        {
+            string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
+            var statistics = new StatisticsCore.Statistics();
+            var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphicState];
+            var dieList = dieValueList.Select(x => x.DieId).ToList();
+            var singleParameterStatisticList = 
+                (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}"))[keyGraphicState];
+            var statisticDataList = await statisticService
+                                          .GetStatisticsDataByGraphicState(dieList, 
+                                                                           keyGraphicState, 
+                                                                           dieValueList, 
+                                                                           1.0, 
+                                                                           singleParameterStatisticList);
+            return Ok(statisticDataList);
+        }
         
         [HttpGet]
-        public async Task<IActionResult> GetDirtyCellsSingleGraphic(string statisticSingleGraphicViewModelJSON)
+        [Route("GetDirtyCellsSingleGraphic")]
+        public async Task<IActionResult> GetDirtyCellsSingleGraphic([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);

@@ -4,7 +4,7 @@ import router from './router/index'
 import store from './store'
 import { sync } from 'vuex-router-sync'
 import App from 'components/app-root'
-import VueLodash from 'vue-lodash'
+import lodash from 'lodash';  
 import Vuetify from 'vuetify'
 import Lightbox from 'vue-my-photos'
 import Vuelidate from 'vuelidate'
@@ -17,7 +17,7 @@ import 'vuetify/dist/vuetify.min.css'
 
 
 Vue.component('lightbox', Lightbox)
-Vue.use(VueLodash)
+
 Vue.use(AsyncComputed)
 Vue.config.devtools = true
 Vue.config.performance = true
@@ -44,6 +44,7 @@ const opts =  {
 Vue.use(Vuetify)
 
 Vue.prototype.$http = axios;
+Vue.prototype._ = lodash
 
 sync(store, router);
 

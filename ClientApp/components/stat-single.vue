@@ -68,6 +68,18 @@
                           </v-tooltip>
                        
                         </template>
+                        <template v-slot:item.fwStatPercentage="{item}">
+                        <td class="text-xs-center">
+                          <v-progress-circular
+                            :rotate="360"
+                            :size="45"
+                            :width="4"
+                            :value = "Math.ceil((1.0 - item.fwStatPercentage) * 100)"
+                            :color= "calculateColor(item.fwStatPercentage)"
+                          >{{ Math.ceil((1.0 - item.fwStatPercentage) * 100) + '%'}}</v-progress-circular>
+
+                        </td>
+                        </template>
                         <template v-slot:item.dirtyCells="{item}">
                         <td class="text-xs-center">
                           <v-progress-circular
@@ -101,11 +113,13 @@ export default {
 
   data() {
     return {
+      colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
       showPopover: false,
       PopoverX: 0,
       PopoverY: 0,
       switchMode: true,
       statArray: [],
+      fullWaferStatArray: [],
       graphicName: "",
       activeTab: "commonTable",
       loading: false,
@@ -147,8 +161,14 @@ export default {
           value: "median"
         },
         {
-          text: "Correct,%",
-          align: "center",
+          text: "CorrectFull,%",
+          align: "left",
+          sortable: false,
+          value: "fwStatPercentage"
+        },
+        {
+          text: "CorrectSelected,%",
+          align: "left",
           sortable: false,
           value: "dirtyCells"
         }
@@ -157,9 +177,11 @@ export default {
   },
 
   async created() {
-    this.graphicName  = (await this.$http
+    this.graphicName = (await this.$http
       .get(`api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`)).data
-    await this.getStatArray();
+    this.fullWaferStatArray = (await this.$http
+      .get(`api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}`)).data
+    await this.getStatArray()
   },
 
   methods: {
@@ -185,15 +207,36 @@ export default {
 
     getStatArray: async function() {
       if (this.measurementId != 0 && this.selectedDies.length > 0) {
-        this.loading = true;
-        var singlestatModel = {};
+        this.loading = true
+        let singlestatModel = {};
         singlestatModel.divider = this.divider;
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
         this.statArray = (await this.$http
           .get(`api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data
-        this.loading = false;
+        this.statArray = this.statArray.map(s => ({...s, fwStatPercentage: this.fullWaferStatArray.find(f => f.parameterID === s.parameterID).dirtyCells.statPercentage}))
+        this.loading = false
+      }
+    },
+
+    calculateColor(statPercentage) {
+      let percentage = 1.0 - statPercentage
+      if(percentage >= this.colors.green) {
+        return "green"
+      }
+      else {
+        if(percentage >= this.colors.orange) {
+          return "orange"
+        }
+        else {
+          if(percentage >= this.colors.red) {
+            return "pink"
+          }
+          else {
+            return "indigo"
+          }
+        }
       }
     }
   },
@@ -218,8 +261,8 @@ export default {
     },
 
     dirtyCells() {
-      var statArray = [];
-      var fixedArray = [];
+      let statArray = [];
+      let fixedArray = [];
       this.statArray.forEach(s => {
         (statArray = statArray.concat(s.dirtyCells.statList)),
           (fixedArray = fixedArray.concat(s.dirtyCells.fixedList));
@@ -231,26 +274,13 @@ export default {
     },
 
     dirtyCellsStatPercentage() {
-      var percentage = Math.ceil(
-        (1.0 - this.dirtyCells.statList.length / this.selectedDies.length) * 100
-      );
-      if (isNaN(percentage)) {
-        return 0;
-      } else {
-        return percentage;
-      }
+      let percentage = Math.ceil((1.0 - this.dirtyCells.statList.length / this.selectedDies.length) * 100)
+      return isNaN(percentage) ? 0 : percentage
     },
 
     dirtyCellsFixedPercentage() {
-      var percentage = Math.ceil(
-        (1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) *
-          100
-      );
-      if (isNaN(percentage)) {
-        return 0;
-      } else {
-        return percentage;
-      }
+      let percentage = Math.ceil((1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) * 100)
+      return isNaN(percentage) ? 0 : percentage
     }
   }
 };
