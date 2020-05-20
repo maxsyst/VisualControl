@@ -14,7 +14,7 @@
   </v-card>
 </template>
 
-<script>
+<script>  
 import LineChart from './linechart-cjs.vue'
 
 export default {
@@ -79,13 +79,21 @@ export default {
               xAxes: [{
                 scaleLabel: {
                   display: chartOptions.xAxis.display,
-                  labelString: chartOptions.xAxis.label
+                  labelString: chartOptions.xAxis.label,
+                  gridLines: {
+                    display: true,
+                    color: "#FFFFFF"
+                  }
                 }
               }],
               yAxes: [{
                 scaleLabel: {
                   display: chartOptions.yAxis.display,
-                  labelString: chartOptions.yAxis.label
+                  labelString: chartOptions.yAxis.label,
+                  gridLines: {
+                    display: true,
+                    color: "#FFFFFF"
+                  }
                 }
               }]
             }

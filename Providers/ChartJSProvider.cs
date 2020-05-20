@@ -61,9 +61,13 @@ namespace VueExample.Providers
 
             var labelsList = new List<string> ();
             var datasetList = new List<Dataset> ();
-            var chart = new BarChart(labelsList, datasetList);
-            var dataset = new Dataset();
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
+            var chart = new BarChart(labelsList, 
+                                     datasetList, 
+                                     new ChartModels.ChartJs.Options.XAxis($"Die Number", true), 
+                                     new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
+            var dataset = new Dataset();
+           
             foreach (var dieValue in dieValuesList.Where (x => dieIdList.Contains (x.DieId)).ToList ()) {
 
                 labelsList.Add(Convert.ToString ((await _dieProvider.GetById((long) dieValue.DieId)).Code));
