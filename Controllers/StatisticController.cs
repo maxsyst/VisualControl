@@ -29,7 +29,6 @@ namespace VueExample.Controllers
             this.cache = cache;
         }
 
-
         [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecording")]
         public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId) 

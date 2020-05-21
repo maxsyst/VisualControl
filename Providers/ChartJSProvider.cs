@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using VueExample.Color;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 
-namespace VueExample.Providers 
+namespace VueExample.Providers
 {
     public class ChartJSProvider : IChartJSProvider 
     {
@@ -45,7 +44,6 @@ namespace VueExample.Providers
 
                 }
                 datasetList.Add(dataset);
-
             });
             var labelsList = new List<string> ();
             var chart = new LinearChart (labelsList, 
@@ -58,7 +56,6 @@ namespace VueExample.Providers
 
         public async Task<AbstractChart> GetHistogramFromDieValues (List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState) 
         {
-
             var labelsList = new List<string> ();
             var datasetList = new List<Dataset> ();
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
@@ -67,16 +64,13 @@ namespace VueExample.Providers
                                      new ChartModels.ChartJs.Options.XAxis($"Die Number", true), 
                                      new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
             var dataset = new Dataset();
-           
-            foreach (var dieValue in dieValuesList.Where (x => dieIdList.Contains (x.DieId)).ToList ()) {
-
-                labelsList.Add(Convert.ToString ((await _dieProvider.GetById((long) dieValue.DieId)).Code));
-                dataset.BackgroundColor = _colorService.GetHexColorByDieId (dieValue.DieId);
-                dataset.Data.Add(double.Parse (dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
-
+            foreach (var dieValue in dieValuesList.Where(x => dieIdList.Contains(x.DieId)).ToList()) 
+            {
+                labelsList.Add(Convert.ToString((await _dieProvider.GetById((long) dieValue.DieId)).Code));
+                dataset.BackgroundColor = _colorService.GetHexColorByDieId(dieValue.DieId);
+                dataset.Data.Add(double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
             }
-            datasetList.Add (dataset);
-
+            datasetList.Add(dataset);
             return chart;
         }
     }

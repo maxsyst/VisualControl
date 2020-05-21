@@ -129,11 +129,7 @@
         immediate: true,
         handler(newVal, oldVal) {
           this.isloading = true;
-          let fieldObject = {};
-          fieldObject.waferId = this.waferId;
-          fieldObject.fieldHeight = this.fieldHeight;
-          fieldObject.fieldWidth = this.fieldWidth;
-          fieldObject.streetSize = this.streetSize;
+          let fieldObject = {waferId: this.waferId, fieldHeight: this.fieldHeight, fieldWidth: this.fieldWidth, streetSize: this.streetSize};
           this.$http({
             method: "post",
             url: `/api/wafermap/getformedwafermap`, data: fieldObject, config: {

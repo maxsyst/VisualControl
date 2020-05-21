@@ -56,6 +56,12 @@ namespace VueExample
             services.AddSignalR();
             services.AddOptions();
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "0.0.0.0:1799";
+                options.InstanceName = "srvredis";
+            });
+
             services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
             {
                 builder.AllowAnyOrigin()

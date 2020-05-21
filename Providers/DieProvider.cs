@@ -17,7 +17,7 @@ namespace VueExample.Providers
         }
         public async Task<DieParameterOld> GetOrAddDieParameter(long dieId, int measurementRecordingId, int parameterId = 247, string value = "0")
         {
-            var dieParameter = await  _srv6Context.DiesParameterOld.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId && x.DieId == dieId && x.Id247 == parameterId);
+            var dieParameter = await _srv6Context.DiesParameterOld.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId && x.DieId == dieId && x.Id247 == parameterId);
             if(dieParameter is null)
             {
                 dieParameter = new DieParameterOld{DieId = dieId, MeasurementRecordingId = measurementRecordingId, Id247 = parameterId, Value = value};
