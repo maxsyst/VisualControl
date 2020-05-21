@@ -1,27 +1,54 @@
 <template>
     <v-container fluid>
-      <v-row align-start justify-space-between>
-        <v-toolbar>
-          <v-toolbar-title>{{graphicName}}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items class="hidden-sm-and-down">
-            <v-progress-circular
-              :rotate="360"
-              :size="60"
-              :width="6"
-              :value="mode === `stat` ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
-              :color="mode === `stat` ? 'primary' : 'indigo lighten-4'"
-            >{{ mode === `stat` ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}</v-progress-circular>
-            <v-btn
-              text
-              icon
-              :color="mode === `stat` ? 'primary' : 'indigo lighten-4'"
-              @click="delDirtyCells(dirtyCells)"
-            >
-              <v-icon>cached</v-icon>
-            </v-btn>
-            <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch>
-          </v-toolbar-items>
+      <v-row>
+        <v-toolbar extended>          
+            <v-container>
+              <v-row>    
+                <v-col lg="6" class="d-flex align-center justify-start">  
+                <v-chip class="elevation-8" label x-large color="#303030">
+                  {{graphicName}}
+                </v-chip>
+                </v-col>  
+                <v-col lg="6" class="d-flex align-center justify-space-around">
+                <div class="d-flex flex-column">
+                <v-chip class="elevation-8" color="#303030">
+                  Годны по всей пластине
+                </v-chip>
+                  <div class="d-flex flex-row mt-4">   
+                    <v-progress-circular v-if="this.fullWaferStatArray.length > 0"
+                      :rotate="360"
+                      :size="60"
+                      :width="4"
+                      :value="dirtyCellsFullWafer.statPercentage"
+                      :color="calculateColor(dirtyCellsFullWafer.statPercentage / 100)">
+                    {{ dirtyCellsFullWafer.statPercentage + '%'}}
+                    </v-progress-circular>
+
+                  </div>   
+                </div>
+              <div class="d-flex flex-column align-self-center">
+                <v-chip class="elevation-8" color="#303030">
+                  Годны из выбранных
+                </v-chip>
+                <div class="d-flex flex-row mt-4">                
+                  <v-progress-circular
+                    :rotate="360"
+                    :size="60"
+                    :width="4"
+                    :value="mode === `stat` ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
+                    :color="mode === `stat` ? 'primary' : 'indigo lighten-4'">
+                    {{ mode === `stat` ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}
+                  </v-progress-circular>
+                  <v-btn text icon :color="mode === `stat` ? 'primary' : 'indigo lighten-4'" @click="delDirtyCells(dirtyCells)">
+                    <v-icon>cached</v-icon>
+                  </v-btn>    
+               </div>   
+              </div>
+                            
+              <!-- <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch> -->
+               </v-col> 
+              </v-row>
+            </v-container>
         </v-toolbar>
       </v-row>
       <v-row>
@@ -75,7 +102,7 @@
                             :size="45"
                             :width="4"
                             :value = "Math.ceil((1.0 - item.fwStatPercentage) * 100)"
-                            :color= "calculateColor(item.fwStatPercentage)"
+                            :color= "calculateColor(1.0 - item.fwStatPercentage)"
                           >{{ Math.ceil((1.0 - item.fwStatPercentage) * 100) + '%'}}</v-progress-circular>
 
                         </td>
@@ -109,7 +136,7 @@
 
 <script>
 export default {
-  props: ["keyGraphicState", "measurementId", "divider"],
+  props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies"],
 
   data() {
     return {
@@ -120,6 +147,7 @@ export default {
       switchMode: true,
       statArray: [],
       fullWaferStatArray: [],
+      dirtyCellsFullWafer: {cellsId: [], statPercentage: 0},
       graphicName: "",
       activeTab: "commonTable",
       loading: false,
@@ -155,20 +183,20 @@ export default {
           value: "maximum"
         },
         {
-          text: "Med",
+          text: "Median",
           align: "center",
           sortable: false,
           value: "median"
         },
         {
-          text: "CorrectFull,%",
-          align: "left",
+          text: "CorrectFullWafer,%",
+          align: "center",
           sortable: false,
           value: "fwStatPercentage"
         },
         {
           text: "CorrectSelected,%",
-          align: "left",
+          align: "center",
           sortable: false,
           value: "dirtyCells"
         }
@@ -181,6 +209,7 @@ export default {
       .get(`api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`)).data
     this.fullWaferStatArray = (await this.$http
       .get(`api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}`)).data
+    this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
     await this.getStatArray()
   },
 
@@ -220,17 +249,21 @@ export default {
       }
     },
 
-    calculateColor(statPercentage) {
-      let percentage = 1.0 - statPercentage
-      if(percentage >= this.colors.green) {
+    calculateFullWaferDirtyCells(fullWaferStatArray) {
+      this.dirtyCellsFullWafer.cellsId = [...new Set(fullWaferStatArray.reduce((p,c) => [...p, ...c.dirtyCells.statList], []))]
+      this.dirtyCellsFullWafer.statPercentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.cellsId.length / this.avbSelectedDies.length)) * 100)
+    },
+
+    calculateColor(statPercentage) {     
+      if(statPercentage >= this.colors.green) {
         return "green"
       }
       else {
-        if(percentage >= this.colors.orange) {
+        if(statPercentage >= this.colors.orange) {
           return "orange"
         }
         else {
-          if(percentage >= this.colors.red) {
+          if(statPercentage >= this.colors.red) {
             return "pink"
           }
           else {

@@ -170,9 +170,9 @@
       <v-col lg="2">
         <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">
           <v-card-title primary-title>
-            <v-chip color="indigo" label dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
+            <v-chip class="elevation-12" color="#303030" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
           </v-card-title>
-          <v-card-text class="pa-3">
+          <v-card-text>
             <v-progress-circular
               :rotate="360"
               :size="90"
@@ -193,6 +193,7 @@
         <stat-single 
           :measurementId="selectedMeasurementId"
           :keyGraphicState="keyGraphicState"
+          :avbSelectedDies="avbSelectedDies"
           :divider="selectedDivider"
         ></stat-single>
         <v-divider light></v-divider>
