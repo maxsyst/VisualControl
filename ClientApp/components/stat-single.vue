@@ -10,12 +10,12 @@
                 </v-chip>
                 </v-col>  
                 <v-col lg="6" class="d-flex align-center justify-space-around">
-                <div class="d-flex flex-column">
-                <v-chip class="elevation-8" color="#303030">
-                  Годны по всей пластине
-                </v-chip>
+                <div class="d-flex flex-column" v-if="this.fullWaferStatArray.length > 0">
+                  <v-chip class="elevation-8" color="#303030">
+                    Годны по всей пластине
+                  </v-chip>
                   <div class="d-flex flex-row mt-4">   
-                    <v-progress-circular v-if="this.fullWaferStatArray.length > 0"
+                    <v-progress-circular
                       :rotate="360"
                       :size="60"
                       :width="4"
@@ -26,7 +26,7 @@
 
                   </div>   
                 </div>
-              <div class="d-flex flex-column align-self-center">
+              <div class="d-flex flex-column align-self-center" v-if="this.fullWaferStatArray.length > 0">
                 <v-chip class="elevation-8" color="#303030">
                   Годны из выбранных
                 </v-chip>
@@ -89,7 +89,7 @@
                         <template v-slot:item.shortStatisticsName="{ item }">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-chip color="indigo" v-on="on" label v-html="item.shortStatisticsName + ', ' + item.unit" dark></v-chip>
+                                <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
                             </template>
                             <span v-html="item.statisticsName"></span>
                           </v-tooltip>
@@ -135,6 +135,7 @@
 </template>
 
 <script>
+import { width } from '@amcharts/amcharts4/.internal/core/utils/Utils';
 export default {
   props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies"],
 
@@ -156,49 +157,57 @@ export default {
           text: "Название",
           align: "center",
           sortable: false,
-          value: "shortStatisticsName"
+          value: "shortStatisticsName",
+          width: '20%'
         },
         {
           text: "μ",
           align: "center",
           sortable: false,
-          value: "expectedValue"
+          value: "expectedValue",
+          width: '10%'
         },
         {
           text: "σ",
           align: "center",
           sortable: false,
-          value: "standartDeviation"
+          value: "standartDeviation",
+          width: '10%'
         },
         {
           text: "Min",
           align: "center",
           sortable: false,
-          value: "minimum"
+          value: "minimum",
+          width: '10%'
         },
         {
           text: "Max",
           align: "center",
           sortable: false,
-          value: "maximum"
+          value: "maximum",
+           width: '10%'
         },
         {
           text: "Median",
           align: "center",
           sortable: false,
-          value: "median"
+          value: "median",
+          width: '10%'
         },
         {
           text: "CorrectFullWafer,%",
           align: "center",
           sortable: false,
-          value: "fwStatPercentage"
+          value: "fwStatPercentage",
+          width: '20%'
         },
         {
           text: "CorrectSelected,%",
           align: "center",
           sortable: false,
-          value: "dirtyCells"
+          value: "dirtyCells",
+          width: '20%'
         }
       ]
     };

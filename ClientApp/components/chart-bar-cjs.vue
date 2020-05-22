@@ -70,9 +70,13 @@ export default {
 
          calculateOptions(chartOptions) {
           this.options = {
+            animation: chartOptions.animation,
+            hover: chartOptions.hover,
             legend: {
               display: chartOptions.legend.display
             },
+            responsive: chartOptions.responsive,
+            responsiveAnimationDuration: chartOptions.responsiveAnimationDuration,
             scales: {
               xAxes: [{
                 scaleLabel: {
