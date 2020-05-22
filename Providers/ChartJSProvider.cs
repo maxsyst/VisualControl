@@ -70,6 +70,8 @@ namespace VueExample.Providers
                 dataset.BackgroundColor = _colorService.GetHexColorByDieId(dieValue.DieId);
                 dataset.Data.Add(double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
             }
+            labelsList.Reverse();
+            dataset.Data.Reverse();
             datasetList.Add(dataset);
             return chart;
         }

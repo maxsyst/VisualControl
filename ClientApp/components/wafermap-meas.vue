@@ -168,23 +168,21 @@
         ></wafermap-svg>
       </v-col>
       <v-col lg="2">
-        <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">
-          <v-card-title primary-title>
+          <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">
             <v-chip class="elevation-12" color="#303030" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
-          </v-card-title>
-          <v-card-text>
-            <v-progress-circular
-              :rotate="360"
-              :size="90"
-              :width="7"
-              :value="(selectedDies.length / avbSelectedDies.length)*100"
-              color="primary"
-            >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn outlined color="primary" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
-          </v-card-actions>
-        </v-card>
+            <v-card-text>
+              <v-progress-circular
+                :rotate="360"
+                :size="90"
+                :width="7"
+                :value="(selectedDies.length / avbSelectedDies.length)*100"
+                color="primary"
+              >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn outlined color="primary" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
+            </v-card-actions>
+          </v-card>
       </v-col>
     </v-row>
 

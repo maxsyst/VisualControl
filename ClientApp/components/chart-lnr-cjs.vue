@@ -62,10 +62,8 @@ export default {
                     .then(response => {
                     let chart = response.data
                     this.calculateOptions(chart.options)
-                    console.log(chart.options)
                     this.chartdata = chart.chartData
                     this.loaded = true       
-                  
                 })
                 .catch(error => {});
        

@@ -80,6 +80,7 @@
                       <v-data-table 
                         :headers="headers"
                         :items="statArray"
+                        loading-text="Загрузка данных..."
                         no-data-text="Нет данных"
                         class="elevation-2 pa-0"  
                         :loading="loading"
