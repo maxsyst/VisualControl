@@ -31,7 +31,7 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecording")]
-        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId) 
+        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount) 
         {
             string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
@@ -39,7 +39,7 @@ namespace VueExample.Controllers
             var dieValuesDictionary = await cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedDieValueService);
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0);
             var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}", cachedStatisticService);
-            return Ok(statisticService.GetDirtyCellsBySPSDictionary(statDictionary));
+            return Ok(statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesCount));
         }
 
         [HttpGet]

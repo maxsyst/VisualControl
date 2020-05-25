@@ -37,7 +37,7 @@ namespace VueExample.StatisticsCore.Services
             return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesList, divider, singleParameterStatisticsList);
         }
 
-        public DirtyCells GetDirtyCellsBySPSDictionary (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics) 
+        public DirtyCells GetDirtyCellsBySPSDictionary (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, int diesCount) 
         {
             var dirtyCells = new DirtyCells();
             foreach (var item in singleParameterStatistics) 
@@ -48,7 +48,7 @@ namespace VueExample.StatisticsCore.Services
                     dirtyCells.FixedList.AddRange(singleParameterStatistic.DirtyCells.FixedList);
                 }
             }
-            return dirtyCells.Distinct();
+            return dirtyCells.Distinct().CalculatePercentage(diesCount);
         }
 
        private SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract SingleStatisticsServiceCreator(Graphic graphic)

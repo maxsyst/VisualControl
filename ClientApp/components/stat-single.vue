@@ -5,13 +5,13 @@
         <v-toolbar extended>          
             <v-container>
               <v-row>    
-                <v-col lg="6" class="d-flex align-center justify-start">  
+                <v-col lg="6" class="d-flex align-center justify-start" v-if="this.fullWaferStatArray.length > 0">  
                 <v-chip class="elevation-8" label x-large color="#303030">
                   {{graphicName}}
                 </v-chip>
                 </v-col>  
-                <v-col lg="6" class="d-flex align-center justify-space-around">
-                <div class="d-flex flex-column" v-if="this.fullWaferStatArray.length > 0">
+                <v-col lg="6" class="d-flex align-center justify-space-around" v-if="this.fullWaferStatArray.length > 0">
+                <div class="d-flex flex-column" >
                   <v-chip class="elevation-8" color="#303030">
                     Годны по всей пластине
                   </v-chip>
@@ -27,7 +27,7 @@
 
                   </div>   
                 </div>
-              <div class="d-flex flex-column align-self-center" v-if="this.fullWaferStatArray.length > 0">
+              <div class="d-flex flex-column align-self-center">
                 <v-chip class="elevation-8" color="#303030">
                   Годны из выбранных
                 </v-chip>
@@ -48,6 +48,12 @@
                             
               <!-- <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch> -->
                </v-col> 
+               <v-col v-else>
+                <v-skeleton-loader
+                  class="mx-auto"
+                  type="date-picker-options">
+                </v-skeleton-loader>
+               </v-col>
               </v-row>
             </v-container>
         </v-toolbar>
@@ -79,7 +85,7 @@
                 <v-card-text>
                   <v-row>
                     <v-col lg="12">
-                      <v-data-table 
+                      <v-data-table v-if="statArray.length > 0"
                         :headers="headers"
                         :items="statArray"
                         loading-text="Загрузка данных..."
@@ -126,6 +132,13 @@
                         </td>
                         </template>
                       </v-data-table>
+                      <div v-else>
+                       <v-skeleton-loader v-if="loading"
+                          class="mx-auto"
+                          type="table-tbody"
+                        ></v-skeleton-loader>
+                        <p v-else>Не найдено статистических параметров на данном графике</p>
+                      </div>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -154,7 +167,7 @@ export default {
       dirtyCellsFullWafer: {cellsId: [], statPercentage: 0},
       graphicName: "",
       activeTab: "commonTable",
-      loading: false,
+      loading: true,
       headers: [
         {
           text: "Название",

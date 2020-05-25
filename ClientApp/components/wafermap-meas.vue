@@ -13,7 +13,7 @@
       <v-col lg="4">
         <v-row justify-center column>
           <v-col>
-            <v-tabs background-color="indigo" dark slider-color="primary" icons-and-text>
+            <v-tabs v-model="activeTab" background-color="indigo" dark slider-color="primary" icons-and-text>
               <v-tab href="#wafer">
                 Выбор пластины
                 <v-icon>table_chart</v-icon>
@@ -114,16 +114,13 @@
                        <v-chip color="indigo" label dark>Годные по статистике</v-chip>
                       </v-card-title>
                       <v-card-text>
-                        <v-progress-circular
+                         <v-progress-circular
                           :rotate="360"
                           :size="90"
                           :width="7"
-                          :value="dirtyCells.statPercentage"
+                          :value="dirtyCells.statPercentageFullWafer"
                           color="primary"
-                        >{{ dirtyCells.statPercentage + "%" }}</v-progress-circular>
-                        <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList, selectedDies)">
-                          <v-icon>cached</v-icon>
-                        </v-btn>
+                        >{{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
                       </v-card-text>
                     </v-card>
                   </v-col>
@@ -137,13 +134,10 @@
                           :rotate="360"
                           :size="90"
                           :width="7"
-                          :value="dirtyCells.fixedPercentage"
-                          color="indigo lighten-4"
-                        >{{ dirtyCells.fixedPercentage + "%" }}</v-progress-circular>
-                        <v-btn
-                          outlined
-                          color="indigo lighten-4"
-                          @click="delDirtyCells(dirtyCells.fixedList, selectedDies)">
+                          :value="dirtyCells.statPercentageSelected"
+                          color="primary"
+                        >{{ dirtyCells.statPercentageSelected + "%" }}</v-progress-circular>
+                        <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList, selectedDies)">
                           <v-icon>cached</v-icon>
                         </v-btn>
                       </v-card-text>
@@ -183,11 +177,11 @@
       </v-col>
     </v-row>
 
-    <v-row v-for="(keyGraphicState, key) in selectedGraphics" :key="`kgs-${key}`">
+    <v-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" :key="`kgs-${graphic.keyGraphicState}`">
       <v-col lg="8" class="d-flex">
         <stat-single 
           :measurementId="selectedMeasurementId"
-          :keyGraphicState="keyGraphicState"
+          :keyGraphicState="graphic.keyGraphicState"
           :avbSelectedDies="avbSelectedDies"
           :divider="selectedDivider"
         ></stat-single>
@@ -195,16 +189,16 @@
       </v-col>
       <v-col lg="4" class="d-flex align-self-center">
         <chart-lnr
-          v-if="keyGraphicState.includes(`LNR`)"
+          v-if="graphic.keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
-          :keyGraphicState="keyGraphicState"
+          :keyGraphicState="graphic.keyGraphicState"
           :chartOptions="chartOptions"
           :divider="selectedDivider"
         ></chart-lnr>
         <chart-hstg
           v-else
           :measurementId="selectedMeasurementId"
-          :keyGraphicState="keyGraphicState"
+          :keyGraphicState="graphic.keyGraphicState"
           :divider="selectedDivider"
         ></chart-hstg>
         <v-divider light></v-divider>
@@ -223,6 +217,7 @@ export default {
   data() {
     return {
       loading: false,
+      activeTab: "wafer",
       wafers: [],
       dividers: [],
       avbSelectedDies: [],
@@ -299,13 +294,14 @@ export default {
       let dieValues = (await this.$http.get(`api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
       this.availiableGraphics = (await this.$http.get(`api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
-      this.dirtyCells = (await this.$http.get(`api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}`)).data      
       let diesList = (await this.$http.get(`api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.avbSelectedDies = [...diesList]
+      this.dirtyCells = (await this.$http.get(`api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}`)).data    
       this.$store.commit("wafermeas/updateSelectedDies", diesList)
       this.selectAllGraphics() 
       this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
       this.loading = false
+      this.activeTab = "statistics"
     },
 
     availiableGraphics: function() {
@@ -316,8 +312,8 @@ export default {
 
     selectedDies: function(newValue) {
       let {statList, fixedList} = this.dirtyCells;
-      this.dirtyCells.statPercentage = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
-      this.dirtyCells.fixedPercentage = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
+      this.dirtyCells.statPercentageSelected = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
+      this.dirtyCells.fixedPercentageSelected = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
     }
   }
 };
