@@ -1,6 +1,7 @@
 <template>
     <v-container fluid>
       <v-row>
+        <v-col lg="6">
         <v-toolbar extended>          
             <v-container>
               <v-row>    
@@ -50,6 +51,7 @@
               </v-row>
             </v-container>
         </v-toolbar>
+        </v-col>
       </v-row>
       <v-row>
         <v-col lg="12">

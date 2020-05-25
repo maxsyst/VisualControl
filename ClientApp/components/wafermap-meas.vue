@@ -71,14 +71,11 @@
                           item-value="keyGraphicState"
                           item-disabled="disabled"
                           label="Выберите графики:"
-                          multiple
-                        >
+                          multiple>
                           <template v-slot:prepend-item>
                             <v-list-item ripple @click="selectAllGraphics">
                               <v-list-item-action>
-                                <v-icon
-                                  :color="selectedGraphics.length > 0 ? 'primary' : ''"
-                                >{{ selectedGraphicsIcon }}</v-icon>
+                                <v-icon :color="selectedGraphics.length > 0 ? 'primary' : ''">{{ selectedGraphicsIcon }}</v-icon>
                               </v-list-item-action>
                               <v-list-item-content>
                                 <v-list-item-title>Выбрать все</v-list-item-title>
@@ -87,7 +84,7 @@
                             <v-divider class="mt-2"></v-divider>
                           </template>
                           <template slot="selection" slot-scope="{ item, index }">
-                            <v-chip v-if="index < 5">
+                            <v-chip v-if="index < 4">
                               <span>{{ item.graphicName }}</span>
                             </v-chip>
                           </template>
