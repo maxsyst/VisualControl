@@ -28,8 +28,8 @@ namespace VueExample.StatisticsCore
         
         public DirtyCells CalculatePercentage(int dieCount)
         {
-            this.StatPercentageFullWafer = Convert.ToString(Convert.ToInt32((1.0 - this.StatList.Count / (dieCount + 0.0)) * 100), CultureInfo.InvariantCulture);
-            this.FixedPercentageFullWafer = Convert.ToString(Convert.ToInt32((1.0 - this.FixedList.Count / (dieCount + 0.0))     * 100), CultureInfo.InvariantCulture);
+            this.StatPercentageFullWafer = Convert.ToString(Math.Ceiling((1.0 - this.StatList.Count / (dieCount + 0.0)) * 100), CultureInfo.InvariantCulture);
+            this.FixedPercentageFullWafer = Convert.ToString(Math.Ceiling((1.0 - this.FixedList.Count / (dieCount + 0.0))* 100), CultureInfo.InvariantCulture);
             return this;
         }
 

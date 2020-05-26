@@ -111,7 +111,7 @@
                   <v-col>
                     <v-card color="#303030" dark>
                       <v-card-title primary-title>
-                       <v-chip color="indigo" label dark>Годные по статистике</v-chip>
+                       <v-chip class="elevation-12" color="#303030" dark>Годны по всей пластине</v-chip>
                       </v-card-title>
                       <v-card-text>
                          <v-progress-circular
@@ -119,15 +119,15 @@
                           :size="90"
                           :width="7"
                           :value="dirtyCells.statPercentageFullWafer"
-                          color="primary"
-                        >{{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
+                          :color="calculateColor(dirtyCells.statPercentageFullWafer / 100)">
+                          {{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
                       </v-card-text>
                     </v-card>
                   </v-col>
                   <v-col>
                     <v-card color="#303030" dark>
                       <v-card-title primary-title>
-                        <v-chip color="indigo" label dark>Годные по границам</v-chip>
+                        <v-chip class="elevation-12" color="#303030" dark>Годны из выбранных</v-chip>
                       </v-card-title>
                       <v-card-text>
                         <v-progress-circular
@@ -184,6 +184,7 @@
           :keyGraphicState="graphic.keyGraphicState"
           :avbSelectedDies="avbSelectedDies"
           :divider="selectedDivider"
+          :colors="colors"
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
@@ -228,6 +229,7 @@ export default {
       selectedMeasurementId: 0,
       selectedGraphics: [],
       dirtyCells: [],
+      colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
       streetSize: 3,
       fieldHeight: 320,
       fieldWidth: 320      
@@ -279,6 +281,25 @@ export default {
           this.selectedGraphics = kgsArray;
         }
       });
+    },
+
+    calculateColor(statPercentage) {     
+      if(statPercentage >= this.colors.green) {
+        return "green"
+      }
+      else {
+        if(statPercentage >= this.colors.orange) {
+          return "orange"
+        }
+        else {
+          if(statPercentage >= this.colors.red) {
+            return "pink"
+          }
+          else {
+            return "indigo"
+          }
+        }
+      }
     }
   },
 

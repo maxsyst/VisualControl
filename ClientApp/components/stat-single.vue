@@ -153,7 +153,7 @@
 <script>
 import { width } from '@amcharts/amcharts4/.internal/core/utils/Utils';
 export default {
-  props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies"],
+  props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies", "colors"],
 
   data() {
     return {
