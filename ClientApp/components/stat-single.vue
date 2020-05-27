@@ -58,6 +58,15 @@
             </v-container>
         </v-toolbar>
         </v-col>
+        <v-col lg="6">
+          <wafer-mini
+          :waferId="selectedWafer"
+          :avbSelectedDies="avbSelectedDies"
+          :streetSize="streetSize"
+          :fieldHeight="fieldHeight"
+          :fieldWidth="fieldWidth"
+        ></wafer-mini>
+        </v-col>
       </v-row>
       <v-row>
         <v-col lg="12">
@@ -110,9 +119,9 @@
                             :rotate="360"
                             :size="45"
                             :width="4"
-                            :value = "Math.ceil((1.0 - item.fwStatPercentage) * 100)"
-                            :color= "calculateColor(1.0 - item.fwStatPercentage)"
-                          >{{ Math.ceil((1.0 - item.fwStatPercentage) * 100) + '%'}}</v-progress-circular>
+                            :value = "item.fwStatPercentage"
+                            :color= "calculateColor(item.fwStatPercentage/100)"
+                          >{{ item.fwStatPercentage + '%'}}</v-progress-circular>
 
                         </td>
                         </template>
@@ -122,9 +131,9 @@
                             :rotate="360"
                             :size="45"
                             :width="4"
-                            :value = "mode === `stat` ? Math.ceil((1.0 - item.dirtyCells.statPercentage) * 100) : Math.ceil((1.0 - item.dirtyCells.fixedPercentage) * 100)"
+                            :value = "mode === `stat` ? item.dirtyCells.statPercentageFullWafer : item.dirtyCells.fixedPercentageFullWafer"
                             :color= "mode === `stat` ? 'primary' : 'indigo lighten-4'"
-                          >{{ mode === `stat` ? Math.ceil((1.0 - item.dirtyCells.statPercentage) * 100) + '%' : Math.ceil((1.0 - item.dirtyCells.fixedPercentage) * 100) + '%' }}</v-progress-circular>
+                          >{{ mode === `stat` ? item.dirtyCells.statPercentageFullWafer + '%' : item.dirtyCells.fixedPercentageFullWafer + '%' }}</v-progress-circular>
 
                           <v-btn text icon :color="mode === `stat` ? 'primary' : 'indigo lighten-4'" @click="delDirtyCells(item.dirtyCells)">
                             <v-icon>cached</v-icon>
@@ -151,13 +160,14 @@
 </template>
 
 <script>
-import { width } from '@amcharts/amcharts4/.internal/core/utils/Utils';
+import WaferMap from "./wafer-mini.vue";
 export default {
   props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies", "colors"],
-
+  components: {
+    "wafer-mini": WaferMap,
+  },
   data() {
     return {
-      colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
       showPopover: false,
       PopoverX: 0,
       PopoverY: 0,
@@ -242,7 +252,7 @@ export default {
     delDirtyCells: function(dirtyCells) {
       let deletedDies = this.mode === "stat" ? dirtyCells.statList : dirtyCells.fixedList
       let selectedDies = this.selectedDies.filter(el => !deletedDies.includes(el))
-      this.$store.commit("wafermeas/updateSelectedDies", selectedDies)
+      this.$store.dispatch("wafermeas/updateSelectedDies", selectedDies)
     },
 
     showStatTab(statisticsName) {
@@ -269,7 +279,7 @@ export default {
         singlestatModel.dieIdList = this.selectedDies;
         this.statArray = (await this.$http
           .get(`api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data
-        this.statArray = this.statArray.map(s => ({...s, fwStatPercentage: this.fullWaferStatArray.find(f => f.parameterID === s.parameterID).dirtyCells.statPercentage}))
+        this.statArray = this.statArray.map(s => ({...s, fwStatPercentage: this.fullWaferStatArray.find(f => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer}))
         this.loading = false
       }
     },
@@ -316,6 +326,10 @@ export default {
 
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']
+    },
+
+    colors() {
+      return this.$store.getters['wafermeas/colors']
     },
 
     dirtyCells() {

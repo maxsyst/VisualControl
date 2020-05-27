@@ -21,6 +21,7 @@ namespace VueExample.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(CacheProfileName = "Default60")]
         public IActionResult GetFormedWaferMap([FromBody] WaferMapFieldViewModel waferMapFieldViewModel)
         {
             var diesList = _dieProvider.GetDiesByWaferId(waferMapFieldViewModel.WaferId).ToList();

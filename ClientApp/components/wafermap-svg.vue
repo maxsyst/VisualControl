@@ -57,12 +57,11 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['waferId', 'avbSelectedDies', 'streetSize', 'fieldHeight', 'fieldWidth'],
+    props: ['avbSelectedDies', 'streetSize', 'fieldHeight', 'fieldWidth'],
     components: { Loading },
     data() {
       return {
         dies: [],
-        isloading: false,
         activeBtn: 1,
         showNav: false,
         x: 0,
@@ -94,13 +93,13 @@
              let position =  this.selectedDies.indexOf(dieId);
              if ( ~position ) 
              {
-                 this.selectedDies.splice(position, 1);
-                 this.$store.commit("wafermeas/updateSelectedDies", this.selectedDies);
+                this.selectedDies.splice(position, 1);
+                this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
              }
              else
              {
-                 this.selectedDies.push(dieId);
-                 this.$store.commit("wafermeas/updateSelectedDies", this.selectedDies);
+                this.selectedDies.push(dieId);
+                this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
              }
         }
       
@@ -128,7 +127,6 @@
       waferId: {
         immediate: true,
         handler(newVal, oldVal) {
-          this.isloading = true;
           let fieldObject = {waferId: this.waferId, fieldHeight: this.fieldHeight, fieldWidth: this.fieldWidth, streetSize: this.streetSize};
           this.$http({
             method: "post",
@@ -144,7 +142,6 @@
                 this.dies = JSON.parse(response.data.waferMapFormed);               
                 this.initialOrientation = +response.data.orientation;
                 this.currentOrientation = this.initialOrientation;
-                this.isloading = false;
                 this.showNav = false;
                 this.dies.forEach(function(cell) {
                     cell.fill = "#A1887F";
@@ -156,10 +153,8 @@
 
             })
             .catch((error) => {
-
               if (error.response.status === 400) {
                 this.dies = [];
-                this.isloading = false;
               }
             });
 
@@ -212,6 +207,9 @@
     {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
+      },
+      waferId() {
+        return this.$store.getters['wafermeas/wafer']
       },
       cutting()
       {

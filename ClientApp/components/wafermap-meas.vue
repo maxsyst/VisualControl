@@ -222,14 +222,12 @@ export default {
       wafers: [],
       dividers: [],
       avbSelectedDies: [],
-      measurementRecordings: [],
       availiableGraphics: [],
       selectedWafer: "",
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
       selectedGraphics: [],
       dirtyCells: [],
-      colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
       streetSize: 3,
       fieldHeight: 320,
       fieldWidth: 320      
@@ -253,6 +251,12 @@ export default {
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']
     },
+    measurementRecordings() {
+      return this.$store.getters['wafermeas/measurements']
+    },
+    colors() {
+      return this.$store.getters['wafermeas/colors']
+    },
     selectedGraphicsIcon() {
       if (this.availiableGraphics.length === this.selectedGraphics.length)
         return "check_box";
@@ -263,11 +267,11 @@ export default {
 
   methods: {
     delDirtyCells: function(dirtyCellsList, selectedDies) {
-      this.$store.commit("wafermeas/updateSelectedDies", selectedDies.filter(die => !dirtyCellsList.includes(die)))
+      this.$store.dispatch("wafermeas/updateSelectedDies", selectedDies.filter(die => !dirtyCellsList.includes(die)))
     },
 
     selectAllDies: function(avbSelectedDies) {
-      this.$store.commit("wafermeas/updateSelectedDies", [...avbSelectedDies])
+      this.$store.dispatch("wafermeas/updateSelectedDies", [...avbSelectedDies])
     },
 
     selectAllGraphics: function() {
@@ -306,7 +310,7 @@ export default {
   watch: {
     selectedWafer: async function(newValue) {
       this.availiableGraphics = []
-      this.measurementRecordings = (await this.$http.get(`/api/measurementrecording?waferId=${newValue}`)).data     
+      this.$store.dispatch("wafermeas/updateSelectedWaferId", newValue)
     },
 
     selectedMeasurementId: async function(newValue) {
@@ -318,7 +322,7 @@ export default {
       let diesList = (await this.$http.get(`api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.avbSelectedDies = [...diesList]
       this.dirtyCells = (await this.$http.get(`api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}`)).data    
-      this.$store.commit("wafermeas/updateSelectedDies", diesList)
+      this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
       this.selectAllGraphics() 
       this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
       this.loading = false
