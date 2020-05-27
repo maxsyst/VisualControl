@@ -29,10 +29,10 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBadGood(string waferId)
+        public async Task<IActionResult> GetBadGood(string waferId)
         {
             var chart3DPieChart = _amChartProvider.GetBadGoodAmChart3DPieChart(_defectProvider.GetByWaferId(waferId),
-                _dieProvider.GetDiesByWaferId(waferId));
+                await _dieProvider.GetDiesByWaferId(waferId));
             return Ok(chart3DPieChart);
 
         }

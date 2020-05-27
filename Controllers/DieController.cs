@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Providers;
 
@@ -14,9 +15,9 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetByWaferId([FromQuery(Name = "waferid")] string waferId)
+        public async Task<IActionResult> GetByWaferId([FromQuery(Name = "waferid")] string waferId)
         {
-            var graphic = _dieProvider.GetDiesByWaferId(waferId);
+            var graphic = await _dieProvider.GetDiesByWaferId(waferId);
             return Ok(graphic);
         }
     }

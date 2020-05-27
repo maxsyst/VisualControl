@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Providers;
@@ -22,15 +23,14 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [ResponseCache(CacheProfileName = "Default60")]
-        public IActionResult GetFormedWaferMap([FromBody] WaferMapFieldViewModel waferMapFieldViewModel)
+        public async Task<IActionResult> GetFormedWaferMap([FromBody] WaferMapFieldViewModel waferMapFieldViewModel)
         {
-            var diesList = _dieProvider.GetDiesByWaferId(waferMapFieldViewModel.WaferId).ToList();
+            var diesList = await _dieProvider.GetDiesByWaferId(waferMapFieldViewModel.WaferId);
             if (diesList.Count == 0)
             {
                 return BadRequest();
             }
-
-            var orientation = _waferMapProvider.GetByWaferId(waferMapFieldViewModel.WaferId).Orientation;
+            var orientation = (await _waferMapProvider.GetByWaferId(waferMapFieldViewModel.WaferId)).Orientation;
             var waferMapFormed = new WaferMapFormationService(waferMapFieldViewModel.FieldHeight,
                 waferMapFieldViewModel.FieldWidth, waferMapFieldViewModel.StreetSize, diesList).GetFormedWaferMap();
             return Ok(new {waferMapFormed, orientation});
