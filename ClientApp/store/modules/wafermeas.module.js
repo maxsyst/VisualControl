@@ -3,7 +3,7 @@ export const wafermeas = {
   state: {
     selectedDies: [],
     selectedGraphics: [],
-    measurements: {},
+    measurements: [],
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
     wafer: {id: 0, formedMap: {}},    
     divider: "",
@@ -11,17 +11,16 @@ export const wafermeas = {
   },
   
   actions: {
-    updateSelectedDies ({ commit }, { selectedDies }) {
-      commit('updateSelectedDies', { selectedDies })
+    updateSelectedDies ({ commit }, selectedDies ) {
+      commit('updateSelectedDies', selectedDies)
     },
     async updateSelectedWaferId ({commit}, {ctx, waferId}) {
       //formedMap
-      let measurements = await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`).data 
-           
-      let wafer 
+      let measurements = (await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`)).data
+      commit('updateMeasurements', measurements)     
+      // let wafer       
+      // commit('updateWafer', { wafer })
       
-      commit('updateWafer', { wafer })
-      commit('updateMeasurements', { measurements })
     }
   },
 
@@ -35,7 +34,7 @@ export const wafermeas = {
   mutations: {
 
     updateSelectedDies (state, selectedDies) {
-      state.selectedDies = selectedDies
+      state.selectedDies = [...selectedDies]
     },
 
     updateWafer (state, wafer) {
@@ -43,7 +42,7 @@ export const wafermeas = {
     },
 
     updateMeasurements (state, measurements) {
-      state.measurements = measurements
+      state.measurements = [...measurements]
     }
 
   }

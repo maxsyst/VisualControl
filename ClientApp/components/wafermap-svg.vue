@@ -2,15 +2,10 @@
 <v-container fluid grid-list-lg>
   
     <svg :style="svgRotation" :height="fieldHeight" :width="fieldWidth" :viewBox="fieldViewBox">
-      
-     <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25"
-                    :points="cutting" />
-              
+      <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
         <rect  :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
-        
       </g>
-    
     </svg>
     <v-menu v-model="menu"
             :position-x="x"
@@ -18,8 +13,7 @@
             absolute
             offset-y>
       <v-list>
-        <v-list-item v-for="(item, index) in menuItems"
-                     :key="index">
+        <v-list-item v-for="(item, index) in menuItems" :key="index">
                     
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
@@ -57,7 +51,7 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['avbSelectedDies', 'streetSize', 'fieldHeight', 'fieldWidth'],
+    props: ['waferId', 'avbSelectedDies', 'streetSize', 'fieldHeight', 'fieldWidth'],
     components: { Loading },
     data() {
       return {
@@ -73,9 +67,6 @@
          { title: "Mocking" }
         ],
         menu: false
-        
-      
-       
       }
     },
 
@@ -207,9 +198,6 @@
     {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
-      },
-      waferId() {
-        return this.$store.getters['wafermeas/wafer']
       },
       cutting()
       {

@@ -58,7 +58,7 @@
             </v-container>
         </v-toolbar>
         </v-col>
-        <v-col lg="6">
+        <!-- <v-col lg="6">
           <wafer-mini
           :waferId="selectedWafer"
           :avbSelectedDies="avbSelectedDies"
@@ -66,7 +66,7 @@
           :fieldHeight="fieldHeight"
           :fieldWidth="fieldWidth"
         ></wafer-mini>
-        </v-col>
+        </v-col> -->
       </v-row>
       <v-row>
         <v-col lg="12">

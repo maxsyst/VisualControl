@@ -310,7 +310,7 @@ export default {
   watch: {
     selectedWafer: async function(newValue) {
       this.availiableGraphics = []
-      this.$store.dispatch("wafermeas/updateSelectedWaferId", newValue)
+      this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue})
     },
 
     selectedMeasurementId: async function(newValue) {
