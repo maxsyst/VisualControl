@@ -153,9 +153,6 @@
         <wafermap-svg
           :waferId="selectedWafer"
           :avbSelectedDies="avbSelectedDies"
-          :streetSize="streetSize"
-          :fieldHeight="fieldHeight"
-          :fieldWidth="fieldWidth"
         ></wafermap-svg>
       </v-col>
       <v-col lg="2">
@@ -176,7 +173,7 @@
           </v-card>
       </v-col>
     </v-row>
-
+    <v-divider></v-divider>
     <v-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" :key="`kgs-${graphic.keyGraphicState}`">
       <v-col lg="8" class="d-flex">
         <stat-single 
@@ -227,10 +224,7 @@ export default {
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
       selectedGraphics: [],
-      dirtyCells: [],
-      streetSize: 3,
-      fieldHeight: 320,
-      fieldWidth: 320      
+      dirtyCells: []         
     };
   },
 

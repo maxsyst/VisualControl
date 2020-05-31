@@ -58,15 +58,13 @@
             </v-container>
         </v-toolbar>
         </v-col>
-        <!-- <v-col lg="6">
-          <wafer-mini
-          :waferId="selectedWafer"
-          :avbSelectedDies="avbSelectedDies"
-          :streetSize="streetSize"
-          :fieldHeight="fieldHeight"
-          :fieldWidth="fieldWidth"
+        <v-col lg="4" offset-lg="2">
+          <wafer-mini v-if="dirtyCellsFullWafer.cellsId.length > 0"
+            :avbSelectedDies="avbSelectedDies"
+            :dirtyCells="dirtyCellsFullWafer.cellsId"
+            :key="`wfm-${keyGraphicState}`"
         ></wafer-mini>
-        </v-col> -->
+        </v-col>
       </v-row>
       <v-row>
         <v-col lg="12">

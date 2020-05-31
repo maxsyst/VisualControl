@@ -1,7 +1,7 @@
 <template>
 <v-container fluid grid-list-lg>
   
-    <svg :style="svgRotation" :height="fieldHeight" :width="fieldWidth" :viewBox="fieldViewBox">
+    <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
         <rect  :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
@@ -51,7 +51,7 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['waferId', 'avbSelectedDies', 'streetSize', 'fieldHeight', 'fieldWidth'],
+    props: ['avbSelectedDies'],
     components: { Loading },
     data() {
       return {
@@ -115,83 +115,44 @@
     
     watch:
     {
-      waferId: {
-        immediate: true,
-        handler(newVal, oldVal) {
-          let fieldObject = {waferId: this.waferId, fieldHeight: this.fieldHeight, fieldWidth: this.fieldWidth, streetSize: this.streetSize};
-          this.$http({
-            method: "post",
-            url: `/api/wafermap/getformedwafermap`, data: fieldObject, config: {
-              headers: {
-                'Accept': "application/json",
-                'Content-Type': "application/json"
-              }
-            }
-          })
-            .then((response) => {
-              if (response.status === 200) {
-                this.dies = JSON.parse(response.data.waferMapFormed);               
-                this.initialOrientation = +response.data.orientation;
-                this.currentOrientation = this.initialOrientation;
-                this.showNav = false;
-                this.dies.forEach(function(cell) {
-                    cell.fill = "#A1887F";
-                    cell.isActive = false;
-                });
-              }
-
-
-
-            })
-            .catch((error) => {
-              if (error.response.status === 400) {
-                this.dies = [];
-              }
-            });
-
-
-
-        }
-      },
-
-    
-    
+      'wafer.id': function(newVal) {
+          this.dies = this.wafer.formedMapBig.dies              
+          this.initialOrientation = +this.wafer.formedMapBig.orientation;
+          this.currentOrientation = this.initialOrientation;
+          this.showNav = false;
+          this.dies.forEach(function(cell) {
+            cell.fill = "#A1887F";
+            cell.isActive = false;
+          });
+      },    
 
       fieldWidth: {
         immediate: true,
         handler(newVal, oldVal) {
-          this.fieldViewBox = `0 0 ${this.fieldHeight} ${this.fieldWidth}`;
+          this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
         }
       },
 
 
       selectedDies: function()
       {
-        this.dies.forEach(function(cell) {
-                    cell.fill = "#A1887F";
-                    cell.isActive = false;
-                });
-        if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0)
-        {
+        if(this.dies.length > 0) {
+          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0)
+          {
 
-          for (var i = 0; i < this.avbSelectedDies.length; i++) 
-          {
-            //Bad smell
-            this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
-            this.dies.find(d => d.id === this.avbSelectedDies[i]).isActive = true;
-          }  
-       
-          for (var i = 0; i < this.selectedDies.length; i++) 
-          {
-            
-            this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";
-           
-          }    
-          
-         
+            for (var i = 0; i < this.avbSelectedDies.length; i++) {
+              //Bad smell
+              this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
+              this.dies.find(d => d.id === this.avbSelectedDies[i]).isActive = true;
+            }  
+        
+            for (var i = 0; i < this.selectedDies.length; i++) {            
+              this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
+            }           
+          }
         }
-
-       }
+        
+      }
     },
 
     computed:
@@ -199,18 +160,24 @@
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
       },
+      size() {
+        return this.$store.getters['wafermeas/size']("big")
+      },
+      wafer() {
+        return this.$store.getters['wafermeas/wafer']
+      },
       cutting()
       {
         //ONLY IF HEIGHT === WIDTH
-        let bBorder = this.fieldHeight / 6;
-        let tBorder = this.fieldHeight / 6 * 5;
+        let bBorder = this.size.fieldHeight / 6;
+        let tBorder = this.size.fieldHeight / 6 * 5;
         if (this.initialOrientation === -1)
         {
           return `0,0 0,0`
         }
         switch (this.initialOrientation) {
           case 0:
-            return `${bBorder},${this.fieldHeight} ${tBorder},${this.fieldHeight}`
+            return `${bBorder},${this.size.fieldHeight} ${tBorder},${this.size.fieldHeight}`
             break;
           case 90:
             return `0,${bBorder} 0,${tBorder}`;
@@ -219,7 +186,7 @@
             return `${bBorder},0 ${tBorder},0`;
             break;
           case 270:
-            return `${this.fieldHeight},${bBorder} ${this.fieldHeight},${tBorder}`;
+            return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`;
             break;
           default:
             return `0,0 0,0`;
