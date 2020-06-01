@@ -239,9 +239,9 @@ export default {
 
   async created() {
     this.graphicName = (await this.$http
-      .get(`api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`)).data
+      .get(`/api/graphicsrv6/GetGraphicNameByKeyGraphicState?=${this.keyGraphicState}`)).data
     this.fullWaferStatArray = (await this.$http
-      .get(`api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}`)).data
+      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}`)).data
     this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
     await this.getStatArray()
   },
@@ -276,7 +276,7 @@ export default {
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
         this.statArray = (await this.$http
-          .get(`api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data
+          .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data
         this.statArray = this.statArray.map(s => ({...s, fwStatPercentage: this.fullWaferStatArray.find(f => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer}))
         this.loading = false
       }

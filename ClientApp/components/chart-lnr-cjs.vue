@@ -58,7 +58,7 @@ export default {
                 singlestatModel.measurementId = this.measurementId;
                 singlestatModel.dieIdList = selectedDies;
                 await this.$http
-                    .get(`api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+                    .get(`/api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
                     let chart = response.data
                     this.calculateOptions(chart.options)

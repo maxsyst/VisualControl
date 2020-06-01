@@ -57,7 +57,7 @@ export default {
                 singlestatModel.measurementId = this.measurementId;
                 singlestatModel.dieIdList = this.selectedDies;
                 await this.$http
-                    .get(`api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+                    .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
                         let chart = response.data;
                         this.chartdata = chart.chartData

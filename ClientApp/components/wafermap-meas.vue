@@ -239,6 +239,7 @@ export default {
   async created() {
     this.wafers = (await this.$http.get(`/api/wafer/all`)).data
     this.dividers = (await this.$http.get(`/api/divider/all`)).data
+    this.routeHandler(this.$route.name)
   },
 
   computed: {
@@ -260,6 +261,17 @@ export default {
   },
 
   methods: {
+
+    routeHandler: function(routeName) {
+      if(routeName === "wafermeasurement-onlywafer") {
+        this.selectedWafer = this.$route.params.waferId
+      }
+      if(routeName === "wafermeasurement-fullselected") {
+        this.selectedWafer = this.$route.params.waferId
+        this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === "оп." + this.$route.params.measurementName).id
+      }
+    },
+
     delDirtyCells: function(dirtyCellsList, selectedDies) {
       this.$store.dispatch("wafermeas/updateSelectedDies", selectedDies.filter(die => !dirtyCellsList.includes(die)))
     },
@@ -305,22 +317,25 @@ export default {
     selectedWafer: async function(newValue) {
       this.availiableGraphics = []
       this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue})
+      await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: newValue}})
     },
 
     selectedMeasurementId: async function(newValue) {
+     
       this.availiableGraphics = []
       this.loading = true
-      let dieValues = (await this.$http.get(`api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
+      let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
-      this.availiableGraphics = (await this.$http.get(`api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
-      let diesList = (await this.$http.get(`api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
+      this.availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
+      let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.avbSelectedDies = [...diesList]
-      this.dirtyCells = (await this.$http.get(`api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}`)).data    
+      this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}`)).data    
       this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
       this.selectAllGraphics() 
       this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
       this.loading = false
       this.activeTab = "statistics"
+      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === newValue).name.split('.')[1]}});
     },
 
     availiableGraphics: function() {

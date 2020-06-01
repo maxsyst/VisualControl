@@ -20,6 +20,7 @@ import Uploader from 'components/uploader-ng'
 import ElementType from 'components/element-type'
 import UploaderFg from 'components/uploader-filegraphic'
 import UploaderFinal from 'components/uploader-final'
+import PWafer from 'components/pwafer'
 // Service components
 import LoginPage from 'components/login-page'
 import RegistrationPage from 'components/registration-page'
@@ -38,7 +39,20 @@ export const routes = [
   { path: '/defect/:defectid', component: DefectCard },
   { name: 'adddefect', path: '/adddefect', component: DefectSingle, display: 'Добавление дефекта', nav: true },
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
-  { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, display: 'Просмотр измерений', nav: true },
+  { name: 'pwafer', path: '/pwafer', component: PWafer, display: 'Просмотр измерений', nav: true},  
+  { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
+    children: [
+    {
+      name: 'wafermeasurement-onlywafer',
+      path: 'waferId/:waferId',
+      component: WaferMeas
+    },
+    {
+      name: 'wafermeasurement-fullselected',
+      path: 'waferId/:waferId/measurement/:measurementName',
+      component: WaferMeas
+    }]                                                                                                              
+  },
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
   { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true }, 
   { name: 'standartparameter', path: '/standart-parameter', component: StandartParameter, display: 'StandartParameter'}, 
