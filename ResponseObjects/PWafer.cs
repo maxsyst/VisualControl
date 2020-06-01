@@ -7,6 +7,7 @@ namespace VueExample.ResponseObjects
         public string WaferId { get; set; }
         public string CodeProductName { get; set; }
         public string ProcessName { get; set; }
+        public string MeasurementRecordingName { get; set; }
         public DateTime MeasurementDate { get; set; }
         public DateTime StartTime { get; set; }
     }

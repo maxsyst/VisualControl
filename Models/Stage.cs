@@ -15,5 +15,7 @@ namespace VueExample.Models
         public int ProcessId { get; set; }
         [Column("id_cp")]
         public int? CodeProductId { get; set; }
+        [NotMapped]
+        public bool IsNullObject { get; set; } = false;
     }
 }
