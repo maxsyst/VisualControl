@@ -1,10 +1,12 @@
 <template>
-    <v-container fluid grid-list-lg>
+    <v-container>
+      <v-row class="d-flex align-center justify-center">
         <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">      
             <g v-for="(die, key) in dies" :key="die.id">
                 <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" />
             </g>
         </svg>
+      </v-row>
     </v-container>
 </template>
 

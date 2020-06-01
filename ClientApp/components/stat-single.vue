@@ -1,16 +1,16 @@
 <template>
     <v-container fluid>
       <v-row>
-        <v-col lg="6">
+        <v-col lg="8">
         <v-toolbar extended>          
             <v-container>
               <v-row>    
-                <v-col lg="6" class="d-flex align-center justify-start" v-if="this.fullWaferStatArray.length > 0">  
+                <v-col lg="6" class="d-flex align-center justify-start" v-if="!loading">  
                 <v-chip class="elevation-8" label x-large color="#303030">
                   {{graphicName}}
                 </v-chip>
                 </v-col>  
-                <v-col lg="6" class="d-flex align-center justify-space-around" v-if="this.fullWaferStatArray.length > 0">
+                <v-col lg="6" class="d-flex align-center justify-space-around" v-if="!loading">
                 <div class="d-flex flex-column" >
                   <v-chip class="elevation-8" color="#303030">
                     Годны по всей пластине
@@ -58,7 +58,7 @@
             </v-container>
         </v-toolbar>
         </v-col>
-        <v-col lg="4" offset-lg="2">
+        <v-col lg="4">
           <wafer-mini v-if="dirtyCellsFullWafer.cellsId.length > 0"
             :avbSelectedDies="avbSelectedDies"
             :dirtyCells="dirtyCellsFullWafer.cellsId"

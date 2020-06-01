@@ -67,7 +67,7 @@ namespace VueExample.Providers
             foreach (var dieValue in dieValuesList.Where(x => dieIdList.Contains(x.DieId)).ToList()) 
             {
                 labelsList.Add(Convert.ToString((await _dieProvider.GetById((long) dieValue.DieId)).Code));
-                dataset.BackgroundColor = _colorService.GetHexColorByDieId(dieValue.DieId);
+                dataset.BackgroundColor = "#3D5AFE";
                 dataset.Data.Add(double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
             }
             labelsList.Reverse();
