@@ -21,9 +21,9 @@ namespace VueExample.Providers
 
         public ChartJSProvider (IDieProvider dieProvider, ISRV6GraphicService graphicService, IColorService colorService) 
         {
-            this._dieProvider = dieProvider;
-            this._graphicService = graphicService;
-            this._colorService = colorService;
+            _dieProvider = dieProvider;
+            _graphicService = graphicService;
+            _colorService = colorService;
         }
 
         public async Task<AbstractChart> GetLinearFromDieValues(List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState) 
@@ -41,7 +41,6 @@ namespace VueExample.Providers
                     {
                         dataset.Data.Add(double.Parse (dieValue.YList[i], CultureInfo.InvariantCulture) / divider);
                     }
-
                 }
                 datasetList.Add(dataset);
             });

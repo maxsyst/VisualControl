@@ -2,6 +2,7 @@ export const wafermeas = {
   namespaced: true,
   state: {
     selectedDies: [],
+    avbGraphics: [],
     selectedGraphics: [],
     measurements: [],
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
@@ -15,19 +16,23 @@ export const wafermeas = {
     updateSelectedDies ({ commit }, selectedDies ) {
       commit('updateSelectedDies', selectedDies)
     },
+
+    updateAvbGraphics({commit}, avbGraphics) {
+      commit('updateAvbGraphics', avbGraphics)
+    },
+
     async updateSelectedWaferId ({commit, state}, {ctx, waferId}) {
-      
-      
+    
       let measurements = (await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`)).data
       commit('updateMeasurements', measurements) 
-
+      
       let bigMap = (await ctx.$http({
-            method: "post",
-            url: `/api/wafermap/getformedwafermap`, data: {waferId, fieldHeight: state.sizes.big.fieldHeight, fieldWidth: state.sizes.big.fieldWidth, streetSize: state.sizes.big.streetSize}, config: {
-              headers: {
-                'Accept': "application/json",
-                'Content-Type': "application/json"
-              }
+        method: "post",
+        url: `/api/wafermap/getformedwafermap`, data: {waferId, fieldHeight: state.sizes.big.fieldHeight, fieldWidth: state.sizes.big.fieldWidth, streetSize: state.sizes.big.streetSize}, config: {
+        headers: {
+          'Accept': "application/json",
+          'Content-Type': "application/json"
+          }
         }
       })).data
 
@@ -48,7 +53,9 @@ export const wafermeas = {
   },
 
   getters: {
+    getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     selectedDies: state => state.selectedDies,
+    avbGraphics: state => state.avbGraphics,
     colors: state => state.colors,
     wafer: state => state.wafer,
     measurements: state => state.measurements,
@@ -59,6 +66,10 @@ export const wafermeas = {
 
     updateSelectedDies (state, selectedDies) {
       state.selectedDies = [...selectedDies]
+    },
+
+    updateAvbGraphics(state, avbGraphics) {
+      state.avbGraphics = [...avbGraphics]
     },
 
     updateWaferId(state, waferId) {

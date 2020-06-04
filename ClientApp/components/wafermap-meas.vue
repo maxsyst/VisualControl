@@ -108,8 +108,15 @@
               </v-tab-item>
               <v-tab-item value="statistics">
                 <v-row>
-                  <v-col>
+                  <v-col lg="8">
                     <v-card color="#303030" dark>
+                      <v-row v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`">
+                        <micro-row :keyGraphicState="graphic.keyGraphicState"></micro-row>
+                      </v-row>
+                    </v-card>
+                  </v-col>
+                  <v-col lg="4">
+                  <v-card color="#303030" dark>
                       <v-card-title primary-title>
                        <v-chip class="elevation-12" color="#303030" dark>Годны по всей пластине</v-chip>
                       </v-card-title>
@@ -123,8 +130,6 @@
                           {{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                  <v-col>
                     <v-card color="#303030" dark>
                       <v-card-title primary-title>
                         <v-chip class="elevation-12" color="#303030" dark>Годны из выбранных</v-chip>
@@ -211,6 +216,8 @@ import ChartHSTG from "./chart-bar-cjs.vue";
 import StatSingle from "./stat-single.vue";
 import Loading from "vue-loading-overlay";
 import WaferMap from "./wafermap-svg.vue";
+import MiniGraphicRow from "./wafermeas-minigraphicrow";
+
 export default {
   data() {
     return {
@@ -219,7 +226,6 @@ export default {
       wafers: [],
       dividers: [],
       avbSelectedDies: [],
-      availiableGraphics: [],
       selectedWafer: "",
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
@@ -229,6 +235,7 @@ export default {
   },
 
   components: {
+    "micro-row": MiniGraphicRow,
     "stat-single": StatSingle,
     "wafermap-svg": WaferMap,
     "chart-lnr": ChartLNR,
@@ -245,6 +252,9 @@ export default {
   computed: {
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']
+    },
+    availiableGraphics() {
+       return this.$store.getters['wafermeas/avbGraphics']
     },
     measurementRecordings() {
       return this.$store.getters['wafermeas/measurements']
@@ -282,13 +292,8 @@ export default {
 
     selectAllGraphics: function() {
       this.$nextTick(() => {
-        if (this.selectedGraphics.length === this.availiableGraphics.length) {
-          this.selectedFruits = [];
-        } else {
-          var kgsArray = this.availiableGraphics.map(function(g) {
-            return g.keyGraphicState;
-          });
-          this.selectedGraphics = kgsArray;
+        if (this.selectedGraphics.length !== this.availiableGraphics.length) {
+          this.selectedGraphics = this.availiableGraphics.map(g => g.keyGraphicState)
         }
       });
     },
@@ -315,18 +320,16 @@ export default {
 
   watch: {
     selectedWafer: async function(newValue) {
-      this.availiableGraphics = []
+      this.$store.dispatch("wafermeas/updateAvbGraphics", [])
       this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue})
-      await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: newValue}})
     },
 
     selectedMeasurementId: async function(newValue) {
-     
-      this.availiableGraphics = []
       this.loading = true
       let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
-      this.availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
+      let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
+      this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
       let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.avbSelectedDies = [...diesList]
       this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}`)).data    
