@@ -44,6 +44,7 @@
     "vue-sweetalert2": "^1.5.9",
     "vue-template-compiler": "^2.6.10",
     "vue-uuid": "^1.1.1",
+    "vue2-perfect-scrollbar": "^1.5.0",
     "vuelidate": "^0.7.4",
     "vuesax": "^3.6.2",
     "vuetify": "^2.1.9",

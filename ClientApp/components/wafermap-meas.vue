@@ -1,5 +1,17 @@
 <template>
   <v-container grid-list-lg>
+    <v-btn
+      v-scroll="onScroll"
+      v-show="fab"
+      fab
+      dark
+      fixed
+      bottom
+      right
+      color="indigo"
+      @click="toTop">
+        <v-icon>keyboard_arrow_up</v-icon>
+    </v-btn>
     <loading
       :active.sync="loading"
       :can-cancel="false"
@@ -10,7 +22,7 @@
       :is-full-page="true"
     ></loading>
     <v-row wrap>
-      <v-col lg="4">
+      <v-col lg="5">
         <v-row justify-center column>
           <v-col>
             <v-tabs v-model="activeTab" background-color="indigo" dark slider-color="primary" icons-and-text>
@@ -109,44 +121,40 @@
               <v-tab-item value="statistics">
                 <v-row>
                   <v-col lg="8">
-                    <v-card color="#303030" dark>
-                      <v-row v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`">
-                        <micro-row :keyGraphicState="graphic.keyGraphicState"></micro-row>
-                      </v-row>
+                    <v-card dark>
+                      <perfect-scrollbar>
+                        <micro-row class="mt-2" v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`" :keyGraphicState="graphic.keyGraphicState"></micro-row>
+                      </perfect-scrollbar>
                     </v-card>
                   </v-col>
                   <v-col lg="4">
-                  <v-card color="#303030" dark>
-                      <v-card-title primary-title>
-                       <v-chip class="elevation-12" color="#303030" dark>Годны по всей пластине</v-chip>
-                      </v-card-title>
+                  <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
+                  <v-card class="mr-2 mt-2 mb-4" color="#303030" dark>
                       <v-card-text>
                          <v-progress-circular
                           :rotate="360"
                           :size="90"
-                          :width="7"
+                          :width="5"
                           :value="dirtyCells.statPercentageFullWafer"
-                          :color="calculateColor(dirtyCells.statPercentageFullWafer / 100)">
+                          :color="$store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100)">
                           {{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
                       </v-card-text>
                     </v-card>
-                    <v-card color="#303030" dark>
-                      <v-card-title primary-title>
-                        <v-chip class="elevation-12" color="#303030" dark>Годны из выбранных</v-chip>
-                      </v-card-title>
-                      <v-card-text>
-                        <v-progress-circular
-                          :rotate="360"
-                          :size="90"
-                          :width="7"
-                          :value="dirtyCells.statPercentageSelected"
-                          color="primary"
-                        >{{ dirtyCells.statPercentageSelected + "%" }}</v-progress-circular>
-                        <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList, selectedDies)">
-                          <v-icon>cached</v-icon>
-                        </v-btn>
-                      </v-card-text>
-                    </v-card>
+                      <v-chip class="elevation-12 mt-4 ms-2" color="#303030" dark>Годны из выбранных</v-chip>
+                      <v-card class="mr-2 mt-2" color="#303030" dark>
+                        <v-card-text>
+                          <v-progress-circular
+                            :rotate="360"
+                            :size="90"
+                            :width="5"
+                            :value="dirtyCells.statPercentageSelected"
+                            color="primary"
+                          >{{ dirtyCells.statPercentageSelected + "%" }}</v-progress-circular>
+                          <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList, selectedDies)">
+                            <v-icon>cached</v-icon>
+                          </v-btn>
+                        </v-card-text>
+                      </v-card>
                   </v-col>
                 </v-row>
               </v-tab-item>
@@ -181,12 +189,11 @@
     <v-divider></v-divider>
     <v-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" :key="`kgs-${graphic.keyGraphicState}`">
       <v-col lg="8" class="d-flex">
-        <stat-single 
+        <stat-single :id="'ss_' + graphic.keyGraphicState"
           :measurementId="selectedMeasurementId"
           :keyGraphicState="graphic.keyGraphicState"
           :avbSelectedDies="avbSelectedDies"
           :divider="selectedDivider"
-          :colors="colors"
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
@@ -221,6 +228,7 @@ import MiniGraphicRow from "./wafermeas-minigraphicrow";
 export default {
   data() {
     return {
+      fab: false,
       loading: false,
       activeTab: "wafer",
       wafers: [],
@@ -259,9 +267,6 @@ export default {
     measurementRecordings() {
       return this.$store.getters['wafermeas/measurements']
     },
-    colors() {
-      return this.$store.getters['wafermeas/colors']
-    },
     selectedGraphicsIcon() {
       if (this.availiableGraphics.length === this.selectedGraphics.length)
         return "check_box";
@@ -271,6 +276,16 @@ export default {
   },
 
   methods: {
+
+    onScroll (e) {
+      if (typeof window === 'undefined') return
+      const top = window.pageYOffset ||   e.target.scrollTop || 0
+      this.fab = top > 20
+    },
+
+    toTop () {
+      this.$vuetify.goTo(0)
+    },
 
     routeHandler: function(routeName) {
       if(routeName === "wafermeasurement-onlywafer") {
@@ -296,25 +311,6 @@ export default {
           this.selectedGraphics = this.availiableGraphics.map(g => g.keyGraphicState)
         }
       });
-    },
-
-    calculateColor(statPercentage) {     
-      if(statPercentage >= this.colors.green) {
-        return "green"
-      }
-      else {
-        if(statPercentage >= this.colors.orange) {
-          return "orange"
-        }
-        else {
-          if(statPercentage >= this.colors.red) {
-            return "pink"
-          }
-          else {
-            return "indigo"
-          }
-        }
-      }
     }
   },
 
@@ -355,3 +351,9 @@ export default {
   }
 };
 </script>
+
+<style>
+  .ps {
+    height: 400px;
+  }
+</style>

@@ -9,10 +9,19 @@ export const wafermeas = {
     wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},    
     divider: "",
     sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
-    dirtyCells: {}
+    dirtyCells: []
   },
   
   actions: {
+    
+    updateDirtyCellsSelectedNow({commit}, {keyGraphicState, dirtyCells}) {
+      commit('updateDirtyCellsSelectedNow', {keyGraphicState, dirtyCells})
+    },
+
+    updateDirtyCellsFullWafer({commit}, {keyGraphicState, dirtyCells}) {
+      commit('updateDirtyCellsFullWafer', {keyGraphicState, dirtyCells})
+    },
+
     updateSelectedDies ({ commit }, selectedDies ) {
       commit('updateSelectedDies', selectedDies)
     },
@@ -53,7 +62,26 @@ export const wafermeas = {
   },
 
   getters: {
+    calculateColor: state => statPercentage => {
+      if(statPercentage >= state.colors.green) {
+        return "green"
+      }
+      else {
+        if(statPercentage >= state.colors.orange) {
+          return "orange"
+        }
+        else {
+          if(statPercentage >= state.colors.red) {
+            return "pink"
+          }
+          else {
+            return "indigo"
+          }
+        }
+      } 
+    },
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
+    getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCells.find(dc => dc.keyGraphicState === keyGraphicState),
     selectedDies: state => state.selectedDies,
     avbGraphics: state => state.avbGraphics,
     colors: state => state.colors,
@@ -63,6 +91,24 @@ export const wafermeas = {
   },
 
   mutations: {
+
+    updateDirtyCellsSelectedNow(state, {keyGraphicState, dirtyCells}) {
+      let graphic = state.dirtyCells.find(dc => dc.keyGraphicState === keyGraphicState)
+      if(graphic === undefined) {
+        graphic = {keyGraphicState, selectedNow: {cells: [], percentage: 0}, fullWafer: {cells: [], percentage: 0}}
+        state.dirtyCells.push(graphic)
+      }
+      graphic.selectedNow = {cells: [...dirtyCells.cellsId], percentage: dirtyCells.statPercentage}
+    },
+
+    updateDirtyCellsFullWafer(state, {keyGraphicState, dirtyCells}) {
+      let graphic = state.dirtyCells.find(dc => dc.keyGraphicState === keyGraphicState)
+      if(graphic === undefined) {
+        graphic = {keyGraphicState, selectedNow: {cells: [], percentage: 0}, fullWafer: {cells: [], percentage: 0}}
+        state.dirtyCells.push(graphic)
+      }
+      graphic.fullWafer = {cells: [...dirtyCells.cellsId], percentage: dirtyCells.statPercentage}
+    },
 
     updateSelectedDies (state, selectedDies) {
       state.selectedDies = [...selectedDies]

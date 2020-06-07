@@ -19,9 +19,9 @@
                     <v-progress-circular
                       :rotate="360"
                       :size="60"
-                      :width="4"
+                      :width="2"
                       :value="dirtyCellsFullWafer.statPercentage"
-                      :color="calculateColor(dirtyCellsFullWafer.statPercentage / 100)">
+                      :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.statPercentage / 100)">
                     {{ dirtyCellsFullWafer.statPercentage + '%'}}
                     </v-progress-circular>
 
@@ -35,7 +35,7 @@
                   <v-progress-circular
                     :rotate="360"
                     :size="60"
-                    :width="4"
+                    :width="2"
                     :value="mode === `stat` ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
                     :color="mode === `stat` ? 'primary' : 'indigo lighten-4'">
                     {{ mode === `stat` ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}
@@ -116,9 +116,9 @@
                           <v-progress-circular
                             :rotate="360"
                             :size="45"
-                            :width="4"
+                            :width="2"
                             :value = "item.fwStatPercentage"
-                            :color= "calculateColor(item.fwStatPercentage/100)"
+                            :color= "$store.getters['wafermeas/calculateColor'](item.fwStatPercentage/100)"
                           >{{ item.fwStatPercentage + '%'}}</v-progress-circular>
 
                         </td>
@@ -128,7 +128,7 @@
                           <v-progress-circular
                             :rotate="360"
                             :size="45"
-                            :width="4"
+                            :width="2"
                             :value = "mode === `stat` ? item.dirtyCells.statPercentageFullWafer : item.dirtyCells.fixedPercentageFullWafer"
                             :color= "mode === `stat` ? 'primary' : 'indigo lighten-4'"
                           >{{ mode === `stat` ? item.dirtyCells.statPercentageFullWafer + '%' : item.dirtyCells.fixedPercentageFullWafer + '%' }}</v-progress-circular>
@@ -160,7 +160,7 @@
 <script>
 import WaferMap from "./wafer-mini.vue";
 export default {
-  props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies", "colors"],
+  props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies"],
   components: {
     "wafer-mini": WaferMap,
   },
@@ -220,6 +220,7 @@ export default {
           width: '10%'
         },
         {
+
           text: "CorrectFullWafer,%",
           align: "center",
           sortable: false,
@@ -284,25 +285,14 @@ export default {
     calculateFullWaferDirtyCells(fullWaferStatArray) {
       this.dirtyCellsFullWafer.cellsId = [...new Set(fullWaferStatArray.reduce((p,c) => [...p, ...c.dirtyCells.statList], []))]
       this.dirtyCellsFullWafer.statPercentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.cellsId.length / this.avbSelectedDies.length)) * 100)
+      this.$store.dispatch("wafermeas/updateDirtyCellsFullWafer", { 
+        keyGraphicState: this.keyGraphicState, 
+        dirtyCells: {cellsId: [...this.dirtyCellsFullWafer.cellsId], statPercentage: this.dirtyCellsFullWafer.statPercentage}
+      })
     },
 
     calculateColor(statPercentage) {     
-      if(statPercentage >= this.colors.green) {
-        return "green"
-      }
-      else {
-        if(statPercentage >= this.colors.orange) {
-          return "orange"
-        }
-        else {
-          if(statPercentage >= this.colors.red) {
-            return "pink"
-          }
-          else {
-            return "indigo"
-          }
-        }
-      }
+     
     }
   },
 
@@ -325,10 +315,6 @@ export default {
       return this.$store.getters['wafermeas/selectedDies']
     },
 
-    colors() {
-      return this.$store.getters['wafermeas/colors']
-    },
-
     dirtyCells() {
       let statArray = [];
       let fixedArray = [];
@@ -344,6 +330,10 @@ export default {
 
     dirtyCellsStatPercentage() {
       let percentage = Math.ceil((1.0 - this.dirtyCells.statList.length / this.selectedDies.length) * 100)
+      this.$store.dispatch("wafermeas/updateDirtyCellsSelectedNow", { 
+        keyGraphicState: this.keyGraphicState, 
+        dirtyCells: {cellsId: [...this.dirtyCells.statList], statPercentage: percentage}
+      })
       return isNaN(percentage) ? 0 : percentage
     },
 

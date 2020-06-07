@@ -10,11 +10,11 @@ import Lightbox from 'vue-my-photos'
 import Vuelidate from 'vuelidate'
 import AsyncComputed from 'vue-async-computed'
 import UUID from 'vue-uuid'
- 
+import PerfectScrollbar from 'vue2-perfect-scrollbar'
 
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'vuetify/dist/vuetify.min.css'
-
+import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 
 Vue.component('lightbox', Lightbox)
 
@@ -24,6 +24,7 @@ Vue.config.performance = true
 Vue.use(Lightbox)
 Vue.use(Vuelidate)
 Vue.use(UUID)
+Vue.use(PerfectScrollbar)
 
 
 const opts =  {
