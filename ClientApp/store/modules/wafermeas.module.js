@@ -13,6 +13,14 @@ export const wafermeas = {
   },
   
   actions: {
+
+    updateMeasurementName({commit}, {id,name}) {
+      commit('updateMeasurementName', {id,name})
+    },
+
+    deleteMeasurement({commit}, id) {
+      commit('deleteMeasurement', id)
+    },
     
     updateDirtyCellsSelectedNow({commit}, {keyGraphicState, dirtyCells}) {
       commit('updateDirtyCellsSelectedNow', {keyGraphicState, dirtyCells})
@@ -33,6 +41,7 @@ export const wafermeas = {
     async updateSelectedWaferId ({commit, state}, {ctx, waferId}) {
     
       let measurements = (await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`)).data
+      measurements = measurements.map(m => ({...m, name: m.name.split('.')[1]}))
       commit('updateMeasurements', measurements) 
       
       let bigMap = (await ctx.$http({
@@ -133,6 +142,17 @@ export const wafermeas = {
 
     updateMeasurements (state, measurements) {
       state.measurements = [...measurements]
+    },
+
+    updateMeasurementName(state, {id, name}) {
+      let measurement = state.measurements.find(x => x.id === id)
+      if(measurement) {
+        measurement.name = name
+      }
+    },
+
+    deleteMeasurement(state, id) {
+      state.measurements = state.measurements.filter(x => x.id !== id)
     }
 
   }

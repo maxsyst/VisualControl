@@ -2,7 +2,7 @@
   <v-container grid-list-lg>
     <v-btn
       v-scroll="onScroll"
-      v-show="fab"
+      v-show="fabToTop"
       fab
       dark
       fixed
@@ -23,6 +23,9 @@
     ></loading>
     <v-row wrap>
       <v-col lg="5">
+        <v-row justify-center column>
+          <mini-report :waferId="selectedWafer" :selectedMeasurementId="selectedMeasurementId"></mini-report>
+        </v-row>
         <v-row justify-center column>
           <v-col>
             <v-tabs v-model="activeTab" background-color="indigo" dark slider-color="primary" icons-and-text>
@@ -169,13 +172,13 @@
         ></wafermap-svg>
       </v-col>
       <v-col lg="2">
-          <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">
-            <v-chip class="elevation-12" color="#303030" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
+          <v-chip color="#303030" v-if="avbSelectedDies.length > 0" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
+          <v-card class="mt-2" color="#303030" dark v-if="avbSelectedDies.length > 0">            
             <v-card-text>
               <v-progress-circular
                 :rotate="360"
                 :size="90"
-                :width="7"
+                :width="5"
                 :value="(selectedDies.length / avbSelectedDies.length)*100"
                 color="primary"
               >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
@@ -218,6 +221,7 @@
 </template>
 
 <script>
+import MiniReport from "./wafermeas-report.vue"
 import ChartLNR from "./chart-lnr-cjs.vue";
 import ChartHSTG from "./chart-bar-cjs.vue";
 import StatSingle from "./stat-single.vue";
@@ -228,7 +232,9 @@ import MiniGraphicRow from "./wafermeas-minigraphicrow";
 export default {
   data() {
     return {
-      fab: false,
+      fabToTop: false,
+      fabToNext: false,
+      fabToPrev: false,
       loading: false,
       activeTab: "wafer",
       wafers: [],
@@ -243,6 +249,7 @@ export default {
   },
 
   components: {
+    "mini-report": MiniReport,
     "micro-row": MiniGraphicRow,
     "stat-single": StatSingle,
     "wafermap-svg": WaferMap,
@@ -277,10 +284,10 @@ export default {
 
   methods: {
 
-    onScroll (e) {
+    onScroll(e) {
       if (typeof window === 'undefined') return
-      const top = window.pageYOffset ||   e.target.scrollTop || 0
-      this.fab = top > 20
+      const top = window.pageYOffset || e.target.scrollTop || 0
+      this.fabToTop = top > 20
     },
 
     toTop () {
@@ -334,7 +341,7 @@ export default {
       this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
       this.loading = false
       this.activeTab = "statistics"
-      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === newValue).name.split('.')[1]}});
+      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === newValue).name}});
     },
 
     availiableGraphics: function() {

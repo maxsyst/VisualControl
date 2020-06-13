@@ -5,7 +5,7 @@
                 <v-chip color="indigo" label v-html="graphic.graphicName" @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
-                 <v-progress-circular
+                 <v-progress-circular v-if="dirtyCells"
                       :rotate="360"
                       :size="50"
                       :width="2"
@@ -13,9 +13,12 @@
                       :color="this.$store.getters['wafermeas/calculateColor'](dirtyCells.fullWafer.percentage/ 100)">
                     {{ dirtyCells.fullWafer.percentage + '%'}}
                     </v-progress-circular>
+                    <v-progress-circular v-else
+                        color="primary"
+                    ></v-progress-circular>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
-                <v-progress-circular
+                <v-progress-circular v-if="dirtyCells"
                     :rotate="360"
                     :size="50"
                     :width="2"
@@ -23,6 +26,9 @@
                     color="primary">
                     {{ dirtyCells.selectedNow.percentage + '%' }}
                   </v-progress-circular>
+                   <v-progress-circular v-else
+                        color="primary"
+                    ></v-progress-circular>
             </v-col>
             <v-col lg="1" offset-lg="1" class="d-flex align-center justify-end"> 
                 <v-checkbox

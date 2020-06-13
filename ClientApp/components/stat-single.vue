@@ -289,10 +289,6 @@ export default {
         keyGraphicState: this.keyGraphicState, 
         dirtyCells: {cellsId: [...this.dirtyCellsFullWafer.cellsId], statPercentage: this.dirtyCellsFullWafer.statPercentage}
       })
-    },
-
-    calculateColor(statPercentage) {     
-     
     }
   },
 
