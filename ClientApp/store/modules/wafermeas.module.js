@@ -18,6 +18,10 @@ export const wafermeas = {
       commit('updateMeasurementName', {id,name})
     },
 
+    updateMeasurementStage({commit}, {measurementRecordingId, stageId}) {
+      commit('updateMeasurementStage', {id: measurementRecordingId, stageId})
+    },
+
     deleteMeasurement({commit}, id) {
       commit('deleteMeasurement', id)
     },
@@ -149,6 +153,13 @@ export const wafermeas = {
       if(measurement) {
         measurement.name = name
       }
+    },
+
+    updateMeasurementStage(state, {id, stageId}) {
+      let measurement = state.measurements.find(x => x.id === id)
+      if(measurement) {
+        measurement.stageId = stageId
+      }  
     },
 
     deleteMeasurement(state, id) {

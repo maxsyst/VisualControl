@@ -174,7 +174,7 @@
                             </v-select>
                         </v-col>
                         <v-col lg="2">
-                            <v-btn v-if="modes.stage.selected" outlined block color="green" class="d-flex mt-2" @click="changeStage">
+                            <v-btn v-if="modes.stage.selected" outlined block color="green" class="d-flex mt-2" @click="editStage">
                                 Изменить этап
                             </v-btn>
                              <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelStageEdit">
@@ -213,7 +213,8 @@
                                     fab
                                     dark
                                     small
-                                    color="green">
+                                    color="green"
+                                    @click="modes.element.edit=true">
                                     <v-icon>edit</v-icon>
                                 </v-btn>
                             </v-speed-dial>
@@ -225,7 +226,42 @@
         <v-row dense v-if="modes.element.edit"> 
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
-                
+                    <v-row>  
+                        <v-col lg="6" offset-lg="1" class="mt-4">
+                            <v-select 
+                                v-model="modes.element.selectedDieType"
+                                :items="modes.element.dieTypes"
+                                no-data-text="Нет данных"
+                                item-text="name"
+                                item-value="dieTypeId"
+                                outlined
+                                label="Выберите тип монитора">
+                            </v-select>
+                        </v-col>
+                        <v-col lg="2" class="mt-4">
+                            <v-btn v-if="modes.element.selectedElement" outlined block color="green" class="d-flex mt-2" @click="editElement">
+                                Изменить элемент
+                            </v-btn>                            
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col lg="6" offset-lg="1" class="mt-4">
+                            <v-select 
+                                v-model="modes.element.selectedElement"
+                                :items="modes.element.avElements"
+                                no-data-text="Нет данных"
+                                item-text="name"
+                                item-value="elementId"
+                                outlined
+                                label="Выберите элемент">
+                            </v-select>
+                        </v-col>
+                        <v-col lg="2" class="mt-4">
+                             <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelElementEdit">
+                               Отменить изменение
+                            </v-btn>
+                        </v-col>
+                    </v-row>
                 </v-card>
             </v-col>
         </v-row>
@@ -239,7 +275,11 @@ export default {
 
     data() {
         return {
-            modes: {measurement: {edit: false, newName: "", deletePassword: "", delete: false}, stage: {edit: false, avStages: [], selected: {}}, element: {edit: false}},
+            modes: {
+                measurement: {edit: false, newName: "", deletePassword: "", delete: false}, 
+                stage: {edit: false, avStages: [], selected: {}}, 
+                element: {edit: false, selectedElement: "", selectedDieType: "", dieTypes: [], avElements: []}
+            },
             fab: {measurement: false, element: false, stage: false},
             measurement: {name: "Не выбрано"},
             codeProduct: {name: "Неизвестно"},
@@ -263,12 +303,12 @@ export default {
         },
 
         editStage: async function() {
-            let measurementViewModel = {id: this.selectedMeasurementId, stageId: this.modes.stage.selected}
+            let measurementViewModel = {measurementRecordingId: this.selectedMeasurementId, stageId: this.modes.stage.selected}
             try {
                 await this.$http.post(`/api/measurementrecording/update-stage`, measurementViewModel)
                 this.$store.dispatch("wafermeas/updateMeasurementStage", measurementViewModel)
                 this.showSnackBar("Этап успешно изменен")
-                Object.assign(this.stage, this.modes.stage.avStages.find(x => x.id === this.modes.stage.selected))
+                Object.assign(this.stage, this.modes.stage.avStages.find(x => x.stageId === this.modes.stage.selected))
                 this.cancelStageEdit()
             } 
             catch(ex) {
@@ -280,11 +320,11 @@ export default {
             await this.$http.delete(`/api/measurementrecording/delete/${this.selectedMeasurementId}?superuser=${this.modes.measurement.deletePassword}`)
             .then(response => {
                 this.$store.dispatch("wafermeas/deleteMeasurement", this.selectedMeasurementId)
-                this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: this.waferId}})
-                this.showSnackbar("Операция успешно удалена")
+                this.cancelMeasurementEdit()
+                this.showSnackBar("Операция успешно удалена")
             })
             .catch(error => {
-                error.response.status === 403 ? this.showSnackbar("Запрещено удаление") : this.showSnackbar("Ошибка при удалении")
+                error && error.response.status === 403 ? this.showSnackBar("Запрещено удаление") : this.showSnackBar("Ошибка при удалении")
             })    
         },
 
@@ -298,6 +338,10 @@ export default {
         cancelStageEdit: function() {
             this.modes.stage.edit = false
             this.modes.stage.selected = Object.assign(this.modes.stage.selected, this.stage)
+        },
+
+        cancelElementEdit: function() {
+            this.modes.element.edit = false
         },
 
         getCodeProduct: async function(waferId) {
@@ -344,6 +388,10 @@ export default {
         waferId: async function(newValue) {
             this.codeProduct = await this.getCodeProduct(newValue)
             this.modes.stage.avStages = (await this.$http.get(`/api/stage/wafer/${newValue}`)).data
+            this.modes.element.dieTypes = (await this.$http.get(`/api/dietype/wafer/${newValue}`)).data
+            if(this.modes.element.dieTypes.length > 0) {
+                this.modes.element.selectedDieType = this.modes.element.dieTypes[0].dieTypeId
+            }
         },
 
         selectedMeasurementId: async function(newValue) {
@@ -351,6 +399,16 @@ export default {
             this.element = await this.getElement(this.measurement.id)
             this.stage = await this.getStage(this.measurement.stageId)
             Object.assign(this.modes.stage.selected, this.stage)
+        },
+
+        'modes.element.selectedDieType': async function(newValue) {
+            if(newValue !== 'undefined') {
+                let dieTypeId = this.modes.element.dieTypes.find(x => x.name === newValue).id
+                this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/${dieTypeId}`)).data
+                if(this.modes.element.avElements.length > 0) {
+                    this.modes.element.selectedElement = this.modes.element.avElements[0].elementId
+                }
+            }
         }
     },
 
