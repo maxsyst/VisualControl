@@ -50,7 +50,7 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['avbSelectedDies'],
+    props: ['avbSelectedDies', 'dirtyCells', 'mapMode'],
     components: { Loading },
     data() {
       return {
@@ -71,35 +71,27 @@
 
     methods:
     {
-      
-      selectDie(e)
-      {
+      selectDie(e) {
         e.preventDefault()
-        var dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id;
-      
+        let dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id      
         if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
         {
-            
-             let position =  this.selectedDies.indexOf(dieId);
-             if ( ~position ) 
-             {
-                this.selectedDies.splice(position, 1);
-                this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
-             }
-             else
-             {
-                this.selectedDies.push(dieId);
-                this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
-             }
+          let position =  this.selectedDies.indexOf(dieId);
+          if ( ~position ) {
+            this.selectedDies.splice(position, 1);
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          } 
+          else {
+            this.selectedDies.push(dieId);
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          }
         }
       
       },
 
-     
       showmenu(e) {
         e.preventDefault()
-        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
-        {
+        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
           this.showMenu = false
           this.x = e.clientX;
           this.y = e.clientY;
@@ -132,20 +124,18 @@
         }
       },
 
-
       selectedDies: function()
       {
         if(this.dies.length > 0) {
-          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0)
-          {
+          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
 
-            for (var i = 0; i < this.avbSelectedDies.length; i++) {
-              //Bad smell
-              this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
-              this.dies.find(d => d.id === this.avbSelectedDies[i]).isActive = true;
+            for (let i = 0; i < this.avbSelectedDies.length; i++) {
+              let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+              die.fill = "#8C9EFF";
+              die.isActive = true;
             }  
         
-            for (var i = 0; i < this.selectedDies.length; i++) {            
+            for (let i = 0; i < this.selectedDies.length; i++) {            
               this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
             }           
           }

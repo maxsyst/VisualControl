@@ -238,10 +238,13 @@
                                 label="Выберите тип монитора">
                             </v-select>
                         </v-col>
-                        <v-col lg="2" class="mt-4">
+                        <v-col lg="2">
                             <v-btn v-if="modes.element.selectedElement" outlined block color="green" class="d-flex mt-2" @click="editElement">
                                 Изменить элемент
-                            </v-btn>                            
+                            </v-btn> 
+                            <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelElementEdit">
+                               Отменить изменение
+                            </v-btn>                           
                         </v-col>
                     </v-row>
                     <v-row>
@@ -255,11 +258,6 @@
                                 outlined
                                 label="Выберите элемент">
                             </v-select>
-                        </v-col>
-                        <v-col lg="2" class="mt-4">
-                             <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelElementEdit">
-                               Отменить изменение
-                            </v-btn>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -314,6 +312,28 @@ export default {
             catch(ex) {
                 this.showSnackBar("Ошибка при изменении этапа")
             }
+        },
+
+        editElement: async function() {
+            const response = await this.$http({
+                method: "post",
+                url: `/api/element/updateElementOnIdmr`, 
+                data: { elementId: this.modes.element.selectedElement, measurementRecordingId: this.selectedMeasurementId}, 
+                config: {
+                    headers: {
+                                'Accept': "application/json",
+                                'Content-Type': "application/json"
+                             }
+                }
+            })
+            .then(response => {
+                Object.assign(this.element, response.data)
+                this.cancelElementEdit()
+                this.showSnackBar(`Элемент успешно изменен на ${this.element.name}`)
+            })
+            .catch(error => {
+                this.showSnackBar("Произошла ошибка при изменении элемента")
+            });
         },
 
         deleteMeasurement: async function() {

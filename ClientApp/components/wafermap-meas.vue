@@ -167,24 +167,33 @@
       </v-col>
       <v-col lg="4" offset-lg="1">
         <wafermap-svg
-          :waferId="selectedWafer"
           :avbSelectedDies="avbSelectedDies"
+          :dirtyCells="dirtyCells"
+          :mapMode="mapMode"
         ></wafermap-svg>
       </v-col>
       <v-col lg="2">
           <v-chip color="#303030" v-if="avbSelectedDies.length > 0" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
           <v-card class="mt-2" color="#303030" dark v-if="avbSelectedDies.length > 0">            
-            <v-card-text>
-              <v-progress-circular
-                :rotate="360"
-                :size="90"
-                :width="5"
-                :value="(selectedDies.length / avbSelectedDies.length)*100"
-                color="primary"
-              >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
+            <v-card-text class="d-flex justify-space-between">
+              <div class="d-flex flex-column">
+                  <v-btn :color="mapMode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='selected'">
+                    Вбр
+                  </v-btn>
+                  <v-btn :color="mapMode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='dirty'">
+                    Гдн
+                  </v-btn>
+                </div>
+                <v-progress-circular
+                  :rotate="360"
+                  :size="90"
+                  :width="5"
+                  :value="(selectedDies.length / avbSelectedDies.length)*100"
+                  color="primary"
+                >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
             </v-card-text>
             <v-card-actions>
-              <v-btn outlined color="primary" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
+              <v-btn color="indigo" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
             </v-card-actions>
           </v-card>
       </v-col>
@@ -232,6 +241,7 @@ import MiniGraphicRow from "./wafermeas-minigraphicrow";
 export default {
   data() {
     return {
+      mapMode: "selected",
       fabToTop: false,
       fabToNext: false,
       fabToPrev: false,

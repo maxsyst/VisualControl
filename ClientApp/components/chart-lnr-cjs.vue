@@ -34,7 +34,7 @@ export default {
    computed:
     {
         selectedDies() {
-            return this.$store.getters['wafermeas/selectedDies']
+          return this.$store.getters['wafermeas/selectedDies']
         }
     },
 
