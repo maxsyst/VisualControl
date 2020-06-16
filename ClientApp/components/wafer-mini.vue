@@ -47,11 +47,16 @@
     {      
       this.dies = _.cloneDeep(this.wafer.formedMapMini.dies)             
       this.initialOrientation = +this.wafer.formedMapMini.orientation;
-      this.currentOrientation = this.initialOrientation;  
+      this.currentOrientation = this.initialOrientation; 
+      this.initialize(this.dies) 
       this.goToDirty()
     },
 
     methods: {
+      
+      initialize: function(dies) {
+        dies.forEach(cell => cell.fill = "#A1887F")
+      },
 
       goToDirty: function() {
         this.mode = "dirty"

@@ -3,7 +3,7 @@
     <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
-        <rect  :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
+        <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
       </g>
     </svg>
     <v-menu v-model="menu"
@@ -147,10 +147,13 @@
         }
       },
 
-      selectedDies: function()
-      {
+      selectedDies: function() {
         if(this.dies.length > 0) {
           if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
+            this.dies.forEach(function(cell) {
+              cell.fill = "#A1887F";
+              cell.isActive = false;
+            });
             if(this.mapMode === "selected") {
               for (let i = 0; i < this.avbSelectedDies.length; i++) {
                 let die = this.dies.find(d => d.id === this.avbSelectedDies[i])

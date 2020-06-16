@@ -118,6 +118,18 @@
                         ></v-select>
                       </v-col>
                     </v-row>
+                    <v-row>
+                      <v-subheader>Коэффициент отсеивания:</v-subheader>
+                      <v-slider
+                        v-model="statisticKf"
+                        :tick-labels="['1', '1.25', '1.5', '1.75', '2']"
+                        :min="1"
+                        :max="2"
+                        step="0.25"
+                        ticks="always"
+                        tick-size="4">
+                      </v-slider>
+                    </v-row>
                   </v-card-text>
                 </v-card>
               </v-tab-item>
@@ -206,6 +218,7 @@
           :keyGraphicState="graphic.keyGraphicState"
           :avbSelectedDies="avbSelectedDies"
           :divider="selectedDivider"
+          :statisticKf="statisticKf"
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
@@ -253,6 +266,7 @@ export default {
       selectedWafer: "",
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
+      statisticKf: 1.5,
       selectedGraphics: [],
       dirtyCells: []         
     };
@@ -339,19 +353,27 @@ export default {
 
     selectedMeasurementId: async function(newValue) {
       this.loading = true
+      this.$store.dispatch("wafermeas/updateSelectedDies", [])
       let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
       let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
       this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
       let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.avbSelectedDies = [...diesList]
-      this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}`)).data    
+      this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data    
       this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
       this.selectAllGraphics() 
       this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
       this.loading = false
       this.activeTab = "statistics"
       await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === newValue).name}});
+    },
+
+    statisticKf: async function(k) {
+      this.loading = true
+      this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data    
+      this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
+      this.loading = false
     },
 
     availiableGraphics: function() {
@@ -361,10 +383,16 @@ export default {
     },
 
     selectedDies: function(newValue) {
-      let {statList, fixedList} = this.dirtyCells;
-      this.dirtyCells.statPercentageSelected = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
-      this.dirtyCells.fixedPercentageSelected = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
+      if(newValue.length > 0) {
+        let {statList, fixedList} = this.dirtyCells;
+        this.dirtyCells.statPercentageSelected = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
+        this.dirtyCells.fixedPercentageSelected = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
+      }      
     }
+  },
+  
+  beforeDestroy() {
+    this.$store.dispatch("wafermeas/reset")
   }
 };
 </script>

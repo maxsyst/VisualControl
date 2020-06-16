@@ -160,7 +160,7 @@
 <script>
 import WaferMap from "./wafer-mini.vue";
 export default {
-  props: ["keyGraphicState", "measurementId", "divider", "avbSelectedDies"],
+  props: ["keyGraphicState", "measurementId", "divider", "statisticKf", "avbSelectedDies"],
   components: {
     "wafer-mini": WaferMap,
   },
@@ -241,7 +241,7 @@ export default {
   async created() {
     this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName
     this.fullWaferStatArray = (await this.$http
-      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}`)).data
+      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}&&k=${this.statisticKf}`)).data
     this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
     await this.getStatArray()
   },
@@ -271,6 +271,7 @@ export default {
       if (this.measurementId != 0 && this.selectedDies.length > 0) {
         this.loading = true
         let singlestatModel = {};
+        singlestatModel.k = this.statisticKf
         singlestatModel.divider = this.divider;
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;

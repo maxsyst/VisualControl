@@ -373,7 +373,7 @@ export default {
                 return {codeProductName: "Неизвестно"}
             }
             else {
-                this.showSnackbar(response.data)
+                this.showSnackBar(response.data)
                 return;
             }
         },
@@ -384,18 +384,23 @@ export default {
                 return response.data[0].elementId === 0 ? {name: "Неизвестно"} : response.data[0]
             }
             catch (error) {
-                this.showSnackbar(error)
+                this.showSnackBar(error)
             }         
         },
 
         getStage: async function(stageId) {
-            try {
-                let response = await this.$http.get(`/api/stage/id/${stageId}`)
-                return response.data.stageId === 0 ? {stageName: "Неизвестно"} : response.data
-            }
-            catch (error) {
-               this.showSnackbar(error)
-            }           
+            if(stageId) {
+                try {
+                    let response = await this.$http.get(`/api/stage/id/${stageId}`)
+                    return response.data.stageId === 0 ? {stageName: "Неизвестно"} : response.data
+                }
+                catch (error) {
+                    this.showSnackBar(error)
+                }           
+            } 
+            else {
+                return {stageName: "Неизвестно"}
+            }         
         },
 
         showSnackBar(text)
@@ -423,10 +428,12 @@ export default {
 
         'modes.element.selectedDieType': async function(newValue) {
             if(newValue !== 'undefined') {
-                let dieTypeId = this.modes.element.dieTypes.find(x => x.name === newValue).id
-                this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/${dieTypeId}`)).data
-                if(this.modes.element.avElements.length > 0) {
-                    this.modes.element.selectedElement = this.modes.element.avElements[0].elementId
+                let dieType = this.modes.element.dieTypes.find(x => x.name === newValue)
+                if(dieType) {
+                    this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/${dieType.id}`)).data
+                    if(this.modes.element.avElements.length > 0) {
+                        this.modes.element.selectedElement = this.modes.element.avElements[0].elementId
+                    }
                 }
             }
         }

@@ -18,13 +18,13 @@ namespace VueExample.StatisticsCore.Services
             _graphicService = graphicService;
         }
         
-        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider) {
+        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k) {
             var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
             foreach (var graphicDV in dieValues) 
             {
              
                 var graphic = await _graphicService.GetById(Convert.ToInt32(graphicDV.Key.Split('_')[0]));
-                var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, stageId, divider);
+                var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, stageId, divider, k);
                 statisticsDictionary.Add(graphicDV.Key, singleParameterStatisticsList);
             }
             return statisticsDictionary;

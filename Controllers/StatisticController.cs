@@ -31,14 +31,15 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecording")]
-        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount) 
+        [ResponseCache(CacheProfileName = "Default60")]
+        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount, [FromQuery] double k)
         {
             string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             Func<Task<Dictionary<string, List<DieValue>>>> cachedDieValueService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var dieValuesDictionary = await cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedDieValueService);
-            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0);
-            var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}", cachedStatisticService);
+            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
+            var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
             return Ok(statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesCount));
         }
 
@@ -52,7 +53,7 @@ namespace VueExample.Controllers
             var statistics = new StatisticsCore.Statistics();
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphic];
             var singleParameterStatisticList = 
-                (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}"))[keyGraphic];
+                (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{statisticSingleGraphicViewModel.K*10}"))[keyGraphic];
             var statisticDataList = await statisticService
                                           .GetStatisticsDataByGraphicState(statisticSingleGraphicViewModel.dieIdList, 
                                                                            statisticSingleGraphicViewModel.KeyGraphicState, 
@@ -65,14 +66,14 @@ namespace VueExample.Controllers
         [HttpGet]
         [Route("GetStatisticSingleGraphicFullWafer")]
         [ResponseCache(CacheProfileName = "Default60")]
-        public async Task<IActionResult> GetStatisticSingleGraphicFullWafer ([FromQuery] int measurementRecordingId, [FromQuery] string keyGraphicState) 
+        public async Task<IActionResult> GetStatisticSingleGraphicFullWafer ([FromQuery] int measurementRecordingId, [FromQuery] string keyGraphicState, [FromQuery] double k) 
         {
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var statistics = new StatisticsCore.Statistics();
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphicState];
             var dieList = dieValueList.Select(x => x.DieId).ToList();
             var singleParameterStatisticList = 
-                (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}"))[keyGraphicState];
+                (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{k*10}"))[keyGraphicState];
             var statisticDataList = await statisticService
                                           .GetStatisticsDataByGraphicState(dieList, 
                                                                            keyGraphicState, 
@@ -90,7 +91,7 @@ namespace VueExample.Controllers
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
             var statistics = new StatisticsCore.Statistics();
-            var statDictionary = (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}"))[keyGraphic];
+            var statDictionary = (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{statisticSingleGraphicViewModel.K*10}"))[keyGraphic];
             return Ok(statDictionary);
         }
     }

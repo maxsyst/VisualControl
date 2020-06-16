@@ -44,7 +44,7 @@ namespace VueExample.Providers
             }
             if(!obj.HasErrors)
             {
-                 shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId)).ToList();
+                 shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId, 1.5)).ToList();
                  obj.SetObject(shortLinkViewModel);
             } 
             if(shortLinkViewModel.StatisticNameList is null || shortLinkViewModel.StatisticNameList.Count == 0)

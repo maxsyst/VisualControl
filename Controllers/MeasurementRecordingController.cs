@@ -177,7 +177,7 @@ namespace VueExample.Controllers
                 mrList.Add(new MeasurementRecordingViewModel {Id = measurementRecording.Id, 
                                                               Name = measurementRecording.Name, 
                                                               WaferId = waferId,
-                                                              avStatisticParameters = await _exportProvider.GetStatisticsNameByMeasurementId(measurementRecording.Id)});
+                                                              avStatisticParameters = await _exportProvider.GetStatisticsNameByMeasurementId(measurementRecording.Id, 1.5)});
             }
             return mrList.Count == 0 ? (IActionResult)NotFound() : Ok(mrList);
         }        

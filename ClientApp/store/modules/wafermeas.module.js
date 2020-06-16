@@ -1,3 +1,16 @@
+const defaultState = () => {
+  return {
+      selectedDies: [],
+      avbGraphics: [],
+      selectedGraphics: [],
+      measurements: [],
+      wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},
+      divider: "",
+      colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
+      dirtyCells: []
+  }
+}
+
 export const wafermeas = {
   namespaced: true,
   state: {
@@ -13,6 +26,10 @@ export const wafermeas = {
   },
   
   actions: {
+
+    reset({commit}) {
+      commit('reset')
+    },
 
     updateMeasurementName({commit}, {id,name}) {
       commit('updateMeasurementName', {id,name})
@@ -104,6 +121,10 @@ export const wafermeas = {
   },
 
   mutations: {
+
+    reset(state) {
+      Object.assign(state, defaultState())
+    },
 
     updateDirtyCellsSelectedNow(state, {keyGraphicState, dirtyCells}) {
       let graphic = state.dirtyCells.find(dc => dc.keyGraphicState === keyGraphicState)
