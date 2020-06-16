@@ -124,11 +124,8 @@
         }
       },
 
-      selectedDies: function()
-      {
-        if(this.dies.length > 0) {
-          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
-
+      mapMode: function(newVal) {
+        if(newVal === "selected") {
             for (let i = 0; i < this.avbSelectedDies.length; i++) {
               let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
               die.fill = "#8C9EFF";
@@ -137,7 +134,44 @@
         
             for (let i = 0; i < this.selectedDies.length; i++) {            
               this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
-            }           
+            }        
+        }
+
+        if(newVal === "dirty") {
+          this.avbSelectedDies.forEach(avb => {
+            let die = this.dies.find(d => d.id === avb)
+            die.fill = this.dirtyCells.statList.includes(die.id) 
+                      ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
+                      : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
+          })
+        }
+      },
+
+      selectedDies: function()
+      {
+        if(this.dies.length > 0) {
+          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
+            if(this.mapMode === "selected") {
+              for (let i = 0; i < this.avbSelectedDies.length; i++) {
+                let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+                die.fill = "#8C9EFF";
+                die.isActive = true;
+              }  
+        
+              for (let i = 0; i < this.selectedDies.length; i++) {            
+                this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
+              }          
+            }
+            if(this.mapMode === "dirty") {
+              this.avbSelectedDies.forEach(avb => {
+                let die = this.dies.find(d => d.id === avb)
+                die.fill = this.dirtyCells.statList.includes(die.id) 
+                          ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
+                          : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
+              })
+            }
+
+             
           }
         }
         
