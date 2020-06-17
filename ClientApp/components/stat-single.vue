@@ -24,7 +24,6 @@
                       :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.statPercentage / 100)">
                     {{ dirtyCellsFullWafer.statPercentage + '%'}}
                     </v-progress-circular>
-
                   </div>   
                 </div>
               <div class="d-flex flex-column align-self-center">
@@ -296,6 +295,13 @@ export default {
   watch: {
     divider: function() {
       this.getStatArray();
+    },
+
+    statisticKf: async function(newValue) {
+      this.fullWaferStatArray = (await this.$http
+          .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}&&k=${newValue}`)).data
+      this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
+      await this.getStatArray()
     },
 
     selectedDies: function() {

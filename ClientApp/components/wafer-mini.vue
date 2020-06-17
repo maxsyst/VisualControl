@@ -53,7 +53,7 @@
     },
 
     methods: {
-      
+
       initialize: function(dies) {
         dies.forEach(cell => cell.fill = "#A1887F")
       },
@@ -88,6 +88,26 @@
         immediate: true,
         handler(newVal, oldVal) {
           this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
+        }
+      },
+
+      dirtyCells: function() {
+        
+        if(this.mode === "dirty") {
+          this.avbSelectedDies.forEach(avb => {
+            let die = this.dies.find(d => d.id === avb)
+            die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
+          })
+        }
+
+        if(this.mode === "selected") {
+          for (var i = 0; i < this.avbSelectedDies.length; i++) {
+            this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
+          }  
+        
+          for (var i = 0; i < this.selectedDies.length; i++) {            
+            this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
+          }
         }
       }
     },

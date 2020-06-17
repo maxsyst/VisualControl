@@ -122,10 +122,10 @@
                       <v-subheader>Коэффициент отсеивания:</v-subheader>
                       <v-slider
                         v-model="statisticKf"
-                        :tick-labels="['1', '1.25', '1.5', '1.75', '2']"
-                        :min="1"
+                        :tick-labels="['0.5', '1', '1.5', '2']"
+                        :min="0.5"
                         :max="2"
-                        step="0.25"
+                        step="0.5"
                         ticks="always"
                         tick-size="4">
                       </v-slider>
@@ -363,7 +363,7 @@ export default {
       this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data    
       this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
       this.selectAllGraphics() 
-      this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
+      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
       this.loading = false
       this.activeTab = "statistics"
       await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === newValue).name}});
@@ -372,7 +372,7 @@ export default {
     statisticKf: async function(k) {
       this.loading = true
       this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data    
-      this.delDirtyCells(this.dirtyCells.statList, this.selectedDies)
+      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
       this.loading = false
     },
 

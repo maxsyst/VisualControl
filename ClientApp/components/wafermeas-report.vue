@@ -4,10 +4,10 @@
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
-                        <v-col lg="3" offset-lg="1" class="d-flex align-center">
+                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
                             Номер пластины:
                         </v-col>
-                        <v-col lg="2">
+                        <v-col lg="3">
                             <v-chip color="indigo" large label v-html="waferId" dark></v-chip>
                         </v-col>
                         <v-col lg="2" offset-lg="1" class="d-flex align-center">

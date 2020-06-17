@@ -4,6 +4,7 @@
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
         <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
+        <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" font-size="12" fill="#FFF176">{{die.code}}</text>
       </g>
     </svg>
     <v-menu v-model="menu"
@@ -19,8 +20,8 @@
       </v-list>
     </v-menu>
 
-  <!-- <v-bottom-navigation :value="showNav"
-                :active.sync="currentOrientation"
+  <v-bottom-navigation :value="showNav"
+                v-model="currentOrientation"
                 color="transparent">
     <v-btn :value="0" text color="#fc0">
       0°
@@ -42,7 +43,7 @@
      
     </v-btn>
     
-  </v-bottom-navigation> -->
+  </v-bottom-navigation>
 
 </v-container>
 </template>

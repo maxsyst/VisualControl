@@ -31,7 +31,6 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecording")]
-        [ResponseCache(CacheProfileName = "Default60")]
         public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount, [FromQuery] double k)
         {
             string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
