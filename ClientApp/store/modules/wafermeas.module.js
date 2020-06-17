@@ -138,7 +138,7 @@ export const wafermeas = {
     updateDirtyCellsFullWafer(state, {keyGraphicState, dirtyCells}) {
       let graphic = state.dirtyCells.find(dc => dc.keyGraphicState === keyGraphicState)
       if(graphic === undefined) {
-        graphic = {keyGraphicState, selectedNow: {cells: [], percentage: 0}, fullWafer: {cells: [], percentage: 0}}
+        graphic = {keyGraphicState, selectedNow: {cells: [], percentage: -1}, fullWafer: {cells: [], percentage: -1}}
         state.dirtyCells.push(graphic)
       }
       graphic.fullWafer = {cells: [...dirtyCells.cellsId], percentage: dirtyCells.statPercentage}

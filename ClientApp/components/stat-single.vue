@@ -209,7 +209,7 @@ export default {
           align: "center",
           sortable: false,
           value: "maximum",
-           width: '10%'
+          width: '10%'
         },
         {
           text: "Медиана",

@@ -38,13 +38,13 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLinearForMeasurement(string statisticSingleGraphicViewModelJSON)
+        public async Task<IActionResult> GetLinearForMeasurement([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
             var statistics = new StatisticsCore.Statistics();
-            var dieValueList = cache.Get<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}")[keyGraphic];
+            var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphic];
             var amchart = amChartProvider.GetLinearFromDieValues(dieValueList, statisticSingleGraphicViewModel.dieIdList);
             return Ok(amchart);
         }

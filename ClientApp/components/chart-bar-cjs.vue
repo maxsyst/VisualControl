@@ -2,14 +2,14 @@
 <v-card>
     <v-container> 
         <bar-chart
-            v-if="loaded"
-            :chartdata="chartdata"
-            :options="options"/>
+          v-if="loaded"
+          :chartdata="chartdata"
+          :options="options"/>
         <v-progress-circular v-else
-        :size="50"
-        color="primary"
-        indeterminate
-        ></v-progress-circular>
+          :size="50"
+          color="primary"
+          indeterminate>
+        </v-progress-circular>
     </v-container>
   </v-card>
 </template>

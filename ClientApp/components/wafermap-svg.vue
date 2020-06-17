@@ -13,14 +13,13 @@
             absolute
             offset-y>
       <v-list>
-        <v-list-item v-for="(item, index) in menuItems" :key="index">
-                    
+        <v-list-item v-for="(item, index) in menuItems" :key="index">                    
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
 
-  <v-bottom-navigation :value="showNav"
+  <v-bottom-navigation v-if="dies.length>0" :value="showNav"
                 v-model="currentOrientation"
                 color="transparent">
     <v-btn :value="0" text color="#fc0">

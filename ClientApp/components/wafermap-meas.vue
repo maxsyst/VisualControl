@@ -149,7 +149,7 @@
                          <v-progress-circular
                           :rotate="360"
                           :size="90"
-                          :width="5"
+                          :width="3"
                           :value="dirtyCells.statPercentageFullWafer"
                           :color="$store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100)">
                           {{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
@@ -161,7 +161,7 @@
                           <v-progress-circular
                             :rotate="360"
                             :size="90"
-                            :width="5"
+                            :width="3"
                             :value="dirtyCells.statPercentageSelected"
                             color="primary"
                           >{{ dirtyCells.statPercentageSelected + "%" }}</v-progress-circular>
@@ -199,7 +199,7 @@
                 <v-progress-circular
                   :rotate="360"
                   :size="90"
-                  :width="5"
+                  :width="3"
                   :value="(selectedDies.length / avbSelectedDies.length)*100"
                   color="primary"
                 >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
@@ -238,12 +238,14 @@
         ></chart-hstg>
         <v-divider light></v-divider>
       </v-col>
+     
     </v-row>
   </v-container>
 </template>
 
 <script>
 import MiniReport from "./wafermeas-report.vue"
+import AmChart from "./chart-lnr.vue"
 import ChartLNR from "./chart-lnr-cjs.vue";
 import ChartHSTG from "./chart-bar-cjs.vue";
 import StatSingle from "./stat-single.vue";
@@ -277,6 +279,7 @@ export default {
     "micro-row": MiniGraphicRow,
     "stat-single": StatSingle,
     "wafermap-svg": WaferMap,
+    "amchart": AmChart,
     "chart-lnr": ChartLNR,
     "chart-hstg": ChartHSTG,
     Loading

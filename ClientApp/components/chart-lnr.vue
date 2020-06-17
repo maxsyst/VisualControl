@@ -26,15 +26,15 @@
   },
 
     mounted()
-    {
-       
-
+    {       
+        let chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart);
+        this.getChartData()
     },
 
     beforeDestroy() {
-      if (this.chart) {
-        this.chart.dispose();
-      }
+        if (this.chart) {
+          this.chart.dispose();
+        }
       },
 
     computed:
@@ -67,7 +67,7 @@
                 singlestatModel.measurementId = this.measurementId;
                 singlestatModel.dieIdList = this.selectedDies;
                 this.$http
-                    .get(`api/amchart/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+                    .get(`/api/amchart/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
                     this.chartData = response.data;
                   
