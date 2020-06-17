@@ -198,21 +198,21 @@ export default {
           width: '10%'
         },
         {
-          text: "Min",
+          text: "Мин",
           align: "center",
           sortable: false,
           value: "minimum",
           width: '10%'
         },
         {
-          text: "Max",
+          text: "Макс",
           align: "center",
           sortable: false,
           value: "maximum",
            width: '10%'
         },
         {
-          text: "Median",
+          text: "Медиана",
           align: "center",
           sortable: false,
           value: "median",
@@ -220,18 +220,18 @@ export default {
         },
         {
 
-          text: "CorrectFullWafer,%",
-          align: "center",
+          text: "Годны по всей пластине, %",
+          align: "start",
           sortable: false,
           value: "fwStatPercentage",
-          width: '20%'
+          width: '15%'
         },
         {
-          text: "CorrectSelected,%",
+          text: "Годны из выбранных, %",
           align: "center",
           sortable: false,
           value: "dirtyCells",
-          width: '20%'
+          width: '15%'
         }
       ]
     };

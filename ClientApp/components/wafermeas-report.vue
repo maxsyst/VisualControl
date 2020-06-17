@@ -25,10 +25,10 @@
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
-                        <v-col lg="3" offset-lg="1" class="d-flex align-center">
+                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
                             Номер операции:
                         </v-col>
-                        <v-col lg="4" class="d-flex align-center">
+                        <v-col lg="5" class="d-flex align-center">
                             <v-chip v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
                             <v-chip v-else color="indigo" label v-html="measurement.name" dark></v-chip>
                         </v-col>
@@ -124,10 +124,10 @@
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
-                        <v-col lg="3" offset-lg="1" class="d-flex align-center">
+                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
                             Текущий этап:
                         </v-col>
-                        <v-col lg="4" class="d-flex align-center">
+                        <v-col lg="5" class="d-flex align-center">
                              <v-chip v-if="stage.stageName === 'Неизвестно'" color="pink darken-1" label v-html="stage.stageName" dark></v-chip>
                             <v-chip v-else color="indigo" label v-html="stage.stageName" dark></v-chip>
                         </v-col>
@@ -189,10 +189,10 @@
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
-                        <v-col lg="3" offset-lg="1" class="d-flex align-center">
+                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
                             Элемент:
                         </v-col>
-                        <v-col lg="4" class="d-flex align-center">
+                        <v-col lg="5" class="d-flex align-center">
                             <v-chip v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
                             <v-chip v-else color="indigo" label v-html="element.name" dark></v-chip>
                         </v-col>
