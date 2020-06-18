@@ -16,8 +16,8 @@
       :active.sync="loading"
       :can-cancel="false"
       color="#fc0"
-      :width="64"
-      :height="64"
+      :width="100"
+      :height="50"
       loader="bars"
       :is-full-page="true"
     ></loading>
@@ -146,13 +146,14 @@
                   <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
                   <v-card class="mr-2 mt-2 mb-4" color="#303030" dark>
                       <v-card-text>
-                         <v-progress-circular
+                        <v-progress-circular
                           :rotate="360"
                           :size="90"
                           :width="3"
                           :value="dirtyCells.statPercentageFullWafer"
                           :color="$store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100)">
-                          {{ dirtyCells.statPercentageFullWafer + "%" }}</v-progress-circular>
+                          {{ dirtyCells.statPercentageFullWafer + "%" }}
+                        </v-progress-circular>
                       </v-card-text>
                     </v-card>
                       <v-chip class="elevation-12 mt-4 ms-2" color="#303030" dark>Годны из выбранных</v-chip>
@@ -163,8 +164,8 @@
                             :size="90"
                             :width="3"
                             :value="dirtyCells.statPercentageSelected"
-                            color="primary"
-                          >{{ dirtyCells.statPercentageSelected + "%" }}</v-progress-circular>
+                            color="primary">{{ dirtyCells.statPercentageSelected + "%" }}
+                          </v-progress-circular>
                           <v-btn outlined color="primary" @click="delDirtyCells(dirtyCells.statList, selectedDies)">
                             <v-icon>cached</v-icon>
                           </v-btn>
@@ -201,8 +202,8 @@
                   :size="90"
                   :width="3"
                   :value="(selectedDies.length / avbSelectedDies.length)*100"
-                  color="primary"
-                >{{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
+                  color="primary">
+                  {{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
             </v-card-text>
             <v-card-actions>
               <v-btn color="indigo" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
@@ -380,7 +381,7 @@ export default {
     },
 
     availiableGraphics: function() {
-      if (this.availiableGraphics.length == 0) {
+      if (this.availiableGraphics.length === 0) {
         this.selectedGraphics = [];
       }
     },
