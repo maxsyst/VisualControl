@@ -27,6 +27,7 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType (typeof(AbstractChart), StatusCodes.Status200OK)]
         [Route("GetLinearForMeasurement")]
+        [ResponseCache(CacheProfileName = "Default60")]
         public async Task<IActionResult> GetLinearForMeasurement([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);

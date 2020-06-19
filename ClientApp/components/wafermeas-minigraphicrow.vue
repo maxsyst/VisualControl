@@ -32,11 +32,11 @@
                         color="primary"
                     ></v-progress-circular>
             </v-col>
-            <v-col lg="1" offset-lg="1" class="d-flex align-center justify-end"> 
+            <v-col lg="1" offset-lg="1" class="d-flex align-center"> 
                 <v-checkbox
-                    v-model="checkbox"
-                    dark
-                    color="indigo lighten-2"
+                    v-model="isGraphicSelected"
+                    color="indigo"
+                    @change="changeGraphicSelection"
                 ></v-checkbox>
             </v-col>
         </v-row>
@@ -50,14 +50,30 @@ export default {
 
     data() {
         return {
-            checkbox: true
+
+        }
+    },
+
+    methods: {
+        changeGraphicSelection() {
+            if(this.isGraphicSelected) {
+                this.$store.dispatch("wafermeas/deleteSelectedGraphic", this.keyGraphicState)
+            } else {
+                this.$store.dispatch("wafermeas/addSelectedGraphic", this.keyGraphicState)
+            }
         }
     },
 
     computed: {
+
+        isGraphicSelected() {
+            return this.$store.getters['wafermeas/selectedGraphics'].includes(this.keyGraphicState)
+        },
+
         graphic() {
             return this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState)
         },
+
         dirtyCells() {
             return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
         }

@@ -35,9 +35,9 @@
                         <v-col lg="2" offset-lg="2" class="d-flex align-center">
                             <v-speed-dial v-if="selectedMeasurementId>0 && !modes.measurement.edit && !modes.measurement.delete" v-model="fab.measurement" open-on-hover direction="right"  transition="slide-y-reverse-transition">
                                 <template v-slot:activator>
-                                    <v-btn v-model="fab.measurement"
+                                    <v-btn outlined v-model="fab.measurement"
                                         small
-                                        color="indigo lighten-1"
+                                        color="primary"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.measurement">close</v-icon>
@@ -48,6 +48,7 @@
                                     fab
                                     dark
                                     small
+                                    outlined
                                     color="green"
                                     @click="modes.measurement.edit=true">
                                     <v-icon>edit</v-icon>
@@ -56,6 +57,7 @@
                                     fab
                                     dark
                                     small
+                                    outlined
                                     color="pink"
                                     @click="modes.measurement.delete=true">
                                     <v-icon>delete</v-icon>
@@ -137,7 +139,8 @@
                                     <v-btn
                                         v-model="fab.stage"
                                         small
-                                        color="indigo lighten-1"
+                                        outlined
+                                        color="primary"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.stage">close</v-icon>
@@ -147,6 +150,7 @@
                                 <v-btn
                                     fab
                                     dark
+                                    outlined
                                     small
                                     color="green"
                                     @click="modes.stage.edit=true">
@@ -201,8 +205,9 @@
                                 <template v-slot:activator>
                                     <v-btn
                                         v-model="fab.element"
+                                        outlined
                                         small
-                                        color="indigo lighten-1"
+                                        color="primary"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.element">close</v-icon>
@@ -213,6 +218,7 @@
                                     fab
                                     dark
                                     small
+                                    outlined
                                     color="green"
                                     @click="modes.element.edit=true">
                                     <v-icon>edit</v-icon>

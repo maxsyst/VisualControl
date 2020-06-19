@@ -78,35 +78,6 @@
                     <v-row justify-center column>
                       <v-col lg="6">
                         <v-select
-                          v-model="selectedGraphics"
-                          :items="availiableGraphics"
-                          chips
-                          no-data-text="Нет данных"
-                          item-text="graphicName"
-                          item-value="keyGraphicState"
-                          item-disabled="disabled"
-                          label="Выберите графики:"
-                          multiple>
-                          <template v-slot:prepend-item>
-                            <v-list-item ripple @click="selectAllGraphics">
-                              <v-list-item-action>
-                                <v-icon :color="selectedGraphics.length > 0 ? 'primary' : ''">{{ selectedGraphicsIcon }}</v-icon>
-                              </v-list-item-action>
-                              <v-list-item-content>
-                                <v-list-item-title>Выбрать все</v-list-item-title>
-                              </v-list-item-content>
-                            </v-list-item>
-                            <v-divider class="mt-2"></v-divider>
-                          </template>
-                          <template slot="selection" slot-scope="{ item, index }">
-                            <v-chip v-if="index < 4">
-                              <span>{{ item.graphicName }}</span>
-                            </v-chip>
-                          </template>
-                        </v-select>
-                      </v-col>
-                      <v-col lg="6">
-                        <v-select
                           v-model="selectedDivider"
                           :items="dividers"
                           no-data-text="Нет данных"
@@ -143,6 +114,7 @@
                     </v-card>
                   </v-col>
                   <v-col lg="4">
+                  <v-btn color="primary" outlined small @click="selectAllGraphics">Выбрать все графики</v-btn> 
                   <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
                   <v-card class="mr-2 mt-2 mb-4" color="#303030" dark>
                       <v-card-text>
@@ -181,7 +153,6 @@
       <v-col lg="4" offset-lg="1">
         <wafermap-svg
           :avbSelectedDies="avbSelectedDies"
-          :dirtyCells="dirtyCells"
           :mapMode="mapMode"
         ></wafermap-svg>
       </v-col>
@@ -206,7 +177,7 @@
                   {{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="indigo" @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
+              <v-btn color="primary" outlined @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
             </v-card-actions>
           </v-card>
       </v-col>
@@ -269,9 +240,7 @@ export default {
       selectedWafer: "",
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
-      statisticKf: 1.5,
-      selectedGraphics: [],
-      dirtyCells: []         
+      statisticKf: 1.5
     };
   },
 
@@ -293,15 +262,26 @@ export default {
   },
 
   computed: {
+
+    dirtyCells() {
+       return this.$store.getters['wafermeas/dirtyCells']
+    },
+
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']
     },
+
+    selectedGraphics() {
+      return this.$store.getters['wafermeas/selectedGraphics']      
+    },
+
     availiableGraphics() {
-       return this.$store.getters['wafermeas/avbGraphics']
+      return this.$store.getters['wafermeas/avbGraphics']
     },
     measurementRecordings() {
       return this.$store.getters['wafermeas/measurements']
     },
+
     selectedGraphicsIcon() {
       if (this.availiableGraphics.length === this.selectedGraphics.length)
         return "check_box";
@@ -343,7 +323,7 @@ export default {
     selectAllGraphics: function() {
       this.$nextTick(() => {
         if (this.selectedGraphics.length !== this.availiableGraphics.length) {
-          this.selectedGraphics = this.availiableGraphics.map(g => g.keyGraphicState)
+          this.$store.dispatch("wafermeas/updateSelectedGraphics", [...this.availiableGraphics.map(g => g.keyGraphicState)])
         }
       });
     }
@@ -358,13 +338,14 @@ export default {
     selectedMeasurementId: async function(newValue) {
       this.loading = true
       this.$store.dispatch("wafermeas/updateSelectedDies", [])
+      this.$store.dispatch("wafermeas/clearSelectedGraphics")
       let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
       let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
       this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
       let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.avbSelectedDies = [...diesList]
-      this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data    
+      this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
       this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
       this.selectAllGraphics() 
       this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
@@ -375,22 +356,23 @@ export default {
 
     statisticKf: async function(k) {
       this.loading = true
-      this.dirtyCells = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data    
+      this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data)   
       this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
       this.loading = false
     },
 
     availiableGraphics: function() {
       if (this.availiableGraphics.length === 0) {
-        this.selectedGraphics = [];
+        this.$store.dispatch("wafermeas/clearSelectedGraphics")
       }
     },
 
     selectedDies: function(newValue) {
       if(newValue.length > 0) {
-        let {statList, fixedList} = this.dirtyCells;
-        this.dirtyCells.statPercentageSelected = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
-        this.dirtyCells.fixedPercentageSelected = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
+        let {statList, fixedList} = this.dirtyCells
+        let statPercentageSelected = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
+        let fixedPercentageSelected = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
+        this.$store.dispatch("wafermeas/updateDirtyCellsPercentageSelected", {statPercentageSelected, fixedPercentageSelected})
       }      
     }
   },

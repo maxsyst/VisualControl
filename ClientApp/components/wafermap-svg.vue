@@ -50,7 +50,7 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['avbSelectedDies', 'dirtyCells', 'mapMode'],
+    props: ['avbSelectedDies', 'mapMode'],
     components: { Loading },
     data() {
       return {
@@ -183,22 +183,27 @@
 
     computed:
     {
+      dirtyCells() {
+        return this.$store.getters['wafermeas/dirtyCells']
+      },
+
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
       },
+
       size() {
         return this.$store.getters['wafermeas/size']("big")
       },
+
       wafer() {
         return this.$store.getters['wafermeas/wafer']
       },
-      cutting()
-      {
+
+      cutting() {
         //ONLY IF HEIGHT === WIDTH
         let bBorder = this.size.fieldHeight / 6;
         let tBorder = this.size.fieldHeight / 6 * 5;
-        if (this.initialOrientation === -1)
-        {
+        if (this.initialOrientation === -1) {
           return `0,0 0,0`
         }
         switch (this.initialOrientation) {
@@ -220,11 +225,9 @@
 
       },
 
-     
-       svgRotation() {
-         return {
-           transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`
-         
+      svgRotation() {
+        return {
+          transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`
         }
       }
     }

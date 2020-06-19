@@ -285,7 +285,7 @@ export default {
     calculateFullWaferDirtyCells(fullWaferStatArray) {
       this.dirtyCellsFullWafer.cellsId = [...new Set(fullWaferStatArray.reduce((p,c) => [...p, ...c.dirtyCells.statList], []))]
       this.dirtyCellsFullWafer.statPercentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.cellsId.length / this.avbSelectedDies.length)) * 100)
-      this.$store.dispatch("wafermeas/updateDirtyCellsFullWafer", { 
+      this.$store.dispatch("wafermeas/updateDirtyCellsFullWaferSingleGraphic", { 
         keyGraphicState: this.keyGraphicState, 
         dirtyCells: {cellsId: [...this.dirtyCellsFullWafer.cellsId], statPercentage: this.dirtyCellsFullWafer.statPercentage}
       })
@@ -333,7 +333,7 @@ export default {
 
     dirtyCellsStatPercentage() {
       let percentage = Math.ceil((1.0 - this.dirtyCells.statList.length / this.selectedDies.length) * 100)
-      this.$store.dispatch("wafermeas/updateDirtyCellsSelectedNow", { 
+      this.$store.dispatch("wafermeas/updateDirtyCellsSelectedNowSingleGraphic", { 
         keyGraphicState: this.keyGraphicState, 
         dirtyCells: {cellsId: [...this.dirtyCells.statList], statPercentage: percentage}
       })

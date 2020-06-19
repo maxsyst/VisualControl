@@ -44,6 +44,7 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [Route("GetStatisticSingleGraphic")]
+        [ResponseCache(CacheProfileName = "Default60")]
         public async Task<IActionResult> GetStatisticSingleGraphic([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
