@@ -2,7 +2,7 @@
     <v-card class="elevation-8" color="#303030">
         <v-row>
             <v-col lg="4" offset-lg="1" class="d-flex align-center justify-start">
-                <v-chip color="indigo" label v-html="graphic.graphicName" @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
+                <v-chip :color="isGraphicSelected ? 'indigo' : 'pink'" label v-html="graphic.graphicName" @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
                  <v-progress-circular v-if="dirtyCells && dirtyCells.fullWafer.percentage >= 0"
@@ -46,7 +46,7 @@
 <script>
 export default {
 
-    props: ["keyGraphicState"],
+    props: ["avbSelectedDies", "keyGraphicState"],
 
     data() {
         return {
@@ -58,8 +58,10 @@ export default {
         changeGraphicSelection() {
             if(this.isGraphicSelected) {
                 this.$store.dispatch("wafermeas/deleteSelectedGraphic", this.keyGraphicState)
+                this.$store.dispatch("wafermeas/deleteFromDirtyCellsStat", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
             } else {
                 this.$store.dispatch("wafermeas/addSelectedGraphic", this.keyGraphicState)
+                this.$store.dispatch("wafermeas/addToDirtyCellsStat", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
             }
         }
     },

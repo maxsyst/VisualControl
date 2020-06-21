@@ -107,9 +107,9 @@
               <v-tab-item value="statistics">
                 <v-row>
                   <v-col lg="8">
-                    <v-card dark>
+                    <v-card dark> 
                       <perfect-scrollbar>
-                        <micro-row class="mt-2" v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`" :keyGraphicState="graphic.keyGraphicState"></micro-row>
+                        <micro-row class="mt-2" v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`" :avbSelectedDies="avbSelectedDies" :keyGraphicState="graphic.keyGraphicState"></micro-row>
                       </perfect-scrollbar>
                     </v-card>
                   </v-col>
@@ -275,6 +275,10 @@ export default {
       return this.$store.getters['wafermeas/selectedGraphics']      
     },
 
+    unSelectedGraphics() {
+      return this.$store.getters['wafermeas/unSelectedGraphics']  
+    },
+
     availiableGraphics() {
       return this.$store.getters['wafermeas/avbGraphics']
     },
@@ -324,6 +328,10 @@ export default {
       this.$nextTick(() => {
         if (this.selectedGraphics.length !== this.availiableGraphics.length) {
           this.$store.dispatch("wafermeas/updateSelectedGraphics", [...this.availiableGraphics.map(g => g.keyGraphicState)])
+            this.unSelectedGraphics.map(g => g.keyGraphicState).forEach(g => {
+              this.$store.dispatch("wafermeas/addToDirtyCellsStat", {keyGraphicState: g, avbSelectedDies: this.avbSelectedDies})
+            })
+            this.$store.dispatch("wafermeas/updateUnSelectedGraphics", [])
         }
       });
     }

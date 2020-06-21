@@ -3,6 +3,7 @@ const defaultState = () => {
       selectedDies: [],
       avbGraphics: [],
       selectedGraphics: [],
+      unSelectedGraphics: [],
       measurements: [],
       wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},
       divider: "",
@@ -17,6 +18,7 @@ export const wafermeas = {
     selectedDies: [],
     avbGraphics: [],
     selectedGraphics: [],
+    unSelectedGraphics: [],
     measurements: [],
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
     wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},    
@@ -38,6 +40,10 @@ export const wafermeas = {
 
     updateSelectedGraphics({commit}, selectedGraphics) {
       commit('updateSelectedGraphics', selectedGraphics)
+    },
+
+    updateUnSelectedGraphics({commit}, unSelectedGraphics) {
+      commit('updateUnSelectedGraphics', unSelectedGraphics)
     },
 
     addSelectedGraphic({commit}, keyGraphicState) {
@@ -68,12 +74,12 @@ export const wafermeas = {
       commit('updateDirtyCellsPercentageSelected', {statPercentageSelected, fixedPercentageSelected})
     },
 
-    addToDirtyCellsStat({commit}, {keyGraphicState, dirtyCells}) {
-
+    addToDirtyCellsStat({commit}, {keyGraphicState, avbSelectedDies}) {
+      commit('addToDirtyCellsStat', {keyGraphicState, avbSelectedDies})
     },
 
-    deleteFromDirtyCellsStat({commit}, {keyGraphicState, dirtyCells}) {
-
+    deleteFromDirtyCellsStat({commit}, {keyGraphicState, avbSelectedDies}) {
+      commit('deleteFromDirtyCellsStat', {keyGraphicState, avbSelectedDies})
     },
     
     updateDirtyCellsSelectedNowSingleGraphic({commit}, {keyGraphicState, dirtyCells}) {
@@ -147,6 +153,7 @@ export const wafermeas = {
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState),
     selectedDies: state => state.selectedDies,
+    unSelectedGraphics: state => state.unSelectedGraphics,
     selectedGraphics: state => state.selectedGraphics,
     avbGraphics: state => state.avbGraphics,
     colors: state => state.colors,
@@ -163,6 +170,28 @@ export const wafermeas = {
 
     updateDirtyCells(state, dirtyCells) {
       state.dirtyCells = _.cloneDeep(dirtyCells)
+    },
+
+    addToDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
+      let singleGraphicCells = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
+      state.dirtyCells.statList = [...new Set([...state.dirtyCells.statList, ...singleGraphicCells])]
+      state.dirtyCells.statPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.statList.length / avbSelectedDies.length) * 100)
+      state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)      
+    },
+
+    deleteFromDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
+      let singleGraphicCells = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
+      let dirtyCellsArray = state.dirtyCellsSingleGraphics.filter(dc => dc.keyGraphicState !== keyGraphicState)
+      let cellsArray = dirtyCellsArray.map(x => x.fullWafer.cells).reduce((p,c) => [...p, ...c])
+      let readyToDelete = []
+      singleGraphicCells.forEach(sgc => {
+        if(!cellsArray.includes(sgc)) {
+          readyToDelete.push(sgc)
+        }
+      })
+      state.dirtyCells.statList = state.dirtyCells.statList.filter(dc => !readyToDelete.includes(dc))
+      state.dirtyCells.statPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.statList.length / avbSelectedDies.length) * 100)
+      state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)      
     },
 
     updateDirtyCellsPercentageSelected(state, {statPercentageSelected, fixedPercentageSelected}) {
@@ -192,12 +221,18 @@ export const wafermeas = {
       state.selectedGraphics = [...selectedGraphics]
     },
 
+    updateUnSelectedGraphics(state, unSelectedGraphics) {
+      state.unSelectedGraphics = [...unSelectedGraphics]
+    },
+
     addSelectedGraphic(state, keyGraphicState) {
       state.selectedGraphics.push(keyGraphicState)
+      state.unSelectedGraphics = state.unSelectedGraphics.filter(x => x.keyGraphicState!==keyGraphicState)
     },
 
     deleteSelectedGraphic(state, keyGraphicState) {
       state.selectedGraphics = state.selectedGraphics.filter(x => x!==keyGraphicState)
+      state.unSelectedGraphics.push(state.avbGraphics.find(x=>x.keyGraphicState === keyGraphicState))
     },
 
     updateSelectedDies (state, selectedDies) {
