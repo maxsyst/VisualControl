@@ -50,7 +50,6 @@ namespace VueExample.Controllers
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
-            var statistics = new StatisticsCore.Statistics();
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphic];
             var singleParameterStatisticList = 
                 (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{statisticSingleGraphicViewModel.K*10}"))[keyGraphic];
@@ -69,7 +68,6 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetStatisticSingleGraphicFullWafer ([FromQuery] int measurementRecordingId, [FromQuery] string keyGraphicState, [FromQuery] double k) 
         {
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
-            var statistics = new StatisticsCore.Statistics();
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphicState];
             var dieList = dieValueList.Select(x => x.DieId).ToList();
             var singleParameterStatisticList = 
@@ -90,7 +88,6 @@ namespace VueExample.Controllers
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
-            var statistics = new StatisticsCore.Statistics();
             var statDictionary = (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{statisticSingleGraphicViewModel.K*10}"))[keyGraphic];
             return Ok(statDictionary);
         }

@@ -32,7 +32,6 @@ namespace VueExample.Controllers
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
-            var statistics = new StatisticsCore.Statistics();
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[statisticSingleGraphicViewModel.KeyGraphicState];
             var chart = await _chartJSProvider.GetLinearFromDieValues(dieValueList, 
                                                                       statisticSingleGraphicViewModel.dieIdList, 
@@ -44,12 +43,12 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType (typeof(AbstractChart), StatusCodes.Status200OK)]
         [Route("GetHistogramForMeasurement")]
+        [ResponseCache(CacheProfileName = "Default60")]
         public async Task<IActionResult> GetHistogramForMeasurement([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
-            var statistics = new StatisticsCore.Statistics();
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphic];
             var amchart = await _chartJSProvider.GetHistogramFromDieValues(dieValueList, 
                                                                            statisticSingleGraphicViewModel.dieIdList, 

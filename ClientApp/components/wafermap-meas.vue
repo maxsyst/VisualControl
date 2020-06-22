@@ -126,6 +126,22 @@
                           :color="$store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100)">
                           {{ dirtyCells.statPercentageFullWafer + "%" }}
                         </v-progress-circular>
+                        <v-tooltip class="ml-8" v-model="showUnSelectedGraphics" v-if="unSelectedGraphics.length>0" top>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon v-bind="attrs" v-on="on">
+                              <v-icon color="primary">report</v-icon>
+                            </v-btn>
+                          </template>
+                          <div>
+                              <p>
+                                <span>Некоторые графики не выбраны:</span>
+                              </p>
+                              <p v-for="g in unSelectedGraphics">
+                                <span :key="'SPAN_'+g.keyGraphicState">{{g.graphicName}}</span>
+                              </p>
+                          </div>
+                        
+                      </v-tooltip>
                       </v-card-text>
                     </v-card>
                       <v-chip class="elevation-12 mt-4 ms-2" color="#303030" dark>Годны из выбранных</v-chip>
@@ -183,7 +199,7 @@
       </v-col>
     </v-row>
     <v-divider></v-divider>
-    <v-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" :key="`kgs-${graphic.keyGraphicState}`">
+    <v-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" :id="`kgs-${graphic.keyGraphicState}`" :key="`kgs-${graphic.keyGraphicState}`">
       <v-col lg="8" class="d-flex">
         <stat-single :id="'ss_' + graphic.keyGraphicState"
           :measurementId="selectedMeasurementId"
@@ -233,6 +249,7 @@ export default {
       fabToNext: false,
       fabToPrev: false,
       loading: false,
+      showUnSelectedGraphics: false,
       activeTab: "wafer",
       wafers: [],
       dividers: [],
@@ -328,10 +345,10 @@ export default {
       this.$nextTick(() => {
         if (this.selectedGraphics.length !== this.availiableGraphics.length) {
           this.$store.dispatch("wafermeas/updateSelectedGraphics", [...this.availiableGraphics.map(g => g.keyGraphicState)])
-            this.unSelectedGraphics.map(g => g.keyGraphicState).forEach(g => {
-              this.$store.dispatch("wafermeas/addToDirtyCellsStat", {keyGraphicState: g, avbSelectedDies: this.avbSelectedDies})
-            })
+          if(this.unSelectedGraphics.length > 0) {
+            this.$store.dispatch("wafermeas/addToDirtyCellsStat", {keyGraphicState: this.unSelectedGraphics.map(g => g.keyGraphicState), avbSelectedDies: this.avbSelectedDies})
             this.$store.dispatch("wafermeas/updateUnSelectedGraphics", [])
+          }
         }
       });
     }

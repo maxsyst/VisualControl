@@ -4,7 +4,7 @@
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
         <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
-        <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" font-size="12" fill="#FFF176">{{die.code}}</text>
+        <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" font-size="12" :fill="die.text">{{die.code}}</text>
       </g>
     </svg>
     <v-menu v-model="menu"
@@ -111,9 +111,10 @@
           this.initialOrientation = +this.wafer.formedMapBig.orientation;
           this.currentOrientation = this.initialOrientation;
           this.showNav = false;
-          this.dies.forEach(function(cell) {
-            cell.fill = "#A1887F";
-            cell.isActive = false;
+          this.dies.forEach(die => {
+            die.fill = "#A1887F";
+            die.text = "#303030"
+            die.isActive = false;
           });
       },    
 
@@ -129,11 +130,14 @@
             for (let i = 0; i < this.avbSelectedDies.length; i++) {
               let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
               die.fill = "#8C9EFF";
+              die.text = "#303030"
               die.isActive = true;
             }  
         
-            for (let i = 0; i < this.selectedDies.length; i++) {            
-              this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
+            for (let i = 0; i < this.selectedDies.length; i++) {   
+              let die = this.dies.find(d => d.id === this.selectedDies[i])         
+              die.fill = "#3D5AFE"
+              die.text = "#FFF9C4"      
             }        
         }
 
@@ -143,6 +147,7 @@
             die.fill = this.dirtyCells.statList.includes(die.id) 
                       ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
                       : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
+            die.text = "#303030"
           })
         }
       },
@@ -150,19 +155,23 @@
       selectedDies: function() {
         if(this.dies.length > 0) {
           if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
-            this.dies.forEach(function(cell) {
-              cell.fill = "#A1887F";
-              cell.isActive = false;
+            this.dies.forEach(function(die) {
+              die.fill = "#A1887F";
+              die.text = "#303030"
+              die.isActive = false;
             });
             if(this.mapMode === "selected") {
               for (let i = 0; i < this.avbSelectedDies.length; i++) {
                 let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
                 die.fill = "#8C9EFF";
+                die.text = "#303030"
                 die.isActive = true;
               }  
         
               for (let i = 0; i < this.selectedDies.length; i++) {            
-                this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
+                let die = this.dies.find(d => d.id === this.selectedDies[i])         
+                die.fill = "#3D5AFE"
+                die.text = "#FFF9C4"           
               }          
             }
             if(this.mapMode === "dirty") {
@@ -171,10 +180,9 @@
                 die.fill = this.dirtyCells.statList.includes(die.id) 
                           ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
                           : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
+                die.text = "#303030"
               })
             }
-
-             
           }
         }
         

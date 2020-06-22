@@ -173,10 +173,12 @@ export const wafermeas = {
     },
 
     addToDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
-      let singleGraphicCells = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
+      let singleGraphicCells = Array.isArray(keyGraphicState) 
+                               ? [...new Set(keyGraphicState.reduce((p,c) => [...p, ...state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === c).fullWafer.cells], []))]
+                               : state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells    
       state.dirtyCells.statList = [...new Set([...state.dirtyCells.statList, ...singleGraphicCells])]
       state.dirtyCells.statPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.statList.length / avbSelectedDies.length) * 100)
-      state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)      
+      state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)    
     },
 
     deleteFromDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {

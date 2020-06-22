@@ -35,7 +35,7 @@
             <v-col lg="1" offset-lg="1" class="d-flex align-center"> 
                 <v-checkbox
                     v-model="isGraphicSelected"
-                    color="indigo"
+                    color="green lighten-3"
                     @change="changeGraphicSelection"
                 ></v-checkbox>
             </v-col>
