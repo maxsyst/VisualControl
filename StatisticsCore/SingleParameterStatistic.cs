@@ -21,24 +21,21 @@ namespace VueExample.StatisticsCore
 
         public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, double k)
         {
-             this.dieList = new List<long?>(dieList);
-             this.Name = name;
-             this.valueList = new List<double>(valueList);
-             this.DirtyCells = new DirtyCells();
-             CalculateDirtyCellsStat(k);
-            
-             
+            this.dieList = new List<long?>(dieList);
+            this.Name = name;
+            this.valueList = new List<double>(valueList);
+            this.DirtyCells = new DirtyCells();
+            CalculateDirtyCellsStat(k);
         }
 
         public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, DirtyCells originDirtyCells)
         {
-             this.dieList = new List<long?>(dieList);
-             this.Name = name;
-             this.valueList = new List<double>(valueList);
-             this.DirtyCells = new DirtyCells();
-             this.DirtyCells.StatList = originDirtyCells.StatList.Intersect(dieList).ToList();
-             this.DirtyCells.FixedList = originDirtyCells.FixedList.Intersect(dieList).ToList();
-             
+            this.dieList = new List<long?>(dieList);
+            this.Name = name;
+            this.valueList = new List<double>(valueList);
+            this.DirtyCells = new DirtyCells();
+            this.DirtyCells.StatList = originDirtyCells.StatList.Intersect(dieList).ToList();
+            this.DirtyCells.FixedList = originDirtyCells.FixedList.Intersect(dieList).ToList();
         }
     
 

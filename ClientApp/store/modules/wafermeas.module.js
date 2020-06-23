@@ -76,6 +76,9 @@ export const wafermeas = {
 
     addToDirtyCellsStat({commit}, {keyGraphicState, avbSelectedDies}) {
       commit('addToDirtyCellsStat', {keyGraphicState, avbSelectedDies})
+      if(Array.isArray(keyGraphicState)) {
+        commit('updateUnSelectedGraphics', [])
+      }
     },
 
     deleteFromDirtyCellsStat({commit}, {keyGraphicState, avbSelectedDies}) {

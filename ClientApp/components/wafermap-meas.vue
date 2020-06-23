@@ -347,7 +347,6 @@ export default {
           this.$store.dispatch("wafermeas/updateSelectedGraphics", [...this.availiableGraphics.map(g => g.keyGraphicState)])
           if(this.unSelectedGraphics.length > 0) {
             this.$store.dispatch("wafermeas/addToDirtyCellsStat", {keyGraphicState: this.unSelectedGraphics.map(g => g.keyGraphicState), avbSelectedDies: this.avbSelectedDies})
-            this.$store.dispatch("wafermeas/updateUnSelectedGraphics", [])
           }
         }
       });
