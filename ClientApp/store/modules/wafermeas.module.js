@@ -192,8 +192,7 @@ export const wafermeas = {
       singleGraphicCells.forEach(sgc => {
         if(!cellsArray.includes(sgc)) {
           readyToDelete.push(sgc)
-        }
-      })
+      }})
       state.dirtyCells.statList = state.dirtyCells.statList.filter(dc => !readyToDelete.includes(dc))
       state.dirtyCells.statPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.statList.length / avbSelectedDies.length) * 100)
       state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)      

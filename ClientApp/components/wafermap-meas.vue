@@ -59,6 +59,7 @@
                         label="Номер пластины"
                       ></v-autocomplete>
                       <v-select
+                        v-if="measurementRecordings.length>0"
                         v-model="selectedMeasurementId"
                         :items="measurementRecordings"
                         no-data-text="Нет данных"
@@ -66,8 +67,14 @@
                         item-value="id"
                         filled
                         outlined
-                        label="Выберите измерение:"
-                      ></v-select>
+                        label="Выберите измерение:">
+                      </v-select>
+                      <v-progress-circular class="ml-4"
+                        v-else
+                        :width="3"
+                        indeterminate
+                        color="primary">
+                      </v-progress-circular>
                     </v-layout>
                   </v-card-text>
                 </v-card>
