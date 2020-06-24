@@ -3,9 +3,9 @@
       <v-row>
         <v-col class="d-flex flex-column align-end">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">      
-              <g v-for="(die, key) in dies" :key="die.id">
-                  <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" />
-              </g>
+            <g v-for="(die, key) in dies" :key="die.id">
+              <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie"/>
+            </g>
           </svg>
         </v-col>
         <v-col class="d-flex flex-column align-center">
@@ -43,8 +43,7 @@
       }
     },
 
-    mounted()
-    {      
+    mounted() {      
       this.dies = _.cloneDeep(this.wafer.formedMapMini.dies)             
       this.initialOrientation = +this.wafer.formedMapMini.orientation;
       this.currentOrientation = this.initialOrientation; 
@@ -55,7 +54,29 @@
     methods: {
 
       initialize: function(dies) {
-        dies.forEach(cell => cell.fill = "#A1887F")
+        dies.forEach(die => { 
+          die.fill = "#A1887F";
+          die.isActive = false
+        })
+      },
+
+      selectDie(e) {
+        e.preventDefault()
+        let dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id      
+        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
+        {
+          let position =  this.selectedDies.indexOf(dieId);
+          if ( ~position ) {
+            this.selectedDies.splice(position, 1);
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          } 
+          else {
+            this.selectedDies.push(dieId);
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          }
+          this.goToSelected()
+        }
+      
       },
 
       goToDirty: function() {
@@ -63,22 +84,30 @@
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
           die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
+          die.isActive = true
         })
       },
 
       goToSelected: function() {
         this.mode = "selected"
-        for (var i = 0; i < this.avbSelectedDies.length; i++) {
-          this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
+        for (let i = 0; i < this.avbSelectedDies.length; i++) {
+          let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+          die.fill = "#8C9EFF";
+          die.isActive = true
         }  
         
-        for (var i = 0; i < this.selectedDies.length; i++) {            
+        for (let i = 0; i < this.selectedDies.length; i++) {            
           this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
         }
       },
 
       goToColor: function() {
         this.mode = "color"
+        this.avbSelectedDies.forEach(avb => {
+          let die = this.dies.find(d => d.id === avb)
+          die.fill = this.dieColors.find(d => d.dieId === die.id).hexColor
+          die.isActive = true
+        })
       }
     },
     
@@ -91,21 +120,25 @@
         }
       },
 
-      dirtyCells: function() {
-        
+      
+
+      dirtyCells: function() {        
         if(this.mode === "dirty") {
           this.avbSelectedDies.forEach(avb => {
             let die = this.dies.find(d => d.id === avb)
             die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
+            die.isActive = true
           })
         }
 
         if(this.mode === "selected") {
-          for (var i = 0; i < this.avbSelectedDies.length; i++) {
-            this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
+          for (let i = 0; i < this.avbSelectedDies.length; i++) {
+            let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+            die.fill = "#8C9EFF";
+            die.isActive = true
           }  
         
-          for (var i = 0; i < this.selectedDies.length; i++) {            
+          for (let i = 0; i < this.selectedDies.length; i++) {            
             this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
           }
         }
@@ -117,12 +150,19 @@
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
       },
+
       size() {
         return this.$store.getters['wafermeas/size']("mini")
       },
+
       wafer() {
         return this.$store.getters['wafermeas/wafer']
       },
+
+      dieColors() {
+        return this.$store.getters['wafermeas/dieColors']
+      },
+
       svgRotation() {
         return {
            transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`         
@@ -131,3 +171,10 @@
     }
   }
 </script>
+
+<style scoped>
+  rect:hover {
+    stroke: #fc0;
+    stroke-width: 1.2;
+  }
+</style>

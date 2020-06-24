@@ -1,6 +1,7 @@
 const defaultState = () => {
   return {
       selectedDies: [],
+      dieColors: [],
       avbGraphics: [],
       selectedGraphics: [],
       unSelectedGraphics: [],
@@ -17,6 +18,7 @@ export const wafermeas = {
   state: {
     selectedDies: [],
     avbGraphics: [],
+    dieColors: [],
     selectedGraphics: [],
     unSelectedGraphics: [],
     measurements: [],
@@ -101,6 +103,11 @@ export const wafermeas = {
       commit('updateAvbGraphics', avbGraphics)
     },
 
+    async updateDieColors({commit}, {ctx, waferId}) {
+      let dieColors = (await ctx.$http.get(`/api/die/GetColorsByWaferId?waferId=${waferId}`)).data
+      commit('updateDieColors', dieColors) 
+    },
+
     async updateSelectedWaferId ({commit, state}, {ctx, waferId}) {
     
       let measurements = (await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`)).data
@@ -159,6 +166,7 @@ export const wafermeas = {
     unSelectedGraphics: state => state.unSelectedGraphics,
     selectedGraphics: state => state.selectedGraphics,
     avbGraphics: state => state.avbGraphics,
+    dieColors: state => state.dieColors,
     colors: state => state.colors,
     wafer: state => state.wafer,
     measurements: state => state.measurements,
@@ -171,6 +179,10 @@ export const wafermeas = {
       Object.assign(state, defaultState())
     },
 
+    updateDieColors(state, dieColors) {
+      state.dieColors = [...dieColors]
+    },
+
     updateDirtyCells(state, dirtyCells) {
       state.dirtyCells = _.cloneDeep(dirtyCells)
     },
@@ -178,7 +190,7 @@ export const wafermeas = {
     addToDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
       let singleGraphicCells = Array.isArray(keyGraphicState) 
                                ? [...new Set(keyGraphicState.reduce((p,c) => [...p, ...state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === c).fullWafer.cells], []))]
-                               : state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells    
+                               : state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells  
       state.dirtyCells.statList = [...new Set([...state.dirtyCells.statList, ...singleGraphicCells])]
       state.dirtyCells.statPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.statList.length / avbSelectedDies.length) * 100)
       state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)    
@@ -186,8 +198,8 @@ export const wafermeas = {
 
     deleteFromDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
       let singleGraphicCells = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
-      let dirtyCellsArray = state.dirtyCellsSingleGraphics.filter(dc => dc.keyGraphicState !== keyGraphicState)
-      let cellsArray = dirtyCellsArray.map(x => x.fullWafer.cells).reduce((p,c) => [...p, ...c])
+      let dirtyCellsArray = state.dirtyCellsSingleGraphics.filter(dc => dc.keyGraphicState !== keyGraphicState && state.selectedGraphics.includes(dc.keyGraphicState))
+      let cellsArray = [...new Set(dirtyCellsArray.map(x => x.fullWafer.cells).reduce((p,c) => [...p, ...c]))]
       let readyToDelete = []
       singleGraphicCells.forEach(sgc => {
         if(!cellsArray.includes(sgc)) {

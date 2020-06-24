@@ -19,27 +19,26 @@
       </v-list>
     </v-menu>
 
-  <v-bottom-navigation v-if="dies.length>0" :value="showNav"
-                v-model="currentOrientation"
-                color="transparent">
+    <v-bottom-navigation 
+      v-if="dies.length>0" 
+      :value="showNav"
+      v-model="currentOrientation"
+      color="transparent">
+
     <v-btn :value="0" text color="#fc0">
       0°
-      
     </v-btn>
 
     <v-btn :value="90" text color="#fc0">
       90°
-
     </v-btn>
 
     <v-btn :value="180" text color="#fc0">
       180°
-     
     </v-btn>
 
     <v-btn :value="270" text color="#fc0">
       270°
-     
     </v-btn>
     
   </v-bottom-navigation>
@@ -100,7 +99,6 @@
             this.menu = true
           });
         }
-       
       }
     },
     
@@ -148,6 +146,7 @@
                       ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
                       : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
             die.text = "#303030"
+            die.isActive = true
           })
         }
       },
@@ -181,6 +180,7 @@
                           ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
                           : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
                 die.text = "#303030"
+                die.isActive = true;
               })
             }
           }
@@ -247,6 +247,13 @@
     stroke: #fc0;
     stroke-width: 3;
     stroke-opacity: 0.6
+  }
+
+  svg text{
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
   }
 
  

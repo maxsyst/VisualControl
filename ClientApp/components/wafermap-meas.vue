@@ -10,7 +10,7 @@
       right
       color="indigo"
       @click="toTop">
-        <v-icon>keyboard_arrow_up</v-icon>
+      <v-icon>keyboard_arrow_up</v-icon>
     </v-btn>
     <loading
       :active.sync="loading"
@@ -176,8 +176,8 @@
       <v-col lg="4" offset-lg="1">
         <wafermap-svg
           :avbSelectedDies="avbSelectedDies"
-          :mapMode="mapMode"
-        ></wafermap-svg>
+          :mapMode="mapMode">
+        </wafermap-svg>
       </v-col>
       <v-col lg="2">
           <v-chip color="#303030" v-if="avbSelectedDies.length > 0" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
@@ -363,6 +363,7 @@ export default {
   watch: {
     selectedWafer: async function(newValue) {
       this.$store.dispatch("wafermeas/updateAvbGraphics", [])
+      this.$store.dispatch("wafermeas/updateDieColors", {ctx: this, waferId: newValue})
       this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue})
     },
 
