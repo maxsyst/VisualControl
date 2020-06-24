@@ -3,7 +3,7 @@
     <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
-        <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
+        <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie" @contextmenu="showmenu" />
         <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" font-size="12" :fill="die.text">{{die.code}}</text>
       </g>
     </svg>
@@ -112,6 +112,7 @@
           this.dies.forEach(die => {
             die.fill = "#A1887F";
             die.text = "#303030"
+            die.fillOpacity = 1.0
             die.isActive = false;
           });
       },    
@@ -129,6 +130,7 @@
               let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
               die.fill = "#8C9EFF";
               die.text = "#303030"
+              die.fillOpacity = 1.0
               die.isActive = true;
             }  
         
@@ -142,10 +144,9 @@
         if(newVal === "dirty") {
           this.avbSelectedDies.forEach(avb => {
             let die = this.dies.find(d => d.id === avb)
-            die.fill = this.dirtyCells.statList.includes(die.id) 
-                      ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
-                      : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
-            die.text = "#303030"
+            die.fill = this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
+            die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+            die.text = this.selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
             die.isActive = true
           })
         }
@@ -155,8 +156,9 @@
         if(this.dies.length > 0) {
           if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
             this.dies.forEach(function(die) {
-              die.fill = "#A1887F";
+              die.fill = "#A1887F"
               die.text = "#303030"
+              die.fillOpacity = 1.0
               die.isActive = false;
             });
             if(this.mapMode === "selected") {
@@ -176,10 +178,9 @@
             if(this.mapMode === "dirty") {
               this.avbSelectedDies.forEach(avb => {
                 let die = this.dies.find(d => d.id === avb)
-                die.fill = this.dirtyCells.statList.includes(die.id) 
-                          ? this.selectedDies.includes(die.id) ? "#E91E63" :  "#F8BBD0"
-                          : this.selectedDies.includes(die.id) ? "#4CAF50" :  "#C8E6C9" 
-                die.text = "#303030"
+                die.fill = this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
+                die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+                die.text = this.selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
                 die.isActive = true;
               })
             }

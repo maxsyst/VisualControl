@@ -4,7 +4,7 @@
         <v-col class="d-flex flex-column align-end">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">      
             <g v-for="(die, key) in dies" :key="die.id">
-              <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie"/>
+              <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie"/>
             </g>
           </svg>
         </v-col>
@@ -57,6 +57,7 @@
         dies.forEach(die => { 
           die.fill = "#A1887F";
           die.isActive = false
+          die.fillOpacity = 1.0
         })
       },
 
@@ -84,6 +85,7 @@
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
           die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
+          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
           die.isActive = true
         })
       },
@@ -92,13 +94,10 @@
         this.mode = "selected"
         for (let i = 0; i < this.avbSelectedDies.length; i++) {
           let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-          die.fill = "#8C9EFF";
+          die.fillOpacity = 1.0;
+          die.fill = this.selectedDies.includes(die.id) ? "#3D5AFE" : "#8C9EFF";
           die.isActive = true
-        }  
-        
-        for (let i = 0; i < this.selectedDies.length; i++) {            
-          this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
-        }
+        }          
       },
 
       goToColor: function() {
@@ -106,6 +105,7 @@
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
           die.fill = this.dieColors.find(d => d.dieId === die.id).hexColor
+          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
           die.isActive = true
         })
       }
