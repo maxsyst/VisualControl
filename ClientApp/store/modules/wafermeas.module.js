@@ -1,6 +1,7 @@
 const defaultState = () => {
   return {
       selectedDies: [],
+      hoveredDieId: {},
       dieColors: [],
       avbGraphics: [],
       selectedGraphics: [],
@@ -17,6 +18,7 @@ export const wafermeas = {
   namespaced: true,
   state: {
     selectedDies: [],
+    hoveredDieId: {},
     avbGraphics: [],
     dieColors: [],
     selectedGraphics: [],
@@ -34,6 +36,14 @@ export const wafermeas = {
 
     reset({commit}) {
       commit('reset')
+    },
+
+    hoverWaferMini({commit}, {dieId, keyGraphicState}) {
+      commit('hoverWaferMini', {dieId, keyGraphicState})
+    },
+
+    unHoverWaferMini({commit}) {
+      commit('unHoverWaferMini')
     },
 
     clearSelectedGraphics({commit}) {
@@ -160,6 +170,7 @@ export const wafermeas = {
       } 
     },
     dirtyCells: state => state.dirtyCells,
+    hoveredDieId: state => state.hoveredDieId,
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState),
     selectedDies: state => state.selectedDies,
@@ -177,6 +188,14 @@ export const wafermeas = {
 
     reset(state) {
       Object.assign(state, defaultState())
+    },
+
+    hoverWaferMini(state, {dieId, keyGraphicState}) {
+      state.hoveredDieId = {dieId, keyGraphicState}
+    },
+
+    unHoverWaferMini(state) {
+      state.hoveredDieId = {}
     },
 
     updateDieColors(state, dieColors) {

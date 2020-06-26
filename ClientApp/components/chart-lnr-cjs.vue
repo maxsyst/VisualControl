@@ -4,6 +4,7 @@
     <line-chart
       v-if="loaded"
       :id="'LCHART_' + keyGraphicState"
+      :keyGraphicState="keyGraphicState"
       :chartdata="chartdata"
       :options="options"/>
     <v-progress-circular v-else

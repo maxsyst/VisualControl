@@ -19,9 +19,7 @@ namespace VueExample.StatisticsCore
         public string Unit { get; set; }
         public string Median { get; set; }
         public int ParameterID { get; set; }
-        public List<double> FullList { get; set; }
-
-      
+        public List<double> FullList { get; set; }      
 
         public Statistics()
         {
@@ -2368,7 +2366,6 @@ namespace VueExample.StatisticsCore
         private List<Statistics> GetIdVd_Progress(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var ocIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.15 - item)).FirstOrDefault());
             var oneIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.0 - item)).FirstOrDefault());
             var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
             var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
@@ -2383,7 +2380,6 @@ namespace VueExample.StatisticsCore
             var s31List = new List<double>();
             var s51List = new List<double>();
             var sfList = new List<double>();
-            var ocList = new List<double>();
             var enumerable = commonYList as IList<List<string>> ?? commonYList.ToList();
             foreach (List<double> yListdouble in enumerable.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
@@ -2400,7 +2396,6 @@ namespace VueExample.StatisticsCore
 
             foreach (List<double> yListdouble in enumerable.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
             {
-                ocList.Add((xListdouble[ocIndex] / yListdouble[ocIndex] - 1.1) * divider);
                 id2List.Add(yListdouble[twoIndex] * 1.11 / divider);
                 id3List.Add(yListdouble[threeIndex] * 1.11 / divider);
                 id5List.Add(yListdouble[fiveIndex] * 1.11 / divider);
@@ -2411,7 +2406,6 @@ namespace VueExample.StatisticsCore
                     GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
                     GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
                     GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
                     GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(sfList,  "S<sub>f</sub> (критерий S-образности)", "мСм")
@@ -2423,7 +2417,6 @@ namespace VueExample.StatisticsCore
         private List<Statistics> GetIdVd(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var ocIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.05 - item)).FirstOrDefault());
             var oneIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.0 - item)).FirstOrDefault());
             var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
             var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
@@ -2450,7 +2443,6 @@ namespace VueExample.StatisticsCore
                 id5List.Add(yListdouble[fiveIndex]);
                 s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
                 s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
-                ocList.Add(xListdouble[ocIndex] / yListdouble[ocIndex]);
 
 
             }
@@ -2460,7 +2452,6 @@ namespace VueExample.StatisticsCore
                     GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
                     GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
                     GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
                     GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(sfList,  "S<sub>f</sub> (критерий S-образности)", "мСм")
@@ -2471,7 +2462,6 @@ namespace VueExample.StatisticsCore
         private List<Statistics> GetIdVd025(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var ocIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.15 - item)).FirstOrDefault());
             var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
             var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
             var fourIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
@@ -2499,7 +2489,6 @@ namespace VueExample.StatisticsCore
                 id5List.Add(yListdouble[fiveIndex]);
                 s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
                 s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
-                ocList.Add(xListdouble[ocIndex]/yListdouble[ocIndex]);
 
             }
 
@@ -2508,7 +2497,6 @@ namespace VueExample.StatisticsCore
                     GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
                     GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
                     GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
                     GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(sfList, "S<sub>f</sub> (критерий S-образности)", "мСм")

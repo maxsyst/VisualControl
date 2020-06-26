@@ -4,7 +4,7 @@
         <v-col class="d-flex flex-column align-end">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">      
             <g v-for="(die, key) in dies" :key="die.id">
-              <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie"/>
+              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @mouseleave="mouseLeave" @click="selectDie"/>
             </g>
           </svg>
         </v-col>
@@ -26,7 +26,7 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['avbSelectedDies', 'dirtyCells'],
+    props: ['keyGraphicState', 'avbSelectedDies', 'dirtyCells'],
     components: { Loading },
     data() {
       return {
@@ -61,11 +61,23 @@
         })
       },
 
+      mouseOver: function(e) {
+        if(this.selectedDies.includes(+e.target.id) &&  this.mode === "color") {
+          this.$store.dispatch("wafermeas/hoverWaferMini", {dieId: +e.target.id, keyGraphicState: this.keyGraphicState});
+        }
+      },
+
+      mouseLeave: function() {
+        if(this.mode === "color") {
+           this.$store.dispatch("wafermeas/unHoverWaferMini")
+        }
+      },
+ 
       selectDie(e) {
         e.preventDefault()
-        let dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id      
-        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
-        {
+        let die = this.dies[+e.currentTarget.attributes.dieIndex.value]
+        let dieId = die.id      
+        if (die.isActive) {
           let position =  this.selectedDies.indexOf(dieId);
           if ( ~position ) {
             this.selectedDies.splice(position, 1);

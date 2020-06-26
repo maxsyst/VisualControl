@@ -35,6 +35,7 @@ namespace VueExample.Providers
             {
                 var dataset = new Dataset();
                 dataset.BorderColor = _colorService.GetHexColorByDieId(dieValue.DieId);
+                dataset.DieId = dieValue.DieId;
                 for (int i = 0; i < dieValue.XList.Count; i++) 
                 {
                     if (i < dieValue.YList.Count) 

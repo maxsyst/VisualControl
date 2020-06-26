@@ -61,6 +61,7 @@
           <wafer-mini v-if="dirtyCellsFullWafer.cellsId.length > 0"
             :avbSelectedDies="avbSelectedDies"
             :dirtyCells="dirtyCellsFullWafer.cellsId"
+            :keyGraphicState="keyGraphicState"
             :key="`wfm-${keyGraphicState}`"
         ></wafer-mini>
         </v-col>

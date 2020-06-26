@@ -361,6 +361,7 @@ export default {
   },
 
   watch: {
+
     selectedWafer: async function(newValue) {
       this.$store.dispatch("wafermeas/updateAvbGraphics", [])
       this.$store.dispatch("wafermeas/updateDieColors", {ctx: this, waferId: newValue})

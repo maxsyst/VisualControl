@@ -6,6 +6,7 @@ namespace VueExample.ChartModels.ChartJs
     {
         public List<double> Data { get; set; }
         public bool Fill { get; set; } = false;
+        public long? DieId { get; set; }
         public string BorderColor { get; set; } 
         public string BackgroundColor { get; set; } 
         public int BorderWidth { get; set; } = 1;
@@ -15,7 +16,6 @@ namespace VueExample.ChartModels.ChartJs
         public Dataset()
         {
             this.Data = new List<double>();
-           
         }
 
          
