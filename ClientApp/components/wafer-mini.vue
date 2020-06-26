@@ -4,7 +4,7 @@
         <v-col class="d-flex flex-column align-end">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">      
             <g v-for="(die, key) in dies" :key="die.id">
-              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @mouseleave="mouseLeave" @click="selectDie"/>
+              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @click="selectDie"/>
             </g>
           </svg>
         </v-col>
@@ -69,7 +69,7 @@
 
       mouseLeave: function() {
         if(this.mode === "color") {
-           this.$store.dispatch("wafermeas/unHoverWaferMini")
+          this.$store.dispatch("wafermeas/unHoverWaferMini")
         }
       },
  

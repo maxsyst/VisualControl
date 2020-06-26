@@ -5,8 +5,7 @@ export default {
   extends: Line,
   data() {
      return {
-       hoveredDieId: 0,
-       hoveredColor: ""
+       oldHovered: {color: "", dieId: 0}
      }
   },
   props: {
@@ -30,22 +29,17 @@ export default {
 
   watch: {
     hovered: function(newValue) {
-      if(_.isEmpty(newValue)) {
-        if(this.hoveredDieId > 0) { 
-          let highligted = this.chartdata.datasets.find(x => x.dieId === this.hoveredDieId)
-          highligted.borderWidth = 1;
-          this.hoveredDieId = 0
-        }        
-      }
-      else {
-        if(newValue.keyGraphicState === this.keyGraphicState) {
-          this.hoveredDieId = newValue.dieId
-          let highligted = this.chartdata.datasets.find(x => x.dieId === this.hoveredDieId)
-          highligted.borderWidth = 7;          
-          this.renderChart(this.chartdata, this.options)
-        }        
-      }
-      
+      if(newValue.keyGraphicState === this.keyGraphicState) {
+        if(this.oldHovered.dieId > 0) {
+          let oldHovered = this.chartdata.datasets.find(x => x.dieId === this.oldHovered.dieId)
+          oldHovered.borderWidth = 1;
+        }
+        let highligted = this.chartdata.datasets.find(x => x.dieId === newValue.dieId)
+        this.oldHovered.dieId = newValue.dieId
+        this.oldHovered.color = highligted.borderColor
+        highligted.borderWidth = 7;          
+        this.renderChart(this.chartdata, this.options)
+      }        
     }
   },
 
