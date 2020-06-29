@@ -116,8 +116,9 @@
         this.mode = "color"
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
-          die.fill = this.dieColors.find(d => d.dieId === die.id).hexColor
-          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+          let isSelected = this.selectedDies.includes(die.id) 
+          die.fill = isSelected ? this.dieColors.find(d => d.dieId === die.id).hexColor : "#303030"
+          die.fillOpacity = isSelected ? 1.0 : 0.5
           die.isActive = true
         })
       }

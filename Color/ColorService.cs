@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using LazyCache;
 using Newtonsoft.Json;
 
-namespace VueExample.Color {
+namespace VueExample.Color
+{
     public class ColorService : IColorService 
     {
 
@@ -22,7 +22,7 @@ namespace VueExample.Color {
             return color;
         }
 
-        public string GetHexColorByDieId (long? dieId) 
+        public string GetHexColorByDieId(long? dieId) 
         {
             if (dieId == null) 
             {
@@ -33,16 +33,16 @@ namespace VueExample.Color {
                 var hex = String.Empty;
                 Func<List<Color>> cachedcolorList = () => GetColorList ();
                 var colorList = _cache.GetOrAdd ("COLORS", cachedcolorList);
-                hex = colorList[Convert.ToInt32(dieId % 1000)].Hex;
+                hex = colorList[Convert.ToInt32(dieId % 16)].Hex;
                 return hex;
             }
 
         }
 
-        private List<Color> GetColorList () 
+        private List<Color> GetColorList() 
         {
             var colorList = new List<Color>();
-            using (StreamReader r = new StreamReader (Directory.GetCurrentDirectory() + "//Color//colors.json")) 
+            using (StreamReader r = new StreamReader (Directory.GetCurrentDirectory() + "//Color//colors16.json")) 
             {
                 string json = r.ReadToEnd();
                 Dictionary<string, string> colorsDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>> (json);

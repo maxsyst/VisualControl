@@ -32,12 +32,12 @@ export default {
       if(newValue.keyGraphicState === this.keyGraphicState) {
         if(this.oldHovered.dieId > 0) {
           let oldHovered = this.chartdata.datasets.find(x => x.dieId === this.oldHovered.dieId)
-          oldHovered.borderWidth = 1;
+          oldHovered.borderWidth = 1
         }
         let highligted = this.chartdata.datasets.find(x => x.dieId === newValue.dieId)
         this.oldHovered.dieId = newValue.dieId
         this.oldHovered.color = highligted.borderColor
-        highligted.borderWidth = 7;          
+        highligted.borderWidth = 7       
         this.renderChart(this.chartdata, this.options)
       }        
     }
