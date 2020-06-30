@@ -288,7 +288,7 @@ export default {
   computed: {
 
     dirtyCells() {
-       return this.$store.getters['wafermeas/dirtyCells']
+      return this.$store.getters['wafermeas/dirtyCells']
     },
 
     selectedDies() {
@@ -314,7 +314,7 @@ export default {
       if (this.availiableGraphics.length === this.selectedGraphics.length)
         return "check_box";
       if (this.selectedGraphics.length > 0) return "indeterminate_check_box";
-      return "check_box_outline_blank";
+        return "check_box_outline_blank";
     }
   },
 

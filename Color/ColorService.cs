@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using LazyCache;
 using Newtonsoft.Json;
+using VueExample.Providers;
 
 namespace VueExample.Color
 {
@@ -10,7 +11,6 @@ namespace VueExample.Color
     {
 
         private readonly IAppCache _cache;
-
         public ColorService (IAppCache cache) 
         {
             _cache = cache;
@@ -30,8 +30,8 @@ namespace VueExample.Color
             } 
             else 
             {
-                var hex = String.Empty;
-                Func<List<Color>> cachedcolorList = () => GetColorList ();
+                var hex = String.Empty;                
+                Func<List<Color>> cachedcolorList = () => GetColorList();
                 var colorList = _cache.GetOrAdd ("COLORS", cachedcolorList);
                 hex = colorList[Convert.ToInt32(dieId % 16)].Hex;
                 return hex;

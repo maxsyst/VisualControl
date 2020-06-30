@@ -23,7 +23,7 @@ export default {
     }
   },
 
-  mounted () {
+  mounted() {
     this.renderChart(this.chartdata, this.options)
   },
 
@@ -40,12 +40,34 @@ export default {
         highligted.borderWidth = 7       
         this.renderChart(this.chartdata, this.options)
       }        
+    },
+
+    mode: function(newValue) {
+      if(newValue === "dirty") {
+        this.chartdata.datasets.forEach(d =>  d.borderColor = this.dirtyCells.fullWafer.cells.includes(d.dieId) ? "#ff1744" : "#00e676")
+      } else {
+        this.chartdata.datasets.forEach(d => d.borderColor = this.dieColors.find(dc => dc.dieId === d.dieId).hexColor)
+      }
+      this.renderChart(this.chartdata, this.options)
     }
   },
 
   computed: {
+
     hovered() {
       return this.$store.getters['wafermeas/hoveredDieId']
+    },
+
+    mode() {
+      return this.$store.getters['wafermeas/getKeyGraphicStateMode'](this.keyGraphicState)
+    },
+
+    dieColors() {
+      return this.$store.getters['wafermeas/dieColors']
+    },
+
+    dirtyCells() {
+      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
     }
   },
 }

@@ -3,6 +3,7 @@
     <v-container> 
         <bar-chart
           v-if="loaded"
+          :keyGraphicState="keyGraphicState"
           :chartdata="chartdata"
           :options="options"/>
         <v-progress-circular v-else
@@ -31,20 +32,20 @@ export default {
 
    computed:
     {
-        selectedDies() {
-            return this.$store.getters['wafermeas/selectedDies']
-        }
+      selectedDies() {
+        return this.$store.getters['wafermeas/selectedDies']
+      }
     },
 
     watch:
     {
-        selectedDies: async function() {
-            await this.getChartData(this.selectedDies);
-        },
+      selectedDies: async function() {
+        await this.getChartData(this.selectedDies);
+      },
 
-        divider: async function() {
-            await this.getChartData(this.selectedDies);
-        }
+      divider: async function() {
+        await this.getChartData(this.selectedDies);
+      }
     },
 
     methods:
@@ -94,7 +95,5 @@ export default {
           }   
         }
     }
-
-    
 }
 </script>

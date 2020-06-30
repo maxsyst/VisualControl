@@ -1,6 +1,7 @@
 const defaultState = () => {
   return {
       selectedDies: [],
+      keyGraphicStateModes: [],
       hoveredDieId: {},
       dieColors: [],
       avbGraphics: [],
@@ -18,6 +19,7 @@ export const wafermeas = {
   namespaced: true,
   state: {
     selectedDies: [],
+    keyGraphicStateModes: [],
     hoveredDieId: {},
     avbGraphics: [],
     dieColors: [],
@@ -46,12 +48,18 @@ export const wafermeas = {
       commit('unHoverWaferMini')
     },
 
+    changeKeyGraphicStateMode({commit}, {keyGraphicState, mode}) {
+      commit('changeKeyGraphicStateMode', {keyGraphicState, mode})
+    },
+
     clearSelectedGraphics({commit}) {
       commit('updateSelectedGraphics', [])
+      commit('clearKeyGraphicStateMode')
     },
 
     updateSelectedGraphics({commit}, selectedGraphics) {
       commit('updateSelectedGraphics', selectedGraphics)
+      commit('updateKeyGraphicStateMode', selectedGraphics)
     },
 
     updateUnSelectedGraphics({commit}, unSelectedGraphics) {
@@ -60,10 +68,12 @@ export const wafermeas = {
 
     addSelectedGraphic({commit}, keyGraphicState) {
       commit('addSelectedGraphic', keyGraphicState)
+      commit('addKeyGraphicStateMode', keyGraphicState)
     },
 
     deleteSelectedGraphic({commit}, keyGraphicState) {
       commit('deleteSelectedGraphic', keyGraphicState)
+      commit('deleteKeyGraphicStateMode', keyGraphicState)
     },
 
     updateMeasurementName({commit}, {id,name}) {
@@ -171,6 +181,7 @@ export const wafermeas = {
     },
     dirtyCells: state => state.dirtyCells,
     hoveredDieId: state => state.hoveredDieId,
+    getKeyGraphicStateMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).mode,
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState),
     selectedDies: state => state.selectedDies,
@@ -192,6 +203,29 @@ export const wafermeas = {
 
     hoverWaferMini(state, {dieId, keyGraphicState}) {
       state.hoveredDieId = {dieId, keyGraphicState}
+    },
+
+    updateKeyGraphicStateMode(state, selectedGraphics) {
+      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "selected"}))
+    },
+
+    clearKeyGraphicStateMode(state) {
+      state.keyGraphicStateModes = []
+    },
+
+    changeKeyGraphicStateMode(state, {keyGraphicState, mode}) {
+      let keyGraphicStateMode = state.keyGraphicStateModes.find(x => x.keyGraphicState === keyGraphicState)
+      if(keyGraphicStateMode !== undefined) {
+        keyGraphicStateMode.mode = mode
+      }
+    },
+
+    addKeyGraphicStateMode(state, keyGraphicState) {
+      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "selected"})
+    },
+
+    deleteKeyGraphicStateMode(state, keyGraphicState) {
+      state.keyGraphicStateModes = state.keyGraphicStateModes.filter(x => x.keyGraphicState!==keyGraphicState)
     },
 
     unHoverWaferMini(state) {

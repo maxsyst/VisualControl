@@ -70,7 +70,6 @@
         <v-col lg="12">
           <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
             <v-tab href="#commonTable">Сводная таблица</v-tab>
-
             <v-tab
               v-for="stat in statArray"
               :key="stat.shortStatisticsName"

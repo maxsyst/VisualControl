@@ -33,7 +33,7 @@ namespace VueExample.Providers
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
             Parallel.ForEach (currentDieValues, (dieValue) => 
             {
-                var dataset = new Dataset();
+                var dataset = new LinearDataset();
                 dataset.BorderColor = _colorService.GetHexColorByDieId(dieValue.DieId);
                 dataset.DieId = dieValue.DieId;
                 for (int i = 0; i < dieValue.XList.Count; i++) 
@@ -63,15 +63,13 @@ namespace VueExample.Providers
                                      datasetList, 
                                      new ChartModels.ChartJs.Options.XAxis($"Номер кристалла", true), 
                                      new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
-            var dataset = new Dataset();
+            var dataset = new BarDataset();
             foreach (var dieValue in dieValuesList.Where(x => dieIdList.Contains(x.DieId)).ToList()) 
             {
                 labelsList.Add(Convert.ToString((await _dieProvider.GetById((long) dieValue.DieId)).Code));
-                dataset.BackgroundColor = "#3D5AFE";
+                dataset.BackgroundColor.Add("#3D5AFE");
                 dataset.Data.Add(double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
             }
-            labelsList.Reverse();
-            dataset.Data.Reverse();
             datasetList.Add(dataset);
             return chart;
         }

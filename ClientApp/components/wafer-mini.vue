@@ -30,7 +30,6 @@
     components: { Loading },
     data() {
       return {
-        mode: "",
         dies: [],
         isloading: false,
         activeBtn: 1,
@@ -93,7 +92,7 @@
       },
 
       goToDirty: function() {
-        this.mode = "dirty"
+        this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "dirty"});
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
           die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
@@ -103,7 +102,7 @@
       },
 
       goToSelected: function() {
-        this.mode = "selected"
+        this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "selected"});
         for (let i = 0; i < this.avbSelectedDies.length; i++) {
           let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
           die.fillOpacity = 1.0;
@@ -113,7 +112,7 @@
       },
 
       goToColor: function() {
-        this.mode = "color"
+        this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "color"});
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
           let isSelected = this.selectedDies.includes(die.id) 
@@ -162,6 +161,10 @@
     {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
+      },
+
+      mode() {
+        return this.$store.getters['wafermeas/getKeyGraphicStateMode'](this.keyGraphicState)
       },
 
       size() {
