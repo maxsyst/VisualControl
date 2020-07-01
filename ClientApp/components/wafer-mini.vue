@@ -26,7 +26,7 @@
 <script>
   import Loading from 'vue-loading-overlay';
   export default {
-    props: ['keyGraphicState', 'avbSelectedDies', 'dirtyCells'],
+    props: ['keyGraphicState', 'avbSelectedDies'],
     components: { Loading },
     data() {
       return {
@@ -95,7 +95,7 @@
         this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "dirty"});
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
-          die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
+          die.fill = this.dirtyCells.fullWafer.cells.includes(die.id) ? "#E91E63" : "#4CAF50"
           die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
           die.isActive = true
         })
@@ -132,13 +132,11 @@
         }
       },
 
-      
-
-      dirtyCells: function() {        
+      selectedDies: function() {
         if(this.mode === "dirty") {
           this.avbSelectedDies.forEach(avb => {
             let die = this.dies.find(d => d.id === avb)
-            die.fill = this.dirtyCells.includes(die.id) ? "#E91E63" : "#4CAF50"
+            die.fill = this.dirtyCells.fullWafer.cells.includes(die.id) ? "#E91E63" : "#4CAF50"
             die.isActive = true
           })
         }
@@ -154,13 +152,19 @@
             this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
           }
         }
-      }
+      }      
+
+      
     },
 
     computed:
     {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
+      },
+
+      dirtyCells() {
+        return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
       },
 
       mode() {

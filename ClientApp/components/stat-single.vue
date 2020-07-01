@@ -58,9 +58,8 @@
         </v-toolbar>
         </v-col>
         <v-col lg="4">
-          <wafer-mini v-if="dirtyCellsFullWafer.cellsId.length > 0"
+          <wafer-mini v-if="dirtyCellsFullWafer.statPercentage > 0"
             :avbSelectedDies="avbSelectedDies"
-            :dirtyCells="dirtyCellsFullWafer.cellsId"
             :keyGraphicState="keyGraphicState"
             :key="`wfm-${keyGraphicState}`"
         ></wafer-mini>
@@ -171,7 +170,7 @@ export default {
       switchMode: true,
       statArray: [],
       fullWaferStatArray: [],
-      dirtyCellsFullWafer: {cellsId: [], statPercentage: 0},
+      dirtyCellsFullWafer: {cellsId: [], statPercentage: -1},
       graphicName: "",
       activeTab: "commonTable",
       loading: true,

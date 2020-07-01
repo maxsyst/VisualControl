@@ -66,8 +66,10 @@ namespace VueExample.Providers
             var dataset = new BarDataset();
             foreach (var dieValue in dieValuesList.Where(x => dieIdList.Contains(x.DieId)).ToList()) 
             {
-                labelsList.Add(Convert.ToString((await _dieProvider.GetById((long) dieValue.DieId)).Code));
+                var die = await _dieProvider.GetById((long) dieValue.DieId);
+                labelsList.Add(Convert.ToString(die.Code));
                 dataset.BackgroundColor.Add("#3D5AFE");
+                dataset.DieIdList.Add(die.DieId);
                 dataset.Data.Add(double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
             }
             datasetList.Add(dataset);
