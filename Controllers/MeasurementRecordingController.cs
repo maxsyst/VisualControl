@@ -33,9 +33,9 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
         [Route("")]
-        public IActionResult GetMeasurementRecordingsByWaferId([FromQuery] string waferId)
+        public async Task<IActionResult> GetMeasurementRecordingsByWaferId([FromQuery] string waferId)
         {
-            return Ok(_measurementRecordingService.GetByWaferId(waferId));
+            return Ok(await _measurementRecordingService.GetByWaferId(waferId));
         }
 
         [HttpPost]
