@@ -10,7 +10,7 @@ namespace VueExample.Profiles
     {
         public PointProfile()
         {
-             CreateMap<PointViewModel, Point>().ForMember(dest => dest.Time, source => source.MapFrom(_ => _.Time.Trim(TimeSpan.TicksPerMinute)));
+            CreateMap<PointViewModel, Point>().ForMember(dest => dest.Time, source => source.MapFrom(_ => _.Time.Trim(TimeSpan.TicksPerSecond)));
         }
         
     }
