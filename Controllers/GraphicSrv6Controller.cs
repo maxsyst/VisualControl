@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using VueExample.Providers.Srv6;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Threading.Tasks;
 

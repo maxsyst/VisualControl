@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +47,13 @@ namespace VueExample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression(options=>options.EnableForHttps = true);
+     
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
             services.AddMvc(options => { options.CacheProfiles.Add("Default60",
                             new CacheProfile()
                             {
@@ -201,7 +210,7 @@ namespace VueExample
 
             app.UseAuthentication();
             app.UseStaticFiles();
-            
+            app.UseResponseCompression();
 
             app.UseMvc(routes =>
             {
