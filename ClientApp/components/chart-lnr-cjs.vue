@@ -85,20 +85,28 @@ export default {
                 scaleLabel: {
                   display: chartOptions.xAxis.display,
                   labelString: chartOptions.xAxis.label,
-                  gridLines: {
-                    zeroLineColor: '#ffcc33',
-                    display: true,
-                  }
+                  fontColor: '#BDBDBD'
+                },
+                gridLines: {
+                  display: true,
+                  color: '#303030'
+                },
+                ticks: {
+                  fontColor: '#BDBDBD'
                 }
               }],
               yAxes: [{
                 scaleLabel: {
                   display: chartOptions.yAxis.display,
                   labelString: chartOptions.yAxis.label,
-                  gridLines: {
-                    zeroLineColor: '#ffcc33',
-                    display: true,
-                  }
+                  fontColor: '#BDBDBD'
+                },
+                gridLines: {
+                  display: true,
+                  color: '#303030'
+                },
+                ticks: {
+                  fontColor: '#BDBDBD'
                 }
               }]
             }
