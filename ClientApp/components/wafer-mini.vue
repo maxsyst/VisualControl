@@ -9,13 +9,13 @@
           </svg>
         </v-col>
         <v-col class="d-flex flex-column align-center">
-            <v-btn :color="mode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToSelected">
+            <v-btn :color="mode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToSelected(selectedDies)">
               Вбр
             </v-btn>
-            <v-btn :color="mode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToDirty">
+            <v-btn :color="mode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToDirty(selectedDies)">
               Гдн
             </v-btn>
-            <v-btn :color="mode === 'color' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToColor">
+            <v-btn :color="mode === 'color' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToColor(selectedDies)">
               Цвт
             </v-btn>
         </v-col>
@@ -47,7 +47,7 @@
       this.initialOrientation = +this.wafer.formedMapMini.orientation;
       this.currentOrientation = this.initialOrientation; 
       this.initialize(this.dies) 
-      this.goToDirty()
+      this.goToDirty(this.selectedDies)
     },
 
     methods: {
@@ -77,7 +77,7 @@
         let die = this.dies[+e.currentTarget.attributes.dieIndex.value]
         let dieId = die.id      
         if (die.isActive) {
-          let position =  this.selectedDies.indexOf(dieId);
+          let position = this.selectedDies.indexOf(dieId);
           if ( ~position ) {
             this.selectedDies.splice(position, 1);
             this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
@@ -86,38 +86,38 @@
             this.selectedDies.push(dieId);
             this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
           }
-          this.goToSelected()
         }
-      
       },
 
-      goToDirty: function() {
+      goToDirty: function(selectedDies) {
         this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "dirty"});
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
-          die.fill = this.dirtyCells.fullWafer.cells.includes(die.id) ? "#E91E63" : "#4CAF50"
-          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+          die.fill = this.dirtyCells.fullWafer.cells.includes(die.id) 
+                     ? selectedDies.includes(die.id) ? "#F50057" : "#580000" 
+                     : selectedDies.includes(die.id) ? "#00E676" : "#1B5E20"
+          die.fillOpacity = 1.0
           die.isActive = true
         })
       },
 
-      goToSelected: function() {
+      goToSelected: function(selectedDies) {
         this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "selected"});
         for (let i = 0; i < this.avbSelectedDies.length; i++) {
           let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-          die.fillOpacity = 1.0;
-          die.fill = this.selectedDies.includes(die.id) ? "#3D5AFE" : "#8C9EFF";
+          die.fillOpacity = 1.0
+          die.fill = selectedDies.includes(die.id) ? "#3D5AFE" : "#8C9EFF";
           die.isActive = true
         }          
       },
 
-      goToColor: function() {
+      goToColor: function(selectedDies) {
         this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "color"});
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
-          let isSelected = this.selectedDies.includes(die.id) 
-          die.fill = isSelected ? this.dieColors.find(d => d.dieId === die.id).hexColor : "#303030"
-          die.fillOpacity = isSelected ? 1.0 : 0.5
+          let isSelected = selectedDies.includes(die.id) 
+          die.fillOpacity = 1.0
+          die.fill = isSelected ? this.dieColors.find(d => d.dieId === die.id).hexColor : "#424242"
           die.isActive = true
         })
       }
@@ -132,29 +132,19 @@
         }
       },
 
-      selectedDies: function() {
+      selectedDies: function(selectedDies) {
         if(this.mode === "dirty") {
-          this.avbSelectedDies.forEach(avb => {
-            let die = this.dies.find(d => d.id === avb)
-            die.fill = this.dirtyCells.fullWafer.cells.includes(die.id) ? "#E91E63" : "#4CAF50"
-            die.isActive = true
-          })
+          this.goToDirty(selectedDies)
         }
 
         if(this.mode === "selected") {
-          for (let i = 0; i < this.avbSelectedDies.length; i++) {
-            let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-            die.fill = "#8C9EFF";
-            die.isActive = true
-          }  
-        
-          for (let i = 0; i < this.selectedDies.length; i++) {            
-            this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";           
-          }
+          this.goToSelected(selectedDies)
+        }
+
+        if(this.mode === "color") {
+          this.goToColor(selectedDies)
         }
       }      
-
-      
     },
 
     computed:

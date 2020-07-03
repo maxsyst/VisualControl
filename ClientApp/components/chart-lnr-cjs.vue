@@ -86,8 +86,8 @@ export default {
                   display: chartOptions.xAxis.display,
                   labelString: chartOptions.xAxis.label,
                   gridLines: {
+                    zeroLineColor: '#ffcc33',
                     display: true,
-                    color: "#FFFFFF"
                   }
                 }
               }],
@@ -96,8 +96,8 @@ export default {
                   display: chartOptions.yAxis.display,
                   labelString: chartOptions.yAxis.label,
                   gridLines: {
+                    zeroLineColor: '#ffcc33',
                     display: true,
-                    color: "#FFFFFF"
                   }
                 }
               }]
