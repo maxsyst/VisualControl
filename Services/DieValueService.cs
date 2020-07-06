@@ -46,7 +46,6 @@ namespace VueExample.Services
             var dieValueDictionary = new Dictionary<string, List<DieValue>>();
             foreach(var dieGraphicList in dieGraphicsDictionary)
             {
-                
                 foreach(var dieGraphic in dieGraphicList.Value)
                 {
                     var afterParseDictionary = (await SelectGraphicSrv6ParsingStrategy(dieGraphic.GraphicId)).ParseStringGraphic(dieGraphic);
@@ -55,7 +54,6 @@ namespace VueExample.Services
                         dieValueDictionary.TryAdd(item.Key, new List<DieValue>());
                         dieValueDictionary[item.Key].Add(item.Value);                            
                     }
-                                       
                 }               
             }
            return dieValueDictionary;

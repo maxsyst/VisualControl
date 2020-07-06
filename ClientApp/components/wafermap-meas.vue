@@ -371,8 +371,10 @@ export default {
     selectedMeasurementId: async function(newValue) {
       this.loading = true
       this.$store.dispatch("wafermeas/updateSelectedDies", [])
+       this.$store.dispatch("wafermeas/clearDieValues")
       this.$store.dispatch("wafermeas/clearSelectedGraphics")
       let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
+      this.$store.dispatch("wafermeas/updateDieValues", dieValues)
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
       let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
       this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)

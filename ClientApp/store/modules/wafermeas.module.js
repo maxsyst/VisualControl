@@ -1,6 +1,6 @@
 const defaultState = () => {
   return {
-    
+      dieValues: {},
       selectedDies: [],
       keyGraphicStateModes: [],
       hoveredDieId: {},
@@ -19,6 +19,7 @@ const defaultState = () => {
 export const wafermeas = {
   namespaced: true,
   state: {
+    dieValues: {},
     selectedDies: [],
     keyGraphicStateModes: [],
     hoveredDieId: {},
@@ -43,6 +44,14 @@ export const wafermeas = {
 
     hoverWaferMini({commit}, {dieId, keyGraphicState}) {
       commit('hoverWaferMini', {dieId, keyGraphicState})
+    },
+
+    updateDieValues({commit}, dieValues) {
+      commit('updateDieValues', dieValues)
+    },
+
+    clearDieValues({commit}) {
+      commit('clearDieValues')
     },
 
     unHoverWaferMini({commit}) {
@@ -204,6 +213,14 @@ export const wafermeas = {
 
     hoverWaferMini(state, {dieId, keyGraphicState}) {
       state.hoveredDieId = {dieId, keyGraphicState}
+    },
+
+    updateDieValues(state, dieValues) {
+      state.dieValues = _.cloneDeep(dieValues)
+    },
+
+    clearDieValues(state) {
+      state.dieValues = {}
     },
 
     updateKeyGraphicStateMode(state, selectedGraphics) {
