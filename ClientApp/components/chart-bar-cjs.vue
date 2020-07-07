@@ -30,44 +30,36 @@ export default {
     await this.getChartData(this.selectedDies);
   },
 
-   computed:
-    {
+   computed: {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
       }
     },
 
-    watch:
-    {
-      selectedDies: async function() {
-        await this.getChartData(this.selectedDies);
-      },
-
+    watch: {
       divider: async function() {
         await this.getChartData(this.selectedDies);
       }
     },
 
-    methods:
-    {
-         async getChartData() {
-                this.loaded = false     
-                let singlestatModel = {};
-                singlestatModel.divider = this.divider;
-                singlestatModel.keyGraphicState = this.keyGraphicState;
-                singlestatModel.measurementId = this.measurementId;
-                singlestatModel.dieIdList = this.selectedDies;
-                await this.$http
-                    .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
-                    .then(response => {
-                        let chart = response.data;
-                        this.chartdata = chart.chartData
-                        this.calculateOptions(chart.options)                                        
-                        this.loaded = true       
-                  
-                })
-                .catch(error => {});     
-         },
+    methods: {
+      async getChartData() {
+        this.loaded = false     
+        let singlestatModel = {};
+        singlestatModel.divider = this.divider;
+        singlestatModel.keyGraphicState = this.keyGraphicState;
+        singlestatModel.measurementId = this.measurementId;
+        singlestatModel.dieIdList = this.selectedDies;
+        await this.$http
+              .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+              .then(response => {
+                let chart = response.data;
+                this.chartdata = chart.chartData
+                this.calculateOptions(chart.options)                                        
+                this.loaded = true       
+              })
+              .catch(error => {});     
+      },
 
          calculateOptions(chartOptions) {
           this.options = {
@@ -82,13 +74,29 @@ export default {
               xAxes: [{
                 scaleLabel: {
                   display: chartOptions.xAxis.display,
-                  labelString: chartOptions.xAxis.label
+                  labelString: chartOptions.xAxis.label,
+                  fontColor: '#BDBDBD'
+                },
+                gridLines: {
+                  display: true,
+                  color: '#303030'
+                },
+                ticks: {
+                  fontColor: '#BDBDBD'
                 }
               }],
               yAxes: [{
                 scaleLabel: {
                   display: chartOptions.yAxis.display,
-                  labelString: chartOptions.yAxis.label
+                  labelString: chartOptions.yAxis.label,
+                  fontColor: '#BDBDBD'
+                },
+                gridLines: {
+                  display: true,
+                  color: '#303030'
+                },
+                ticks: {
+                  fontColor: '#BDBDBD'
                 }
               }]
             }

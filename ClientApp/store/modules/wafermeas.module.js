@@ -1,18 +1,18 @@
 const defaultState = () => {
   return {
-      dieValues: {},
-      selectedDies: [],
-      keyGraphicStateModes: [],
-      hoveredDieId: {},
-      dieColors: [],
-      avbGraphics: [],
-      selectedGraphics: [],
-      unSelectedGraphics: [],
-      measurements: [],
-      wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},
-      divider: "",
-      colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
-      dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0, singleGraphics: []}
+    dieValues: {},
+    selectedDies: [],
+    keyGraphicStateModes: [],
+    hoveredDieId: {},
+    dieColors: [],
+    avbGraphics: [],
+    selectedGraphics: [],
+    unSelectedGraphics: [],
+    measurements: [],
+    wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},
+    divider: "",
+    colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
+    dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0, singleGraphics: []}
   }
 }
 
@@ -192,6 +192,7 @@ export const wafermeas = {
     dirtyCells: state => state.dirtyCells,
     hoveredDieId: state => state.hoveredDieId,
     getKeyGraphicStateMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).mode,
+    getDieValuesByKeyGraphicState: state => keyGraphicState => state.dieValues[keyGraphicState],
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState),
     selectedDies: state => state.selectedDies,

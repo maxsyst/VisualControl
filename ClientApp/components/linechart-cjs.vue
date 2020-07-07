@@ -27,6 +27,25 @@ export default {
     this.renderChart(this.chartdata, this.options)
   },
 
+  methods: {
+    getChartDataFromStore(selectedDies) {
+      let datasets = []
+      selectedDies.forEach(dieId => {
+        let singleDataset = {
+          dieId: dieId,
+          borderColor: this.dieColors.find(dc => dc.dieId === dieId).hexColor,
+          data: [...this.dieValues.find(dv => dv.d === dieId).y.map(x => +x)],
+          fill: false,
+          borderWidth: 1,
+          pointHoverRadius: 0,
+          pointRadius: 0
+        }
+        datasets.push(singleDataset)
+      })
+      this.chartdata.datasets = [...datasets]
+    }
+  },
+
   watch: {
     hovered: function(newValue) {
       if(newValue.keyGraphicState === this.keyGraphicState) {
@@ -49,10 +68,23 @@ export default {
         this.chartdata.datasets.forEach(d => d.borderColor = this.dieColors.find(dc => dc.dieId === d.dieId).hexColor)
       }
       this.renderChart(this.chartdata, this.options)
+    },
+
+    selectedDies: function(newValue) {
+      this.getChartDataFromStore(newValue)
+      this.renderChart(this.chartdata, this.options)
     }
   },
 
   computed: {
+
+    selectedDies() {
+      return this.$store.getters['wafermeas/selectedDies']
+    },
+
+    dieValues() {
+      return this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState)
+    },
 
     hovered() {
       return this.$store.getters['wafermeas/hoveredDieId']
