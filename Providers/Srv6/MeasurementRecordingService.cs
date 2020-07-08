@@ -72,12 +72,12 @@ namespace VueExample.Providers.Srv6
 
         public async Task<List<MeasurementRecording>> GetByWaferId(string waferId)
         {
-            var measurementRecordingsList = new List<MeasurementRecording>();
-            var idmrList = await _srv6Context.FkMrPs.Where(x => x.WaferId == waferId).Select(x => x.MeasurementRecordingId).ToListAsync();
-            foreach (var idmr in idmrList)
-            {
-                measurementRecordingsList.Add(_srv6Context.MeasurementRecordings.Find(idmr));
-            }
+            var measurementRecordingsList = await _srv6Context.FkMrPs
+                                                  .Include(x => x.MeasurementRecording)
+                                                  .Where(x => x.WaferId == waferId)
+                                                  .AsNoTracking()
+                                                  .Select(x => x.MeasurementRecording)
+                                                  .ToListAsync();
             return measurementRecordingsList;
         }
 

@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using VueExample.Providers;
 using VueExample.Services;
 using VueExample.ViewModels;
@@ -21,10 +19,11 @@ namespace VueExample.Controllers
             _waferMapProvider = waferMapProvider;
         }
 
-        [HttpPost]
+        [HttpGet]
         [ResponseCache(CacheProfileName = "Default60")]
-        public async Task<IActionResult> GetFormedWaferMap([FromBody] WaferMapFieldViewModel waferMapFieldViewModel)
+        public async Task<IActionResult> GetFormedWaferMap([FromQuery] string waferMapFieldViewModelJSON)
         {
+            var waferMapFieldViewModel = JsonConvert.DeserializeObject<WaferMapFieldViewModel>(waferMapFieldViewModelJSON);
             var diesList = await _dieProvider.GetDiesByWaferId(waferMapFieldViewModel.WaferId);
             if (diesList.Count == 0)
             {

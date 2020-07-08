@@ -54,6 +54,7 @@ namespace VueExample.Contexts
             modelBuilder.ApplyConfiguration(new KurbatovParameterConfiguration());
             modelBuilder.ApplyConfiguration(new StandartMeasurementPatternConfiguration());
             modelBuilder.ApplyConfiguration(new StandartPatternConfiguration());
+            modelBuilder.ApplyConfiguration(new FkMrPConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)

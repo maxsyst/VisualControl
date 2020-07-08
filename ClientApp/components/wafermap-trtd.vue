@@ -76,15 +76,12 @@
          { title: "Показать все дефекты на кристалле" }
         ],
         menu: false
-        
-      
        
       }
     },
 
     methods:
     {
-
       sendToWaferMapFull()
       {
          this.$http.get(`/api/defect/getbydieid?dieId=${this.selectedDieId}`)
@@ -114,57 +111,35 @@
        
       }
     },
-
     
-   
-    
-    watch:
+    watch:    
     {
-    
-
-      
       waferId: {
-
-       
         immediate: true,
-        handler(newVal, oldVal) {
+        async handler(newVal, oldVal) {
           this.isloading = true;
           let fieldObject = {};
           fieldObject.waferId = this.waferId;
           fieldObject.fieldHeight = this.fieldHeight;
           fieldObject.fieldWidth = this.fieldWidth;
           fieldObject.streetSize = this.streetSize;
-          this.$http({
-            method: "post",
-            url: `/api/wafermap/getformedwafermap`, data: fieldObject, config: {
-              headers: {
-                'Accept': "application/json",
-                'Content-Type': "application/json"
-              }
-            }
-          })
-            .then((response) => {
-              if (response.status === 200) {
+          await this.$http
+              .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify(fieldObject)}`)
+              .then(response => {
+                if (response.status === 200) {
                 this.dies = JSON.parse(response.data.waferMapFormed);
                 this.initialOrientation = +response.data.orientation;
                 this.currentOrientation = this.initialOrientation;
                 this.isloading = false;
                 this.showNav = true;
-              }
-
-
-
-            })
-            .catch((error) => {
-
-              if (error.response.status === 400) {
+              }  
+          })
+          .catch(error => {
+             if (error.response.status === 400) {
                 this.dies = [];
                 this.isloading = false;
               }
-            });
-
-
-
+          });
         }
       },
 

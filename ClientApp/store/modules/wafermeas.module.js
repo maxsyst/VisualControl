@@ -143,26 +143,12 @@ export const wafermeas = {
       let measurements = (await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`)).data
       measurements = measurements.map(m => ({...m, name: m.name.split('.')[1]}))
       commit('updateMeasurements', measurements) 
-      
-      let bigMap = (await ctx.$http({
-        method: "post",
-        url: `/api/wafermap/getformedwafermap`, data: {waferId, fieldHeight: state.sizes.big.fieldHeight, fieldWidth: state.sizes.big.fieldWidth, streetSize: state.sizes.big.streetSize}, config: {
-        headers: {
-          'Accept': "application/json",
-          'Content-Type': "application/json"
-          }
-        }
-      })).data
 
-      let miniMap = (await ctx.$http({
-        method: "post",
-        url: `/api/wafermap/getformedwafermap`, data: {waferId, fieldHeight: state.sizes.mini.fieldHeight, fieldWidth: state.sizes.mini.fieldWidth, streetSize: state.sizes.mini.streetSize}, config: {
-          headers: {
-            'Accept': "application/json",
-            'Content-Type': "application/json"
-          }
-        }
-      })).data
+      let bigMap = (await ctx.$http
+        .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify({waferId, fieldHeight: state.sizes.big.fieldHeight, fieldWidth: state.sizes.big.fieldWidth, streetSize: state.sizes.big.streetSize})}`)).data
+              
+      let miniMap = (await ctx.$http
+        .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify({waferId, fieldHeight: state.sizes.mini.fieldHeight, fieldWidth: state.sizes.mini.fieldWidth, streetSize: state.sizes.mini.streetSize})}`)).data
 
       commit('updateFormedMap', {map: bigMap, mode: "big"})
       commit('updateFormedMap', {map: miniMap, mode: "mini"})

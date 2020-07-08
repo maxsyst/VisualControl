@@ -40,25 +40,7 @@ namespace VueExample.Services
         {
             return await _srv6Context.DiesParameterOld.Where(x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToListAsync();
         }
-
-        // private async Task<Dictionary<string, List<DieValue>>> DieGraphicsMapping(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary)
-        // {
-        //     var dieValueDictionary = new Dictionary<string, List<DieValue>>();
-        //     foreach(var dieGraphicList in dieGraphicsDictionary)
-        //     {
-        //         foreach(var dieGraphic in dieGraphicList.Value)
-        //         {
-        //             var afterParseDictionary = (await SelectGraphicSrv6ParsingStrategy(dieGraphic.GraphicId)).ParseStringGraphic(dieGraphic);
-        //             foreach (var item in afterParseDictionary)
-        //             {
-        //                 dieValueDictionary.TryAdd(item.Key, new List<DieValue>());
-        //                 dieValueDictionary[item.Key].Add(item.Value);                            
-        //             }
-        //         }               
-        //     }
-        //    return dieValueDictionary;
-        // }
-
+       
         private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary, List<Graphic> graphicsList)
         {
             var dieValueDictionary = new ConcurrentDictionary<string, List<DieValue>>();
