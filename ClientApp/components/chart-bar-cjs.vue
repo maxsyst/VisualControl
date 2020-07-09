@@ -30,19 +30,13 @@ export default {
     await this.getChartData(this.selectedDies);
   },
 
-   computed:
-    {
+   computed: {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
       }
     },
 
-    watch:
-    {
-      selectedDies: async function() {
-        await this.getChartData(this.selectedDies);
-      },
-
+    watch: {
       divider: async function() {
         await this.getChartData(this.selectedDies);
       }
@@ -63,10 +57,9 @@ export default {
                 this.chartdata = chart.chartData
                 this.calculateOptions(chart.options)                                        
                 this.loaded = true       
-                  
-        })
-        .catch(error => {});     
-        },
+              })
+              .catch(error => {});     
+      },
 
          calculateOptions(chartOptions) {
           this.options = {

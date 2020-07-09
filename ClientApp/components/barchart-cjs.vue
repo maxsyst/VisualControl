@@ -22,6 +22,34 @@ export default {
     this.renderChart(this.chartdata, this.options)
   },
 
+  methods: {
+    getChartDataFromStore(selectedDies) {
+      let datasets = []
+      selectedDies.forEach(dieId => {
+        let singleDataset = {
+          dieId: dieId,
+          backgroundColor: this.mode === 'dirty' 
+                                         ? this.dirtyCells.fullWafer.cells.includes(dieId) ? "#ff1744" : "#00e676" 
+                                         : this.mode === 'color' ? this.dieColors.find(dc => dc.dieId === dieId).hexColor : "#3D5AFE",
+          data: +this.dieValues.find(dv => dv.d === dieId).y[0],
+          label: this.wafer.formedMapMini.dies.find(d => d.id === dieId).code
+        }
+        datasets.push(singleDataset)
+      })
+      datasets = [..._.sortBy(datasets, [function(o) { return +o.label.split('-')[0] }])]
+      this.chartdata.labels = datasets.map(d => d.label)
+      this.chartdata.datasets[0] = {
+        backgroundColor: [...datasets.map(x => x.backgroundColor)],
+        dieIdList: [...datasets.map(x => x.dieId)],
+        data: [...datasets.map(x => x.data)],
+        fill: false,
+        borderWidth: 1,
+        pointHoverRadius: 0,
+        pointRadius: 0
+      }
+    }
+  },
+
   watch: {
     mode: function(newValue) {
       if(newValue === "dirty") {
@@ -34,10 +62,28 @@ export default {
         this.chartdata.datasets[0].backgroundColor = this.chartdata.datasets[0].backgroundColor.map(x => "#3D5AFE")
       }       
       this.renderChart(this.chartdata, this.options)
+    },
+
+    selectedDies: function(newValue) {
+      this.getChartDataFromStore(newValue)
+      this.renderChart(this.chartdata, this.options)
     }
   },
 
   computed: {
+
+    wafer() {
+      return this.$store.getters['wafermeas/wafer']
+    },
+
+    selectedDies() {
+      return this.$store.getters['wafermeas/selectedDies']
+    },
+
+    dieValues() {
+      return this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState)
+    },
+
     mode() {
       return this.$store.getters['wafermeas/getKeyGraphicStateMode'](this.keyGraphicState)
     },
@@ -49,6 +95,6 @@ export default {
     dirtyCells() {
       return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
     }
-  },
+  }
 }
 </script>
