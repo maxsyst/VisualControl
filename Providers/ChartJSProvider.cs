@@ -45,7 +45,7 @@ namespace VueExample.Providers
                 }
                 datasetList.Add(dataset);
             });
-            var labelsList = new List<string> ();
+            var labelsList = new List<string>();
             var chart = new LinearChart (labelsList, 
                                          datasetList, 
                                          new ChartModels.ChartJs.Options.XAxis($"{graphic.Absciss}({graphic.AbscissUnit})", true), 
@@ -54,7 +54,7 @@ namespace VueExample.Providers
             return chart;
         }
 
-        public async Task<AbstractChart> GetHistogramFromDieValues (List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState) 
+        public async Task<AbstractChart> GetHistogramFromDieValues(List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState) 
         {
             var labelsList = new List<string>();
             var datasetList = new List<Dataset>();
@@ -64,13 +64,18 @@ namespace VueExample.Providers
                                      new ChartModels.ChartJs.Options.XAxis($"Номер кристалла", true), 
                                      new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
             var dataset = new BarDataset();
+            var dataDictionary = new Dictionary<string, SingleBarDataset>();
             foreach (var dieValue in dieValuesList.Where(x => dieIdList.Contains(x.DieId)).ToList()) 
             {
                 var die = await _dieProvider.GetById((long) dieValue.DieId);
-                labelsList.Add(Convert.ToString(die.Code));
-                dataset.BackgroundColor.Add("#3D5AFE");
-                dataset.DieIdList.Add(die.DieId);
-                dataset.Data.Add(double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider);
+                dataDictionary.Add(Convert.ToString(die.Code), new SingleBarDataset(die.DieId, "#3D5AFE", double.Parse(dieValue.YList[0], CultureInfo.InvariantCulture) / divider));
+            }
+            foreach (var kv in dataDictionary.OrderBy(x => Convert.ToInt32(x.Key.Split('-')[0])))
+            {
+                labelsList.Add(kv.Key);
+                dataset.DieIdList.Add(kv.Value.DieId);
+                dataset.BackgroundColor.Add(kv.Value.BackgroundColor);
+                dataset.Data.Add(kv.Value.Value);
             }
             datasetList.Add(dataset);
             return chart;

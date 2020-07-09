@@ -33,7 +33,8 @@ export default {
       selectedDies.forEach(dieId => {
         let singleDataset = {
           dieId: dieId,
-          borderColor: this.dieColors.find(dc => dc.dieId === dieId).hexColor,
+          borderColor: this.mode === 'dirty' ? this.dirtyCells.fullWafer.cells.includes(dieId) ? "#ff1744" : "#00e676"
+                                             : this.dieColors.find(dc => dc.dieId === dieId).hexColor,
           data: [...this.dieValues.find(dv => dv.d === dieId).y.map(x => +x)],
           fill: false,
           borderWidth: 1,

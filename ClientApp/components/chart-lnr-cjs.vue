@@ -69,6 +69,7 @@ export default {
           this.options = {
             animation: chartOptions.animation,
             hover: chartOptions.hover,
+            tooltips: chartOptions.tooltips,
             legend: {
               display: chartOptions.legend.display
             },

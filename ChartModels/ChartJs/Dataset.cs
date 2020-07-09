@@ -12,9 +12,7 @@ namespace VueExample.ChartModels.ChartJs
 
         public Dataset()
         {
-            this.Data = new List<double>();
+            Data = new List<double>();
         }
-
-         
     }
 }
