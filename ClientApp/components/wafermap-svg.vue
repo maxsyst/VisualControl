@@ -4,7 +4,7 @@
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
         <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie" @contextmenu="showmenu" />
-        <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" font-size="12" :fill="die.text">{{die.code}}</text>
+        <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" :font-size="fontSize" :fill="die.text">{{die.code}}</text>
       </g>
     </svg>
     <v-menu v-model="menu"
@@ -94,9 +94,10 @@
           this.showMenu = false
           this.x = e.clientX;
           this.y = e.clientY;
-          this.selectedDieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id;
+          let selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value]
           this.$nextTick(() => {
             this.menu = true
+            this.menuItems[0].title = selectedDie.code
           });
         }
       }
@@ -232,6 +233,10 @@
             return `0,0 0,0`;
         }
 
+      },
+
+      fontSize() {
+        return this.dies[0].height > 15 || !this.dies[0].code.includes('-') ? 12 : 2
       },
 
       svgRotation() {
