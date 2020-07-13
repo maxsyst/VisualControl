@@ -96,7 +96,7 @@
                         ></v-select>
                       </v-col>
                     </v-row>
-                    <v-row>
+                   <v-row v-if="loading">
                       <v-subheader>Коэффициент отсеивания:</v-subheader>
                       <v-slider
                         v-model="statisticKf"
@@ -232,8 +232,7 @@
           :divider="selectedDivider"
         ></chart-hstg>
         <v-divider light></v-divider>
-      </v-col>
-     
+      </v-col>     
     </v-row>
   </v-container>
 </template>

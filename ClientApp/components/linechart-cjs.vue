@@ -71,6 +71,15 @@ export default {
       this.renderChart(this.chartdata, this.options)
     },
 
+    log: function(newValue) {
+      if(newValue) {
+        this.options.scales.yAxes[0].type = 'logarithmic'
+      } else {
+        this.options.scales.yAxes[0].type = 'linear'
+      }
+      this.renderChart(this.chartdata, this.options)
+    },
+
     selectedDies: function(newValue) {
       this.getChartDataFromStore(newValue)
       this.renderChart(this.chartdata, this.options)
@@ -93,6 +102,10 @@ export default {
 
     mode() {
       return this.$store.getters['wafermeas/getKeyGraphicStateMode'](this.keyGraphicState)
+    },
+
+    log() {
+      return this.$store.getters['wafermeas/getKeyGraphicStateLog'](this.keyGraphicState)
     },
 
     dieColors() {

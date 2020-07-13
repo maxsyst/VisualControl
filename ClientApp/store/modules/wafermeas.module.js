@@ -62,6 +62,10 @@ export const wafermeas = {
       commit('changeKeyGraphicStateMode', {keyGraphicState, mode})
     },
 
+    changeKeyGraphicStateLog({commit}, {keyGraphicState, log}) {
+      commit('changeKeyGraphicStateLog', {keyGraphicState, log})
+    },
+
     clearSelectedGraphics({commit}) {
       commit('updateSelectedGraphics', [])
       commit('clearKeyGraphicStateMode')
@@ -178,6 +182,7 @@ export const wafermeas = {
     dirtyCells: state => state.dirtyCells,
     hoveredDieId: state => state.hoveredDieId,
     getKeyGraphicStateMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).mode,
+    getKeyGraphicStateLog: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).log,
     getDieValuesByKeyGraphicState: state => keyGraphicState => state.dieValues[keyGraphicState],
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState),
@@ -211,7 +216,7 @@ export const wafermeas = {
     },
 
     updateKeyGraphicStateMode(state, selectedGraphics) {
-      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "initial"}))
+      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "initial", log: false}))
     },
 
     clearKeyGraphicStateMode(state) {
@@ -225,12 +230,19 @@ export const wafermeas = {
       }
     },
 
+    changeKeyGraphicStateLog(state, {keyGraphicState, log}) {
+      let keyGraphicStateMode = state.keyGraphicStateModes.find(x => x.keyGraphicState === keyGraphicState)
+      if(keyGraphicStateMode !== undefined) {
+        keyGraphicStateMode.log = log
+      }
+    },
+
     addKeyGraphicStateMode(state, keyGraphicState) {
-      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "initial"})
+      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "initial", log: false})
     },
 
     deleteKeyGraphicStateMode(state, keyGraphicState) {
-      state.keyGraphicStateModes = state.keyGraphicStateModes.filter(x => x.keyGraphicState!==keyGraphicState)
+      state.keyGraphicStateModes = state.keyGraphicStateModes.filter(x => x.keyGraphicState !== keyGraphicState)
     },
 
     unHoverWaferMini(state) {
