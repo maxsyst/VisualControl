@@ -58,7 +58,7 @@ export default {
       if(newValue === "color") {
         this.chartdata.datasets[0].dieIdList.forEach((d,index) => this.chartdata.datasets[0].backgroundColor[index] = this.dieColors.find(dc => dc.dieId === d).hexColor)
       }
-      if(newValue === "selected") {
+      if(newValue === "selected" || newValue === "initial") {
         this.chartdata.datasets[0].backgroundColor = this.chartdata.datasets[0].backgroundColor.map(x => "#3D5AFE")
       }       
       this.renderChart(this.chartdata, this.options)

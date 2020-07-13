@@ -9,6 +9,9 @@
           </svg>
         </v-col>
         <v-col class="d-flex flex-column align-center">
+            <v-btn :color="mode === 'initial' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToInitial(selectedDies)">
+              Стд
+            </v-btn>
             <v-btn :color="mode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToSelected(selectedDies)">
               Вбр
             </v-btn>
@@ -47,7 +50,7 @@
       this.initialOrientation = +this.wafer.formedMapMini.orientation;
       this.currentOrientation = this.initialOrientation; 
       this.initialize(this.dies) 
-      this.goToDirty(this.selectedDies)
+      this.goToInitial(this.selectedDies)
     },
 
     methods: {
@@ -89,6 +92,18 @@
         }
       },
 
+      goToInitial: function(selectedDies) {
+        this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "initial"});
+        this.avbSelectedDies.forEach(avb => {
+          let die = this.dies.find(d => d.id === avb)
+          die.fill = this.dirtyCells.fullWafer.cells.includes(die.id) 
+                     ? selectedDies.includes(die.id) ? "#F50057" : "#580000" 
+                     : selectedDies.includes(die.id) ? "#00E676" : "#1B5E20"
+          die.fillOpacity = 1.0
+          die.isActive = true
+        })
+      },
+
       goToDirty: function(selectedDies) {
         this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "dirty"});
         this.avbSelectedDies.forEach(avb => {
@@ -103,12 +118,12 @@
 
       goToSelected: function(selectedDies) {
         this.$store.dispatch("wafermeas/changeKeyGraphicStateMode", {keyGraphicState: this.keyGraphicState, mode: "selected"});
-        for (let i = 0; i < this.avbSelectedDies.length; i++) {
-          let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+        this.avbSelectedDies.forEach(avb => { 
+          let die = this.dies.find(d => d.id === avb)
           die.fillOpacity = 1.0
           die.fill = selectedDies.includes(die.id) ? "#3D5AFE" : "#8C9EFF";
           die.isActive = true
-        }          
+        }) 
       },
 
       goToColor: function(selectedDies) {
@@ -133,6 +148,10 @@
       },
 
       selectedDies: function(selectedDies) {
+        if(this.mode === "initial") {
+          this.goToInitial(selectedDies)
+        }
+
         if(this.mode === "dirty") {
           this.goToDirty(selectedDies)
         }

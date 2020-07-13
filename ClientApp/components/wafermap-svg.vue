@@ -4,7 +4,7 @@
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
         <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie" @contextmenu="showmenu" />
-        <text :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" :font-size="fontSize" :fill="die.text">{{die.code}}</text>
+        <text v-if="!die.code.includes('-')" :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" :font-size="fontSize" :fill="die.text">{{die.code}}</text>
       </g>
     </svg>
     <v-menu v-model="menu"
@@ -73,14 +73,12 @@
       selectDie(e) {
         e.preventDefault()
         let dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id      
-        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
-        {
+        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
           let position =  this.selectedDies.indexOf(dieId);
           if ( ~position ) {
             this.selectedDies.splice(position, 1);
             this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
-          } 
-          else {
+          } else {
             this.selectedDies.push(dieId);
             this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
           }
@@ -97,8 +95,8 @@
           let selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value]
           this.$nextTick(() => {
             this.menu = true
-            this.menuItems[0].title = selectedDie.code
-          });
+            this.menuItems[0].title = "Код кристалла: " + selectedDie.code
+          })
         }
       }
     },
@@ -236,7 +234,7 @@
       },
 
       fontSize() {
-        return this.dies[0].height > 15 || !this.dies[0].code.includes('-') ? 12 : 2
+        return this.dies[0].height > 15 ? 12 : 6
       },
 
       svgRotation() {

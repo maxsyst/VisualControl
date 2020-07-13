@@ -91,6 +91,7 @@ export default {
                 }
               }],
               yAxes: [{
+                type: 'logarithmic',
                 scaleLabel: {
                   display: chartOptions.yAxis.display,
                   labelString: chartOptions.yAxis.label,

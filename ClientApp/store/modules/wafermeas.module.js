@@ -211,7 +211,7 @@ export const wafermeas = {
     },
 
     updateKeyGraphicStateMode(state, selectedGraphics) {
-      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "selected"}))
+      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "initial"}))
     },
 
     clearKeyGraphicStateMode(state) {
@@ -226,7 +226,7 @@ export const wafermeas = {
     },
 
     addKeyGraphicStateMode(state, keyGraphicState) {
-      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "selected"})
+      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "initial"})
     },
 
     deleteKeyGraphicStateMode(state, keyGraphicState) {
