@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using LazyCache;
 using Newtonsoft.Json;
-using VueExample.Providers;
 
 namespace VueExample.Color
 {
     public class ColorService : IColorService 
     {
-
         private readonly IAppCache _cache;
         public ColorService (IAppCache cache) 
         {
             _cache = cache;
         }
-        public string GetRandomHexColor () 
+        public string GetRandomHexColor() 
         {
             var random = new Random ();
             var color = String.Format ("#{0:X6}", random.Next (0x1000000));
@@ -31,18 +29,23 @@ namespace VueExample.Color
             else 
             {
                 var hex = String.Empty;                
-                Func<List<Color>> cachedcolorList = () => GetColorList();
-                var colorList = _cache.GetOrAdd ("COLORS", cachedcolorList);
+                Func<List<Color>> cachedcolorList = () => GetColorList("colors16.json");
+                var colorList = _cache.GetOrAdd ("COLORS16", cachedcolorList);
                 hex = colorList[Convert.ToInt32(dieId % 16)].Hex;
                 return hex;
             }
-
         }
 
-        private List<Color> GetColorList() 
+        public List<Color> GetGradientColors() 
+        {
+            Func<List<Color>> cachedcolorList = () => GetColorList("colorsGradient.json");
+            return _cache.GetOrAdd ("COLORS_GRADIENT", cachedcolorList);
+        }
+
+        private List<Color> GetColorList(string jsonName) 
         {
             var colorList = new List<Color>();
-            using (StreamReader r = new StreamReader (Directory.GetCurrentDirectory() + "//Color//colors16.json")) 
+            using (StreamReader r = new StreamReader(Directory.GetCurrentDirectory() + "//Color//" + jsonName)) 
             {
                 string json = r.ReadToEnd();
                 Dictionary<string, string> colorsDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>> (json);

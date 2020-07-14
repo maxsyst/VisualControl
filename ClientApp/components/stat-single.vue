@@ -75,7 +75,6 @@
               :href="'#' + stat.shortStatisticsName"
               v-html="stat.shortStatisticsName">
             </v-tab>
-
             <v-tab-item
               v-for="stat in statArray"
               :key="stat.shortStatisticsName"
