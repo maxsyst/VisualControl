@@ -51,14 +51,14 @@ export default {
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
         await this.$http
-              .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
-              .then(response => {
-                let chart = response.data;
-                this.chartdata = chart.chartData
-                this.calculateOptions(chart.options)                                        
-                this.loaded = true       
-              })
-              .catch(error => {});     
+          .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+          .then(response => {
+            let chart = response.data;
+            this.chartdata = chart.chartData
+            this.calculateOptions(chart.options)                                        
+            this.loaded = true       
+          })
+          .catch(error => {});     
       },
 
          calculateOptions(chartOptions) {

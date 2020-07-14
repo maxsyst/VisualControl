@@ -67,7 +67,7 @@
       </v-row>
       <v-row>
         <v-col lg="12">
-          <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
+          <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo" @change="changeTab">
             <v-tab href="#commonTable">Сводная таблица</v-tab>
             <v-tab
               v-for="stat in statArray"
@@ -79,8 +79,7 @@
             <v-tab-item
               v-for="stat in statArray"
               :key="stat.shortStatisticsName"
-              :value="stat.shortStatisticsName"
-            >
+              :value="stat.shortStatisticsName">
               <v-card flat>
                 <v-card-text>{{ stat.shortStatisticsName }}</v-card-text>
               </v-card>
@@ -252,7 +251,11 @@ export default {
     },
 
     showStatTab(statisticsName) {
-      this.activeTab = statisticsName;
+      this.activeTab = statisticsName
+    },
+
+    changeTab(e) {
+      console.log(this.keyGraphicState + ' ' + e)
     },
 
     showPopoverClick(e) {

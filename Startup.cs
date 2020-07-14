@@ -138,6 +138,7 @@ namespace VueExample
             services.AddTransient<IChartJSProvider, ChartJSProvider>();
             services.AddTransient<IDieValueService, DieValueService>();
             services.AddTransient<IColorService, ColorService>();
+            services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
             services.AddTransient<IElementTypeService, ElementTypeService>();
