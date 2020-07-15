@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
-using MathNet.Numerics;
-using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
 using Newtonsoft.Json;
 
@@ -33,7 +30,6 @@ namespace VueExample.StatisticsCore
         
         public DataDescriptiveStatistics (List<double> list)
         {
-            var filteredList = Filtered(new List<double>(list));
             Median = Convert.ToString(list.Median(), CultureInfo.InvariantCulture);
             Quartile1 = Convert.ToString(list.LowerQuartile(), CultureInfo.InvariantCulture);
             Quartile3 = Convert.ToString(list.UpperQuartile(), CultureInfo.InvariantCulture);
@@ -49,10 +45,10 @@ namespace VueExample.StatisticsCore
 
        
 
-        public string GetHistogramFromList(List<double> list)
+        public string GetHistogramFromList(List<double> list, int stepQuantity)
         {
             list.RemoveAll(Double.IsNaN);
-            var histogram = new Histogram(list, 16);
+            var histogram = new Histogram(list, stepQuantity);
             return JsonConvert.SerializeObject(histogram);
         }
 
@@ -61,7 +57,6 @@ namespace VueExample.StatisticsCore
             return list.InterquartileRange();
         }
 
-
         private double Mean(IEnumerable<double> list)
         {
             return list.Median();
@@ -69,13 +64,11 @@ namespace VueExample.StatisticsCore
 
         public List<double> Filtered(List<double> list)
         {
-
             list.RemoveAll(Double.IsNaN);
             var lowlimit = (list.LowerQuartile() - 1.5 * IQR(list));
             var upperlimit = (list.UpperQuartile() + 1.5 * IQR(list));
             var filteredList = list.Where(d => d > lowlimit && d < upperlimit).ToList();
             return filteredList;            
-
         }
     
 

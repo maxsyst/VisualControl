@@ -31,7 +31,7 @@ export const wafermeas = {
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
     wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},    
     divider: "",
-    sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
+    sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 240, fieldWidth: 240 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
     dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0},
     dirtyCellsSingleGraphics: []
   },
@@ -150,11 +150,13 @@ export const wafermeas = {
 
       let bigMap = (await ctx.$http
         .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify({waferId, fieldHeight: state.sizes.big.fieldHeight, fieldWidth: state.sizes.big.fieldWidth, streetSize: state.sizes.big.streetSize})}`)).data
-              
+      let gradientMap = (await ctx.$http
+        .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify({waferId, fieldHeight: state.sizes.gradient.fieldHeight, fieldWidth: state.sizes.gradient.fieldWidth, streetSize: state.sizes.gradient.streetSize})}`)).data
       let miniMap = (await ctx.$http
         .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify({waferId, fieldHeight: state.sizes.mini.fieldHeight, fieldWidth: state.sizes.mini.fieldWidth, streetSize: state.sizes.mini.streetSize})}`)).data
 
       commit('updateFormedMap', {map: bigMap, mode: "big"})
+      commit('updateFormedMap', {map: gradientMap, mode: "gradient"})
       commit('updateFormedMap', {map: miniMap, mode: "mini"})
       commit('updateWaferId', waferId)
     }
@@ -194,7 +196,10 @@ export const wafermeas = {
     colors: state => state.colors,
     wafer: state => state.wafer,
     measurements: state => state.measurements,
-    size: state => bigormini => { return bigormini === "mini" ? state.sizes.mini : state.sizes.big }
+    size: state => bigormini => { 
+                                  if (bigormini === "mini") return state.sizes.mini
+                                  if(bigormini === "big") return state.sizes.big  
+                                  if(bigormini === "gradient") return state.sizes.gradient }
   },
 
   mutations: {
@@ -336,6 +341,9 @@ export const wafermeas = {
     updateFormedMap (state, payload) {
       if(payload.mode === "mini") {
         state.wafer.formedMapMini = { dies: [...JSON.parse(payload.map.waferMapFormed)], orientation: payload.map.orientation}
+      }
+      if(payload.mode === "gradient") {
+        state.wafer.formedMapGradient = { dies: [...JSON.parse(payload.map.waferMapFormed)], orientation: payload.map.orientation}
       }
       if(payload.mode === "big") {
         state.wafer.formedMapBig = { dies: [...JSON.parse(payload.map.waferMapFormed)], orientation: payload.map.orientation}

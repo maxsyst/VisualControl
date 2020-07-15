@@ -67,7 +67,7 @@
       </v-row>
       <v-row>
         <v-col lg="12">
-          <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo" @change="changeTab">
+          <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
             <v-tab href="#commonTable">Сводная таблица</v-tab>
             <v-tab
               v-for="stat in statArray"
@@ -79,9 +79,13 @@
               v-for="stat in statArray"
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
-              <v-card flat>
-                <v-card-text>{{ stat.shortStatisticsName }}</v-card-text>
-              </v-card>
+              <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState" 
+                             :measurementId="measurementId" 
+                             :keyGraphicState="keyGraphicState" 
+                             :statParameter="stat" 
+                             :divider="divider" 
+                             :statisticKf="statisticKf">
+              </gradient-full>
             </v-tab-item>
             <v-tab-item value="commonTable">
               <v-card flat>
@@ -155,10 +159,12 @@
 
 <script>
 import WaferMap from "./wafer-mini.vue";
+import GradientFull from './Gradient/gradient-full.vue' 
 export default {
   props: ["keyGraphicState", "measurementId", "divider", "statisticKf", "avbSelectedDies"],
   components: {
     "wafer-mini": WaferMap,
+    "gradient-full": GradientFull
   },
   data() {
     return {

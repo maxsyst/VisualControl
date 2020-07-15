@@ -23,14 +23,15 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [ProducesResponseType (typeof(GradientViewModel), StatusCodes.Status200OK)]
-        [Route("GetGradient")]
-        public async Task<IActionResult> GetGradient([FromQuery] string gradientViewModelJSON)
+        [Route("statparameter")]
+        public async Task<IActionResult> GetGradientStatParameter([FromQuery] string gradientViewModelJSON)
         {
             var gradientViewModel = JsonConvert.DeserializeObject<GradientStatViewModel>(gradientViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(gradientViewModel.MeasurementRecordingId);
             var singleParameterStatisticList = 
                 (await _cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{gradientViewModel.K*10}"))[gradientViewModel.KeyGraphicState];
-            return Ok();
+            var gradient = _gradientService.GetGradient(singleParameterStatisticList, gradientViewModel.StepsQuantity, gradientViewModel.Divider, gradientViewModel.StatParameter, gradientViewModel.SelectedDiesId);
+            return gradient.GradientSteps.Count > 0 ? Ok(gradient) : (IActionResult)BadRequest(gradient);
         }
 
     }

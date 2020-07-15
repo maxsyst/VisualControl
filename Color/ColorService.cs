@@ -9,14 +9,15 @@ namespace VueExample.Color
     public class ColorService : IColorService 
     {
         private readonly IAppCache _cache;
-        public ColorService (IAppCache cache) 
+        public ColorService(IAppCache cache) 
         {
             _cache = cache;
         }
+        
         public string GetRandomHexColor() 
         {
-            var random = new Random ();
-            var color = String.Format ("#{0:X6}", random.Next (0x1000000));
+            var random = new Random();
+            var color = String.Format("#{0:X6}", random.Next(0x1000000));
             return color;
         }
 
@@ -54,10 +55,8 @@ namespace VueExample.Color
                     var color = new Color { Hex = colorItem.Key, Name = colorItem.Value };
                     colorList.Add (color);
                 }
-
             }
             return colorList;
         }
-
     }
 }
