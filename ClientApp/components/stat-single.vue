@@ -80,6 +80,7 @@
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
               <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState" 
+                             :avbSelectedDies="avbSelectedDies"
                              :measurementId="measurementId" 
                              :keyGraphicState="keyGraphicState" 
                              :statParameter="stat" 

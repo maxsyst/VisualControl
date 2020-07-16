@@ -9,7 +9,7 @@ const defaultState = () => {
     selectedGraphics: [],
     unSelectedGraphics: [],
     measurements: [],
-    wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},
+    wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapGradient: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},
     divider: "",
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
     dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0, singleGraphics: []}
@@ -29,9 +29,9 @@ export const wafermeas = {
     unSelectedGraphics: [],
     measurements: [],
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
-    wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},    
+    wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapGradient: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},    
     divider: "",
-    sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 240, fieldWidth: 240 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
+    sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 320, fieldWidth: 320 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
     dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0},
     dirtyCellsSingleGraphics: []
   },

@@ -4,9 +4,9 @@
                           type="date-picker-days">
     </v-skeleton-loader>
     <v-container v-else>
-        <v-row>
-            
+        <v-row>            
             <v-col lg="6">
+                <v-row>
                 <v-simple-table>
                     <template v-slot:default>
                     <thead>
@@ -29,28 +29,39 @@
                     </tbody>
                     </template>
                 </v-simple-table>
+                </v-row>
+                <v-row>
+                    <gradient-map :gradientSteps="gradientData.gradientSteps" :avbSelectedDies="avbSelectedDies"></gradient-map>
+                </v-row>
             </v-col>
             <v-col lg="6">
-                <v-simple-table>
-                    <template v-slot:default>
-                    <thead>
-                        <tr>
-                            <th class="text-center">Название</th>
-                            <th class="text-center">Интервал</th>
-                            <th class="text-center">Количество кристаллов</th>
-                            <th class="text-center">Цвет</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="step in gradientData.gradientSteps">
-                            <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
-                            <td class="text-center">{{ step.borderDescription }}</td>
-                            <td class="text-center">{{ step.dieList.length }}</td>
-                            <td class="text-center"><v-chip :color="step.color" label dark></v-chip></td>
-                        </tr>
-                    </tbody>
-                    </template>
-                </v-simple-table>
+                <v-row>
+                    <v-simple-table>
+                        <template v-slot:default>
+                        <thead>
+                            <tr>
+                                <th class="text-center">Название</th>
+                                <th class="text-center">Интервал</th>
+                                <th class="text-center">Количество кристаллов</th>
+                                <th class="text-center">Цвет</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="step in gradientData.gradientSteps">
+                                <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
+                                <td class="text-center">{{ step.borderDescription }}</td>
+                                <td class="text-center">{{ step.dieList.length }}</td>
+                                <td class="text-center"><v-chip :color="step.color" label dark></v-chip></td>
+                                <td class="text-center"> <v-icon v-if="step.dieList.length>0"
+                                                                 color="primary"
+                                                                 @click="deleteByColor(step.dieList)">
+                                delete_outline</v-icon></td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-row>
+              
             </v-col>
         </v-row>
         <v-row>
@@ -59,8 +70,12 @@
     </v-container>
 </template>
 <script>
+    import GradientWafer from './gradient-wafer.vue' 
     export default {
-        props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
+        props: ['measurementId', 'avbSelectedDies', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
+        components: {
+            "gradient-map": GradientWafer,
+        },
         data() {
             return {
                loading: false,
@@ -70,7 +85,22 @@
     },
 
     methods: {
+        deleteByColor(dieList) {
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies.filter(x => !dieList.includes(x)));
+        }
+    },
 
+    watch: {
+        selectedDies: async function(newVal) {
+            this.gradientData = (await this.$http
+                .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({measurementRecordingId: this.measurementId,
+                                                                                        stepsQuantity: this.stepsQuantity,
+                                                                                        divider: this.divider, 
+                                                                                        keyGraphicState: this.keyGraphicState, 
+                                                                                        statParameter: this.statParameter.statisticsName,
+                                                                                        k: this.statisticKf,
+                                                                                        selectedDiesId: [...this.selectedDies]})}`)).data
+            }
     },
 
     computed:
