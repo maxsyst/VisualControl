@@ -41,15 +41,14 @@ namespace VueExample.StatisticsCore
 
         private void CalculateDirtyCellsStat(double k)
         {
-            var dds = new DataDescriptiveStatistics(valueList);
+            var dds = new DataDescriptiveStatistics(valueList.Where(v => !Double.IsNaN(v)).ToList());
             for (int i = 0; i < valueList.Count; i++)
             {
                 if((dds.Quartile3Double + k*dds.IQRDouble < valueList[i] || dds.Quartile1Double - dds.IQRDouble*k > valueList[i] || double.IsNaN(valueList[i])))
                 {
-                     this.DirtyCells.StatList.Add(dieList[i]);
+                    this.DirtyCells.StatList.Add(dieList[i]);
                 }
             }
-
             this.LowBorderStat = GetFormat(dds.Quartile1Double - dds.IQRDouble * k);
             this.TopBorderStat = GetFormat(dds.Quartile3Double + k * dds.IQRDouble);
         }

@@ -33,7 +33,7 @@
       this.initialOrientation = +this.wafer.formedMapGradient.orientation;
       this.currentOrientation = this.initialOrientation; 
       this.initialize(this.dies) 
-      this.goToInitial(this.selectedDies, this.gradientSteps)
+      if(this.gradientSteps) this.goToInitial(this.selectedDies, this.gradientSteps)
     },
 
     methods: {
@@ -47,7 +47,6 @@
       },
 
       goToInitial: function(selectedDies, gradientSteps) {
-        console.log(this.dies)
         this.avbSelectedDies.forEach(avb => {
           let die = this.dies.find(d => d.id === avb)
           let step = gradientSteps.find(g => g.dieList.includes(die.id))

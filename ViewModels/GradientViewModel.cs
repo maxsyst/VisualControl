@@ -9,7 +9,6 @@ namespace VueExample.ViewModels
         public List<GradientStep> GradientSteps { get; set; } = new List<GradientStep>();
     }
 
-
     public abstract class GradientStep
     {
         public string Color { get; protected set;}
@@ -17,16 +16,29 @@ namespace VueExample.ViewModels
         public string Name { get; protected set; }
         public List<long> DieList { get; } = new List<long>();
         public abstract bool IsInStep(double value);
+
+        protected string GetFormat(double number)
+        {
+            if (Math.Abs(number) < 1E-22 || Math.Abs(number) > 1E22)
+            {
+                return String.Empty;
+            }
+            if ((Math.Abs(number) >= 10000 || Math.Abs(number) < 1E-2) && Math.Abs(number - 0) > 1E-20)
+            {
+                return number.ToString("0.000E0");
+            }
+            return number.ToString("0.0000");
+        }
     }
 
     public class ExtremeLowGradientStep : GradientStep
     {
         public ExtremeLowGradientStep(string lowBorder)
         {
-            BorderDescription = $"< {lowBorder}";
-            Name = "ExtremeLow";
+            Name = "Low";
             LowBorder = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture);
             Color = "#4527A0";
+            BorderDescription = $"< {GetFormat(LowBorder)}";
         }
 
         public double LowBorder { get; private set;}
@@ -41,10 +53,10 @@ namespace VueExample.ViewModels
     {
         public ExtremeHighGradientStep(string topBorder)
         {
-            BorderDescription = $"> {topBorder}";
-            Name = "ExtremeHigh";
+            Name = "High";
             Color = "#E91E63";
             TopBorder = Convert.ToDouble(topBorder, CultureInfo.InvariantCulture);
+            BorderDescription = $"> {GetFormat(TopBorder)}";
         }
 
         public double TopBorder { get; private set;}
@@ -64,7 +76,7 @@ namespace VueExample.ViewModels
             LowBorder = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture) + index * stepSize;
             TopBorder = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture) + (index+1) * stepSize;
             Color = color;
-            BorderDescription = $"{LowBorder}-{TopBorder}";
+            BorderDescription = $"{GetFormat(LowBorder)}->{GetFormat(TopBorder)}";
         }
         public double LowBorder { get; private set;}
         public double TopBorder { get; private set;}

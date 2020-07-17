@@ -40,16 +40,13 @@ namespace VueExample.StatisticsCore
             Minimum = Convert.ToString(list.Minimum(), CultureInfo.InvariantCulture);
             MaximumDouble = list.Maximum();
             MinimumDouble = list.Minimum();
-           
         }
 
-       
-
-        public string GetHistogramFromList(List<double> list, int stepQuantity)
+        public Histogram GetHistogramFromList(List<double> list, int stepQuantity)
         {
             list.RemoveAll(Double.IsNaN);
             var histogram = new Histogram(list, stepQuantity);
-            return JsonConvert.SerializeObject(histogram);
+            return histogram;
         }
 
         private double IQR(IEnumerable<double> list)

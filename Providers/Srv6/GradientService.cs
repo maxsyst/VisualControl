@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using MathNet.Numerics.Statistics;
 using VueExample.Color;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.StatisticsCore;
@@ -52,6 +53,13 @@ namespace VueExample.Providers.Srv6
                 step.DieList.Add(singleDieValue.DieId);
             }
             return gradientViewModel;
+        }
+
+        public Histogram GetHistogram(List<SingleParameterStatistic> singleParameterStatisticList, int stepsQuantity, string statParameterName, List<long> selectedDies)
+        {
+            var singleStatistic = singleParameterStatisticList.FirstOrDefault(x => x.Name == statParameterName);
+            var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleStatistic.valueList);
+            return dataDescriptiveStatistics.GetHistogramFromList(singleStatistic.valueList, stepsQuantity);
         }
     }
 

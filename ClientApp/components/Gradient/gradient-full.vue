@@ -1,4 +1,4 @@
-<<template>   
+<template>   
      <v-skeleton-loader v-if="loading"
                           class="mx-auto"
                           type="date-picker-days">
@@ -31,7 +31,16 @@
                 </v-simple-table>
                 </v-row>
                 <v-row>
-                    <gradient-map :gradientSteps="gradientData.gradientSteps" :avbSelectedDies="avbSelectedDies"></gradient-map>
+                    <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
+                        <v-tab href="#gradientMapTab">Карта градиента</v-tab>
+                        <v-tab href="#histogramTab">Гистограмма распределения</v-tab>
+                        <v-tab-item value="gradientMapTab">
+                            <gradient-map :gradientSteps="gradientData.gradientSteps" :avbSelectedDies="avbSelectedDies"></gradient-map>
+                        </v-tab-item>
+                        <v-tab-item value="histogramTab">
+                            <gradient-hstg :gradientSteps="gradientData.gradientSteps"></gradient-hstg>
+                        </v-tab-item>
+                    </v-tabs>
                 </v-row>
             </v-col>
             <v-col lg="6">
@@ -42,7 +51,7 @@
                             <tr>
                                 <th class="text-center">Название</th>
                                 <th class="text-center">Интервал</th>
-                                <th class="text-center">Количество кристаллов</th>
+                                <th class="text-center">Всего кристаллов</th>
                                 <th class="text-center">Цвет</th>
                             </tr>
                         </thead>
@@ -71,14 +80,17 @@
 </template>
 <script>
     import GradientWafer from './gradient-wafer.vue' 
+    import GradientHstg from './gradient-histogram.vue' 
     export default {
         props: ['measurementId', 'avbSelectedDies', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
         components: {
             "gradient-map": GradientWafer,
+            "gradient-hstg": GradientHstg
         },
         data() {
             return {
                loading: false,
+               activeTab: "gradientMapTab",
                gradientData: {},
                stepsQuantity: 8
         }
@@ -100,7 +112,7 @@
                                                                                         statParameter: this.statParameter.statisticsName,
                                                                                         k: this.statisticKf,
                                                                                         selectedDiesId: [...this.selectedDies]})}`)).data
-            }
+        }
     },
 
     computed:
