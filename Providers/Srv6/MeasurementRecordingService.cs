@@ -73,7 +73,7 @@ namespace VueExample.Providers.Srv6
         public async Task<List<MeasurementRecording>> GetByWaferId(string waferId)
         {
             var measurementRecordingsList = await _srv6Context.FkMrPs
-                                                  .Where(x => x.WaferId == waferId)
+                                                  .Where(x => x.WaferId == waferId && x.Id247 == 247)
                                                   .AsNoTracking()
                                                   .Select(x => x.MeasurementRecording)
                                                   .ToListAsync();

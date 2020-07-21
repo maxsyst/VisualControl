@@ -133,11 +133,11 @@ export const wafermeas = {
       commit('updateSelectedDies', selectedDies)
     },
 
-    updateAvbGraphics({commit}, avbGraphics) {
+    updateAvbGraphics({ commit }, avbGraphics) {
       commit('updateAvbGraphics', avbGraphics)
     },
 
-    async updateDieColors({commit}, {ctx, waferId}) {
+    async updateDieColors({ commit }, {ctx, waferId}) {
       let dieColors = (await ctx.$http.get(`/api/die/GetColorsByWaferId?waferId=${waferId}`)).data
       commit('updateDieColors', dieColors) 
     },
@@ -145,7 +145,7 @@ export const wafermeas = {
     async updateSelectedWaferId ({commit, state}, {ctx, waferId}) {
     
       let measurements = (await ctx.$http.get(`/api/measurementrecording?waferId=${waferId}`)).data
-      measurements = measurements.map(m => ({...m, name: m.name.split('.')[1]}))
+      measurements = measurements.map(m => ({...m, name: m.name.includes('.') ? m.name.split('.')[1] : m.name}))
       commit('updateMeasurements', measurements) 
 
       let bigMap = (await ctx.$http

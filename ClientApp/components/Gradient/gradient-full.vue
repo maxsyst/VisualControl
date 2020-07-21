@@ -64,13 +64,13 @@
                                 <td class="text-center"> <v-icon v-if="step.dieList.length>0"
                                                                  color="primary"
                                                                  @click="deleteByColor(step.dieList)">
-                                delete_outline</v-icon></td>
+                                                                 delete_outline</v-icon>
+                                </td>
                             </tr>
                         </tbody>
                         </template>
                     </v-simple-table>
                 </v-row>
-              
             </v-col>
         </v-row>
         <v-row>
