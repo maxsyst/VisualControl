@@ -140,14 +140,13 @@
                             </v-btn>
                           </template>
                           <div>
-                              <p>
-                                <span>Некоторые графики не выбраны:</span>
-                              </p>
-                              <p v-for="g in unSelectedGraphics">
-                                <span :key="'SPAN_'+g.keyGraphicState">{{g.graphicName}}</span>
-                              </p>
-                          </div>
-                        
+                            <p>
+                              <span>Некоторые графики не выбраны:</span>
+                            </p>
+                            <p v-for="g in unSelectedGraphics">
+                              <span :key="'SPAN_'+g.keyGraphicState">{{g.graphicName}}</span>
+                            </p>
+                          </div>                        
                       </v-tooltip>
                       </v-card-text>
                     </v-card>

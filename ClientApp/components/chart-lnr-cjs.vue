@@ -11,14 +11,25 @@
         </v-container>
       </v-card>
     </v-col>
-    <v-col class="d-flex flex-column justify-start">
-      <v-btn :color="log === false ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(false)">
-        Лин
-      </v-btn>
-      <v-btn :color="log === true ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(true)">
-        Лог
-      </v-btn>
-    </v-col>
+    <div class="d-flex flex-column justify-space-between">
+      <div class="d-flex">
+        <v-col class="d-flex flex-column justify-start">
+          <v-btn :color="log === false ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(false)">
+            Лин
+          </v-btn>
+          <v-btn :color="log === true ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(true)">
+            Лог
+          </v-btn>      
+        </v-col>
+      </div>
+      <div class="d-flex">
+        <v-col class="d-flex">
+          <v-btn color="indigo" fab x-small dark @click="showSettings()">
+            <v-icon>settings</v-icon>
+          </v-btn>
+        </v-col>
+      </div>
+    </div>
   </div>
   <v-progress-circular v-else :size="50" color="primary" indeterminate></v-progress-circular>
 </template>
