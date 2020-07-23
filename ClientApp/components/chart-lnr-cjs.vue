@@ -1,34 +1,39 @@
 <template>
   <div class="d-flex" v-if="loaded">
-    <v-col class="d-flex">
-      <v-card>
-        <v-container>
-          <line-chart
-            :id="'LCHART_' + keyGraphicState"
-            :keyGraphicState="keyGraphicState"
-            :chartdata="chartdata"
-            :options="options"/>
-        </v-container>
-      </v-card>
-    </v-col>
-    <div class="d-flex flex-column justify-space-between">
-      <div class="d-flex">
-        <v-col class="d-flex flex-column justify-start">
-          <v-btn :color="log === false ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(false)">
-            Лин
-          </v-btn>
-          <v-btn :color="log === true ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(true)">
-            Лог
-          </v-btn>      
-        </v-col>
+    <div class="d-flex">
+      <v-col class="d-flex">
+        <v-card>
+          <v-container>
+            <line-chart
+              :id="'LCHART_' + keyGraphicState"
+              :keyGraphicState="keyGraphicState"
+              :chartdata="chartdata"
+              :options="options"/>
+          </v-container>
+        </v-card>
+      </v-col>
+      <div class="d-flex flex-column justify-space-between">
+        <div class="d-flex">
+          <v-col class="d-flex flex-column justify-start">
+            <v-btn :color="log === false ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(false)">
+              Лин
+            </v-btn>
+            <v-btn :color="log === true ? 'indigo' : 'grey darken-2'" fab x-small dark @click="changeLogMode(true)">
+              Лог
+            </v-btn>      
+          </v-col>
+        </div>
+        <div class="d-flex">
+          <v-col class="d-flex">
+            <v-btn :color="showSettings === true ? 'indigo' : 'grey darken-2'" fab x-small dark @click="showSettingsContainer(showSettings)">
+              <v-icon>settings</v-icon>
+            </v-btn>
+          </v-col>
+        </div>
       </div>
-      <div class="d-flex">
-        <v-col class="d-flex">
-          <v-btn color="indigo" fab x-small dark @click="showSettings()">
-            <v-icon>settings</v-icon>
-          </v-btn>
-        </v-col>
-      </div>
+    </div>
+    <div class="d-flex"> 
+      <settings v-if="showSettings" :keyGraphicState="keyGraphicState"></settings>
     </div>
   </div>
   <v-progress-circular v-else :size="50" color="primary" indeterminate></v-progress-circular>
@@ -36,13 +41,14 @@
 
 <script>  
 import LineChart from './linechart-cjs.vue'
-
+import Settings from './graphicsettings-lnr.vue'
 export default {
   
   props: ["keyGraphicState", "measurementId", "divider"],
-  components: { LineChart },
+  components: { LineChart, Settings },
   data: () => ({
     loaded: false,
+    showSettings: false,
     chartdata: {},
     options: {}
   }),
@@ -81,10 +87,15 @@ export default {
           .then(response => {
             let chart = response.data
             this.calculateOptions(chart.options)
+            chart.chartData.labels = [...chart.chartData.labels.map(x => +x)]
             this.chartdata = chart.chartData
             this.loaded = true       
         })
         .catch(error => {});
+      },
+
+      showSettingsContainer(showSettings) {
+        this.showSettings = !showSettings
       },
 
       changeLogMode(log) {
@@ -115,6 +126,7 @@ export default {
                 },
                 ticks: {
                   fontColor: '#BDBDBD'
+                
                 }
               }],
               yAxes: [{

@@ -3,7 +3,7 @@ const defaultState = () => {
     dieValues: {},
     selectedDies: [],
     keyGraphicStateModes: [],
-    graphicSettings: {},
+    graphicSettings: {xAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}, yAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}},
     hoveredDieId: {},
     dieColors: [],
     avbGraphics: [],
@@ -24,7 +24,7 @@ export const wafermeas = {
     selectedDies: [],
     keyGraphicStateModes: [],
     hoveredDieId: {},
-    graphicSettings: {},
+    graphicSettings: {xAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}, yAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}},
     avbGraphics: [],
     dieColors: [],
     selectedGraphics: [],
@@ -42,6 +42,10 @@ export const wafermeas = {
 
     reset({commit}) {
       commit('reset')
+    },
+
+    changeGraphicSettings({commit}, {axisType, settings}) {
+      commit('changeGraphicSettings', {axisType, settings})
     },
 
     hoverWaferMini({commit}, {dieId, keyGraphicState}) {
@@ -199,7 +203,7 @@ export const wafermeas = {
     wafer: state => state.wafer,
     measurements: state => state.measurements,
     size: state => bigormini => { 
-                                  if (bigormini === "mini") return state.sizes.mini
+                                  if(bigormini === "mini") return state.sizes.mini
                                   if(bigormini === "big") return state.sizes.big  
                                   if(bigormini === "gradient") return state.sizes.gradient }
   },
@@ -208,6 +212,10 @@ export const wafermeas = {
 
     reset(state) {
       Object.assign(state, defaultState())
+    },
+
+    changeGraphicSettings(state, {axisType, settings}) {
+      state.graphicSettings[axisType] = _.cloneDeep(settings)
     },
 
     hoverWaferMini(state, {dieId, keyGraphicState}) {
