@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex" v-if="loaded">
+  <div class="d-flex flex-column" v-if="loaded">
     <div class="d-flex">
       <v-col class="d-flex">
         <v-card>
@@ -86,8 +86,12 @@ export default {
           .get(`/api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
           .then(response => {
             let chart = response.data
-            this.calculateOptions(chart.options)
             chart.chartData.labels = [...chart.chartData.labels.map(x => +x)]
+            this.calculateOptions(chart.options, 
+                                  {min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length -1], maxTicksLimit: 11}, 
+                                  {min: 0, max: 0, maxTicksLimit: 11})
+            this.$store.dispatch("wafermeas/changeGraphicInitialSettings", {keyGraphicState: this.keyGraphicState, axisType: "xAxis", settings: {min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length -1], maxTicksLimit: 11}})
+            this.$store.dispatch("wafermeas/changeGraphicInitialSettings", {keyGraphicState: this.keyGraphicState, axisType: "yAxis", settings: {min: "Авто", max: "Авто", maxTicksLimit: 11}})
             this.chartdata = chart.chartData
             this.loaded = true       
         })
@@ -102,7 +106,7 @@ export default {
         this.$store.dispatch("wafermeas/changeKeyGraphicStateLog", {keyGraphicState: this.keyGraphicState, log: log});
       },
 
-        calculateOptions(chartOptions) {
+        calculateOptions(chartOptions, xAxisSettings, yAxisSettings) {
           let log = this.log === true ? 'logarithmic' : 'linear'
           this.options = {
             animation: chartOptions.animation,
@@ -125,7 +129,10 @@ export default {
                   color: '#303030'
                 },
                 ticks: {
-                  fontColor: '#BDBDBD'
+                  fontColor: '#BDBDBD',
+                  min: xAxisSettings.min,
+                  max: xAxisSettings.max,
+                  maxTicksLimit: xAxisSettings.maxTicksLimit
                 
                 }
               }],
@@ -141,7 +148,8 @@ export default {
                   color: '#303030'
                 },
                 ticks: {
-                  fontColor: '#BDBDBD'
+                  fontColor: '#BDBDBD',
+                  maxTicksLimit: yAxisSettings.maxTicksLimit
                 }
               }]
             }

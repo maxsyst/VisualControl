@@ -3,7 +3,7 @@ const defaultState = () => {
     dieValues: {},
     selectedDies: [],
     keyGraphicStateModes: [],
-    graphicSettings: {xAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}, yAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}},
+    graphicSettings: [],
     hoveredDieId: {},
     dieColors: [],
     avbGraphics: [],
@@ -24,7 +24,7 @@ export const wafermeas = {
     selectedDies: [],
     keyGraphicStateModes: [],
     hoveredDieId: {},
-    graphicSettings: {xAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}, yAxis: {initial: {ticks:[], min: 0, max: 0, stepSize: 0}, current: {ticks:[], min: 0, max: 0, stepSize: 0}}},
+    graphicSettings: [],
     avbGraphics: [],
     dieColors: [],
     selectedGraphics: [],
@@ -44,8 +44,12 @@ export const wafermeas = {
       commit('reset')
     },
 
-    changeGraphicSettings({commit}, {axisType, settings}) {
-      commit('changeGraphicSettings', {axisType, settings})
+    changeGraphicInitialSettings({commit}, {keyGraphicState, axisType, settings}) {
+      commit('changeGraphicInitialSettings', {keyGraphicState, axisType, settings})
+    },
+
+    changeGraphicCurrentSettings({commit}, {keyGraphicState, axisType, settings}) {
+      commit('changeGraphicCurrentSettings', {keyGraphicState, axisType, settings})
     },
 
     hoverWaferMini({commit}, {dieId, keyGraphicState}) {
@@ -189,6 +193,7 @@ export const wafermeas = {
     },
     dirtyCells: state => state.dirtyCells,
     hoveredDieId: state => state.hoveredDieId,
+    getGraphicSettingsKeyGraphicState: state => keyGraphicState => state.graphicSettings.find(k => k.keyGraphicState === keyGraphicState).settings,
     getKeyGraphicStateMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).mode,
     getKeyGraphicStateLog: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).log,
     getDieValuesByKeyGraphicState: state => keyGraphicState => state.dieValues[keyGraphicState],
@@ -214,8 +219,15 @@ export const wafermeas = {
       Object.assign(state, defaultState())
     },
 
-    changeGraphicSettings(state, {axisType, settings}) {
-      state.graphicSettings[axisType] = _.cloneDeep(settings)
+    changeGraphicInitialSettings(state, {keyGraphicState, axisType, settings}) {
+      state.graphicSettings.push({settings: {xAxis: {}, yAxis: {}}, keyGraphicState: keyGraphicState})
+      let thisSettings = state.graphicSettings.find(x => x.keyGraphicState === keyGraphicState).settings 
+      thisSettings[axisType] = {initial: _.cloneDeep(settings), current: _.cloneDeep(settings)}
+    },
+
+    changeGraphicCurrentSettings(state, {keyGraphicState, axisType, settings}) {
+      let thisSettings = state.graphicSettings.find(x => x.keyGraphicState === keyGraphicState).settings 
+      thisSettings[axisType].current = _.cloneDeep(settings)
     },
 
     hoverWaferMini(state, {dieId, keyGraphicState}) {

@@ -1,70 +1,118 @@
 <template>
     <v-container>
+        <v-card>
          <v-row>
-            <v-col lg="6">
+            <v-col lg="4" offset-lg="5">
+                <v-btn outlined block color="primary" @click="resetSettings">Сбросить настройки</v-btn>
+            </v-col>
+            
+        </v-row>
+         <v-row>
+            <v-col lg="3" offset-lg="2">
                 <v-chip label color="indigo">
                     Ось X
                 </v-chip>
             </v-col>
-            <v-col lg="6">
+            <v-col lg="3" offset-lg="2">
                 <v-chip label color="indigo">
                     Ось Y
                 </v-chip>
             </v-col>
         </v-row>
         <v-row>
-            <v-col lg="6">
+            <v-col class="d-flex flex-row" lg="4" offset-lg="2">
                 <v-text-field                  
-                  v-model="settings.XAxis.min"
-                  label="Минимум">
+                  v-model="settings.xAxis.current.min"
+                  :readonly="settings.xAxis.current.min === 'Авто'"
+                  :error-messages=" (settings.xAxis.current.min).toString().trim() ? [] : 'Введите значение'" 
+                  label="Минимум"
+                  @change="validateMinMaxField(settings.xAxis.current, 'min')">
                 </v-text-field>
+                <v-switch
+                    v-model="settings.xAxis.current.min === 'Авто'"
+                    label="Авто"
+                    color="primary"
+                    @change="changeAuto(settings.xAxis.current, 'min')"
+                ></v-switch>
             </v-col>
-            <v-col lg="6">
-                <v-text-field                  
-                  v-model="settings.YAxis.min"
-                  label="Минимум">
+            <v-col class="d-flex flex-row" lg="4" offset-lg="1">
+                <v-text-field 
+                  v-model="settings.yAxis.current.min"
+                  :readonly="settings.yAxis.current.min === 'Авто'"
+                  :error-messages="settings.yAxis.current.min ? [] : 'Введите значение'" 
+                  label="Минимум"
+                  @change="validateMinMaxField(settings.yAxis.current, 'min')">
                 </v-text-field>
+                <v-switch
+                    v-model="settings.yAxis.current.min === 'Авто'"
+                    label="Авто"
+                    color="primary"
+                    @change="changeAuto(settings.yAxis.current, 'min')"
+                ></v-switch>
             </v-col>
         </v-row>
          <v-row>
-            <v-col lg="6">
-                <v-text-field                  
-                  v-model="settings.XAxis.max"
-                  label="Максимум">
+            <v-col class="d-flex flex-row" lg="4" offset-lg="2">
+                <v-text-field                 
+                  v-model="settings.xAxis.current.max"
+                  :readonly="settings.xAxis.current.max === 'Авто'"
+                  :error-messages="settings.xAxis.current.max ? [] : 'Введите значение'" 
+                  label="Максимум"
+                  @change="validateMinMaxField(settings.xAxis.current, 'max')">
                 </v-text-field>
+                <v-switch 
+                    v-model="settings.xAxis.current.max === 'Авто'"
+                    label="Авто"
+                    color="primary"
+                    @change="changeAuto(settings.xAxis.current, 'max')"
+                ></v-switch>
             </v-col>
-            <v-col lg="6">
+             <v-col class="d-flex flex-row" lg="4" offset-lg="1">
                 <v-text-field                  
-                  v-model="settings.YAxis.max"
-                  label="Максимум">
+                  v-model="settings.yAxis.current.max"
+                  :readonly="settings.yAxis.current.max === 'Авто'"
+                  :error-messages="settings.yAxis.current.max ? [] : 'Введите значение'" 
+                  label="Максимум"
+                  @change="validateMinMaxField(settings.yAxis.current, 'max')">
                 </v-text-field>
+                <v-switch
+                    v-model="settings.yAxis.current.max === 'Авто'"
+                    label="Авто"
+                    color="primary"
+                    @change="changeAuto(settings.yAxis.current, 'max')"
+                ></v-switch>
             </v-col>
         </v-row>
          <v-row>
-            <v-col lg="6">
-                <v-text-field                  
-                  v-model="settings.XAxis.step"
-                  label="Шаг">
+            <v-col lg="4" offset-lg="2">
+                <v-text-field dense                
+                  v-model="settings.xAxis.current.maxTicksLimit"
+                  :error-messages="settings.xAxis.current.maxTicksLimit ? [] : 'Введите значение'" 
+                  @change="validateTicksField(settings.xAxis.current)"
+                  label="Количество шагов">
                 </v-text-field>
             </v-col>
-            <v-col lg="6">
-                <v-text-field                  
-                  v-model="settings.YAxis.step"
-                  label="Шаг">
+            <v-col lg="4" offset-lg="1">
+                <v-text-field dense                
+                  v-model="settings.yAxis.current.maxTicksLimit"
+                  :error-messages="settings.yAxis.current.maxTicksLimit ? [] : 'Введите значение'" 
+                  @change="validateTicksField(settings.yAxis.current)"
+                  label="Количество шагов">
                 </v-text-field>
             </v-col>
         </v-row>
+       
         <v-row>
-            <v-col lg="6">
-            </v-col>
-             <v-col lg="6">
-                <v-btn block @click="applySettings">Применить настройки</v-btn>
+        <v-col lg="4" offset-lg="5">
+                <v-btn v-if="validation" block color="green" @click="applySettings">Применить настройки</v-btn>
+                <v-btn v-else outlined block color="pink" @click="applySettings">Заполните все поля</v-btn>
             </v-col>
         </v-row>
+        </v-card>
     </v-container>
 </template>
-
 <script>
+
 
 export default {
     props: ["keyGraphicState"],
@@ -75,12 +123,43 @@ export default {
     },
 
     methods: {
-        
+        applySettings() {
+
+        },
+
+        resetSettings() {
+            this.settings.current = _.cloneDeep(this.settings.initial)
+        },
+
+        validateMinMaxField(axis, value) {
+            if(isNaN(axis[value]) || (axis['max'] < axis[value] && axis['max'] !== 'Авто') || (axis['min'] > axis[value] && axis['min'] !== 'Авто'))
+                axis[value] = "Авто"
+        },
+
+        validateTicksField(axis) {
+            if(isNaN(axis['maxTicksLimit']) || axis['maxTicksLimit'] < 4 || !Number.isInteger(+axis['maxTicksLimit']))
+                axis['maxTicksLimit'] = 11
+        },
+
+        changeAuto(axis, value) {
+            if(axis[value] === "Авто") {
+                axis[value] = ''
+            } else {
+                axis[value] = "Авто"
+            }
+        }
     },
 
     computed: {
         settings() {
+            return this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicState'](this.keyGraphicState)
+        }, 
 
+        validation() {
+            if(this.settings.xAxis.current.min && this.settings.xAxis.current.max && this.settings.yAxis.current.min && this.settings.yAxis.current.max && this.settings.xAxis.current.maxTicksLimit && this.settings.yAxis.current.maxTicksLimit) {
+                return true
+            }
+            return false
         }
     },
 }
