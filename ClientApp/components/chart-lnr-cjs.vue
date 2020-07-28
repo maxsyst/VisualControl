@@ -8,6 +8,7 @@
               :id="'LCHART_' + keyGraphicState"
               :keyGraphicState="keyGraphicState"
               :chartdata="chartdata"
+              :settings="settings"
               :options="options"/>
           </v-container>
         </v-card>
@@ -33,7 +34,7 @@
       </div>
     </div>
     <div class="d-flex"> 
-      <settings v-if="showSettings" :keyGraphicState="keyGraphicState"></settings>
+      <settings v-if="showSettings" :keyGraphicState="keyGraphicState" @settings-changed="settingsChanged"></settings>
     </div>
   </div>
   <v-progress-circular v-else :size="50" color="primary" indeterminate></v-progress-circular>
@@ -49,6 +50,7 @@ export default {
   data: () => ({
     loaded: false,
     showSettings: false,
+    settings: {},
     chartdata: {},
     options: {}
   }),
@@ -96,6 +98,10 @@ export default {
             this.loaded = true       
         })
         .catch(error => {});
+      },
+
+      settingsChanged(e) {
+        this.settings = _.cloneDeep(this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicState'](this.keyGraphicState))
       },
 
       showSettingsContainer(showSettings) {

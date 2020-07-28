@@ -20,7 +20,11 @@ export default {
     keyGraphicState: {
       type: String,
       default: ""
-    }
+    },
+    settings: {
+      type: Object,
+      default: null
+    },
   },
 
   mounted() {
@@ -48,6 +52,11 @@ export default {
   },
 
   watch: {
+    
+    settings: function(newValue) {
+      console.log(newValue)
+    },
+
     hovered: function(newValue) {
       if(newValue.keyGraphicState === this.keyGraphicState) {
         if(this.oldHovered.dieId > 0) {
@@ -84,10 +93,11 @@ export default {
       this.getChartDataFromStore(newValue)
       this.renderChart(this.chartdata, this.options)
     }
+
   },
 
   computed: {
-
+    
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']
     },

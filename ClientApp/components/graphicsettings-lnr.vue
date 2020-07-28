@@ -3,9 +3,8 @@
         <v-card>
          <v-row>
             <v-col lg="4" offset-lg="5">
-                <v-btn outlined block color="primary" @click="resetSettings">Сбросить настройки</v-btn>
+                <v-btn outlined color="primary" @click="resetSettings">Сбросить настройки</v-btn>
             </v-col>
-            
         </v-row>
          <v-row>
             <v-col lg="3" offset-lg="2">
@@ -103,9 +102,9 @@
         </v-row>
        
         <v-row>
-        <v-col lg="4" offset-lg="5">
-                <v-btn v-if="validation" block color="green" @click="applySettings">Применить настройки</v-btn>
-                <v-btn v-else outlined block color="pink" @click="applySettings">Заполните все поля</v-btn>
+            <v-col lg="4" offset-lg="5">
+                <v-btn v-if="validation" color="green" @click="applySettings">Применить настройки</v-btn>
+                <v-btn v-else outlined color="pink" @click="applySettings">Заполните все поля</v-btn>
             </v-col>
         </v-row>
         </v-card>
@@ -118,17 +117,25 @@ export default {
     props: ["keyGraphicState"],
     data() {
         return {
-
+            settings: {}
         }
+    },
+
+    created() {
+        this.settings = _.cloneDeep(this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicState'](this.keyGraphicState))
     },
 
     methods: {
         applySettings() {
-
+            this.$store.dispatch("wafermeas/changeGraphicCurrentSettings", {keyGraphicState: this.keyGraphicState, axisType: "xAxis", settings: this.settings.xAxis.current})
+            this.$store.dispatch("wafermeas/changeGraphicCurrentSettings", {keyGraphicState: this.keyGraphicState, axisType: "yAxis", settings: this.settings.yAxis.current})
+            this.$emit('settings-changed', this.keyGraphicState)
         },
 
         resetSettings() {
-            this.settings.current = _.cloneDeep(this.settings.initial)
+            this.settings.xAxis.current = _.cloneDeep(this.settings.xAxis.initial)
+            this.settings.yAxis.current = _.cloneDeep(this.settings.yAxis.initial)
+            this.$emit('settings-changed', this.keyGraphicState)
         },
 
         validateMinMaxField(axis, value) {
@@ -151,12 +158,8 @@ export default {
     },
 
     computed: {
-        settings() {
-            return this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicState'](this.keyGraphicState)
-        }, 
-
         validation() {
-            if(this.settings.xAxis.current.min && this.settings.xAxis.current.max && this.settings.yAxis.current.min && this.settings.yAxis.current.max && this.settings.xAxis.current.maxTicksLimit && this.settings.yAxis.current.maxTicksLimit) {
+            if((this.settings.xAxis.current.min).toString().trim() && (this.settings.xAxis.current.max).toString().trim() && (this.settings.yAxis.current.min).toString().trim() && (this.settings.yAxis.current.max).toString().trim() && this.settings.xAxis.current.maxTicksLimit && this.settings.yAxis.current.maxTicksLimit) {
                 return true
             }
             return false
