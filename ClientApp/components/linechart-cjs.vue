@@ -48,13 +48,45 @@ export default {
         datasets.push(singleDataset)
       })
       this.chartdata.datasets = [...datasets]
+    },
+
+    recalculateXAxisOptions(xAxis) {
+      if(xAxis.current.min === 'Авто') {
+        delete this.options.scales.xAxes[0].ticks['min']
+      } else {
+        this.options.scales.xAxes[0].ticks['min'] = +xAxis.current.min
+      }
+
+      if(xAxis.current.max === 'Авто') {
+        delete this.options.scales.xAxes[0].ticks['max']
+      } else {
+        this.options.scales.xAxes[0].ticks['max'] = +xAxis.current.max
+      }
+      this.options.scales.xAxes[0].ticks.maxTicksLimit = +xAxis.current.maxTicksLimit
+    },
+
+    recalculateYAxisOptions(yAxis) {
+      if(yAxis.current.min === 'Авто') {
+        delete this.options.scales.yAxes[0].ticks['min']
+      } else {
+        this.options.scales.yAxes[0].ticks['min'] = +yAxis.current.min
+      }
+
+      if(yAxis.current.max === 'Авто') {
+        delete this.options.scales.yAxes[0].ticks['max']
+      } else {
+        this.options.scales.yAxes[0].ticks['max'] = +yAxis.current.max
+      }
+       this.options.scales.yAxes[0].ticks.maxTicksLimit = +yAxis.current.maxTicksLimit
     }
   },
 
   watch: {
     
     settings: function(newValue) {
-      console.log(newValue)
+      this.recalculateXAxisOptions(newValue.xAxis)
+      this.recalculateYAxisOptions(newValue.yAxis)
+      this.renderChart(this.chartdata, this.options)
     },
 
     hovered: function(newValue) {

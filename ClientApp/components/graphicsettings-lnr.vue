@@ -135,6 +135,8 @@ export default {
         resetSettings() {
             this.settings.xAxis.current = _.cloneDeep(this.settings.xAxis.initial)
             this.settings.yAxis.current = _.cloneDeep(this.settings.yAxis.initial)
+            this.$store.dispatch("wafermeas/changeGraphicCurrentSettings", {keyGraphicState: this.keyGraphicState, axisType: "xAxis", settings: this.settings.xAxis.current})
+            this.$store.dispatch("wafermeas/changeGraphicCurrentSettings", {keyGraphicState: this.keyGraphicState, axisType: "yAxis", settings: this.settings.yAxis.current})
             this.$emit('settings-changed', this.keyGraphicState)
         },
 
