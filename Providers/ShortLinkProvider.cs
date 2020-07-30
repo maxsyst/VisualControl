@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Entities;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Abstract;
+using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ResponseObjects;
 using VueExample.StatisticsCore.Abstract;
 using VueExample.ViewModels;
@@ -18,11 +21,13 @@ namespace VueExample.Providers
         private readonly Srv6Context _srv6Context;
         private readonly IMapper _mapper;
         private readonly IExportProvider _exportProvider;
-        public ShortLinkProvider(Srv6Context srv6Context, IMapper mapper, IExportProvider exportProvider)
+        private readonly ISRV6GraphicService  _graphicService;
+        public ShortLinkProvider(Srv6Context srv6Context, IMapper mapper, IExportProvider exportProvider, ISRV6GraphicService graphicService)
         {
             _srv6Context = srv6Context;
             _mapper = mapper;
             _exportProvider = exportProvider;
+            _graphicService = graphicService;
         }
 
         public async Task<ShortLinkEntity> Create(string fullLink)
@@ -34,9 +39,14 @@ namespace VueExample.Providers
             return shortLink;
         }
 
+        public async Task<ShortLink> GetByGeneratedId(string generatedId)
+        {
+            return await GetFullUrlFromShortUrl(generatedId);
+        }
+
         public async Task<AfterDbManipulationObject<ShortLinkInfoViewModel>> GetElementExportDetails(string shortLink)
         {
-            var shortLinkViewModel = _mapper.Map<ShortLinkInfoViewModel>(GetFullUrlFromShortUrl(shortLink));        
+            var shortLinkViewModel = _mapper.Map<ShortLinkInfoViewModel>(await GetFullUrlFromShortUrl(shortLink));        
             var obj = new AfterDbManipulationObject<ShortLinkInfoViewModel>();
             if(shortLinkViewModel.GeneratedId == default(Guid))
             {
@@ -54,24 +64,29 @@ namespace VueExample.Providers
             return obj;
         }
 
-        private ShortLink GetFullUrlFromShortUrl(string shortlink)
+        private async Task<ShortLink> GetFullUrlFromShortUrl(string shortlink)
         {
             Guid generatedId;
             bool isValidGuid = Guid.TryParse(shortlink, out generatedId);
             if(!isValidGuid)
                 return new ShortLink();
-                          
-            var shorturl = _srv6Context.ShortLinkEntities.FirstOrDefault(x => x.GeneratedId == generatedId);
+            var shorturl =  await _srv6Context.ShortLinkEntities.FirstOrDefaultAsync(x => x.GeneratedId == generatedId);
             if (shorturl == null)
             {
                 return new ShortLink();
             }
             var link = shorturl.Link;
+            var measurementRecordingId = Convert.ToInt32(link.Split(new string[] {"idmrpcm="}, StringSplitOptions.None)[1].Split('&')[0]);
+            var selectedGraphic = _srv6Context.FkMrGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToList().ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"rddl="}, StringSplitOptions.None)[1].Split('&')[0])).GraphicId;
+            var selectedDies = Deobfuscate(link.Split(new string[] {"dies="}, StringSplitOptions.None)[1].Split('&')[0]).Split('x').Select(x => Convert.ToInt64(x)).ToList();
             var shortinfo =
                 new ShortLink
                     {
                         WaferId = link.Split(new string[] {"wid="}, StringSplitOptions.None)[1].Split('&')[0],
-                        MeasurementRecordingId = Convert.ToInt32(link.Split(new string[] {"idmrpcm="}, StringSplitOptions.None)[1].Split('&')[0]), 
+                        Divider = (await _srv6Context.Dividers.ToListAsync()).ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"square="}, StringSplitOptions.None)[1].Split('&')[0])),
+                        SelectedDies = selectedDies,
+                        SelectedGraphics = selectedGraphic == null ? new List<GraphicShortLinkViewModel>() : new List<GraphicShortLinkViewModel>{new GraphicShortLinkViewModel(await _graphicService.GetById((int)selectedGraphic))},
+                        MeasurementRecordingId = measurementRecordingId, 
                         GeneratedId = shorturl.GeneratedId
                     };
             return shortinfo;
@@ -103,5 +118,7 @@ namespace VueExample.Providers
                 return Encoding.UTF8.GetString(bytes);
             }            
         }
+
+       
     }
 }

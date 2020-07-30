@@ -341,9 +341,7 @@
                       <strong class="yellow--text text--darken-2" v-else>{{item.live}} {{item.graphicUnit}}</strong>
                     
                     
-                  </div>
-              
-  
+                  </div>             
             
               </v-list-item-content>
 

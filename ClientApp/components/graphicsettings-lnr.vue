@@ -20,6 +20,38 @@
         </v-row>
         <v-row>
             <v-col class="d-flex flex-row" lg="4" offset-lg="2">
+                <v-text-field                 
+                  v-model="settings.xAxis.current.max"
+                  :readonly="settings.xAxis.current.max === 'Авто'"
+                  :error-messages="settings.xAxis.current.max ? [] : 'Введите значение'" 
+                  label="Максимум"
+                  @change="validateMinMaxField(settings.xAxis.current, 'max')">
+                </v-text-field>
+                <v-switch 
+                    v-model="settings.xAxis.current.max === 'Авто'"
+                    label="Авто"
+                    color="primary"
+                    @change="changeAuto(settings.xAxis.current, 'max')">
+                </v-switch>
+            </v-col>
+             <v-col class="d-flex flex-row" lg="4" offset-lg="1">
+                <v-text-field                  
+                  v-model="settings.yAxis.current.max"
+                  :readonly="settings.yAxis.current.max === 'Авто'"
+                  :error-messages="settings.yAxis.current.max ? [] : 'Введите значение'" 
+                  label="Максимум"
+                  @change="validateMinMaxField(settings.yAxis.current, 'max')">
+                </v-text-field>
+                <v-switch
+                    v-model="settings.yAxis.current.max === 'Авто'"
+                    label="Авто"
+                    color="primary"
+                    @change="changeAuto(settings.yAxis.current, 'max')"
+                ></v-switch>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col class="d-flex flex-row" lg="4" offset-lg="2">
                 <v-text-field                  
                   v-model="settings.xAxis.current.min"
                   :readonly="settings.xAxis.current.min === 'Авто'"
@@ -50,38 +82,7 @@
                 ></v-switch>
             </v-col>
         </v-row>
-         <v-row>
-            <v-col class="d-flex flex-row" lg="4" offset-lg="2">
-                <v-text-field                 
-                  v-model="settings.xAxis.current.max"
-                  :readonly="settings.xAxis.current.max === 'Авто'"
-                  :error-messages="settings.xAxis.current.max ? [] : 'Введите значение'" 
-                  label="Максимум"
-                  @change="validateMinMaxField(settings.xAxis.current, 'max')">
-                </v-text-field>
-                <v-switch 
-                    v-model="settings.xAxis.current.max === 'Авто'"
-                    label="Авто"
-                    color="primary"
-                    @change="changeAuto(settings.xAxis.current, 'max')"
-                ></v-switch>
-            </v-col>
-             <v-col class="d-flex flex-row" lg="4" offset-lg="1">
-                <v-text-field                  
-                  v-model="settings.yAxis.current.max"
-                  :readonly="settings.yAxis.current.max === 'Авто'"
-                  :error-messages="settings.yAxis.current.max ? [] : 'Введите значение'" 
-                  label="Максимум"
-                  @change="validateMinMaxField(settings.yAxis.current, 'max')">
-                </v-text-field>
-                <v-switch
-                    v-model="settings.yAxis.current.max === 'Авто'"
-                    label="Авто"
-                    color="primary"
-                    @change="changeAuto(settings.yAxis.current, 'max')"
-                ></v-switch>
-            </v-col>
-        </v-row>
+         
          <v-row>
             <v-col lg="4" offset-lg="2">
                 <v-text-field dense                
@@ -99,12 +100,11 @@
                   label="Количество шагов">
                 </v-text-field>
             </v-col>
-        </v-row>
-       
+        </v-row>       
         <v-row>
             <v-col lg="4" offset-lg="5">
                 <v-btn v-if="validation" color="green" @click="applySettings">Применить настройки</v-btn>
-                <v-btn v-else outlined color="pink" @click="applySettings">Заполните все поля</v-btn>
+                <v-btn v-else outlined color="pink">Заполните все поля</v-btn>
             </v-col>
         </v-row>
         </v-card>

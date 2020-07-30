@@ -17,7 +17,7 @@
       :can-cancel="false"
       color="#fc0"
       :width="100"
-      :height="50"
+      :height="100"
       loader="bars"
       :is-full-page="true"
     ></loading>
@@ -96,6 +96,14 @@
                         ></v-select>
                       </v-col>
                     </v-row>
+                    <v-row justify-center column>
+                      <v-col lg="6">
+                        <v-text-field outlined v-model="shortLinkSrv6" label="Короткая ссылка"></v-text-field>
+                      </v-col>
+                       <v-col lg="6">
+                         <v-btn color="primary" class="mt-4" block outlined @click="handleShortLinkSrv6(shortLinkSrv6)">Обработать ссылку</v-btn>
+                      </v-col>
+                    </v-row>
                    <v-row v-if="loading">
                       <v-subheader>Коэффициент отсеивания:</v-subheader>
                       <v-slider
@@ -143,7 +151,7 @@
                             <p>
                               <span>Некоторые графики не выбраны:</span>
                             </p>
-                            <p v-for="g in unSelectedGraphics">
+                            <p v-for="g in unSelectedGraphics" :key="'UNSLCTDGR_'+g.keyGraphicState">
                               <span :key="'SPAN_'+g.keyGraphicState">{{g.graphicName}}</span>
                             </p>
                           </div>                        
@@ -262,7 +270,8 @@ export default {
       selectedWafer: "",
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
-      statisticKf: 1.5
+      statisticKf: 1.5,
+      shortLinkSrv6: ""
     };
   },
 
@@ -326,6 +335,10 @@ export default {
 
     toTop () {
       this.$vuetify.goTo(0)
+    },
+
+    handleShortLinkSrv6: async function(shortLink) {
+      let shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data
     },
 
     routeHandler: function(routeName) {

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VueExample.Models.SRV6;
 using VueExample.Providers.Abstract;
-using VueExample.Providers.Srv6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ResponseObjects;
 using VueExample.ViewModels;
@@ -19,6 +19,15 @@ namespace VueExample.Controllers
         {
             _measurementRecordingService = measurementRecordingService;
             _shortLinkProvider = shortLinkProvider;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(ShortLink), StatusCodes.Status200OK)]
+        [Route("guid/{generatedId}")]
+        public async Task<IActionResult> GetByGeneratedId([FromRoute] string generatedId)
+        {
+            var shortLink = await _shortLinkProvider.GetByGeneratedId(generatedId);
+            return shortLink.SelectedDies.Count == 0 ? (IActionResult)NotFound() : Ok(shortLink);
         }
 
         [HttpGet]
