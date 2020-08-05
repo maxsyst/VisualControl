@@ -33,17 +33,14 @@
                 Выбор пластины
                 <v-icon>table_chart</v-icon>
               </v-tab>
-
               <v-tab href="#extra">
                 Доп.настройки
                 <v-icon>timeline</v-icon>
               </v-tab>
-
               <v-tab href="#statistics">
                 Статистика по годным
                 <v-icon>equalizer</v-icon>
               </v-tab>
-
               <v-tab-item value="wafer">
                 <v-card color="#303030" dark>
                   <v-card-text>
@@ -288,8 +285,11 @@ export default {
 
   async created() {
     this.wafers = (await this.$http.get(`/api/wafer/all`)).data
-    this.dividers = (await this.$http.get(`/api/divider/all`)).data
-    this.routeHandler(this.$route.name)
+    this.dividers = (await this.$http.get(`/api/divider/all`)).data    
+  },
+
+  mounted() {
+    this.routeHandler(this.$route.name, this.measurementRecordings)
   },
 
   computed: {
@@ -313,6 +313,7 @@ export default {
     availiableGraphics() {
       return this.$store.getters['wafermeas/avbGraphics']
     },
+    
     measurementRecordings() {
       return this.$store.getters['wafermeas/measurements']
     },
@@ -333,12 +334,13 @@ export default {
       this.fabToTop = top > 20
     },
 
-    toTop () {
+    toTop() {
       this.$vuetify.goTo(0)
     },
 
     handleShortLinkSrv6: async function(shortLink) {
       let shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data
+      this.$router.push({ name: 'wafermeasurement-shortlink', params: {shortLinkVm: shortLinkVm, guid: shortLinkVm.generatedId}})
     },
 
     routeHandler: function(routeName) {
@@ -347,7 +349,7 @@ export default {
       }
       if(routeName === "wafermeasurement-fullselected") {
         this.selectedWafer = this.$route.params.waferId
-        this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === "оп." + this.$route.params.measurementName).id
+        this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id
       }
     },
 
@@ -376,13 +378,13 @@ export default {
     selectedWafer: async function(newValue) {
       this.$store.dispatch("wafermeas/updateAvbGraphics", [])
       this.$store.dispatch("wafermeas/updateDieColors", {ctx: this, waferId: newValue})
-      this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue})
+      this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue}) 
     },
 
     selectedMeasurementId: async function(newValue) {
       this.loading = true
       this.$store.dispatch("wafermeas/updateSelectedDies", [])
-       this.$store.dispatch("wafermeas/clearDieValues")
+      this.$store.dispatch("wafermeas/clearDieValues")
       this.$store.dispatch("wafermeas/clearSelectedGraphics")
       let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
       this.$store.dispatch("wafermeas/updateDieValues", dieValues)

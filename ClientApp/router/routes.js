@@ -43,6 +43,12 @@ export const routes = [
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
     children: [
     {
+      name: 'wafermeasurement-shortlink',
+      path: 'sl/:guid',
+      props: route => {return {shortLinkVm: route.params.shortLinkVm, guid: route.params.guid}},
+      component: WaferMeas
+    },
+    {
       name: 'wafermeasurement-onlywafer',
       path: 'waferId/:waferId',
       component: WaferMeas

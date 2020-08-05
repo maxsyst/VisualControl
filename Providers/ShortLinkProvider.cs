@@ -54,8 +54,8 @@ namespace VueExample.Providers
             }
             if(!obj.HasErrors)
             {
-                 shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId, 1.5)).ToList();
-                 obj.SetObject(shortLinkViewModel);
+                shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId, 1.5)).ToList();
+                obj.SetObject(shortLinkViewModel);
             } 
             if(shortLinkViewModel.StatisticNameList is null || shortLinkViewModel.StatisticNameList.Count == 0)
             {
@@ -77,7 +77,7 @@ namespace VueExample.Providers
             }
             var link = shorturl.Link;
             var measurementRecordingId = Convert.ToInt32(link.Split(new string[] {"idmrpcm="}, StringSplitOptions.None)[1].Split('&')[0]);
-            var selectedGraphic = _srv6Context.FkMrGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToList().ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"rddl="}, StringSplitOptions.None)[1].Split('&')[0])).GraphicId;
+            var selectedGraphic = (await _srv6Context.FkMrGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync()).ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"rddl="}, StringSplitOptions.None)[1].Split('&')[0])).GraphicId;
             var selectedDies = Deobfuscate(link.Split(new string[] {"dies="}, StringSplitOptions.None)[1].Split('&')[0]).Split('x').Select(x => Convert.ToInt64(x)).ToList();
             var shortinfo =
                 new ShortLink
