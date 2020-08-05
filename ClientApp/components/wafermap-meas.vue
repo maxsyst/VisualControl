@@ -16,8 +16,8 @@
       :active.sync="loading"
       :can-cancel="false"
       color="#fc0"
-      :width="100"
-      :height="100"
+      :width="50"
+      :height="50"
       loader="bars"
       :is-full-page="true"
     ></loading>
