@@ -22,12 +22,15 @@ namespace VueExample.Providers
         private readonly IMapper _mapper;
         private readonly IExportProvider _exportProvider;
         private readonly ISRV6GraphicService  _graphicService;
-        public ShortLinkProvider(Srv6Context srv6Context, IMapper mapper, IExportProvider exportProvider, ISRV6GraphicService graphicService)
+        private readonly IMeasurementRecordingService _measurementRecordingService;
+        public ShortLinkProvider(Srv6Context srv6Context, IMapper mapper, IExportProvider exportProvider, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService)
         {
             _srv6Context = srv6Context;
             _mapper = mapper;
             _exportProvider = exportProvider;
             _graphicService = graphicService;
+            _measurementRecordingService = measurementRecordingService;
+
         }
 
         public async Task<ShortLinkEntity> Create(string fullLink)
@@ -77,6 +80,7 @@ namespace VueExample.Providers
             }
             var link = shorturl.Link;
             var measurementRecordingId = Convert.ToInt32(link.Split(new string[] {"idmrpcm="}, StringSplitOptions.None)[1].Split('&')[0]);
+            var measurementRecording = await _measurementRecordingService.GetById(measurementRecordingId);
             var selectedGraphic = (await _srv6Context.FkMrGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync()).ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"rddl="}, StringSplitOptions.None)[1].Split('&')[0])).GraphicId;
             var selectedDies = Deobfuscate(link.Split(new string[] {"dies="}, StringSplitOptions.None)[1].Split('&')[0]).Split('x').Select(x => Convert.ToInt64(x)).ToList();
             var shortinfo =
@@ -86,7 +90,7 @@ namespace VueExample.Providers
                         Divider = (await _srv6Context.Dividers.ToListAsync()).ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"square="}, StringSplitOptions.None)[1].Split('&')[0])),
                         SelectedDies = selectedDies,
                         SelectedGraphics = selectedGraphic == null ? new List<GraphicShortLinkViewModel>() : new List<GraphicShortLinkViewModel>{new GraphicShortLinkViewModel(await _graphicService.GetById((int)selectedGraphic))},
-                        MeasurementRecordingId = measurementRecordingId, 
+                        MeasurementRecording = measurementRecording, 
                         GeneratedId = shorturl.GeneratedId
                     };
             return shortinfo;

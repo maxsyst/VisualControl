@@ -8,7 +8,7 @@ namespace VueExample.Models.SRV6
     {
         public Guid GeneratedId { get; set; }
         public string WaferId { get; set; }
-        public int MeasurementRecordingId { get; set; }
+        public MeasurementRecording MeasurementRecording { get; set; }
         public Divider Divider { get; set; }
         public List<GraphicShortLinkViewModel> SelectedGraphics { get; set; } = new List<GraphicShortLinkViewModel>();
         public List<long> SelectedDies { get; set; } = new List<long>();

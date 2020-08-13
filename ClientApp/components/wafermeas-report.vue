@@ -403,14 +403,12 @@ export default {
                 catch (error) {
                     this.showSnackBar(error)
                 }           
-            } 
-            else {
+            } else {
                 return {stageName: "Неизвестно"}
             }         
         },
 
-        showSnackBar(text)
-        {
+        showSnackBar(text) {
             this.$store.dispatch("alert/success", text)
         }
     },

@@ -23,6 +23,7 @@ import UploaderFinal from 'components/uploader-final'
 import PWafer from 'components/pwafer'
 // Service components
 import LoginPage from 'components/login-page'
+import ShortLinkHandler from 'components/shortlink-handler'
 import RegistrationPage from 'components/registration-page'
 import NotFound from 'components/error-404'
 
@@ -39,15 +40,17 @@ export const routes = [
   { path: '/defect/:defectid', component: DefectCard },
   { name: 'adddefect', path: '/adddefect', component: DefectSingle, display: 'Добавление дефекта', nav: true },
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
-  { name: 'pwafer', path: '/pwafer', component: PWafer, display: 'Просмотр измерений', nav: true},  
+  { name: 'pwafer', path: '/pwafer', component: PWafer, display: 'Просмотр измерений', nav: true },  
+  { name: 'shortlink-handler', path: '/sl/:guid', component: ShortLinkHandler },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
     children: [
-    {
-      name: 'wafermeasurement-shortlink',
-      path: 'sl/:guid',
-      props: route => {return {shortLinkVm: route.params.shortLinkVm, guid: route.params.guid}},
+    { 
+      name: 'wafermeasurement-shortlink', 
+      path: 'waferId/:waferId/measurement/:measurementName/sl/:guid', 
+      props: route => {return {shortLinkVm: route.params.shortLinkVm, guid: route.params.guid}}, 
       component: WaferMeas
     },
+
     {
       name: 'wafermeasurement-onlywafer',
       path: 'waferId/:waferId',

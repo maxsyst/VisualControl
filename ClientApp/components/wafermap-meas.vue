@@ -288,8 +288,8 @@ export default {
     this.dividers = (await this.$http.get(`/api/divider/all`)).data    
   },
 
-  mounted() {
-    this.routeHandler(this.$route.name, this.measurementRecordings)
+  async mounted() {
+    await this.routeHandler(this.$route.name)
   },
 
   computed: {
@@ -339,17 +339,23 @@ export default {
     },
 
     handleShortLinkSrv6: async function(shortLink) {
-      let shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data
-      this.$router.push({ name: 'wafermeasurement-shortlink', params: {shortLinkVm: shortLinkVm, guid: shortLinkVm.generatedId}})
+      let shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data     
     },
 
-    routeHandler: function(routeName) {
+    routeHandler: async function(routeName) {
       if(routeName === "wafermeasurement-onlywafer") {
         this.selectedWafer = this.$route.params.waferId
       }
       if(routeName === "wafermeasurement-fullselected") {
         this.selectedWafer = this.$route.params.waferId
-        this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id
+        await this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: this.$route.params.waferId}).then(() => 
+              this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id)      
+      }
+      if(routeName === "wafermeasurement-shortlink") {
+        this.selectedWafer = this.$route.params.waferId
+        await this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: this.$route.params.waferId}).then(() => 
+              this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id) 
+        this.$store.dispatch("wafermeas/updateSelectedDies", [...this.$route.params.shortLinkVm.selectedDies])
       }
     },
 

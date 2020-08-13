@@ -14,7 +14,8 @@ namespace VueExample.ViewModels
         public GraphicShortLinkViewModel(Graphic graphic, string mode = "initial", bool isLog = false)
         {
             GraphicId = graphic.Id;
-            if(graphic.Name.Contains("Count")) {
+            if(graphic.Name.Contains("Count")) 
+            {
                 KeyGraphicState = graphic.Id + "_HSTG";
             }
             else
