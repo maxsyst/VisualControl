@@ -12,11 +12,24 @@ export default {
 
     async beforeRouteEnter(to, from, next) {
         next(async vm => {
-            let shortLinkVm = (await vm.$http.get(`/api/shortlink/guid/${to.params.guid}`)).data
-            vm.$router.push({ name: 'wafermeasurement-shortlink', 
+            try {
+                let shortLinkVm = (await vm.$http.get(`/api/shortlink/guid/${to.params.guid}`)).data
+                vm.$router.push({ name: 'wafermeasurement-shortlink', 
                               params: {shortLinkVm: shortLinkVm, guid: shortLinkVm.generatedId, waferId: shortLinkVm.waferId, measurementName: shortLinkVm.measurementRecording.name.split('.')[1], guid: shortLinkVm.generatedId}
-                            })
+                })
+            }
+            catch(err) {
+                vm.showSnackbar('Ссылка не найдена в БД')
+                vm.$router.push({ name: 'pwafer'})
+            }
+           
         })      
     },
+
+    methods: {
+        showSnackbar(text) {
+            this.$store.dispatch("alert/error", text)
+        }
+    }
 }
 </script>
