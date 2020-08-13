@@ -46,5 +46,13 @@ namespace VueExample.Controllers
                                                 avStatisticParameters = shortLinkInfo.TObject.StatisticNameList}});
                       
         }
+
+        [HttpPost]
+        [Route("generate")]
+        public async Task<IActionResult> GenerateShortLink([FromBody] ShortLinkGenerateViewModel shortLinkGenerateViewModel)
+        {
+            var shortLink = await _shortLinkProvider.CreateSRV3(shortLinkGenerateViewModel);
+            return CreatedAtAction("Generate", shortLink);
+        }
     }
 }

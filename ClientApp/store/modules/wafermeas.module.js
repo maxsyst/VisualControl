@@ -193,6 +193,14 @@ export const wafermeas = {
     },
     dirtyCells: state => state.dirtyCells,
     hoveredDieId: state => state.hoveredDieId,
+    getGraphicSettingsKeyGraphicStates: state => keyGraphicStates => keyGraphicStates.map(function (kgs) {
+       return {
+          graphicId: +kgs.split('_')[0],
+          keyGraphicState: kgs,
+          mode: state.keyGraphicStateModes.find(k => k.keyGraphicState === kgs).mode,
+          isLog: state.keyGraphicStateModes.find(k => k.keyGraphicState === kgs).log
+       }
+    }),  
     getGraphicSettingsKeyGraphicState: state => keyGraphicState => state.graphicSettings.find(k => k.keyGraphicState === keyGraphicState).settings,
     getKeyGraphicStateMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).mode,
     getKeyGraphicStateLog: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).log,

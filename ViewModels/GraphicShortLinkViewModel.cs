@@ -11,6 +11,11 @@ namespace VueExample.ViewModels
         public string Mode { get; set; }
         public bool IsLog { get; set; }
 
+        public GraphicShortLinkViewModel()
+        {
+            
+        }
+
         public GraphicShortLinkViewModel(Graphic graphic, string mode = "initial", bool isLog = false)
         {
             GraphicId = graphic.Id;

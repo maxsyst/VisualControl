@@ -101,6 +101,13 @@
                          <v-btn color="primary" class="mt-4" block outlined @click="handleShortLinkSrv6(shortLinkSrv6)">Обработать ссылку</v-btn>
                       </v-col>
                     </v-row>
+                    <v-row justify-center column>
+                      <v-col lg="6">
+                      </v-col>
+                       <v-col lg="6">
+                         <v-btn color="primary" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
+                      </v-col>
+                    </v-row>
                    <v-row v-if="loading">
                       <v-subheader>Коэффициент отсеивания:</v-subheader>
                       <v-slider
@@ -340,6 +347,23 @@ export default {
 
     handleShortLinkSrv6: async function(shortLink) {
       let shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data     
+    },
+
+    generateShortLink: async function() {
+      let generateShortLinkViewModel = {
+        waferId: this.selectedWafer,
+        measurementRecordingId: this.selectedMeasurementId,
+        divider: this.selectedDivider,
+        selectedDies: [...this.selectedDies],
+        selectedGraphics: this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicStates'](this.selectedGraphics) 
+      }
+      await this.$http.post('/api/shortlink/generate', generateShortLinkViewModel)
+            .then((response) => {
+                this.showSnackbar("Название изменено")
+            })
+            .catch((error) => {
+                this.showSnackbar("Ошибка при изменении названия")
+            });
     },
 
     routeHandler: async function(routeName) {
