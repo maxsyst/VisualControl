@@ -244,7 +244,7 @@ export default {
   async created() {
     this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName
     this.fullWaferStatArray = (await this.$http
-      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}&&k=${this.statisticKf}`)).data
+      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data
     this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
     await this.getStatArray()
   },
@@ -307,7 +307,7 @@ export default {
 
     statisticKf: async function(newValue) {
       this.fullWaferStatArray = (await this.$http
-          .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&&keyGraphicState=${this.keyGraphicState}&&k=${newValue}`)).data
+          .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${newValue}`)).data
       this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
       await this.getStatArray()
     },
@@ -321,7 +321,7 @@ export default {
     mode() {
       return this.switchMode ? "stat" : "fixed"
     },
-
+  
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']
     },

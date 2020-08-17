@@ -64,6 +64,7 @@
                         item-value="id"
                         filled
                         outlined
+                        @change="measurementRecordingIdChanged($event)"
                         label="Выберите измерение:">
                       </v-select>
                       <v-progress-circular class="ml-4"
@@ -93,7 +94,7 @@
                         ></v-select>
                       </v-col>
                     </v-row>
-                    <v-row justify-center column>
+                    <v-row justify-center column v-if="loading">
                       <v-col lg="6">
                         <v-text-field outlined v-model="shortLinkSrv6" label="Короткая ссылка"></v-text-field>
                       </v-col>
@@ -101,11 +102,11 @@
                          <v-btn color="primary" class="mt-4" block outlined @click="handleShortLinkSrv6(shortLinkSrv6)">Обработать ссылку</v-btn>
                       </v-col>
                     </v-row>
-                    <v-row justify-center column>
-                      <v-col lg="6">
-                      </v-col>
-                       <v-col lg="6">
-                         <v-btn color="primary" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
+                    <v-row justify-center column v-if="selectedMeasurementId>0">
+                        <v-col lg="12">
+                         <v-text-field id="shortLinkTextBox" v-model="shortLinkSrv6" outlined readonly label="Короткая ссылка"></v-text-field>
+                         <v-btn v-if="shortLinkSrv6.length===0" color="primary" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
+                         <v-btn v-else color="green" class="mt-4" block @click="copyShortLink">Скопировать ссылку</v-btn>
                       </v-col>
                     </v-row>
                    <v-row v-if="loading">
@@ -335,6 +336,10 @@ export default {
 
   methods: {
 
+     showSnackbar(text) {
+        this.$store.dispatch("alert/success", text)
+     },
+
     onScroll(e) {
       if (typeof window === 'undefined') return
       const top = window.pageYOffset || e.target.scrollTop || 0
@@ -343,6 +348,12 @@ export default {
 
     toTop() {
       this.$vuetify.goTo(0)
+    },
+
+    copyShortLink: function() {
+      let copyText = document.querySelector("#shortLinkTextBox");
+      copyText.select();
+      document.execCommand("copy");
     },
 
     handleShortLinkSrv6: async function(shortLink) {
@@ -358,11 +369,12 @@ export default {
         selectedGraphics: this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicStates'](this.selectedGraphics) 
       }
       await this.$http.post('/api/shortlink/generate', generateShortLinkViewModel)
-            .then((response) => {
-                this.showSnackbar("Название изменено")
+            .then((response) => { 
+                this.shortLinkSrv6 = response.data.shortLink
+                this.showSnackbar("Ссылка успешно создана")
             })
             .catch((error) => {
-                this.showSnackbar("Ошибка при изменении названия")
+                this.showSnackbar("Ошибка при генерации ссылки")
             });
     },
 
@@ -372,15 +384,62 @@ export default {
       }
       if(routeName === "wafermeasurement-fullselected") {
         this.selectedWafer = this.$route.params.waferId
-        await this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: this.$route.params.waferId}).then(() => 
-              this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id)      
+        await this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: this.$route.params.waferId}).then(async () => {
+                this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id
+                await this.measurementRecordingIdChanged(this.selectedMeasurementId)
+        })      
       }
       if(routeName === "wafermeasurement-shortlink") {
-        this.selectedWafer = this.$route.params.waferId
-        await this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: this.$route.params.waferId}).then(() => 
-              this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id) 
-        this.$store.dispatch("wafermeas/updateSelectedDies", [...this.$route.params.shortLinkVm.selectedDies])
+        await this.resolveShortLink(this.$route.params)
       }
+    },
+
+    resolveShortLink: async function (params) {
+      this.selectedWafer = params.waferId
+      this.loading = true
+      this.$store.dispatch("wafermeas/updateSelectedDies", [])
+      this.$store.dispatch("wafermeas/clearDieValues")
+      this.$store.dispatch("wafermeas/clearSelectedGraphics")
+      await this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: params.waferId}).then(async () => {
+                let selectedMeasurementId = this.measurementRecordings.find(x => x.name === params.measurementName).id
+                let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
+                this.$store.dispatch("wafermeas/updateDieValues", dieValues)
+                let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))                
+                let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
+                this.avbSelectedDies = [...diesList]
+                this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
+                this.selectedDivider = params.shortLinkVm.divider.dividerK
+                this.$store.dispatch("wafermeas/updateSelectedDies", [...params.shortLinkVm.selectedDies])
+                this.$store.dispatch("wafermeas/updateSelectedGraphics", [...params.shortLinkVm.selectedGraphics.map(g => g.keyGraphicState)])
+                this.selectedMeasurementId = selectedMeasurementId
+                let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
+                this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
+                this.selectAllGraphics() 
+                this.loading = false
+                this.activeTab = "statistics"
+      }) 
+      
+    },
+
+    measurementRecordingIdChanged: async function(selectedMeasurementId) {
+      this.loading = true
+      this.$store.dispatch("wafermeas/updateSelectedDies", [])
+      this.$store.dispatch("wafermeas/clearDieValues")
+      this.$store.dispatch("wafermeas/clearSelectedGraphics")
+      let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
+      this.$store.dispatch("wafermeas/updateDieValues", dieValues)
+      let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
+      let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
+      this.avbSelectedDies = [...diesList]
+      this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
+      this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
+      this.selectAllGraphics() 
+      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
+      let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
+      this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
+      this.loading = false
+      this.activeTab = "statistics"
+      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === selectedMeasurementId).name}});
     },
 
     delDirtyCells: function(dirtyCellsList, selectedDies) {
@@ -411,26 +470,9 @@ export default {
       this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue}) 
     },
 
-    selectedMeasurementId: async function(newValue) {
-      this.loading = true
-      this.$store.dispatch("wafermeas/updateSelectedDies", [])
-      this.$store.dispatch("wafermeas/clearDieValues")
-      this.$store.dispatch("wafermeas/clearSelectedGraphics")
-      let dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
-      this.$store.dispatch("wafermeas/updateDieValues", dieValues)
-      let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
-      let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
-      this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
-      let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${newValue}`)).data
-      this.avbSelectedDies = [...diesList]
-      this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${newValue}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
-      this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
-      this.selectAllGraphics() 
-      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
-      this.loading = false
-      this.activeTab = "statistics"
-      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === newValue).name}});
-    },
+    // selectedMeasurementId: async function(newValue) {
+    //   
+    // },
 
     statisticKf: async function(k) {
       this.loading = true
