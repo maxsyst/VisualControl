@@ -30,8 +30,8 @@ namespace VueExample.Services
 
         public async Task<Dictionary<string, List<DieValue>>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
         {
-            var dieGraphicsList = _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId);
-            var dgDictionary = await dieGraphicsList.GroupBy(x => x.GraphicId, x => x).ToDictionaryAsync(x => x.Key, x => x.ToList());
+            var dieGraphicsList = await _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync();
+            var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId).ToDictionary(x => x.Key, x => x.ToList());
             var typeList = (await Task.WhenAll(dgDictionary.Keys.Select(async x => await _graphicService.GetById(x)))).ToList();
             var mappedDictionary = (DieGraphicsMappingParallel(dgDictionary, typeList)).OrderBy(x => Convert.ToInt32(x.Key.Split('_')[0])).ToDictionary(entry => entry.Key, entry => entry.Value);
             return mappedDictionary;

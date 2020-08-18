@@ -104,9 +104,26 @@
                     </v-row>
                     <v-row justify-center column v-if="selectedMeasurementId>0">
                         <v-col lg="12">
-                         <v-text-field id="shortLinkTextBox" v-model="shortLinkSrv6" outlined readonly label="Короткая ссылка"></v-text-field>
-                         <v-btn v-if="shortLinkSrv6.length===0" color="primary" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
-                         <v-btn v-else color="green" class="mt-4" block @click="copyShortLink">Скопировать ссылку</v-btn>
+                          <v-row>
+                            <v-col lg="12">
+                              <v-text-field id="shortLinkTextBox" v-model="shortLinkSrv6" outlined readonly label="Короткая ссылка"></v-text-field>
+                            </v-col>
+                          </v-row>
+                           <v-row>
+                              <v-col lg="4">
+                                <v-select :items="['srv3', 'srv6']"
+                                   outlined
+                                   v-model="generateShortLinkMode" 
+                                   label="Выберите тип ссылки"> 
+                                </v-select>
+                              </v-col>
+                              <v-col lg="8">
+                                <v-btn color="primary" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-btn v-if="shortLinkSrv6.length>0" color="green" class="mt-4" block @click="copyShortLink">Скопировать ссылку</v-btn>
+                            </v-row>
                       </v-col>
                     </v-row>
                    <v-row v-if="loading">
@@ -276,7 +293,8 @@ export default {
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
       statisticKf: 1.5,
-      shortLinkSrv6: ""
+      shortLinkSrv6: "",
+      generateShortLinkMode: 'srv3'
     };
   },
 
@@ -368,7 +386,7 @@ export default {
         selectedDies: [...this.selectedDies],
         selectedGraphics: this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicStates'](this.selectedGraphics) 
       }
-      await this.$http.post('/api/shortlink/generate', generateShortLinkViewModel)
+      await this.$http.post(`/api/shortlink/generate/${this.generateShortLinkMode}`, generateShortLinkViewModel)
             .then((response) => { 
                 this.shortLinkSrv6 = response.data.shortLink
                 this.showSnackbar("Ссылка успешно создана")
@@ -433,10 +451,10 @@ export default {
       this.avbSelectedDies = [...diesList]
       this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
       this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
-      this.selectAllGraphics() 
       this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
       let availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
       this.$store.dispatch("wafermeas/updateAvbGraphics", availiableGraphics)
+      this.selectAllGraphics() 
       this.loading = false
       this.activeTab = "statistics"
       await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === selectedMeasurementId).name}});
