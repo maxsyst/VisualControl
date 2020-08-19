@@ -56,7 +56,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="step in gradientData.gradientSteps">
+                            <tr v-for="step in gradientData.gradientSteps" :key="step.name">
                                 <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
                                 <td class="text-center">{{ step.borderDescription }}</td>
                                 <td class="text-center">{{ step.dieList.length }}</td>

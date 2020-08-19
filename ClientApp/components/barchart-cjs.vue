@@ -1,5 +1,6 @@
 <script>
 import { Bar } from 'vue-chartjs'
+import { mapGetters } from 'vuex';
 
 export default {
   extends: Bar,
@@ -72,28 +73,25 @@ export default {
 
   computed: {
 
-    wafer() {
-      return this.$store.getters['wafermeas/wafer']
-    },
-
-    selectedDies() {
-      return this.$store.getters['wafermeas/selectedDies']
-    },
+     ...mapGetters({
+      wafer: 'wafermeas/wafer',
+      selectedDies: 'wafermeas/selectedDies',
+      dieColors: 'wafermeas/dieColors',
+      dieValuesGetter: 'wafermeas/getDieValuesByKeyGraphicState',
+      modeGetter: 'wafermeas/getKeyGraphicStateMode',
+      dirtyCellsGetter: 'wafermeas/getDirtyCellsByGraphic'
+    }),
 
     dieValues() {
-      return this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState)
+      return this.dieValuesGetter(this.keyGraphicState)
     },
 
     mode() {
-      return this.$store.getters['wafermeas/getKeyGraphicStateMode'](this.keyGraphicState)
-    },
-
-    dieColors() {
-      return this.$store.getters['wafermeas/dieColors']
+      return this.modeGetter(this.keyGraphicState)
     },
 
     dirtyCells() {
-      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
+      return this.dirtyCellsGetter(this.keyGraphicState)
     }
   }
 }

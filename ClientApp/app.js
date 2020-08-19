@@ -43,7 +43,6 @@ const opts =  {
 }
 
 Vue.use(Vuetify)
-
 Vue.prototype.$http = axios;
 Vue.prototype._ = lodash
 

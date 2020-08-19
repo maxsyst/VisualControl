@@ -656,8 +656,6 @@ namespace VueExample.StatisticsCore
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-
-
             var returnList = new List<Statistics>
                 {
 

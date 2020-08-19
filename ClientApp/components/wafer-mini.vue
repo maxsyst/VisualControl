@@ -28,6 +28,7 @@
 
 <script>
   import Loading from 'vue-loading-overlay';
+  import { mapGetters } from 'vuex';
   export default {
     props: ['keyGraphicState', 'avbSelectedDies'],
     components: { Loading },
@@ -168,28 +169,26 @@
 
     computed:
     {
-      selectedDies() {
-        return this.$store.getters['wafermeas/selectedDies']
-      },
+
+      ...mapGetters({
+        wafer: 'wafermeas/wafer',
+        selectedDies: 'wafermeas/selectedDies',
+        sizeGetter: 'wafermeas/size',
+        dieColors: 'wafermeas/dieColors',
+        modeGetter: 'wafermeas/getKeyGraphicStateMode',
+        dirtyCellsGetter: 'wafermeas/getDirtyCellsByGraphic'
+      }),
 
       dirtyCells() {
-        return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
+        return this.dirtyCellsGetter(this.keyGraphicState)
       },
 
       mode() {
-        return this.$store.getters['wafermeas/getKeyGraphicStateMode'](this.keyGraphicState)
+        return this.modeGetter(this.keyGraphicState)
       },
 
       size() {
-        return this.$store.getters['wafermeas/size']("mini")
-      },
-
-      wafer() {
-        return this.$store.getters['wafermeas/wafer']
-      },
-
-      dieColors() {
-        return this.$store.getters['wafermeas/dieColors']
+        return this.sizeGetter("mini")
       },
 
       svgRotation() {

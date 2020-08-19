@@ -48,6 +48,7 @@
 
 <script>
   import Loading from 'vue-loading-overlay';
+  import { mapGetters } from 'vuex';
   export default {
     props: ['avbSelectedDies', 'mapMode'],
     components: { Loading },
@@ -191,20 +192,15 @@
 
     computed:
     {
-      dirtyCells() {
-        return this.$store.getters['wafermeas/dirtyCells']
-      },
-
-      selectedDies() {
-        return this.$store.getters['wafermeas/selectedDies']
-      },
-
+      ...mapGetters({
+        dirtyCells: 'wafermeas/dirtyCells',
+        selectedDies: 'wafermeas/selectedDies',
+        wafer: 'wafermeas/wafer',
+        sizes: 'wafermeas/size'
+      }),
+      
       size() {
-        return this.$store.getters['wafermeas/size']("big")
-      },
-
-      wafer() {
-        return this.$store.getters['wafermeas/wafer']
+        return this.sizes("big")
       },
 
       cutting() {

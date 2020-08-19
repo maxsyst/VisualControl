@@ -22,6 +22,10 @@
                         :headers="headers"
                         :items="pwaferData"
                         :search="search"
+                        :footer-props= "{
+                            itemsPerPageText: 'Строк на странице:',
+                            pageText: ''
+                        }"
                         @click:row="go">
                         <template v-slot:item.waferId="{ item }">
                             <v-chip color="indigo" v-on="on" label v-html="item.waferId" dark></v-chip>

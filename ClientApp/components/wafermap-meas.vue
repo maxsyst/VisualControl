@@ -105,7 +105,7 @@
                     <v-row justify-center column v-if="selectedMeasurementId>0">
                         <v-col lg="12">
                           <v-row>
-                            <v-col lg="12">
+                            <v-col lg="12 ">
                               <v-text-field id="shortLinkTextBox" v-model="shortLinkSrv6" outlined readonly label="Короткая ссылка"></v-text-field>
                             </v-col>
                           </v-row>
@@ -267,6 +267,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import MiniReport from "./wafermeas-report.vue"
 import AmChart from "./chart-lnr.vue"
 import ChartLNR from "./chart-lnr-cjs.vue";
@@ -320,30 +321,15 @@ export default {
 
   computed: {
 
-    dirtyCells() {
-      return this.$store.getters['wafermeas/dirtyCells']
-    },
-
-    selectedDies() {
-      return this.$store.getters['wafermeas/selectedDies']
-    },
-
-    selectedGraphics() {
-      return this.$store.getters['wafermeas/selectedGraphics']      
-    },
-
-    unSelectedGraphics() {
-      return this.$store.getters['wafermeas/unSelectedGraphics']  
-    },
-
-    availiableGraphics() {
-      return this.$store.getters['wafermeas/avbGraphics']
-    },
+    ...mapGetters({
+      dirtyCells: 'wafermeas/dirtyCells',
+      selectedDies: 'wafermeas/selectedDies',
+      selectedGraphics: 'wafermeas/selectedGraphics',
+      unSelectedGraphics: 'wafermeas/unSelectedGraphics',
+      availiableGraphics: 'wafermeas/avbGraphics',
+      measurementRecordings: 'wafermeas/measurements'
+    }),
     
-    measurementRecordings() {
-      return this.$store.getters['wafermeas/measurements']
-    },
-
     selectedGraphicsIcon() {
       if (this.availiableGraphics.length === this.selectedGraphics.length)
         return "check_box";
