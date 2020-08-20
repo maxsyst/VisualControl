@@ -13,6 +13,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
   export default {
     props: ['gradientSteps', "avbSelectedDies"],
     data() {
@@ -78,16 +79,14 @@
 
     computed:
     {
-      selectedDies() {
-        return this.$store.getters['wafermeas/selectedDies']
-      },
+      ...mapGetters({
+        selectedDies: 'wafermeas/selectedDies',
+        wafer: 'wafermeas/wafer',
+        sizeGetter: 'wafermeas/size'
+      }),
 
       size() {
-        return this.$store.getters['wafermeas/size']("gradient")
-      },
-
-      wafer() {
-        return this.$store.getters['wafermeas/wafer']
+        return this.sizeGetter("gradient")
       },
 
       svgRotation() {

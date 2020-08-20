@@ -22,7 +22,7 @@ namespace VueExample.Providers.Srv6
             var singleStatistic = singleParameterStatisticList.FirstOrDefault(x => x.Name == statParameterName);
             var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleStatistic.valueList);
             var gradientViewModel = new GradientViewModel();
-            var colorList = _colorService.GetGradientColors().Select(x => x.Hex).ToList();
+            var colorList = stepsQuantity <= 32 ? _colorService.GetGradientColors().Select(x => x.Hex).ToList() : Enumerable.Repeat("#3F51B5", stepsQuantity).ToList();
             if(singleStatistic == null) 
             {
                 return new GradientViewModel();

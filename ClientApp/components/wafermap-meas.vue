@@ -1,17 +1,55 @@
 <template>
   <v-container grid-list-lg>
-    <v-btn
-      v-scroll="onScroll"
-      v-show="fabToTop"
-      fab
-      dark
-      fixed
-      bottom
-      right
-      color="indigo"
-      @click="toTop">
-      <v-icon>keyboard_arrow_up</v-icon>
-    </v-btn>
+    <div class="usefulButtons d-flex flex-column">
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-scroll="onScroll"
+            v-show="fabToTop"
+            fab
+            small
+            dark
+            color="indigo"
+            v-on="on"
+            @click="toTop">
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
+          </template>
+          <span>Наверх страницы</span>
+      </v-tooltip>
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-scroll="onScroll"
+            v-show="fabToTop"
+            fab
+            small
+            dark
+            color="indigo"
+            v-on="on"
+            @click="selectAllDies(avbSelectedDies)">
+            <v-icon>all_inclusive</v-icon>
+          </v-btn>
+          </template>
+          <span>Выбрать все кристаллы</span>
+      </v-tooltip>
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-scroll="onScroll"
+            v-show="fabToTop"
+            fab
+            small
+            dark
+            color="indigo"
+            v-on="on"
+            @click="delDirtyCells(dirtyCells.statList, selectedDies)">
+            <v-icon>cached</v-icon>
+          </v-btn>
+          </template>
+          <span>Отсеять по всем параметрам</span>
+      </v-tooltip>            
+    </div>
     <loading
       :active.sync="loading"
       :can-cancel="false"
@@ -281,6 +319,7 @@ export default {
   data() {
     return {
       mapMode: "selected",
+      toggle_exclusive: null,
       fabToTop: false,
       fabToNext: false,
       fabToPrev: false,
@@ -507,8 +546,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
   .ps {
     height: 400px;
+  }
+  .usefulButtons {
+    bottom: 0;
+    right: 0;
+    position: fixed;
+    z-index: 9999;
+    opacity: 0.65;
   }
 </style>

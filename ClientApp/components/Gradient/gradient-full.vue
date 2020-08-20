@@ -44,33 +44,33 @@
                 </v-row>
             </v-col>
             <v-col lg="6">
-                <v-row>
-                    <v-simple-table>
-                        <template v-slot:default>
-                        <thead>
-                            <tr>
-                                <th class="text-center">Название</th>
-                                <th class="text-center">Интервал</th>
-                                <th class="text-center">Всего кристаллов</th>
-                                <th class="text-center">Цвет</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="step in gradientData.gradientSteps" :key="step.name">
-                                <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
-                                <td class="text-center">{{ step.borderDescription }}</td>
-                                <td class="text-center">{{ step.dieList.length }}</td>
-                                <td class="text-center"><v-chip :color="step.color" label dark></v-chip></td>
-                                <td class="text-center"> <v-icon v-if="step.dieList.length>0"
-                                                                 color="primary"
-                                                                 @click="deleteByColor(step.dieList)">
-                                                                 delete_outline</v-icon>
-                                </td>
-                            </tr>
-                        </tbody>
-                        </template>
-                    </v-simple-table>
-                </v-row>
+                    <perfect-scrollbar>
+                        <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Название</th>
+                                    <th class="text-center">Интервал</th>
+                                    <th class="text-center">Всего кристаллов</th>
+                                    <th class="text-center">Цвет</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="step in gradientData.gradientSteps" :key="step.name">
+                                    <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
+                                    <td class="text-center border">{{ step.borderDescription }}</td>
+                                    <td class="text-center">{{ step.dieList.length }}</td>
+                                    <td class="text-center"><v-chip :color="step.color" label dark></v-chip></td>
+                                    <td class="text-center"> <v-icon v-if="step.dieList.length>0"
+                                                                    color="primary"
+                                                                    @click="deleteByColor(step.dieList)">
+                                                                    delete_outline</v-icon>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
+                    </perfect-scrollbar>
             </v-col>
         </v-row>
         <v-row>
@@ -92,7 +92,7 @@
                loading: false,
                activeTab: "gradientMapTab",
                gradientData: {},
-               stepsQuantity: 8
+               stepsQuantity: 32
         }
     },
 
@@ -136,3 +136,13 @@
     }
 }
 </script>
+
+<style scoped>
+  .ps {
+    height: 475px;
+  }
+
+  .border {
+    font-size: x-small;
+  }
+</style>
