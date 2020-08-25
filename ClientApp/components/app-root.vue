@@ -55,30 +55,23 @@
           </v-list-item>
 
         </v-list>
-
-        
-
       </v-navigation-drawer>
       <v-app-bar v-if="auth" color="indigo" fixed app>
-        <v-toolbar-side-icon v-if="auth" @click.stop="drawer = !drawer"><v-icon>drag_indicator</v-icon></v-toolbar-side-icon>
+        <v-toolbar-side-icon v-if="auth" @click.stop="changeDrawer(drawer)"><v-icon>drag_indicator</v-icon></v-toolbar-side-icon>
         <v-toolbar-title>Система контроля за измерениями 2.0</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn to="/login" dark outlined>Выйти из системы </v-btn>
       </v-app-bar>
       <v-content>
-
         <v-container fluid>
-
           <v-row justify-start align-center>
             <router-view>
             </router-view>
           </v-row>
-
           <v-snackbar v-model="$store.state.alert.visible" top>
             {{ $store.state.alert.message }}
             <v-btn color="pink" timeout="1500" text @click="$store.state.alert.visible = false">Закрыть</v-btn>
         </v-snackbar>
-
         <v-dialog
             v-model="$store.state.loading.visible"
             hide-overlay
@@ -95,11 +88,8 @@
               </v-card-text>
           </v-card>
         </v-dialog>
-
         </v-container>
-
       </v-content>
-
     </v-app>
   </div>
 </template>
@@ -108,45 +98,49 @@
   import { routes } from '../router/routes'
   import Avatar from 'vue-avatar'
     export default {
-
+    
+     data () {
+        return {
+          routes
+        }
+      },
 
      components:
      {
         Avatar
-    },
+     },
 
-     computed:
-     {
-       auth()
-       {
-         if (this.$route.name === "login" || this.$route.name === "registration")
-         {
-           return false;
-         }
-         else
-         {
+     methods: {
+
+       changeDrawer(drawer) {
+          this.$store.dispatch("service/changeDrawer", drawer)
+       }
+
+     },
+
+     computed: {
+
+       drawer() {
+         return this.$store.getters['service/drawer']
+       },
+
+       auth() {
+         if (this.$route.name === "login" || this.$route.name === "registration") {
+           return false
+         } else {
            this.drawer = true;
            return true;
          }
        },
 
-       username()
-       {
-         if (this.$store.state.authentication.user !== null)
-         {
-           return this.$store.state.authentication.user.firstName + " " + this.$store.state.authentication.user.surname;
-         }
-         else
-         {
-           return "";
+       username() {
+         if (this.$store.state.authentication.user !== null) {
+           return this.$store.state.authentication.user.firstName + " " + this.$store.state.authentication.user.surname
+         } else {
+           return ""
          }
            
        }
-       
-     },
-
-     methods:
-     {
        
      },
 
@@ -154,15 +148,9 @@
        $route(to, from) {
           
        }
-     },
+     }
 
-      data () {
-        return {
-          routes,
-          drawer: false,
-          
-        }
-      }
+     
     }
 </script>
 
