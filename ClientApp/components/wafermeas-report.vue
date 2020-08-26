@@ -8,7 +8,7 @@
                             Номер пластины:
                         </v-col>
                         <v-col lg="3">
-                            <v-chip color="indigo" large label v-html="waferId" dark></v-chip>
+                            <v-chip color="indigo" @click="$router.push({ name: 'wafer-path', params: { waferId: waferId } })" large label v-html="waferId" dark></v-chip>
                         </v-col>
                         <v-col lg="2" offset-lg="1" class="d-flex align-center">
                             Код изделия:

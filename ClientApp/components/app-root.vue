@@ -60,6 +60,7 @@
         <v-toolbar-side-icon v-if="auth" @click.stop="changeDrawer(drawer)"><v-icon>drag_indicator</v-icon></v-toolbar-side-icon>
         <v-toolbar-title>Система контроля за измерениями 2.0</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-btn class="ma-2" color="indigo" to="/" dark fab small><v-icon>home</v-icon></v-btn>
         <v-btn to="/login" dark outlined>Выйти из системы </v-btn>
       </v-app-bar>
       <v-content>

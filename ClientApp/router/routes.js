@@ -7,6 +7,7 @@ import DangerLevel from 'components/dangerlevel-crud'
 import DefectType from 'components/defecttype-crud'
 import Device from 'components/device-crud'
 import WaferMap from 'components/wafermap-full'
+import WaferPath from 'components/wafer-path'
 import SelectBasic from 'components/select-basic'
 import Kurbatov from 'components/export-kurb'
 import StageTable from 'components/stage-table.vue'
@@ -42,6 +43,7 @@ export const routes = [
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
   { name: 'pwafer', path: '/pwafer', component: PWafer, display: 'Просмотр измерений', nav: true },  
   { name: 'shortlink-handler', path: '/sl/:guid', component: ShortLinkHandler },
+  { name: 'wafer-path', path: '/waferpath/:waferId', component: WaferPath },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
     children: [
     { 
