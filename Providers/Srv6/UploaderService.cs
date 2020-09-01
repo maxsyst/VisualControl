@@ -143,7 +143,7 @@ namespace VueExample.Providers.Srv6
             var shorturl = _shortLinkProvider.Obfuscate(dieidlink.Remove(0,1));
             var fullLink = "srv6.svr.lan/Ns/WaferMapFaster.aspx?wid=" + uploadingFile.WaferId + "&idmrpcm=" + uploadingFile.MeasurementRecordingId + "&islink=t&dies=" +
                 shorturl + "&square=" + "0" + "&rddl=" + "0" + "&lg=" + "false";
-            var link = await _shortLinkProvider.Create(fullLink);
+            var link = await _shortLinkProvider.CreateSRV6(fullLink);
             return link.ShortLink;
         }
     }

@@ -7,6 +7,7 @@ namespace VueExample.ViewModels
         public string KeyGraphicState { get; set; }
         public List<long?> dieIdList {get; set; }
         public string Divider { get; set; }
+        public double K { get; set; }
 
         public StatisticSingleGraphicViewModel()
         {

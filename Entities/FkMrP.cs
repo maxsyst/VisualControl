@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using VueExample.Models.SRV6;
+
 namespace VueExample.Entities
 {
     [Table ("FK_MR_P")]
@@ -16,6 +19,8 @@ namespace VueExample.Entities
 
         [Column ("Wafer_id")]
         public string WaferId { get; set; }
+        
+        public MeasurementRecording MeasurementRecording { get; set; }
 
     }
 }

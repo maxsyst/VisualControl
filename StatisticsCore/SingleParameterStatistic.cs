@@ -19,45 +19,38 @@ namespace VueExample.StatisticsCore
         public bool IsHasFixed { get; set; } = false;
         public DirtyCells DirtyCells{get; set; } 
 
-        public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList)
+        public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, double k)
         {
-             this.dieList = new List<long?>(dieList);
-             this.Name = name;
-             this.valueList = new List<double>(valueList);
-             this.DirtyCells = new DirtyCells();
-             CalculateDirtyCellsStat();
-            
-             
+            this.dieList = new List<long?>(dieList);
+            this.Name = name;
+            this.valueList = new List<double>(valueList);
+            this.DirtyCells = new DirtyCells();
+            CalculateDirtyCellsStat(k);
         }
 
         public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, DirtyCells originDirtyCells)
         {
-             this.dieList = new List<long?>(dieList);
-             this.Name = name;
-             this.valueList = new List<double>(valueList);
-             this.DirtyCells = new DirtyCells();
-             this.DirtyCells.StatList = originDirtyCells.StatList.Intersect(dieList).ToList();
-             this.DirtyCells.FixedList = originDirtyCells.FixedList.Intersect(dieList).ToList();
-             
+            this.dieList = new List<long?>(dieList);
+            this.Name = name;
+            this.valueList = new List<double>(valueList);
+            this.DirtyCells = new DirtyCells();
+            this.DirtyCells.StatList = originDirtyCells.StatList.Intersect(dieList).ToList();
+            this.DirtyCells.FixedList = originDirtyCells.FixedList.Intersect(dieList).ToList();
         }
     
 
-        private void CalculateDirtyCellsStat()
+        private void CalculateDirtyCellsStat(double k)
         {
-            var dds = new DataDescriptiveStatistics(valueList);
+            var dds = new DataDescriptiveStatistics(valueList.Where(v => !Double.IsNaN(v)).ToList());
             for (int i = 0; i < valueList.Count; i++)
             {
-                if((dds.Quartile3Double + 1.5*dds.IQRDouble < valueList[i] || dds.Quartile1Double - dds.IQRDouble*1.5 > valueList[i] || double.IsNaN(valueList[i])))
+                if((dds.Quartile3Double + k*dds.IQRDouble < valueList[i] || dds.Quartile1Double - dds.IQRDouble*k > valueList[i] || double.IsNaN(valueList[i])))
                 {
-                     this.DirtyCells.StatList.Add(dieList[i]);
+                    this.DirtyCells.StatList.Add(dieList[i]);
                 }
             }
-
-            this.LowBorderStat = GetFormat(dds.Quartile1Double - dds.IQRDouble * 1.5);
-            this.TopBorderStat = GetFormat(dds.Quartile3Double + 1.5 * dds.IQRDouble);
-
-
-            
+            this.LowBorderStat = GetFormat(dds.Quartile1Double - dds.IQRDouble * k);
+            this.TopBorderStat = GetFormat(dds.Quartile3Double + k * dds.IQRDouble);
         }
 
         public SingleParameterStatistic CalculateDirtyCellsFixed(StatParameterForStage statParameterForStage)

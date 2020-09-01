@@ -35,7 +35,7 @@ namespace VueExample.Controllers
         public IActionResult GetKurbatovByMeasurementId([FromQuery] int measurementRecordingId, [FromQuery] string statNames)
         {
             // string n = "S21<sub>(2.5GHz)</sub>(коэффициент передачи)$S<sub>22(5GHz)</sub>";
-            var result = _exportProvider.Export(measurementRecordingId, statNames, "$");
+            var result = _exportProvider.Export(measurementRecordingId, statNames, "$", 1.5);
             return Ok(result);
         }
 

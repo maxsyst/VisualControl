@@ -36,7 +36,7 @@ namespace VueExample.Controllers
         [ProducesResponseType (StatusCodes.Status404NotFound)]
         [Route("codeproduct/{codeproductid:int}")]
         public async Task<IActionResult> GetStagesByCodeProductId([FromRoute] int codeProductId) 
-               
+                    
             => Ok(await _stageProvider.GetStagesByProcessId((await _processProvider.GetProcessByCodeProductId(codeProductId)).ProcessId));
        
         [HttpGet]
@@ -55,6 +55,15 @@ namespace VueExample.Controllers
         
             => Ok(await _stageProvider.GetById(stageId));
 
+        [HttpGet]
+        [ProducesResponseType (typeof(Stage), StatusCodes.Status200OK)]
+        [ProducesResponseType (StatusCodes.Status404NotFound)]
+        [Route("idmr/{measurementRecordingId:int}")]
+        public async Task<IActionResult> GetByMeasurementRecordingId([FromRoute] int measurementRecordingId) {
+            var stage = await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId);
+            return stage.IsNullObject ? (IActionResult)NotFound() : Ok(stage);
+        }
+        
         [HttpPut]
         [ProducesResponseType (typeof(Stage), StatusCodes.Status201Created)]
         [Route("create")]

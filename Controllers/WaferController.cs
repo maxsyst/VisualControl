@@ -29,6 +29,13 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [Route("pwafer")]
+        public async Task<IActionResult> GetPWafer()
+        {
+           return Ok(await _waferProvider.GetPWafer());
+        }
+
+        [HttpGet]
         [Route("getallwithdefects")]
         public IActionResult GetAllWithDefects()
         {

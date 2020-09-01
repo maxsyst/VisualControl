@@ -14,7 +14,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
         {
             _statisticService = statisticService;
         }
-        public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider)
+        public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider, double k)
         {
             var statisticsItem = new Statistics();
             var dieIdList = new List<long?>();             
@@ -29,7 +29,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
 
             foreach (var stat in statisticsItem.GetStatistics(dieValues.FirstOrDefault().XList, commonYList, graphic, divider)) 
             {
-                singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieIdList, stat.FullList).CalculateDirtyCellsFixed(_statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
+                singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieIdList, stat.FullList, k).CalculateDirtyCellsFixed(_statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
             }
 
             return singleParameterStatisticsList;

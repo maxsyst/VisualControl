@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -78,7 +79,7 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetByIdmr([FromQuery] int idmr)
         {
             var elementList = await _elementService.GetByIdmr(idmr);
-            return elementList.Count > 0 ? Ok(elementList) : (IActionResult)NotFound();           
+            return elementList.Count > 0 ? Ok(elementList) : Ok(new List<Element>{new Element{IsNullObject = true}});           
         }
 
         [HttpPost]

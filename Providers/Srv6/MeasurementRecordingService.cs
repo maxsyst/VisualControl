@@ -61,7 +61,7 @@ namespace VueExample.Providers.Srv6
         public async Task<FkMrGraphic> AddOrGetFkMrGraphics(FkMrGraphic fkMrGraphic) 
         {
             var newFkMrGraphic = await _srv6Context.FkMrGraphics.FirstOrDefaultAsync(x => x.MeasurementRecordingId == fkMrGraphic.MeasurementRecordingId
-                                                                                        && x.GraphicId == fkMrGraphic.GraphicId);
+                                                                                       && x.GraphicId == fkMrGraphic.GraphicId);
             if(newFkMrGraphic is null)
             {
                 _srv6Context.FkMrGraphics.Add(fkMrGraphic);
@@ -72,12 +72,11 @@ namespace VueExample.Providers.Srv6
 
         public async Task<List<MeasurementRecording>> GetByWaferId(string waferId)
         {
-            var measurementRecordingsList = new List<MeasurementRecording>();
-            var idmrList = await _srv6Context.FkMrPs.Where(x => x.WaferId == waferId).Select(x => x.MeasurementRecordingId).ToListAsync();
-            foreach (var idmr in idmrList)
-            {
-                measurementRecordingsList.Add(_srv6Context.MeasurementRecordings.Find(idmr));
-            }
+            var measurementRecordingsList = await _srv6Context.FkMrPs
+                                                  .Where(x => x.WaferId == waferId && x.Id247 == 247)
+                                                  .AsNoTracking()
+                                                  .Select(x => x.MeasurementRecording)
+                                                  .ToListAsync();
             return measurementRecordingsList;
         }
 
@@ -89,13 +88,12 @@ namespace VueExample.Providers.Srv6
 
         public async Task<MeasurementRecording> GetByNameAndWaferId(string name, string waferId) 
         {
-              return await _srv6Context.FkMrPs  .Where(f => f.WaferId == waferId)
-                                                .Join(_srv6Context.MeasurementRecordings, 
-                                                c => c.MeasurementRecordingId, 
-                                                p => p.Id, 
-                                                (c,p) => p).Where(x => x.Name == name).FirstOrDefaultAsync();            
+            return await _srv6Context.FkMrPs.Where(f => f.WaferId == waferId)
+                                            .Join(_srv6Context.MeasurementRecordings, 
+                                            c => c.MeasurementRecordingId, 
+                                            p => p.Id, 
+                                            (c,p) => p).Where(x => x.Name == name).FirstOrDefaultAsync();            
         }
-
 
         public async Task<MeasurementRecording> GetByBmrIdAndName(int bmrId, string name) 
             => await _srv6Context.MeasurementRecordings.FirstOrDefaultAsync(x => x.Name == name && x.BigMeasurementRecordingId == bmrId);
