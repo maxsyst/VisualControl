@@ -30,6 +30,22 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [Route("GetDirtyCellsByMeasurementRecordingOnly")]
+        public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId)
+        {
+            var k = 1.5;
+            var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
+            string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
+            var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
+            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            var dieValuesDictionary = await cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
+            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
+            var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
+            var dirtyCells = statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesList.Count);
+            return Ok(new {goodCellsPercentage = dirtyCells.StatPercentageFullWafer, dirtyCellsArray = dirtyCells.StatList, diesCount = diesList.Count});
+        }
+
+        [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecording")]
         public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount, [FromQuery] double k)
         {
