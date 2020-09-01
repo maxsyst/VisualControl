@@ -39,7 +39,7 @@ namespace VueExample.Services
             }
             else
             {
-                dies = _dieProvider.GetDiesByWaferId(wafer.WaferId).ToList();
+                dies = await _dieProvider.GetDiesByWaferId(wafer.WaferId);
             }
 
             var foldersBadGoodList = System.IO.Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly).ToList();

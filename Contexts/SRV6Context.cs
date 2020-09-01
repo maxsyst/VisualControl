@@ -4,6 +4,7 @@ using VueExample.Entities.Configurations;
 using VueExample.Models;
 using VueExample.Models.SRV6;
 using VueExample.Models.SRV6.Uploader;
+using VueExample.ResponseObjects;
 using Graphic = VueExample.Models.SRV6.Graphic;
 using MeasurementRecordingElement = VueExample.Models.SRV6.MeasurementRecordingElement;
 
@@ -45,12 +46,15 @@ namespace VueExample.Contexts
         public DbSet<Divider> Dividers { get; set; }
         public DbSet<StatParameterForStage> StatParametersForStage { get; set; }
 
+        public DbQuery<PWafer> PWaferQuery { get; set; }
+
         protected override void OnModelCreating (ModelBuilder modelBuilder) 
         {
             modelBuilder.ApplyConfiguration(new KurbatovParameterBordersConfiguration());
             modelBuilder.ApplyConfiguration(new KurbatovParameterConfiguration());
             modelBuilder.ApplyConfiguration(new StandartMeasurementPatternConfiguration());
             modelBuilder.ApplyConfiguration(new StandartPatternConfiguration());
+            modelBuilder.ApplyConfiguration(new FkMrPConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)

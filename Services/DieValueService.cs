@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using VueExample.Contexts;
 using VueExample.Entities;
@@ -9,6 +7,9 @@ using VueExample.Models.SRV6;
 using VueExample.Parsing.Concrete;
 using VueExample.Parsing.Strategies;
 using VueExample.Providers.Srv6.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
+using System;
 
 namespace VueExample.Services
 {
@@ -27,50 +28,43 @@ namespace VueExample.Services
             await _srv6Context.SaveChangesAsync();
         }
 
-        public Dictionary<string, List<DieValue>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
+        public async Task<Dictionary<string, List<DieValue>>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
         {
-            var dieGraphicsList = new List<DieGraphics>();
-            dieGraphicsList.AddRange(_srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId).ToList());
-            var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId, x => x).ToDictionary(x => x.Key, x => x.ToList());
-            return DieGraphicsMappingParallel(dgDictionary).ToDictionary(entry => entry.Key, entry => entry.Value);;
+            var dieGraphicsList = await _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync();
+            var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId).ToDictionary(x => x.Key, x => x.ToList());
+            var typeList = (await Task.WhenAll(dgDictionary.Keys.Select(async x => await _graphicService.GetById(x)))).ToList();
+            var mappedDictionary = (DieGraphicsMappingParallel(dgDictionary, typeList)).OrderBy(x => Convert.ToInt32(x.Key.Split('_')[0])).ToDictionary(entry => entry.Key, entry => entry.Value);
+            return mappedDictionary;
         }
 
-        public List<long?> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
+        public async Task<List<long?>> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
         {
-            var diesList = new List<long?>();            
-            return _srv6Context.DiesParameterOld.Where( x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToList();
+            return await _srv6Context.DiesParameterOld.Where(x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToListAsync();
         }
-
-        private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary)
+       
+        private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary, List<Graphic> graphicsList)
         {
             var dieValueDictionary = new ConcurrentDictionary<string, List<DieValue>>();
-            Object lockObj = new Object();    
-            Parallel.ForEach(dieGraphicsDictionary, (dieGraphicList) =>
+            Parallel.ForEach(dieGraphicsDictionary, dieGraphicList => 
             {
-                
-                Parallel.ForEach(dieGraphicList.Value, (dieGraphic) =>
+                foreach(var dieGraphic in dieGraphicList.Value)
                 {
-                    lock (lockObj)
+                    var type = graphicsList.FirstOrDefault(x => x.Id == dieGraphic.GraphicId).Type;
+                    var afterParseDictionary = (SelectGraphicSrv6ParsingStrategy(type)).ParseStringGraphic(dieGraphic);
+                    foreach (var item in afterParseDictionary)
                     {
-                        var afterParseDictionary = SelectGraphicSrv6ParsingStrategy(dieGraphic.GraphicId).ParseStringGraphic(dieGraphic);
-                        foreach (var item in afterParseDictionary)
-                        {
-                            dieValueDictionary.TryAdd(item.Key, new List<DieValue>());
-                            dieValueDictionary[item.Key].Add(item.Value);                            
-                        }
-                    }                   
-                });               
+                        dieValueDictionary.TryAdd(item.Key, new List<DieValue>());
+                        dieValueDictionary[item.Key].Add(item.Value);                            
+                    }
+                }   
             });
-
            return dieValueDictionary;
-        }
-
-        private IStringGraphicSRV6ParsingStrategy SelectGraphicSrv6ParsingStrategy(int graphicId)
+        }               
+        
+        private IStringGraphicSRV6ParsingStrategy SelectGraphicSrv6ParsingStrategy(int type)
         {
-            var type = _graphicService.GetById(graphicId).Type;
             IStringGraphicSRV6ParsingStrategy stringGraphicSrv6ParsingStrategy = new CommonLinearStringGraphicParsingStrategy();
-            if (type is 2)
-                stringGraphicSrv6ParsingStrategy = new HistogramStringGraphicParsingStrategy();
+            if (type is 2) stringGraphicSrv6ParsingStrategy = new HistogramStringGraphicParsingStrategy();
             else if (type is 4) stringGraphicSrv6ParsingStrategy = new G4StringGraphicParsingStrategy();
             return stringGraphicSrv6ParsingStrategy;
         }

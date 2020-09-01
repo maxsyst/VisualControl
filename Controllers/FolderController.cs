@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Models;
-using VueExample.Providers;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 

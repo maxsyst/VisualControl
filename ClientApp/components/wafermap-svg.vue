@@ -1,16 +1,11 @@
 <template>
-<v-container fluid grid-list-lg>
-  
-    <svg :style="svgRotation" :height="fieldHeight" :width="fieldWidth" :viewBox="fieldViewBox">
-      
-     <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25"
-                    :points="cutting" />
-              
+<v-container>  
+    <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
+      <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
-        <rect  :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="selectDie" @contextmenu="showmenu" />
-        
+        <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie" @contextmenu="showmenu" />
+        <text v-if="!die.code.includes('-')" :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" :font-size="fontSize" :fill="die.text">{{die.code}}</text>
       </g>
-    
     </svg>
     <v-menu v-model="menu"
             :position-x="x"
@@ -18,51 +13,48 @@
             absolute
             offset-y>
       <v-list>
-        <v-list-item v-for="(item, index) in menuItems"
-                     :key="index">
-                    
+        <v-list-item v-for="(item, index) in menuItems" :key="index">                    
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
 
-  <!-- <v-bottom-navigation :value="showNav"
-                :active.sync="currentOrientation"
-                color="transparent">
+    <v-bottom-navigation 
+      v-if="dies.length>0" 
+      :value="showNav"
+      v-model="currentOrientation"
+      color="transparent">
+
     <v-btn :value="0" text color="#fc0">
       0°
-      
     </v-btn>
 
     <v-btn :value="90" text color="#fc0">
       90°
-
     </v-btn>
 
     <v-btn :value="180" text color="#fc0">
       180°
-     
     </v-btn>
 
     <v-btn :value="270" text color="#fc0">
       270°
-     
     </v-btn>
     
-  </v-bottom-navigation> -->
+  </v-bottom-navigation>
 
 </v-container>
 </template>
 
 <script>
   import Loading from 'vue-loading-overlay';
+  import { mapGetters } from 'vuex';
   export default {
-    props: ['waferId', 'avbSelectedDies', 'streetSize', 'fieldHeight', 'fieldWidth'],
+    props: ['avbSelectedDies', 'mapMode'],
     components: { Loading },
     data() {
       return {
         dies: [],
-        isloading: false,
         activeBtn: 1,
         showNav: false,
         x: 0,
@@ -74,170 +66,153 @@
          { title: "Mocking" }
         ],
         menu: false
-        
-      
-       
       }
     },
 
     methods:
     {
-      
-      selectDie(e)
-      {
+      selectDie(e) {
         e.preventDefault()
-        var dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id;
-      
-        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
-        {
-            
-             let position =  this.selectedDies.indexOf(dieId);
-             if ( ~position ) 
-             {
-                 this.selectedDies.splice(position, 1);
-                 this.$store.commit("wafermeas/updateSelectedDies", this.selectedDies);
-             }
-             else
-             {
-                 this.selectedDies.push(dieId);
-                 this.$store.commit("wafermeas/updateSelectedDies", this.selectedDies);
-             }
+        let dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id      
+        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
+          let position =  this.selectedDies.indexOf(dieId);
+          if ( ~position ) {
+            this.selectedDies.splice(position, 1);
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          } else {
+            this.selectedDies.push(dieId);
+            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          }
         }
       
       },
 
-     
       showmenu(e) {
         e.preventDefault()
-        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive)
-        {
+        if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
           this.showMenu = false
           this.x = e.clientX;
           this.y = e.clientY;
-          this.selectedDieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id;
+          let selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value]
           this.$nextTick(() => {
             this.menu = true
-          });
+            this.menuItems[0].title = "Код кристалла: " + selectedDie.code
+          })
         }
-       
       }
     },
-
-    
-   
     
     watch:
     {
-    
-
-      
-      waferId: {
-
-       
-        immediate: true,
-        handler(newVal, oldVal) {
-          this.isloading = true;
-          let fieldObject = {};
-          fieldObject.waferId = this.waferId;
-          fieldObject.fieldHeight = this.fieldHeight;
-          fieldObject.fieldWidth = this.fieldWidth;
-          fieldObject.streetSize = this.streetSize;
-          this.$http({
-            method: "post",
-            url: `/api/wafermap/getformedwafermap`, data: fieldObject, config: {
-              headers: {
-                'Accept': "application/json",
-                'Content-Type': "application/json"
-              }
-            }
-          })
-            .then((response) => {
-              if (response.status === 200) {
-                this.dies = JSON.parse(response.data.waferMapFormed);               
-                this.initialOrientation = +response.data.orientation;
-                this.currentOrientation = this.initialOrientation;
-                this.isloading = false;
-                this.showNav = false;
-                this.dies.forEach(function(cell) {
-                    cell.fill = "#A1887F";
-                    cell.isActive = false;
-                });
-              }
-
-
-
-            })
-            .catch((error) => {
-
-              if (error.response.status === 400) {
-                this.dies = [];
-                this.isloading = false;
-              }
-            });
-
-
-
-        }
-      },
-
-    
-    
+      'wafer.id': function(newVal) {
+          this.dies = this.wafer.formedMapBig.dies              
+          this.initialOrientation = +this.wafer.formedMapBig.orientation;
+          this.currentOrientation = this.initialOrientation;
+          this.showNav = false;
+          this.dies.forEach(die => {
+            die.fill = "#A1887F";
+            die.text = "#303030"
+            die.fillOpacity = 1.0
+            die.isActive = false;
+          });
+      },    
 
       fieldWidth: {
         immediate: true,
         handler(newVal, oldVal) {
-          this.fieldViewBox = `0 0 ${this.fieldHeight} ${this.fieldWidth}`;
+          this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
         }
       },
 
-
-      selectedDies: function()
-      {
-        this.dies.forEach(function(cell) {
-                    cell.fill = "#A1887F";
-                    cell.isActive = false;
-                });
-        if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0)
-        {
-
-          for (var i = 0; i < this.avbSelectedDies.length; i++) 
-          {
-            //Bad smell
-            this.dies.find(d => d.id === this.avbSelectedDies[i]).fill = "#8C9EFF";
-            this.dies.find(d => d.id === this.avbSelectedDies[i]).isActive = true;
-          }  
-       
-          for (var i = 0; i < this.selectedDies.length; i++) 
-          {
-            
-            this.dies.find(d => d.id === this.selectedDies[i]).fill = "#3D5AFE";
-           
-          }    
-          
-         
+      mapMode: function(newVal) {
+        if(newVal === "selected") {
+            for (let i = 0; i < this.avbSelectedDies.length; i++) {
+              let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+              die.fill = "#8C9EFF";
+              die.text = "#303030"
+              die.fillOpacity = 1.0
+              die.isActive = true;
+            }  
+        
+            for (let i = 0; i < this.selectedDies.length; i++) {   
+              let die = this.dies.find(d => d.id === this.selectedDies[i])         
+              die.fill = "#3D5AFE"
+              die.text = "#FFF9C4"      
+            }        
         }
 
-       }
+        if(newVal === "dirty") {
+          this.avbSelectedDies.forEach(avb => {
+            let die = this.dies.find(d => d.id === avb)
+            die.fill = this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
+            die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+            die.text = this.selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
+            die.isActive = true
+          })
+        }
+      },
+
+      selectedDies: function() {
+        if(this.dies.length > 0) {
+          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
+            this.dies.forEach(function(die) {
+              die.fill = "#A1887F"
+              die.text = "#303030"
+              die.fillOpacity = 1.0
+              die.isActive = false;
+            });
+            if(this.mapMode === "selected") {
+              for (let i = 0; i < this.avbSelectedDies.length; i++) {
+                let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+                die.fill = "#8C9EFF";
+                die.text = "#303030"
+                die.isActive = true;
+              }  
+        
+              for (let i = 0; i < this.selectedDies.length; i++) {            
+                let die = this.dies.find(d => d.id === this.selectedDies[i])         
+                die.fill = "#3D5AFE"
+                die.text = "#FFF9C4"           
+              }          
+            }
+            if(this.mapMode === "dirty") {
+              this.avbSelectedDies.forEach(avb => {
+                let die = this.dies.find(d => d.id === avb)
+                die.fill = this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
+                die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+                die.text = this.selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
+                die.isActive = true;
+              })
+            }
+          }
+        }
+        
+      }
     },
 
     computed:
     {
-      selectedDies()
-      {
-            return this.$store.state.wafermeas.selectedDies
+      ...mapGetters({
+        dirtyCells: 'wafermeas/dirtyCells',
+        selectedDies: 'wafermeas/selectedDies',
+        wafer: 'wafermeas/wafer',
+        sizes: 'wafermeas/size'
+      }),
+      
+      size() {
+        return this.sizes("big")
       },
-      cutting()
-      {
+
+      cutting() {
         //ONLY IF HEIGHT === WIDTH
-        let bBorder = this.fieldHeight / 6;
-        let tBorder = this.fieldHeight / 6 * 5;
-        if (this.initialOrientation === -1)
-        {
+        let bBorder = this.size.fieldHeight / 6;
+        let tBorder = this.size.fieldHeight / 6 * 5;
+        if (this.initialOrientation === -1) {
           return `0,0 0,0`
         }
         switch (this.initialOrientation) {
           case 0:
-            return `${bBorder},${this.fieldHeight} ${tBorder},${this.fieldHeight}`
+            return `${bBorder},${this.size.fieldHeight} ${tBorder},${this.size.fieldHeight}`
             break;
           case 90:
             return `0,${bBorder} 0,${tBorder}`;
@@ -246,7 +221,7 @@
             return `${bBorder},0 ${tBorder},0`;
             break;
           case 270:
-            return `${this.fieldHeight},${bBorder} ${this.fieldHeight},${tBorder}`;
+            return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`;
             break;
           default:
             return `0,0 0,0`;
@@ -254,11 +229,13 @@
 
       },
 
-     
-       svgRotation() {
-         return {
-           transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`
-         
+      fontSize() {
+        return this.dies[0].height > 15 ? 12 : 6
+      },
+
+      svgRotation() {
+        return {
+          transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`
         }
       }
     }
@@ -270,6 +247,13 @@
     stroke: #fc0;
     stroke-width: 3;
     stroke-opacity: 0.6
+  }
+
+  svg text{
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
   }
 
  

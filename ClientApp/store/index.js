@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import defects from './modules/defects'
+import { service } from './modules/service.module'
 import { alert } from './modules/alert.module'
 import { loading } from './modules/loading.module'
 import { authentication } from './modules/authentication.module'
@@ -16,6 +17,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
+    service,
     defects, 
     alert, 
     loading,

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using VueExample.ViewModels;
 
 namespace VueExample.Models.SRV6
 {
@@ -6,10 +8,9 @@ namespace VueExample.Models.SRV6
     {
         public Guid GeneratedId { get; set; }
         public string WaferId { get; set; }
-        public int MeasurementRecordingId { get; set; }
-
-        //++square
-
-        //++dies
+        public MeasurementRecording MeasurementRecording { get; set; }
+        public Divider Divider { get; set; }
+        public List<GraphicShortLinkViewModel> SelectedGraphics { get; set; } = new List<GraphicShortLinkViewModel>();
+        public List<long> SelectedDies { get; set; } = new List<long>();
     }
 }

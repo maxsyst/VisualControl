@@ -2,8 +2,8 @@
 <v-card>
      
           <v-container  fluid>
-              <v-layout class="charts" ref="chartdiv">
-              </v-layout>
+              <v-row class="charts" ref="chartdiv">
+              </v-row>
               
           </v-container>
    
@@ -26,22 +26,21 @@
   },
 
     mounted()
-    {
-       
-
+    {       
+        let chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart);
+        this.getChartData()
     },
 
     beforeDestroy() {
-      if (this.chart) {
-        this.chart.dispose();
-      }
+        if (this.chart) {
+          this.chart.dispose();
+        }
       },
 
     computed:
     {
-        selectedDies()
-        {
-            return this.$store.state.wafermeas.selectedDies;
+        selectedDies() {
+          return this.$store.getters['wafermeas/selectedDies']
         }
     },
 
@@ -68,7 +67,7 @@
                 singlestatModel.measurementId = this.measurementId;
                 singlestatModel.dieIdList = this.selectedDies;
                 this.$http
-                    .get(`api/amchart/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+                    .get(`/api/amchart/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
                     .then(response => {
                     this.chartData = response.data;
                   

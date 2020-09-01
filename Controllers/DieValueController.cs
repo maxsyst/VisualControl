@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using VueExample.Services;
 using VueExample.Models.SRV6;
 using LazyCache;
 using VueExample.Providers.Srv6.Interfaces;
@@ -26,18 +23,18 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetByMeasurementRecordingId(int measurementRecordingId)
+        public async Task<IActionResult> GetByMeasurementRecordingId(int measurementRecordingId)
         {
             string measurementRecordingIdAsKey = "V_" + Convert.ToString(measurementRecordingId);
-            Func<Dictionary<string, List<DieValue>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            var dieValuesDictionary = cache.GetOrAdd(measurementRecordingIdAsKey, cachedService);
+            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            var dieValuesDictionary = await cache.GetOrAddAsync(measurementRecordingIdAsKey, cachedService);
             return Ok(JsonConvert.SerializeObject(dieValuesDictionary));
         }
 
         [HttpGet]
-        public IActionResult GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
+        public async Task<IActionResult> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
         {
-            var diesList = _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
+            var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
             return Ok(JsonConvert.SerializeObject(diesList));
         }
     }

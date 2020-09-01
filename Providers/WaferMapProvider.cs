@@ -1,7 +1,7 @@
-using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Models;
-using VueExample.Repository;
 
 namespace VueExample.Providers
 {
@@ -12,6 +12,7 @@ namespace VueExample.Providers
         {
             _srv6Context = srv6Context;
         }
-        public WaferMap GetByWaferId(string waferId) => _srv6Context.WaferMaps.FirstOrDefault(x => x.WaferId == waferId);
+        public async Task<WaferMap> GetByWaferId(string waferId) 
+            => await _srv6Context.WaferMaps.FirstOrDefaultAsync(x => x.WaferId == waferId);
     }
 }
