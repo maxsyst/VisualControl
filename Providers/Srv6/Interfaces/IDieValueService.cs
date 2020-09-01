@@ -7,8 +7,8 @@ namespace VueExample.Providers.Srv6.Interfaces
 {
     public interface IDieValueService
     {
-        Dictionary<string, List<DieValue>> GetDieValuesByMeasurementRecording(int measurementRecordingId);
-        List<long?> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId);
+        Task<Dictionary<string, List<DieValue>>> GetDieValuesByMeasurementRecording(int measurementRecordingId);
+        Task<List<long?>> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId);
         Task CreateDieGraphics(List<DieGraphics> dieGraphics); 
     }
 }

@@ -50,7 +50,7 @@ namespace VueExample.Providers
         public async Task<Stage> GetByMeasurementRecordingId(int measurementRecordingId)
         {
             var stageId = (await _srv6Context.MeasurementRecordings.FirstOrDefaultAsync(x => x.Id == measurementRecordingId))?.StageId;
-            return stageId is null ? throw new Exception() : await GetById((int)stageId);
+            return stageId is null ? new Stage{IsNullObject = true} : await GetById((int)stageId);
         }
 
         public async Task<List<Stage>> GetStagesByProcessId(int processId)

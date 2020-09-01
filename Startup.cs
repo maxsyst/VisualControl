@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,16 +47,29 @@ namespace VueExample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression(options=>options.EnableForHttps = true);
+     
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
             services.AddMvc(options => { options.CacheProfiles.Add("Default60",
                             new CacheProfile()
                             {
-                                Duration = 60
+                                Duration = 3600
                             });
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAutoMapper();
             services.AddLazyCache();
             services.AddSignalR();
             services.AddOptions();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "0.0.0.0:1799";
+                options.InstanceName = "srvredis";
+            });
 
             services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
             {
@@ -123,6 +138,7 @@ namespace VueExample
             services.AddTransient<IChartJSProvider, ChartJSProvider>();
             services.AddTransient<IDieValueService, DieValueService>();
             services.AddTransient<IColorService, ColorService>();
+            services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
             services.AddTransient<IElementTypeService, ElementTypeService>();
@@ -195,7 +211,7 @@ namespace VueExample
 
             app.UseAuthentication();
             app.UseStaticFiles();
-            
+            app.UseResponseCompression();
 
             app.UseMvc(routes =>
             {

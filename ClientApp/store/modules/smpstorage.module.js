@@ -2,8 +2,7 @@ const defaultState = () => {
     return {
         smpArray: [],
         elements: [],
-        stages: [],
-        standartParameters: []
+        stages: []
     }
 }
 

@@ -179,7 +179,7 @@ export default {
                 this.$router.push({ name: 'stagetable', params: {processId: processId}})
             })
             .catch((error) => {
-                this.showSnackbar("Ошибка серевера")
+                this.showSnackbar("Ошибка сервера")
             });
         },
 

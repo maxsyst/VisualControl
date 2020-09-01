@@ -17,7 +17,7 @@ namespace VueExample.Providers
         }
         public async Task<DieParameterOld> GetOrAddDieParameter(long dieId, int measurementRecordingId, int parameterId = 247, string value = "0")
         {
-            var dieParameter = await  _srv6Context.DiesParameterOld.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId && x.DieId == dieId && x.Id247 == parameterId);
+            var dieParameter = await _srv6Context.DiesParameterOld.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId && x.DieId == dieId && x.Id247 == parameterId);
             if(dieParameter is null)
             {
                 dieParameter = new DieParameterOld{DieId = dieId, MeasurementRecordingId = measurementRecordingId, Id247 = parameterId, Value = value};
@@ -30,8 +30,8 @@ namespace VueExample.Providers
         public async Task<Die> GetByWaferIdAndCode(string waferId, string code) 
             => await _srv6Context.Dies.FirstOrDefaultAsync(x => x.WaferId == waferId && x.Code == code);
 
-        public List<Die> GetDiesByWaferId(string waferId) 
-            => _srv6Context.Dies.Where(x => x.WaferId == waferId).ToList();
+        public async Task<List<Die>> GetDiesByWaferId(string waferId) 
+            => await _srv6Context.Dies.Where(x => x.WaferId == waferId).ToListAsync();
 
         public async Task<Die> GetById(long dieId) => await _srv6Context.Dies.FirstOrDefaultAsync(x => x.DieId == dieId);
         public async Task<List<Die>> GetAll() => await _srv6Context.Dies.ToListAsync();

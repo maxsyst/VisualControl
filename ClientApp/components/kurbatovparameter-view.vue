@@ -127,6 +127,7 @@
                                     no-data-text="Нет данных"
                                     item-value="id"
                                     outlined
+                                    @change="selectedDieTypeIdChanged($event)"
                                     label="Выберите тип кристалла:">
                                 </v-select>
                             </v-col>
@@ -146,7 +147,7 @@
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
                             <v-col lg="12">
-                                <v-btn v-if="mode==='updating'" block @click="getSelectedPattern(selectedPattern)" color="indigo">Подтвердить выбор</v-btn>
+                                <v-btn v-if="mode==='updating'" block @click="changeSelectedPattern(selectedPattern)" color="indigo">Подтвердить выбор</v-btn>
                                 <v-btn v-else block @click="goToUpdatingMode(selectedDieTypeId)" color="indigo">Редактировать шаблон</v-btn>
                             </v-col>
                         </v-row>
@@ -223,6 +224,10 @@ export default {
             this.copyguid = guid
         },
 
+        selectedDieTypeIdChanged(dieTypeId) { 
+            this.$router.push({ name: 'kurbatovparameter-initial-typeisselected', params: { dieType: dieTypeId}});
+        },
+
         copySmp(selectedElementIds) {
             let parentSmp = this.$store.getters['smpstorage/currentSmp'](this.copyguid)
             selectedElementIds.forEach(elementId => {
@@ -255,6 +260,13 @@ export default {
             this.showSnackbar("Удаление успешно")
         },
 
+        reset() {
+            this.mode = ""
+            this.initialDialog = true
+            this.$router.push({ name: 'kurbatovparameter' });
+            this.$store.dispatch("smpstorage/reset")
+        },
+
         async routeHandler(routeName) {
             if(routeName === "kurbatovparameter") {
                 this.initialDialog = true
@@ -262,29 +274,34 @@ export default {
             }
             if(routeName === "kurbatovparameter-initial-typeisselected") {
                 this.initialDialog = true
-                this.selectedDieTypeId = this.$route.params.dieType
+                this.selectedDieTypeId = +this.$route.params.dieType
             }
             if(routeName === "kurbatovparameter-creating") {
                 this.initialDialog = false
-                this.selectedDieTypeId = this.$route.params.dieType
-                await goToCreatingMode()
+                this.selectedDieTypeId = +this.$route.params.dieType
+                this.dieTypes
+                    .map(x => x.id)
+                    .includes(this.selectedDieTypeId) 
+                        ? await this.goToCreatingMode() 
+                        : this.reset()
             }
             if(routeName === "kurbatovparameter-updating") {
                 this.initialDialog = false
-                this.selectedDieTypeId = this.$route.params.dieType
-                let selectedPatternId = this.$route.params.patternId
+                this.selectedDieTypeId = +this.$route.params.dieType
+                let selectedPatternId = +this.$route.params.patternId
                 this.mode = 'updating'
                 await this.$http
-                    .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
-                    .then(response => {this.patterns = response.data;  this.selectedPattern = this.patterns.find(x => x.id === selectedPatternId)})
-                    .then(async () =>  await getSelectedPattern(selectedPattern))
-                    .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))               
+                    .get(`/api/standartpattern/dietype/${this.selectedDieTypeId}`)
+                    .then(response => {this.patterns = response.data; this.selectedPattern = this.patterns.find(x => x.id === selectedPatternId) || {}})
+                    .then(() => {if(!this.patterns.map(x => x.id).includes(this.selectedPattern.id)) throw new Error()})
+                    .then(async () =>  await this.getSelectedPattern(this.selectedPattern))
+                    .catch(error => {this.showSnackbar("Ошибка пути"); this.reset()})               
             }
         },
 
         async changeSelectedPattern(selectedPattern) {
             this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: this.selectedDieTypeId, patternId: selectedPattern.id }});
-            await getSelectedPattern(selectedPattern)
+            await this.getSelectedPattern(selectedPattern)
         },
 
         async savePattern(smpArray) {
@@ -308,6 +325,7 @@ export default {
             .then(async pattern => {               
                 await this.goToUpdatingMode(this.selectedDieTypeId)
                 this.selectedPattern = pattern
+                this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: this.selectedDieTypeId, patternId: this.selectedPattern.id }});
                 this.showSnackbar("Успешно сохранено")               
             })
             .catch(error => {
@@ -333,14 +351,14 @@ export default {
             })
             .then(response => {
                 this.patterns = this.patterns.filter(x => x.id !== selectedPattern.id)
-                this.selectedPattern = this.patterns[0] || null
+                this.selectedPattern = this.patterns[0] || {}
                 this.showSnackbar("Успешно удалено")  
                 return this.selectedPattern
             })
             .then(async selectedPattern => {
-                selectedPattern 
-                    ? await this.getSelectedPattern(selectedPattern)        
-                    : Promise.resolve(this.$router.push({ name: 'kurbatovparameter' }))      
+                _.isEmpty(selectedPattern) 
+                    ? await this.changeSelectedPattern(selectedPattern)        
+                    : Promise.resolve(this.reset()).then(() => this.showSnackbar("Удален последний шаблон"))      
             })
             .catch(error => {
                 this.showSnackbar("Ошибка при удалении")    
@@ -365,9 +383,14 @@ export default {
             await this.$http
             .get(`/api/standartpattern/dietype/${selectedDieTypeId}`)
             .then(response => {this.patterns = response.data; 
-                               this.selectedPattern = response.data[0] || {}; 
-                               this.$router.push({ name: 'kurbatovparameter-updating', params: { dieType: selectedDieTypeId, patternId: this.selectedPattern.id }});})
-            .catch(error => this.showSnackbar("Шаблоны не найдены в БД"))
+                               this.selectedPattern = response.data[0] || {} })
+            .then(() => {
+                if(_.isEmpty(this.selectedPattern)) {
+                    this.showSnackbar("Шаблоны не найдены")
+                    this.reset()
+                }
+            })
+            .catch(error => reset())
         },
 
         async getSelectedPattern(selectedPattern) {
@@ -381,7 +404,7 @@ export default {
                 this.initialDialog = false
                 this.closeLoading()
             })
-            .catch(error =>{console.log(error); this.showSnackbar("В шаблоне не содержатся данные"); this.closeLoading()})
+            .catch(error => {this.showSnackbar("В шаблоне не содержатся данные"); this.closeLoading()})
         },
 
         async getAllDieTypes() {
@@ -415,13 +438,7 @@ export default {
         }
     },
 
-    watch: {
-        selectedDieTypeId: function(newValue) {
-            this.$router.push({ name: 'kurbatovparameter-initial-typeisselected', params: { dieType: newValue } });
-        }
-    },
-
-    computed: {
+      computed: {
         readyToCreateSMP() {
             return !_.isEmpty(this.selectedElementSMP) && !_.isEmpty(this.selectedStageSMP) && !_.isEmpty(this.selectedDividerSMP)
         },
@@ -455,7 +472,7 @@ export default {
 
     async mounted() {
         this.showLoading("Загрузка...")
-        await this.initialize().then(() => this.closeLoading())
+        await this.initialize().then(async () => await this.routeHandler(this.$route.name)).then(() => this.closeLoading())        
     },
 
     beforeDestroy() {

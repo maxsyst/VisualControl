@@ -21,6 +21,8 @@ namespace VueExample.Models.SRV6
         public string PhotoPath { get; set; }
         [Column("DocName")]
         public string DocName { get; set; }
+        [NotMapped]
+        public bool IsNullObject { get; set; } = false;
         public ICollection<MeasurementRecordingElement> MeasurementRecordingElements { get; set; }
     }
 }

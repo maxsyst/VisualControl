@@ -1,83 +1,107 @@
 <template>
 <v-card>
-  <v-container class="graphContainer"> 
-    <bar-chart
-      v-if="loaded"
-      :chartdata="chartdata"
-      :options="options"/>
-  </v-container>
+    <v-container> 
+        <bar-chart
+          v-if="loaded"
+          :keyGraphicState="keyGraphicState"
+          :chartdata="chartdata"
+          :options="options"/>
+        <v-progress-circular v-else
+          :size="50"
+          color="primary"
+          indeterminate>
+        </v-progress-circular>
+    </v-container>
   </v-card>
 </template>
 
 <script>
 import BarChart from './barchart-cjs.vue'
-
 export default {
-  
   props: ["keyGraphicState", "measurementId", "divider"],
   components: { BarChart },
   data: () => ({
     loaded: false,
-    chartdata: null,
-    options: null
-   
+    chartdata: {},
+    options: {}
   }),
 
-   computed:
-    {
-        selectedDies()
-        {
-            return this.$store.state.wafermeas.selectedDies;
-        }
+  async mounted() {
+    await this.getChartData(this.selectedDies);
+  },
+
+   computed: {
+      selectedDies() {
+        return this.$store.getters['wafermeas/selectedDies']
+      }
     },
 
-    watch:
-    {
-        selectedDies: function()
-        {
-            this.getChartData();
-        },
-
-        divider: function()
-        {
-            this.getChartData();
-        }
+    watch: {
+      divider: async function() {
+        await this.getChartData(this.selectedDies);
+      }
     },
 
-     methods:
-    {
-         getChartData()
-         {
-               this.loaded = false
-     
-                var singlestatModel = {};
-                singlestatModel.divider = this.divider;
-                singlestatModel.keyGraphicState = this.keyGraphicState;
-                singlestatModel.measurementId = this.measurementId;
-                singlestatModel.dieIdList = this.selectedDies;
-                this.$http
-                    .get(`api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
-                    .then(response => {
-                    let chart = response.data;
-                    this.chartdata = chart.chartData;
-                    this.options = chart.options;                                                   
-                    this.loaded = true       
-                  
-                })
-                .catch(error => {});
-       
-      
-         }
+    methods: {
+      async getChartData() {
+        this.loaded = false     
+        let singlestatModel = {};
+        singlestatModel.divider = this.divider;
+        singlestatModel.keyGraphicState = this.keyGraphicState;
+        singlestatModel.measurementId = this.measurementId;
+        singlestatModel.dieIdList = this.selectedDies;
+        await this.$http
+          .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
+          .then(response => {
+            let chart = response.data;
+            this.chartdata = chart.chartData
+            this.calculateOptions(chart.options)                                        
+            this.loaded = true       
+          })
+          .catch(error => {});     
+      },
+
+         calculateOptions(chartOptions) {
+          this.options = {
+            animation: chartOptions.animation,
+            hover: chartOptions.hover,
+            legend: {
+              display: chartOptions.legend.display
+            },
+            responsive: chartOptions.responsive,
+            responsiveAnimationDuration: chartOptions.responsiveAnimationDuration,
+            scales: {
+              xAxes: [{
+                scaleLabel: {
+                  display: chartOptions.xAxis.display,
+                  labelString: chartOptions.xAxis.label,
+                  fontColor: '#BDBDBD'
+                },
+                gridLines: {
+                  display: true,
+                  color: '#303030'
+                },
+                ticks: {
+                  fontColor: '#BDBDBD'
+                }
+              }],
+              yAxes: [{
+                scaleLabel: {
+                  display: chartOptions.yAxis.display,
+                  labelString: chartOptions.yAxis.label,
+                  fontColor: '#BDBDBD'
+                },
+                gridLines: {
+                  display: true,
+                  color: '#303030'
+                },
+                ticks: {
+                  fontColor: '#BDBDBD'
+                }
+              }]
+            }
+          }   
+        }
     }
-
-    
 }
 </script>
-
-<style>
-    .graphContainer
-    {
-        height: 400px;
-        width: 350px;
-    }
-</style>

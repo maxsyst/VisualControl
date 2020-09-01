@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using VueExample.Helpers;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.StatisticsCore.Abstract;
@@ -15,14 +17,16 @@ namespace VueExample.Controllers
     
     public class MeasurementRecordingController : Controller
     {
+        private readonly AppSettings _appSettings;
         private readonly IMeasurementRecordingService _measurementRecordingService;
         private readonly IStageProvider _stageProvider;
         private readonly IElementService _elementService;
         private readonly IExportProvider _exportProvider;
         private readonly IMapper _mapper;   
        
-        public MeasurementRecordingController(IElementService elementService, IMapper mapper, IExportProvider exportProvider, IStageProvider stageProvider, IMeasurementRecordingService measurementRecordingService)
+        public MeasurementRecordingController(IOptions<AppSettings> appSettings, IElementService elementService, IMapper mapper, IExportProvider exportProvider, IStageProvider stageProvider, IMeasurementRecordingService measurementRecordingService)
         {
+            _appSettings = appSettings.Value;
             _elementService = elementService;
             _stageProvider = stageProvider;
             _measurementRecordingService = measurementRecordingService;
@@ -33,9 +37,9 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
         [Route("")]
-        public IActionResult GetMeasurementRecordingsByWaferId([FromQuery] string waferId)
+        public async Task<IActionResult> GetMeasurementRecordingsByWaferId([FromQuery] string waferId)
         {
-            return Ok(_measurementRecordingService.GetByWaferId(waferId));
+            return Ok(await _measurementRecordingService.GetByWaferId(waferId));
         }
 
         [HttpPost]
@@ -53,10 +57,13 @@ namespace VueExample.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("delete/{measurementRecordingId:int}")]        
-        public async Task<IActionResult> Delete([FromRoute] int measurementRecordingId)
+        public async Task<IActionResult> Delete([FromRoute] int measurementRecordingId, [FromQuery(Name = "superuser")] string superuser)
         {
-            await _measurementRecordingService.Delete(measurementRecordingId);
-            return NoContent();
+            if(_appSettings.SuperUser == superuser) {
+                await _measurementRecordingService.Delete(measurementRecordingId);
+                return NoContent();
+            }
+            return Forbid();
         }
 
         [HttpDelete]
@@ -170,7 +177,7 @@ namespace VueExample.Controllers
                 mrList.Add(new MeasurementRecordingViewModel {Id = measurementRecording.Id, 
                                                               Name = measurementRecording.Name, 
                                                               WaferId = waferId,
-                                                              avStatisticParameters = await _exportProvider.GetStatisticsNameByMeasurementId(measurementRecording.Id)});
+                                                              avStatisticParameters = await _exportProvider.GetStatisticsNameByMeasurementId(measurementRecording.Id, 1.5)});
             }
             return mrList.Count == 0 ? (IActionResult)NotFound() : Ok(mrList);
         }        

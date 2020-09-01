@@ -3,8 +3,8 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using VueExample.Providers.Srv6;
 using VueExample.Providers.Srv6.Interfaces;
+using System.Threading.Tasks;
 
 namespace VueExample.Controllers
 {
@@ -18,14 +18,14 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGraphicNameByKeyGraphicState(string keyGraphicState)
+        [ResponseCache(CacheProfileName = "Default60")]
+        public async Task<IActionResult> GetGraphicNameByKeyGraphicState(string keyGraphicState)
         {
-            var graphicId = Convert.ToInt32(keyGraphicState.Split('_').FirstOrDefault());
-            return Ok(_graphicService.GetById(graphicId).Name);
+            return Ok((await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState)).Name);
         }
 
         [HttpGet]
-        public IActionResult GetAvailiableGraphicsByKeyGraphicStateList(string keyGraphicStateJSON)
+        public async Task<IActionResult> GetAvailiableGraphicsByKeyGraphicStateList(string keyGraphicStateJSON)
         {
             var keyGraphicStateList = JsonConvert.DeserializeObject<List<string>>(keyGraphicStateJSON);
             var availiableGraphicList = new List<ViewModels.GraphicWithKeyGraphicStateViewModel>();
@@ -33,7 +33,7 @@ namespace VueExample.Controllers
             {
                 var graphicWithKeyGraphicStateViewModel = new ViewModels.GraphicWithKeyGraphicStateViewModel();
                 var graphicId = Convert.ToInt32(kgs.Split('_').FirstOrDefault());
-                graphicWithKeyGraphicStateViewModel.GraphicName = _graphicService.GetById(graphicId).Name;
+                graphicWithKeyGraphicStateViewModel.GraphicName = (await _graphicService.GetById(graphicId)).Name;
                 graphicWithKeyGraphicStateViewModel.KeyGraphicState = kgs;
                 availiableGraphicList.Add(graphicWithKeyGraphicStateViewModel);
             }

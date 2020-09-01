@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using VueExample.Entities;
 
 namespace VueExample.Models.SRV6
 {
@@ -20,5 +21,6 @@ namespace VueExample.Models.SRV6
         [Column("id_bmr")]
         public int? BigMeasurementRecordingId { get; set; }
         public ICollection<MeasurementRecordingElement> MeasurementRecordingElements { get; set; }
+        public ICollection<FkMrP> FkMrPs { get; set; }
     }
 }
