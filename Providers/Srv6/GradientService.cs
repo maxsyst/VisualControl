@@ -27,8 +27,8 @@ namespace VueExample.Providers.Srv6
             {
                 return new GradientViewModel();
             }
-            var stepSize = Math.Abs(Convert.ToDouble(singleStatistic.TopBorderStat, CultureInfo.InvariantCulture) -
-                                    Convert.ToDouble(singleStatistic.LowBorderStat, CultureInfo.InvariantCulture)) / stepsQuantity;
+            var stepSize = Math.Abs(Convert.ToDouble(singleStatistic.TopBorderStat.Replace(',', '.'), CultureInfo.InvariantCulture) -
+                                    Convert.ToDouble(singleStatistic.LowBorderStat.Replace(',', '.'), CultureInfo.InvariantCulture)) / stepsQuantity;
             var singleDieValues = new List<SingleDieValue>();
             for (int i = 0; i < singleStatistic.dieList.Count; i++)
             {

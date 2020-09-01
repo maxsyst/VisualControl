@@ -36,7 +36,7 @@ namespace VueExample.ViewModels
         public ExtremeLowGradientStep(string lowBorder)
         {
             Name = "Low";
-            LowBorder = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture);
+            LowBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture);
             Color = "#4527A0";
             BorderDescription = $"< {GetFormat(LowBorder)}";
         }
@@ -55,7 +55,7 @@ namespace VueExample.ViewModels
         {
             Name = "High";
             Color = "#E91E63";
-            TopBorder = Convert.ToDouble(topBorder, CultureInfo.InvariantCulture);
+            TopBorder = Convert.ToDouble(topBorder.Replace(',', '.'), CultureInfo.InvariantCulture);
             BorderDescription = $"> {GetFormat(TopBorder)}";
         }
 
@@ -73,8 +73,8 @@ namespace VueExample.ViewModels
         public ColorGradientStep(int index, double stepSize, string lowBorder, string topBorder, string color)
         {
             Name = $"Step{index + 1}";
-            LowBorder = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture) + index * stepSize;
-            TopBorder = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture) + (index+1) * stepSize;
+            LowBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture) + index * stepSize;
+            TopBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture) + (index+1) * stepSize;
             Color = color;
             BorderDescription = $"{GetFormat(LowBorder)}->{GetFormat(TopBorder)}";
         }
