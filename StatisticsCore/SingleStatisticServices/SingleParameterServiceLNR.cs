@@ -41,7 +41,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
             var selectedDieList = new List<long?>();
             var xList = dieValuesList.FirstOrDefault().XList;
             var commonYList = new List<List<string>>();
-            foreach (var dieValue in dieValuesList.Where(d => dieList.Contains (d.DieId))) 
+            foreach (var dieValue in dieValuesList.Where(d => dieList.Contains(d.DieId))) 
             {
                 commonYList.Add(dieValue.YList);
                 selectedDieList.Add(dieValue.DieId);

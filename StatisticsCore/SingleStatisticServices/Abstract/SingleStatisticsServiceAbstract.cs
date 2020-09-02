@@ -16,16 +16,16 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
            var singleStatisticDataList = new List<VueExample.StatisticsCore.DataModels.SingleStatisticData>();
            foreach (var statisticsItem in statisticList)
            {
-                var originDirtyCells = singleParameterStatisticList.FirstOrDefault(x => x.Name == statisticsItem.StatisticsName).DirtyCells;
+                var origin = singleParameterStatisticList.FirstOrDefault(x => x.Name == statisticsItem.StatisticsName);
               
                 var singleStatisticData = new DataModels.SingleStatisticData();
-                var singleParameterStatistic = new SingleParameterStatistic(statisticsItem.StatisticsName, dieList, statisticsItem.FullList, originDirtyCells);
+                var singleParameterStatistic = new SingleParameterStatistic(statisticsItem.StatisticsName, dieList, statisticsItem.FullList, origin.DirtyCells);
                 //Mapping SingleParameterStatistic
-                singleStatisticData.LowBorderFixed = Convert.ToString(singleParameterStatistic.LowBorderFixed, CultureInfo.InvariantCulture);
-                singleStatisticData.LowBorderStat = singleParameterStatistic.LowBorderStat;
-                singleStatisticData.TopBorderFixed = Convert.ToString(singleParameterStatistic.TopBorderFixed, CultureInfo.InvariantCulture);
-                singleStatisticData.TopBorderStat = singleParameterStatistic.TopBorderStat;
-                singleStatisticData.AverageFixed = Convert.ToString(singleParameterStatistic.AverageFixed, CultureInfo.InvariantCulture);
+                singleStatisticData.LowBorderFixed = Convert.ToString(origin.LowBorderFixed, CultureInfo.InvariantCulture);
+                singleStatisticData.LowBorderStat = origin.LowBorderStat;
+                singleStatisticData.TopBorderFixed = Convert.ToString(origin.TopBorderFixed, CultureInfo.InvariantCulture);
+                singleStatisticData.TopBorderStat = origin.TopBorderStat;
+                singleStatisticData.AverageFixed = Convert.ToString(origin.AverageFixed, CultureInfo.InvariantCulture);
                 singleStatisticData.DirtyCells = singleParameterStatistic.DirtyCells.CalculatePercentage(dieList.Count);
                 //Mapping Statistic
                 singleStatisticData.Maximum = statisticsItem.Maximum;
