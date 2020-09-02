@@ -57,7 +57,7 @@
         </v-list>
       </v-navigation-drawer>
       <v-app-bar v-if="auth" color="indigo" fixed app>
-        <v-toolbar-side-icon v-if="auth" @click.stop="changeDrawer(drawer)"><v-icon>drag_indicator</v-icon></v-toolbar-side-icon>
+        <v-app-bar-nav-icon v-if="auth" @click.stop="changeDrawer(drawer)"><v-icon>drag_indicator</v-icon></v-app-bar-nav-icon>
         <v-toolbar-title>Система контроля за измерениями 2.0</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn class="ma-2" color="indigo" to="/" dark fab small><v-icon>home</v-icon></v-btn>
@@ -129,7 +129,7 @@
          if (this.$route.name === "login" || this.$route.name === "registration") {
            return false
          } else {
-           this.drawer = true;
+           this.$store.dispatch("service/changeDrawer", true)
            return true;
          }
        },
