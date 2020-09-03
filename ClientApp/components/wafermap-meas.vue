@@ -285,11 +285,10 @@
         <v-divider light></v-divider>
       </v-col>
       <v-col lg="4" class="d-flex align-self-center">
-        <!-- <chart-lnr
+        <chart-lnr
           v-if="graphic.keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
           :keyGraphicState="graphic.keyGraphicState"
-          :chartOptions="chartOptions"
           :divider="selectedDivider"
         ></chart-lnr>
         <chart-hstg
@@ -297,7 +296,7 @@
           :measurementId="selectedMeasurementId"
           :keyGraphicState="graphic.keyGraphicState"
           :divider="selectedDivider"
-        ></chart-hstg> -->
+        ></chart-hstg>
         <v-divider light></v-divider>
       </v-col>     
     </v-row>

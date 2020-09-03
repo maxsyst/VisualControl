@@ -260,10 +260,6 @@ export default {
       this.activeTab = statisticsName
     },
 
-    changeTab(e) {
-      console.log(this.keyGraphicState + ' ' + e)
-    },
-
     showPopoverClick(e) {
       e.preventDefault();
       this.showPopover = false;
@@ -301,8 +297,8 @@ export default {
   },
 
   watch: {
-    divider: function() {
-      this.getStatArray();
+    divider: async function() {
+      await this.getStatArray();
     },
 
     statisticKf: async function(newValue) {
@@ -312,8 +308,8 @@ export default {
       await this.getStatArray()
     },
 
-    selectedDies: function() {
-      this.getStatArray();
+    selectedDies: async function() {
+      await this.getStatArray();
     }
   },
 
