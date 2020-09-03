@@ -30,11 +30,16 @@ namespace VueExample.StatisticsCore.Services
             return statisticsDictionary;
         }
 
-        public async Task<List<VueExample.StatisticsCore.DataModels.SingleStatisticData>> GetStatisticsDataByGraphicState (List<long?> dieList, string keyGraphicState, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList) 
+        public async Task<List<VueExample.StatisticsCore.DataModels.SingleStatisticData>> GetStatisticsDataByGraphicState(List<long?> dieList, string keyGraphicState, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList) 
         {
             var graphicId = Convert.ToInt32(keyGraphicState.Split('_')[0]);
-            var graphic = await _graphicService.GetById(graphicId);                          
-            return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesList, divider, singleParameterStatisticsList);
+            var graphic = await _graphicService.GetById(graphicId);  
+            var dieValuesDictionaryDieIdBased = new Dictionary<long?, DieValue>();
+            foreach (var dieValue in dieValuesList)
+            {
+                dieValuesDictionaryDieIdBased.Add(dieValue.DieId, dieValue);
+            }
+            return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesDictionaryDieIdBased, divider, singleParameterStatisticsList);
         }
 
         public DirtyCells GetDirtyCellsBySPSDictionary (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, int diesCount) 

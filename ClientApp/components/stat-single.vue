@@ -242,11 +242,11 @@ export default {
   },
 
   async created() {
-    this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName
+    this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName   
     this.fullWaferStatArray = (await this.$http
       .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data
-    this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
     await this.getStatArray()
+    this.calculateFullWaferDirtyCells(this.fullWaferStatArray)   
   },
 
   methods: {

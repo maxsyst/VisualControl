@@ -34,14 +34,15 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
                 return singleParameterStatisticsList;
         }
 
-        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieList, Graphic graphic, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
+        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, Dictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
         {
             var statisticsItem = new Statistics();
             var selectedDieList = new List<long?>();
             var valueList = new List<string>();
-            foreach (var dieValue in dieValuesList.Where (d => dieList.Contains (d.DieId))) {
-                valueList.Add (dieValue.YList.FirstOrDefault());
-                selectedDieList.Add(dieValue.DieId);
+            foreach (var dieId in dieIdList)
+            {
+                valueList.Add (dieValuesList[dieId].YList.FirstOrDefault());
+                selectedDieList.Add(dieId);
             }
             var statistics = statisticsItem.GetStatistics(valueList, graphic);
             var singleStatisticDataList = StatisticDataMapping (statistics, selectedDieList, singleParameterStatisticsList);
