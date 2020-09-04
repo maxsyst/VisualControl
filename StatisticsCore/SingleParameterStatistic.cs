@@ -13,9 +13,9 @@ namespace VueExample.StatisticsCore
         public List<double> valueList {get; }
         public string LowBorderStat { get; set; }
         public string TopBorderStat { get; set; }
-        public double LowBorderFixed { get; set; }
-        public double TopBorderFixed{ get; set; }
-        public double AverageFixed { get; set; }
+        public string LowBorderFixed { get; set; }
+        public string TopBorderFixed{ get; set; }
+        public string AverageFixed { get; set; }
         public bool IsHasFixed { get; set; } = false;
         public DirtyCells DirtyCells{get; set; } 
 
@@ -57,8 +57,8 @@ namespace VueExample.StatisticsCore
         {
             if(statParameterForStage != null)
             {
-                this.LowBorderFixed = !String.IsNullOrEmpty(statParameterForStage.MinAverage) ? double.Parse(statParameterForStage.MinAverage, CultureInfo.InvariantCulture) : 1E-23;
-                this.TopBorderFixed = !String.IsNullOrEmpty(statParameterForStage.MaxAverage) ? double.Parse(statParameterForStage.MaxAverage, CultureInfo.InvariantCulture) : 1E23;
+                this.LowBorderFixed = !String.IsNullOrEmpty(statParameterForStage.MinAverage) ? statParameterForStage.MinAverage : "Не установлено";
+                this.TopBorderFixed = !String.IsNullOrEmpty(statParameterForStage.MaxAverage) ? statParameterForStage.MaxAverage : "Не установлено";
                 CalculateFixedList();
             }
 
@@ -68,9 +68,11 @@ namespace VueExample.StatisticsCore
 
         private void CalculateFixedList()
         {
+            var lowBorder = this.LowBorderFixed == "Не установлено" ? 1E-24 : double.Parse(this.LowBorderFixed, CultureInfo.InvariantCulture);
+            var topBorder = this.TopBorderFixed == "Не установлено" ? 1E24 : double.Parse(this.TopBorderFixed, CultureInfo.InvariantCulture);
             for (int i = 0; i < valueList.Count; i++)
             {
-                if(this.LowBorderFixed > valueList[i] || this.TopBorderFixed < valueList[i] || double.IsNaN(valueList[i]))
+                if(lowBorder > valueList[i] || topBorder < valueList[i] || double.IsNaN(valueList[i]))
                 {
                      this.DirtyCells.FixedList.Add(dieList[i]);
                 }

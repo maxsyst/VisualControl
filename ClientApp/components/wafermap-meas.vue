@@ -159,7 +159,7 @@
                                 </v-select>
                               </v-col>
                               <v-col lg="8">
-                                <v-btn color="primary" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
+                                <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
                               </v-col>
                             </v-row>
                             <v-row>
@@ -192,7 +192,7 @@
                     </v-card>
                   </v-col>
                   <v-col lg="4">
-                  <v-btn color="primary" outlined small @click="selectAllGraphics">Выбрать все графики</v-btn> 
+                  <v-btn  :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined small @click="selectAllGraphics">Выбрать все графики</v-btn> 
                   <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
                   <v-card class="mr-2 mt-2 mb-4" color="#303030" dark>
                       <v-card-text>

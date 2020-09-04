@@ -21,11 +21,11 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
                 var singleStatisticData = new DataModels.SingleStatisticData();
                 var singleParameterStatistic = new SingleParameterStatistic(statisticsItem.StatisticsName, dieList, statisticsItem.FullList, origin.DirtyCells);
                 //Mapping SingleParameterStatistic
-                singleStatisticData.LowBorderFixed = Convert.ToString(origin.LowBorderFixed, CultureInfo.InvariantCulture);
+                singleStatisticData.LowBorderFixed = origin.LowBorderFixed;
                 singleStatisticData.LowBorderStat = origin.LowBorderStat;
-                singleStatisticData.TopBorderFixed = Convert.ToString(origin.TopBorderFixed, CultureInfo.InvariantCulture);
+                singleStatisticData.TopBorderFixed = origin.TopBorderFixed;
                 singleStatisticData.TopBorderStat = origin.TopBorderStat;
-                singleStatisticData.AverageFixed = Convert.ToString(origin.AverageFixed, CultureInfo.InvariantCulture);
+                singleStatisticData.AverageFixed = origin.AverageFixed;
                 singleStatisticData.DirtyCells = singleParameterStatistic.DirtyCells.CalculatePercentage(dieList.Count);
                 //Mapping Statistic
                 singleStatisticData.Maximum = statisticsItem.Maximum;

@@ -177,7 +177,7 @@
                                 label="Выберите новый этап">
                             </v-select>
                         </v-col>
-                        <v-col lg="2">
+                        <v-col lg="4">
                             <v-btn v-if="modes.stage.selected" outlined block color="green" class="d-flex mt-2" @click="editStage">
                                 Изменить этап
                             </v-btn>
@@ -244,7 +244,7 @@
                                 label="Выберите тип монитора">
                             </v-select>
                         </v-col>
-                        <v-col lg="2">
+                        <v-col lg="4">
                             <v-btn v-if="modes.element.selectedElement" outlined block color="green" class="d-flex mt-2" @click="editElement">
                                 Изменить элемент
                             </v-btn> 

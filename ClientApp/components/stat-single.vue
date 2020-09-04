@@ -95,7 +95,7 @@
                   <v-row>
                     <v-col lg="12">
                       <v-data-table v-if="statArray.length > 0"
-                        :headers="headers"
+                        :headers="viewMode==='Мониторинг' ? headersStat : headersFixed"
                         :items="statArray"
                         loading-text="Загрузка данных..."
                         no-data-text="Нет данных"
@@ -110,8 +110,7 @@
                                 <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
                             </template>
                             <span v-html="item.statisticsName"></span>
-                          </v-tooltip>
-                       
+                          </v-tooltip>                       
                         </template>
                         <template v-slot:item.fwPercentage="{item}">
                           <td v-if="viewMode==='Мониторинг'" class="text-xs-center">
@@ -187,7 +186,7 @@ export default {
       graphicName: "",
       activeTab: "commonTable",
       loading: true,
-      headers: [
+      headersStat: [
         {
           text: "Название",
           align: "center",
@@ -232,6 +231,44 @@ export default {
         },
         {
 
+          text: "Годны по всей пластине, %",
+          align: "start",
+          sortable: false,
+          value: "fwPercentage",
+          width: '15%'
+        },
+        {
+          text: "Годны из выбранных, %",
+          align: "center",
+          sortable: false,
+          value: "dirtyCells",
+          width: '15%'
+        }
+      ],
+       headersFixed: [
+        {
+          text: "Название",
+          align: "center",
+          sortable: false,
+          value: "shortStatisticsName",
+          width: '30%'
+        },
+      
+        {
+          text: "Мин",
+          align: "center",
+          sortable: false,
+          value: "lowBorderFixed",
+          width: '20%'
+        },
+        {
+          text: "Макс",
+          align: "center",
+          sortable: false,
+          value: "topBorderFixed",
+          width: '20%'
+        },       
+        {
           text: "Годны по всей пластине, %",
           align: "start",
           sortable: false,
