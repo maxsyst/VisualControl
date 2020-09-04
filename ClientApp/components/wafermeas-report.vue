@@ -37,7 +37,7 @@
                                 <template v-slot:activator>
                                     <v-btn outlined v-model="fab.measurement"
                                         small
-                                        color="primary"
+                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.measurement">close</v-icon>
@@ -140,7 +140,7 @@
                                         v-model="fab.stage"
                                         small
                                         outlined
-                                        color="primary"
+                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.stage">close</v-icon>
@@ -207,7 +207,7 @@
                                         v-model="fab.element"
                                         outlined
                                         small
-                                        color="primary"
+                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.element">close</v-icon>
@@ -275,7 +275,7 @@
 <<script>
 export default {
 
-    props: ["waferId", "selectedMeasurementId"],
+    props: ["waferId", "selectedMeasurementId", "viewMode"],
 
     data() {
         return {

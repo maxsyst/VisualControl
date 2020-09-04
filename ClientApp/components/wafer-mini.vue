@@ -30,7 +30,7 @@
   import Loading from 'vue-loading-overlay';
   import { mapGetters } from 'vuex';
   export default {
-    props: ['keyGraphicState', 'avbSelectedDies'],
+    props: ['keyGraphicState', 'avbSelectedDies', 'viewMode'],
     components: { Loading },
     data() {
       return {
@@ -180,7 +180,7 @@
       }),
 
       dirtyCells() {
-        return this.dirtyCellsGetter(this.keyGraphicState)
+        return this.dirtyCellsGetter(this.keyGraphicState, this.viewMode)
       },
 
       mode() {

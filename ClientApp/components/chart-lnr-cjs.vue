@@ -9,6 +9,7 @@
               :keyGraphicState="keyGraphicState"
               :chartdata="chartdata"
               :settings="settings"
+              :viewMode="viewMode"
               :options="options"/>
           </v-container>
         </v-card>
@@ -45,7 +46,7 @@ import LineChart from './linechart-cjs.vue'
 import Settings from './graphicsettings-lnr.vue'
 export default {
   
-  props: ["keyGraphicState", "measurementId", "divider"],
+  props: ["keyGraphicState", "measurementId", "divider", "viewMode"],
   components: { LineChart, Settings },
   data: () => ({
     loaded: false,

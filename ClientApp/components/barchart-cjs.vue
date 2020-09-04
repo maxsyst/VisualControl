@@ -16,6 +16,10 @@ export default {
     keyGraphicState: {
       type: String,
       default: ""
+    },
+    viewMode: {
+      type: String,
+      default: ""
     }
   },
 
@@ -91,7 +95,7 @@ export default {
     },
 
     dirtyCells() {
-      return this.dirtyCellsGetter(this.keyGraphicState)
+      return this.dirtyCellsGetter(this.keyGraphicState, this.viewMode)
     }
   }
 }

@@ -5,6 +5,7 @@
           v-if="loaded"
           :keyGraphicState="keyGraphicState"
           :chartdata="chartdata"
+          :viewMode="viewMode"
           :options="options"/>
         <v-progress-circular v-else
           :size="50"
@@ -18,7 +19,7 @@
 <script>
 import BarChart from './barchart-cjs.vue'
 export default {
-  props: ["keyGraphicState", "measurementId", "divider"],
+  props: ["keyGraphicState", "measurementId", "divider", "viewMode"],
   components: { BarChart },
   data: () => ({
     loaded: false,
