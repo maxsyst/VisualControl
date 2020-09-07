@@ -58,7 +58,7 @@
         </v-toolbar>
         </v-col>
         <v-col lg="4">
-          <wafer-mini v-if="dirtyCellsFullWafer.percentage > 0"
+          <wafer-mini v-if="(viewMode === 'Мониторинг' && dirtyCellsFullWafer.stat.percentage >= 0) || (viewMode === 'Поставка' && dirtyCellsFullWafer.fixed.percentage >= 0)"
             :avbSelectedDies="avbSelectedDies"
             :keyGraphicState="keyGraphicState"
             :viewMode="viewMode"

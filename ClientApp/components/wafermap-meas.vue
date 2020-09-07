@@ -246,6 +246,7 @@
       <v-col lg="4" offset-lg="1">
         <wafermap-svg
           :avbSelectedDies="avbSelectedDies"
+          :viewMode="viewMode"
           :mapMode="mapMode">
         </wafermap-svg>
       </v-col>
@@ -295,7 +296,7 @@
         <v-divider light></v-divider>
       </v-col>
       <v-col lg="4" class="d-flex align-self-center">
-        <chart-lnr
+        <!-- <chart-lnr
           v-if="graphic.keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
           :keyGraphicState="graphic.keyGraphicState"
@@ -308,7 +309,7 @@
           :keyGraphicState="graphic.keyGraphicState"
           :viewMode="viewMode"
           :divider="selectedDivider"
-        ></chart-hstg>
+        ></chart-hstg> -->
         <v-divider light></v-divider>
       </v-col>     
     </v-row>

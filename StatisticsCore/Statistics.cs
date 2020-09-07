@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using MathNet.Numerics;
 using VueExample.Models.SRV6;
 
@@ -129,9 +131,6 @@ namespace VueExample.StatisticsCore
             };
             return diffstat;
         }
-
-      
-
       
 
         public List<Statistics> GetStatistics(List<string> list, Graphic graphics, StatisticParameter statisticParameter = null)
@@ -2536,16 +2535,24 @@ namespace VueExample.StatisticsCore
         private List<Statistics> GetFilterCKBA_PF9(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
             var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.45 - item)).FirstOrDefault());
-            var A0F0List = new List<double>();
-            var bandfnList = new List<double>();
-            var bandfbList = new List<double>();
-            var bandaiList = new List<double>();
+            var A0F0List = new ConcurrentDictionary<int,double>();
+            var bandfnList = new ConcurrentDictionary<int,double>();
+            var bandfbList = new ConcurrentDictionary<int,double>();
+            var bandaiList = new ConcurrentDictionary<int,double>();
 
-            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            var cd = new ConcurrentDictionary<int, List<double>>();
+            var index = 0;
+            foreach (var yList in commonYList)
             {
-                A0F0List.Add(yListdouble[indexA0F0]);
+                cd.TryAdd(index++, yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList());
+            }            
+
+            Parallel.ForEach(cd, (yListdoubleKeyValue) =>
+            {
+                var key = yListdoubleKeyValue.Key;
+                var yListdouble = yListdoubleKeyValue.Value;
+                A0F0List.TryAdd(key, yListdouble[indexA0F0]);
                 var maxIndex = yListdouble.IndexOf(yListdouble.Max());
                 var leftsideList = yListdouble.Take(maxIndex + 1).ToList();
                 var rightsideList = yListdouble.Skip(maxIndex + 1).ToList();
@@ -2553,17 +2560,23 @@ namespace VueExample.StatisticsCore
                 var rightIndex = rightsideList.IndexOf(rightsideList.OrderBy(item => Math.Abs(yListdouble.Max() - 3.0 - item)).FirstOrDefault()) + maxIndex + 1;
                 var interpolationfn = leftIndex == yListdouble.Count - 1 ? MathNet.Numerics.Interpolate.Linear(new List<double> { yListdouble[leftIndex - 1], yListdouble[leftIndex] }, new List<double> { xListdouble[leftIndex - 1], xListdouble[leftIndex] }) : MathNet.Numerics.Interpolate.Linear(new List<double> { yListdouble[leftIndex], yListdouble[leftIndex + 1] }, new List<double> { xListdouble[leftIndex], xListdouble[leftIndex + 1] });
                 var interpolationfb = rightIndex == yListdouble.Count - 1 ? MathNet.Numerics.Interpolate.Linear(new List<double> { yListdouble[rightIndex - 1], yListdouble[rightIndex] }, new List<double> { xListdouble[rightIndex - 1], xListdouble[rightIndex] }) : MathNet.Numerics.Interpolate.Linear(new List<double> { yListdouble[rightIndex], yListdouble[rightIndex + 1] }, new List<double> { xListdouble[rightIndex], xListdouble[rightIndex + 1] });
-                bandfnList.Add(interpolationfn.Interpolate(yListdouble.Max() - 3.0));
-                bandfbList.Add(interpolationfb.Interpolate(yListdouble.Max() - 3.0));
-                if (Double.IsInfinity(interpolationfn.Interpolate(yListdouble.Max() - 3.0)))
+                var fbInterpolatePoint = interpolationfb.Interpolate(yListdouble.Max() - 3.0);
+                var fnInterpolatePoint = interpolationfn.Interpolate(yListdouble.Max() - 3.0);
+                if (Double.IsInfinity(fnInterpolatePoint))
                 {
-                    bandfnList.RemoveAll(x => Double.IsInfinity(x));
-                    bandfnList.Add(yListdouble[leftIndex]);
+                    bandfnList.TryAdd(key, yListdouble[leftIndex]);
                 }
-                if (Double.IsInfinity(interpolationfb.Interpolate(yListdouble.Max() - 3.0)))
+                else
                 {
-                    bandfbList.RemoveAll(x => Double.IsInfinity(x));
-                    bandfbList.Add(yListdouble[rightIndex]);
+                    bandfnList.TryAdd(key, fnInterpolatePoint);
+                }
+                if (Double.IsInfinity(fbInterpolatePoint))
+                {
+                    bandfbList.TryAdd(key, yListdouble[rightIndex]);
+                }
+                else
+                {
+                    bandfbList.TryAdd(key, fbInterpolatePoint);
                 }
                 var bandList = new List<double>
                 {
@@ -2576,18 +2589,20 @@ namespace VueExample.StatisticsCore
                             xListdouble.OrderBy(item => Math.Abs(xListdouble[rightIndex] + 0.15 - item)).FirstOrDefault())
                     ]
                 };
-                bandaiList.Add(Math.Abs(bandList.Max() - yListdouble.Max()));
-            }
+                bandaiList.TryAdd(key, Math.Abs(bandList.Max() - yListdouble.Max()));
+            });
+
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(A0F0List, "A0/F0<sub>(0.45GHz)</sub>", "дБ", 42),
-                    GetFullStatisticsFromList(bandfnList, "Fn", "ГГц", 55),
-                    GetFullStatisticsFromList(bandfbList, "Fb", "ГГц", 56),
-                    GetFullStatisticsFromList(bandaiList, "AI<sub>(delta 0.15Ghz)</sub>", "дБ", 59),
+                    GetFullStatisticsFromList(A0F0List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "A0/F0<sub>(0.45GHz)</sub>", "дБ", 42),
+                    GetFullStatisticsFromList(bandfnList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "Fn", "ГГц", 55),
+                    GetFullStatisticsFromList(bandfbList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "Fb", "ГГц", 56),
+                    GetFullStatisticsFromList(bandaiList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "AI<sub>(delta 0.15Ghz)</sub>", "дБ", 59),
                 };
             return returnList;
         }
+
 
         private List<Statistics> GetFilterCKBA_PF9_VSWR1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
