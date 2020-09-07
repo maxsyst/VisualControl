@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using VueExample.Models.SRV6;
 using VueExample.StatisticsCore.DataModels;
 using VueExample.Providers.Srv6;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace VueExample.StatisticsCore.SingleStatisticServices
 {
@@ -15,23 +17,21 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
         }
         public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider, double k)
         {
-                var statisticsItem = new Statistics();
-                var dieIdList = new List<long?> ();
-                var valueList = new List<string> ();
-                var singleParameterStatisticsList = new List<SingleParameterStatistic> ();
-                foreach (var gdv in dieValues) 
-                {
-                    
-                    dieIdList.Add (gdv.DieId);
-                    valueList.Add (gdv.YList.FirstOrDefault());
-                }
-                foreach (var stat in statisticsItem.GetStatistics(valueList, graphic)) 
-                {
-                    singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieIdList, stat.FullList, k)
-                                                 .CalculateDirtyCellsFixed(_statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
-                }
-
-                return singleParameterStatisticsList;
+            var dieCommonListDictionary = new ConcurrentDictionary<long?, string>();
+            var statisticsItem = new Statistics();
+            var xList = dieValues.FirstOrDefault().XList;
+            var singleParameterStatisticsList = new List<SingleParameterStatistic>();
+            Parallel.ForEach(dieValues, gdv => 
+            {
+                dieCommonListDictionary.TryAdd(gdv.DieId, gdv.YList.FirstOrDefault());
+            });         
+            var statisticList = statisticsItem.GetStatistics(dieCommonListDictionary.Values.ToList(), graphic);
+            Parallel.ForEach(statisticList, async stat => 
+            {
+                singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k).CalculateDirtyCellsFixed(await _statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
+            });
+            return singleParameterStatisticsList;
+          
         }
 
         public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, Dictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)

@@ -1,17 +1,28 @@
 using VueExample.Contexts;
-using System.Linq;
 using VueExample.Models.SRV6;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VueExample.Providers.Srv6
 {
     public class StatParameterService
     {
-        private readonly Srv6Context _srv6Context;
-        public StatParameterService(Srv6Context srv6Context)
+        private readonly IServiceProvider _services;
+        public StatParameterService(IServiceProvider services)
         {
-            _srv6Context = srv6Context;
+           _services = services;
         }
-        public StatParameterForStage GetByStatParameterIdAndStageId(int statisticParameterId, int? stageId) 
-            => _srv6Context.StatParametersForStage.FirstOrDefault(x => x.StageId == stageId && x.StatisticParameterId == statisticParameterId);
+        public async Task<StatParameterForStage> GetByStatParameterIdAndStageId(int statisticParameterId, int? stageId) 
+        {
+            using (var scope = _services.CreateScope())
+            {
+                var srv6Context = scope.ServiceProvider.GetRequiredService<Srv6Context>();
+                return await srv6Context.StatParametersForStage.FirstOrDefaultAsync(x => x.StageId == stageId && x.StatisticParameterId == statisticParameterId);
+            }
+           
+        }
+           
     }
 }

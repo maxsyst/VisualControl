@@ -16,16 +16,16 @@ namespace VueExample.Controllers
     public class StatisticController : Controller 
     {
         private readonly IAppCache cache;
-        private readonly Srv6Context _srv6Context;
+        private readonly IServiceProvider _services;
         private readonly IDieValueService _dieValueService;
         private readonly IStageProvider _stageProvider;
         private readonly StatisticsCore.Services.StatisticService statisticService;
-        public StatisticController (IAppCache cache, IStageProvider stageProvider, Srv6Context srv6Context, IDieValueService dieValueService, ISRV6GraphicService graphicService) 
+        public StatisticController (IAppCache cache, IServiceProvider services, IStageProvider stageProvider, IDieValueService dieValueService, ISRV6GraphicService graphicService) 
         {
             _dieValueService = dieValueService;
             _stageProvider = stageProvider;
-            _srv6Context = srv6Context;
-            statisticService = new StatisticsCore.Services.StatisticService(graphicService, _srv6Context);
+            _services = services;
+            statisticService = new StatisticsCore.Services.StatisticService(graphicService, _services);
             this.cache = cache;
         }
 

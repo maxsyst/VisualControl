@@ -11,10 +11,10 @@ namespace VueExample.StatisticsCore.Services
     public class StatisticService 
     {
         private readonly ISRV6GraphicService _graphicService;
-        private readonly Srv6Context _srv6Context;
-        public StatisticService(ISRV6GraphicService graphicService, Srv6Context srv6Context)
+        private readonly IServiceProvider _services;
+        public StatisticService(ISRV6GraphicService graphicService, IServiceProvider services)
         {
-            _srv6Context = srv6Context;
+            _services = services;
             _graphicService = graphicService;
         }
         
@@ -58,7 +58,7 @@ namespace VueExample.StatisticsCore.Services
 
        private SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract SingleStatisticsServiceCreator(Graphic graphic)
        {
-            var statParameterService = new StatParameterService(_srv6Context);
+            var statParameterService = new StatParameterService(_services);
             switch (graphic.Type)
             {
                 case 1:

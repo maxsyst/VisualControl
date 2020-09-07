@@ -133,14 +133,14 @@
               die.isActive = false;
             });
             if(this.mapMode === "selected") {
-              for (let i = 0; i < this.selectedDies.length; i++) {
+              for (let i = 0; i < this.avbSelectedDie.length; i++) {
                 let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
                 die.fill = "#8C9EFF";
                 die.text = "#303030"
                 die.isActive = true;
               }  
         
-              for (let i = 0; i < selectedDies.length; i++) {            
+              for (let i = 0; i < this.selectedDies.length; i++) {            
                 let die = this.dies.find(d => d.id === selectedDies[i])         
                 die.fill = "#3D5AFE"
                 die.text = "#FFF9C4"           
@@ -201,7 +201,7 @@
               die.isActive = false;
             });
             if(this.mapMode === "selected") {
-              for (let i = 0; i < selectedDies.length; i++) {
+              for (let i = 0; i < this.avbSelectedDies.length; i++) {
                 let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
                 die.fill = "#8C9EFF";
                 die.text = "#303030"

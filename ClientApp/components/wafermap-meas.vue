@@ -295,7 +295,7 @@
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
-      <v-col lg="4" class="d-flex align-self-center">
+      <v-col v-if="selectedDies.length < 200" lg="4" class="d-flex align-self-center">
         <chart-lnr
           v-if="graphic.keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
@@ -312,6 +312,16 @@
         ></chart-hstg>
         <v-divider light></v-divider>
       </v-col>     
+      <v-col v-else lg="4" class="d-flex align-self-center">
+        <v-card>
+          <v-card-text>
+            <div>Графиков для отображения: {{selectedDies.length}}</div>
+            <p>
+              Для повышения производительности графики не будут отображены. Выберите менее 200 графиков.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -525,10 +535,6 @@ export default {
       this.$store.dispatch("wafermeas/updateDieColors", {ctx: this, waferId: newValue})
       this.$store.dispatch("wafermeas/updateSelectedWaferId", {ctx: this, waferId: newValue}) 
     },
-
-    // selectedMeasurementId: async function(newValue) {
-    //   
-    // },
 
     statisticKf: async function(k) {
       this.loading = true
