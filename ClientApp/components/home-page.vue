@@ -79,7 +79,7 @@
             min-width="500"
             shaped
             color="indigo"
-            @click=""
+            @click="$router.push({ name: 'uploader'})"
             class="d-flex ma-2 left-card">
               <v-card-text class="headline font-weight-bold">
                 Загрузка измерений
@@ -93,7 +93,7 @@
             min-height="100"
             shaped
             color="indigo"
-            @click=""
+            @click="$router.push({ name: 'idmrvocstart'})"
             class="d-flex ma-1">
              <v-card-text class="headline font-weight-bold">
                 Редактирование измерений
@@ -103,7 +103,7 @@
           </v-card>
           <v-card
             min-height="100"
-            @click=""
+            @click="$router.push({ name: 'dietypesettings'})"
             color="indigo"
             class="d-flex ma-1">
               <v-card-text class="headline font-weight-bold">
@@ -115,7 +115,7 @@
           <v-card
             min-height="100"
             shaped
-            @click=""
+            @click="$router.push({ name: 'uploader-fg'})"
             color="indigo"
             class="d-flex ma-1">
              <v-card-text class="headline font-weight-bold">
@@ -133,7 +133,7 @@
             min-width="500"
             shaped
             color="indigo"
-            @click=""
+            @click="$router.push({ name: 'export'})"
             class="d-flex ma-2 left-card">
               <v-card-text class="headline font-weight-bold">
                Экспорт
@@ -186,8 +186,5 @@ export default {
   .left-card {
     border-color: blueviolet;
     border-width: 5px;
-  }
-  .right-card {
-
   }
 </style>
