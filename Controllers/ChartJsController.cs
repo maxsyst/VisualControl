@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using LazyCache;
 using Microsoft.AspNetCore.Http;
@@ -33,7 +34,7 @@ namespace VueExample.Controllers
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[statisticSingleGraphicViewModel.KeyGraphicState];
-            var chart = await _chartJSProvider.GetLinearFromDieValues(dieValueList, 
+            var chart = await _chartJSProvider.GetLinearFromDieValues(dieValueList.ToDictionary(x => x.DieId, x => x), 
                                                                       statisticSingleGraphicViewModel.dieIdList, 
                                                                       double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), 
                                                                       statisticSingleGraphicViewModel.KeyGraphicState);
