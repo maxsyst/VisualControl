@@ -26,7 +26,7 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetByMeasurementRecordingId(int measurementRecordingId)
         {
             string measurementRecordingIdAsKey = "V_" + Convert.ToString(measurementRecordingId);
-            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var dieValuesDictionary = await cache.GetOrAddAsync(measurementRecordingIdAsKey, cachedService);
             return Ok(JsonConvert.SerializeObject(dieValuesDictionary));
         }

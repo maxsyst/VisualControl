@@ -20,16 +20,16 @@ namespace VueExample.StatisticsCore.Services
             _graphicService = graphicService;
         }
         
-        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
+        public Dictionary<string, List<SingleParameterStatistic>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
         {
-            var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
-            foreach (var graphicDV in dieValues) 
+            var statisticsDictionary = new ConcurrentDictionary<string, List<SingleParameterStatistic>>();
+            Parallel.ForEach (dieValues, async graphicDV =>
             {
                 var graphic = await _graphicService.GetById(Convert.ToInt32(graphicDV.Key.Split('_')[0]));
                 var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, stageId, divider, k);
-                statisticsDictionary.Add(graphicDV.Key, singleParameterStatisticsList);
-            }
-            return statisticsDictionary;
+                statisticsDictionary.TryAdd(graphicDV.Key, singleParameterStatisticsList);
+            });
+            return statisticsDictionary.ToDictionary(x => x.Key, x => x.Value);
         }
 
         public async Task<List<VueExample.StatisticsCore.DataModels.SingleStatisticData>> GetStatisticsDataByGraphicState(List<long?> dieList, string keyGraphicState, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList) 
