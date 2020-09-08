@@ -34,7 +34,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
           
         }
 
-        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, Dictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
+        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, ConcurrentDictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
         {
             var statisticsItem = new Statistics();
             var selectedDieList = new List<long?>();
@@ -45,7 +45,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
                 selectedDieList.Add(dieId);
             }
             var statistics = statisticsItem.GetStatistics(valueList, graphic);
-            var singleStatisticDataList = StatisticDataMapping (statistics, selectedDieList, singleParameterStatisticsList);
+            var singleStatisticDataList = StatisticDataMapping(statistics, selectedDieList, singleParameterStatisticsList);
             return singleStatisticDataList;
         }
     }

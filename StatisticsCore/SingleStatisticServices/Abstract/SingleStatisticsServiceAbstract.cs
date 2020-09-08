@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,12 +8,12 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
 {
     public abstract class SingleStatisticsServiceAbstract
     {
-        public abstract List<VueExample.StatisticsCore.DataModels.SingleStatisticData> CreateSingleStatisticData(List<long?> dieList, Graphic graphic, Dictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList);
+        public abstract List<VueExample.StatisticsCore.DataModels.SingleStatisticData> CreateSingleStatisticData(List<long?> dieList, Graphic graphic, ConcurrentDictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList);
         public abstract List<VueExample.StatisticsCore.SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider, double k);
-        protected List<VueExample.StatisticsCore.DataModels.SingleStatisticData> StatisticDataMapping (List<Statistics> statisticList, List<long?> dieList, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticList)
+        protected List<VueExample.StatisticsCore.DataModels.SingleStatisticData> StatisticDataMapping(List<Statistics> statisticList, List<long?> dieList, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticList)
         {           
            var singleStatisticDataList = new List<VueExample.StatisticsCore.DataModels.SingleStatisticData>();
-           Parallel.ForEach(statisticList, statisticsItem =>
+           Parallel.ForEach (statisticList, statisticsItem => 
            {
                 var origin = singleParameterStatisticList.FirstOrDefault(x => x.Name == statisticsItem.StatisticsName);              
                 var singleStatisticData = new DataModels.SingleStatisticData();

@@ -311,26 +311,35 @@ namespace VueExample.StatisticsCore
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
             var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
-            var idssList = new List<double>();
-            var id05List = new List<double>();
-            var ugsoffwithinterpolationList = new List<double>();
-            var ugsoffwithinterpolation100List = new List<double>();
-            var ugsoffList = new List<double>();
-            var ugsoffminList = new List<double>();
+            var idssList = new ConcurrentDictionary<int,double>();
+            var id05List = new ConcurrentDictionary<int,double>();
+            var ugsoffwithinterpolationList = new ConcurrentDictionary<int,double>();
+            var ugsoffwithinterpolation100List = new ConcurrentDictionary<int,double>();
+            var ugsoffList = new ConcurrentDictionary<int,double>();
+            var ugsoffminList = new ConcurrentDictionary<int,double>();
             var unit = "A";
             if (Math.Abs(divider - 1) > 1E-6)
             {
                 unit = "A/мм";
             }
-            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+
+            var cd = new ConcurrentDictionary<int, List<double>>();
+            var index = 0;
+            foreach (var yList in commonYList)
             {
+                cd.TryAdd(index++, yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList());
+            }
+
+            Parallel.ForEach(cd, (yListdoubleKeyValue) =>
+            {
+                var key = yListdoubleKeyValue.Key;
+                var yListdouble = yListdoubleKeyValue.Value;
                 var isugsoff = false;
-                idssList.Add(yListdouble[zeroIndex]);
-                id05List.Add(yListdouble[fiveIndex]);
-                ugsoffminList.Add(xListdouble[yListdouble.IndexOf(yListdouble.Min())]);
+                idssList.TryAdd(key, yListdouble[zeroIndex]);
+                id05List.TryAdd(key, yListdouble[fiveIndex]);
+                ugsoffminList.TryAdd(key, xListdouble[yListdouble.IndexOf(yListdouble.Min())]);
                 for (int i = yListdouble.Count - 1; i > -1; i--)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 1000)
                     {
                         if (i < yListdouble.Count - 1)
@@ -338,15 +347,14 @@ namespace VueExample.StatisticsCore
                             var xtwopointList = new List<double> {xListdouble[i], xListdouble[i + 1]};
                             var ytwopointList = new List<double> {yListdouble[i], yListdouble[i + 1]};
                             var interpolationmethod = Interpolate.Linear(ytwopointList, xtwopointList);
-                            ugsoffwithinterpolationList.Add(interpolationmethod.Interpolate(yListdouble[zeroIndex] / 1000));
-                        
-                            ugsoffList.Add((xListdouble[i] + xListdouble[i + 1]) / 2);
+                            ugsoffwithinterpolationList.TryAdd(key, interpolationmethod.Interpolate(yListdouble[zeroIndex] / 1000));
+                            ugsoffList.TryAdd(key, (xListdouble[i] + xListdouble[i + 1]) / 2);
                             isugsoff = true;
                         }
                         else
                         {
-                            ugsoffwithinterpolationList.Add(xListdouble[i]);
-                            ugsoffList.Add(xListdouble[i]);
+                            ugsoffwithinterpolationList.TryAdd(key, xListdouble[i]);
+                            ugsoffList.TryAdd(key, xListdouble[i]);
                             isugsoff = true;
                         }
 
@@ -357,7 +365,6 @@ namespace VueExample.StatisticsCore
 
                 for (int i = yListdouble.Count - 1; i > -1; i--)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                     {
                         if (i < yListdouble.Count - 1)
@@ -365,76 +372,68 @@ namespace VueExample.StatisticsCore
                             var xtwopointList = new List<double> { xListdouble[i], xListdouble[i + 1] };
                             var ytwopointList = new List<double> { yListdouble[i], yListdouble[i + 1] };
                             var interpolationmethod100 = Interpolate.Linear(ytwopointList, xtwopointList);
-                            ugsoffwithinterpolation100List.Add(interpolationmethod100.Interpolate(yListdouble[zeroIndex] / 100));
-
-                            
-                          
+                            ugsoffwithinterpolation100List.TryAdd(key, interpolationmethod100.Interpolate(yListdouble[zeroIndex] / 100));
                         }
                         else
                         {
-                            ugsoffwithinterpolation100List.Add(xListdouble[i]);
-                          
+                            ugsoffwithinterpolation100List.TryAdd(key, xListdouble[i]);
                         }
-
                         i = -1;
                     }
 
                 }
                 if (!isugsoff)
                 {
-                    ugsoffList.Add(double.NaN);
-                    ugsoffwithinterpolationList.Add(double.NaN);
+                    ugsoffList.TryAdd(key, double.NaN);
+                    ugsoffwithinterpolationList.TryAdd(key, double.NaN);
                 }
+            });
 
-
-
-            }
-            if (ugsoffList.Count(x => Double.IsNaN(x)) == ugsoffList.Count())
+          
+            if (ugsoffList.Count(x => Double.IsNaN(x.Value)) == ugsoffList.Count())
             {
-                foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+                Parallel.ForEach(cd, (yListdoubleKeyValue) =>
                 {
+                    var key = yListdoubleKeyValue.Key;
+                    var yListdouble = yListdoubleKeyValue.Value;
                     ugsoffList.Clear();
                     var isugsoff = false;
                     for (int i = yListdouble.Count - 1; i > -1; i--)
                     {
-
                         if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                         {
                             if (i < yListdouble.Count - 1)
                             {
-                                ugsoffList.Add((xListdouble[i] + xListdouble[i + 1]) / 2);
+                                ugsoffList.TryAdd(key, (xListdouble[i] + xListdouble[i + 1]) / 2);
                                 var xtwopointList = new List<double> { xListdouble[i], xListdouble[i + 1] };
                                 var ytwopointList = new List<double> { yListdouble[i], yListdouble[i + 1] };
                                 var interpolationmethod = Interpolate.Linear(ytwopointList, xtwopointList);
-                                ugsoffwithinterpolationList.Add(interpolationmethod.Interpolate(yListdouble[zeroIndex] / 100));
+                                ugsoffwithinterpolationList.TryAdd(key, interpolationmethod.Interpolate(yListdouble[zeroIndex] / 100));
                                 isugsoff = true;
                             }
                             else
                             {
-                                ugsoffwithinterpolationList.Add(xListdouble[i]);
-                                ugsoffList.Add(xListdouble[i]);
+                                ugsoffwithinterpolationList.TryAdd(key, xListdouble[i]);
+                                ugsoffList.TryAdd(key, xListdouble[i]);
                                 isugsoff = true;
                             }
-
                             i = -1;
                         }
                     }
                     if (!isugsoff)
                     {
-                        ugsoffList.Add(double.NaN);
-                        ugsoffwithinterpolationList.Add(1E9);
+                        ugsoffList.TryAdd(key, double.NaN);
+                        ugsoffwithinterpolationList.TryAdd(key, 1E9);
                     }
+                });
 
-
-
-                }
 
                 var returnexList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
-                    GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS(off)</sub> (напряжение отсечки при Idss/100) !Транзисторы не закрываются!", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
-                    GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
+                    GetFullStatisticsFromList(idssList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(ugsoffwithinterpolationList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "U<sub>GS(off)</sub> (напряжение отсечки при Idss/100) !Транзисторы не закрываются!", "В", 4),
+                    GetFullStatisticsFromList(id05List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(ugsoffminList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
 
                 };
                 return returnexList;
@@ -443,11 +442,11 @@ namespace VueExample.StatisticsCore
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
-                    GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
-                    GetFullStatisticsFromList(ugsoffwithinterpolation100List, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
-                    GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
+                    GetFullStatisticsFromList(idssList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(ugsoffwithinterpolationList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)", "В", 4),
+                    GetFullStatisticsFromList(id05List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(ugsoffwithinterpolation100List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
+                    GetFullStatisticsFromList(ugsoffminList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
 
                 };
             return returnList;
@@ -3722,39 +3721,48 @@ namespace VueExample.StatisticsCore
             var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.0 - item)).FirstOrDefault());
             var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
             
-            var id2List = new List<double>();
-            var id3List = new List<double>();
-            var id4List = new List<double>();
-            var id5List = new List<double>();
-            var s31List = new List<double>();
-            var s51List = new List<double>();
-            var sfList = new List<double>();
-            var ocList = new List<double>();
-            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            var id2List =  new ConcurrentDictionary<int,double>();
+            var id3List =  new ConcurrentDictionary<int,double>();
+            var id4List =  new ConcurrentDictionary<int,double>();
+            var id5List =  new ConcurrentDictionary<int,double>();
+            var s31List =  new ConcurrentDictionary<int,double>();
+            var s51List =  new ConcurrentDictionary<int,double>();
+            var sfList =   new ConcurrentDictionary<int,double>();
+            var ocList =   new ConcurrentDictionary<int,double>();
+
+            var cd = new ConcurrentDictionary<int, List<double>>();
+            var index = 0;
+            foreach (var yList in commonYList)
             {
+                cd.TryAdd(index++, yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList());
+            }
+
+            Parallel.ForEach(cd, (yListdoubleKeyValue) =>
+            {
+                var key = yListdoubleKeyValue.Key;
+                var yListdouble = yListdoubleKeyValue.Value;
                 var interpolationmethod = Interpolate.Linear(xListdouble, yListdouble);
                 var tempList = xListdouble.Where(x => x >= xListdouble[onehalfIndex]).Select(interpolationmethod.Differentiate).ToList();
-                sfList.Add(Math.Abs(tempList.Max() - tempList.Min()) * 1000);
-                id2List.Add(yListdouble[twoIndex]);
-                id3List.Add(yListdouble[threeIndex]);
-                id4List.Add(yListdouble[fourIndex]);
-                id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
-                ocList.Add(xListdouble[ocIndex] / yListdouble[ocIndex]);
-
-
-            }
+                sfList.TryAdd(key, Math.Abs(tempList.Max() - tempList.Min()) * 1000);
+                id2List.TryAdd(key, yListdouble[twoIndex]);
+                id3List.TryAdd(key, yListdouble[threeIndex]);
+                id4List.TryAdd(key, yListdouble[fourIndex]);
+                id5List.TryAdd(key, yListdouble[fiveIndex]);
+                s31List.TryAdd(key, 100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
+                s51List.TryAdd(key, 100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                ocList.TryAdd(key, xListdouble[ocIndex] / yListdouble[ocIndex]);
+                
+            });                   
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
-                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
-                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
-                    GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
-                    GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
-                    GetFullStatisticsFromList(sfList,  "S<sub>f</sub> (критерий S-образности)", "мСм")
+                    GetFullStatisticsFromList(id2List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
+                    GetFullStatisticsFromList(id3List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
+                    GetFullStatisticsFromList(id5List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
+                    GetFullStatisticsFromList(ocList.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
+                    GetFullStatisticsFromList(s31List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
+                    GetFullStatisticsFromList(s51List.OrderBy(x => x.Key).Select(x => x.Value).ToList(), "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
+                    GetFullStatisticsFromList(sfList.OrderBy(x => x.Key).Select(x => x.Value).ToList(),  "S<sub>f</sub> (критерий S-образности)", "мСм")
                 };
             return returnList;
         }

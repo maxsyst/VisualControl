@@ -34,7 +34,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
             return singleParameterStatisticsList;
         }
 
-        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, Dictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
+        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, ConcurrentDictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
         {
             var dieCommonListDictionary = new ConcurrentDictionary<long?, List<string>>();
             var statisticsItem = new Statistics();
