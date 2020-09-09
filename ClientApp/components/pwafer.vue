@@ -63,8 +63,8 @@
 
     methods: {
         go: async function(payload) {
-            //await this.$router.push({ name: 'wafer-path', params: { waferId: payload.waferId}})
-            await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: payload.waferId}})
+            await this.$router.push({ name: 'wafer-path', params: { waferId: payload.waferId}})
+           //await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: payload.waferId}})
         },
         goOld: async function(waferId) {
             await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: waferId}})

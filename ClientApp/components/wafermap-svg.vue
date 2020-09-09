@@ -133,7 +133,7 @@
               die.isActive = false;
             });
             if(this.mapMode === "selected") {
-              for (let i = 0; i < this.avbSelectedDie.length; i++) {
+              for (let i = 0; i < this.avbSelectedDies.length; i++) {
                 let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
                 die.fill = "#8C9EFF";
                 die.text = "#303030"

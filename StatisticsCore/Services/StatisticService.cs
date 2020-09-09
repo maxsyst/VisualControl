@@ -20,16 +20,16 @@ namespace VueExample.StatisticsCore.Services
             _statisticService = statisticService;
         }
         
-        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
+        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
         {
-            var statisticsDictionary = new ConcurrentDictionary<string, List<SingleParameterStatistic>>();
+            var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
             var statParameterStageList = await _statisticService.GetByStageId(stageId);
-            Parallel.ForEach (dieValues, async graphicDV =>
+            foreach (var graphicDV in dieValues)
             {
                 var graphic = await _graphicService.GetById(Convert.ToInt32(graphicDV.Key.Split('_')[0]));
                 var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, statParameterStageList, divider, k);
-                statisticsDictionary.TryAdd(graphicDV.Key, singleParameterStatisticsList);
-            });
+                statisticsDictionary.Add(graphicDV.Key, singleParameterStatisticsList);
+            }
             return statisticsDictionary.ToDictionary(x => x.Key, x => x.Value);
         }
 
@@ -45,7 +45,7 @@ namespace VueExample.StatisticsCore.Services
             return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesDictionaryDieIdBased, divider, singleParameterStatisticsList);
         }
 
-        public DirtyCells GetDirtyCellsBySPSDictionary(Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, int diesCount) 
+        public DirtyCells GetDirtyCellsBySPSDictionary(ConcurrentDictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, int diesCount) 
         {
             var dirtyCells = new DirtyCells();
             var statListCBag = new List<long?>();

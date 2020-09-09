@@ -20,7 +20,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
             var dieCommonListDictionary = new ConcurrentDictionary<long?, List<string>>();
             var statisticsItem = new Statistics();
             var xList = dieValues.FirstOrDefault().XList;
-            var singleParameterStatisticsList = new List<SingleParameterStatistic>();
+            var singleParameterStatisticsList = new ConcurrentDictionary<string, SingleParameterStatistic>();
             Parallel.ForEach(dieValues, gdv => 
             {
                 dieCommonListDictionary.TryAdd(gdv.DieId, gdv.YList);
@@ -30,14 +30,14 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
             {
                 if(stat.ParameterID > 0) 
                 {
-                    singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k).CalculateDirtyCellsFixed(statParameterForStage.FirstOrDefault(x => x.StatisticParameterId == stat.ParameterID )));
+                    singleParameterStatisticsList.TryAdd(stat.StatisticsName, new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k).CalculateDirtyCellsFixed(statParameterForStage.FirstOrDefault(x => x.StatisticParameterId == stat.ParameterID )));
                 }
                 else
                 {
-                    singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k));
+                    singleParameterStatisticsList.TryAdd(stat.StatisticsName, new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k));
                 }
             });
-            return singleParameterStatisticsList;
+            return singleParameterStatisticsList.Values.ToList();
         }
 
         public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, ConcurrentDictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
