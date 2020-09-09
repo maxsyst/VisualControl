@@ -10,12 +10,10 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
 {
     public class SingleParameterServiceHSTG : VueExample.StatisticsCore.SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract
     {
-        private readonly StatParameterService _statisticService;
-        public SingleParameterServiceHSTG(StatParameterService statisticService)
+        public SingleParameterServiceHSTG()
         {
-            _statisticService = statisticService;
         }
-        public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider, double k)
+        public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, List<StatParameterForStage> statParameterForStage, double divider, double k)
         {
             var dieCommonListDictionary = new ConcurrentDictionary<long?, string>();
             var statisticsItem = new Statistics();
@@ -26,9 +24,17 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
                 dieCommonListDictionary.TryAdd(gdv.DieId, gdv.YList.FirstOrDefault());
             });         
             var statisticList = statisticsItem.GetStatistics(dieCommonListDictionary.Values.ToList(), graphic);
-            Parallel.ForEach(statisticList, async stat => 
+            Parallel.ForEach(statisticList, stat => 
             {
-                singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k).CalculateDirtyCellsFixed(await _statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
+                if(stat.ParameterID > 0) 
+                {
+                    singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k).CalculateDirtyCellsFixed(statParameterForStage.FirstOrDefault(x => x.StatisticParameterId == stat.ParameterID)));
+                }
+                else
+                {
+                    singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k));
+                }
+               
             });
             return singleParameterStatisticsList;
           

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Contexts;
 using System.Linq;
+using VueExample.Providers.Srv6;
 
 namespace VueExample.Controllers
 {
@@ -16,16 +17,16 @@ namespace VueExample.Controllers
     public class StatisticController : Controller 
     {
         private readonly IAppCache cache;
-        private readonly IServiceProvider _services;
         private readonly IDieValueService _dieValueService;
         private readonly IStageProvider _stageProvider;
+        private readonly IStatParameterService _statParameterService;
         private readonly StatisticsCore.Services.StatisticService statisticService;
-        public StatisticController (IAppCache cache, IServiceProvider services, IStageProvider stageProvider, IDieValueService dieValueService, ISRV6GraphicService graphicService) 
+        public StatisticController (IAppCache cache, IStageProvider stageProvider, IDieValueService dieValueService, ISRV6GraphicService graphicService, IStatParameterService statParameterService) 
         {
             _dieValueService = dieValueService;
             _stageProvider = stageProvider;
-            _services = services;
-            statisticService = new StatisticsCore.Services.StatisticService(graphicService, _services);
+            _statParameterService = statParameterService;
+            statisticService = new StatisticsCore.Services.StatisticService(graphicService, statParameterService);
             this.cache = cache;
         }
 
@@ -39,8 +40,8 @@ namespace VueExample.Controllers
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var dieValuesDictionary = await cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
-            Func<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
-            var statDictionary = cache.GetOrAdd($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
+            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
+            var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
             var dirtyCells = statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesList.Count);
             return Ok(new {goodCellsPercentage = dirtyCells.StatPercentageFullWafer, dirtyCellsArray = dirtyCells.StatList, diesCount = diesList.Count});
         }
@@ -52,8 +53,8 @@ namespace VueExample.Controllers
             string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             var dieValuesDictionary = await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}");
-            Func<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
-            var statDictionary = cache.GetOrAdd($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
+            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
+            var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
             return Ok(statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesCount));
         }
 

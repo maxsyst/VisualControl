@@ -13,20 +13,21 @@ namespace VueExample.StatisticsCore.Services
     public class StatisticService 
     {
         private readonly ISRV6GraphicService _graphicService;
-        private readonly IServiceProvider _services;
-        public StatisticService(ISRV6GraphicService graphicService, IServiceProvider services)
+        private readonly IStatParameterService _statisticService;
+        public StatisticService(ISRV6GraphicService graphicService, IStatParameterService statisticService)
         {
-            _services = services;
             _graphicService = graphicService;
+            _statisticService = statisticService;
         }
         
-        public Dictionary<string, List<SingleParameterStatistic>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
+        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(Dictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
         {
             var statisticsDictionary = new ConcurrentDictionary<string, List<SingleParameterStatistic>>();
+            var statParameterStageList = await _statisticService.GetByStageId(stageId);
             Parallel.ForEach (dieValues, async graphicDV =>
             {
                 var graphic = await _graphicService.GetById(Convert.ToInt32(graphicDV.Key.Split('_')[0]));
-                var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, stageId, divider, k);
+                var singleParameterStatisticsList = SingleStatisticsServiceCreator(graphic).CreateSingleParameterStatisticsList(graphicDV.Value, graphic, statParameterStageList, divider, k);
                 statisticsDictionary.TryAdd(graphicDV.Key, singleParameterStatisticsList);
             });
             return statisticsDictionary.ToDictionary(x => x.Key, x => x.Value);
@@ -67,15 +68,14 @@ namespace VueExample.StatisticsCore.Services
 
        private SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract SingleStatisticsServiceCreator(Graphic graphic)
        {
-            var statParameterService = new StatParameterService(_services);
             switch (graphic.Type)
             {
                 case 1:
-                    return new SingleStatisticServices.SingleParameterServiceLNR(statParameterService);
+                    return new SingleStatisticServices.SingleParameterServiceLNR();
                 case 2:
-                    return new SingleStatisticServices.SingleParameterServiceHSTG(statParameterService);
+                    return new SingleStatisticServices.SingleParameterServiceHSTG();
             }
-            return new SingleStatisticServices.SingleParameterServiceLNR(statParameterService);;
+            return new SingleStatisticServices.SingleParameterServiceLNR();;
 
        }
 

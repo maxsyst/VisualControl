@@ -28,7 +28,7 @@
                         }"
                         @click:row="go">
                         <template v-slot:item.waferId="{ item }">
-                            <v-chip color="indigo" label v-html="item.waferId" dark></v-chip>
+                            <v-chip color="indigo" label v-html="item.waferId" @click="goOld(item.waferId)" dark></v-chip>
                         </template>
                         <template v-slot:item.measurementDate="{ item }">
                             <span>{{new Date(item.measurementDate).toLocaleString("ru-RU", { year: 'numeric', month: 'long', day: 'numeric' })}}</span>
@@ -63,7 +63,11 @@
 
     methods: {
         go: async function(payload) {
+            //await this.$router.push({ name: 'wafer-path', params: { waferId: payload.waferId}})
             await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: payload.waferId}})
+        },
+        goOld: async function(waferId) {
+            await this.$router.push({ name: 'wafermeasurement-onlywafer', params: { waferId: waferId}})
         }
     },
 

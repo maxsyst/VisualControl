@@ -2,26 +2,35 @@ using VueExample.Contexts;
 using VueExample.Models.SRV6;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using System.Linq;
+using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Providers.Srv6
 {
-    public class StatParameterService
+    public class StatParameterService : IStatParameterService
     {
-        private readonly IServiceProvider _services;
-        public StatParameterService(IServiceProvider services)
+        private readonly Srv6Context _srv6Context;
+        public StatParameterService(Srv6Context srv6Context)
         {
-           _services = services;
+           _srv6Context = srv6Context;
         }
+
+        public async Task<List<StatParameterForStage>> GetByStageId(int? stageId) 
+        {
+            if(stageId == null)
+            {
+                return new List<StatParameterForStage>();
+            }
+            else
+            {
+                return await _srv6Context.StatParametersForStage.Where(x => x.StageId == stageId).ToListAsync();
+            }
+        }
+
         public async Task<StatParameterForStage> GetByStatParameterIdAndStageId(int statisticParameterId, int? stageId) 
         {
-            using (var scope = _services.CreateScope())
-            {
-                var srv6Context = scope.ServiceProvider.GetRequiredService<Srv6Context>();
-                return await srv6Context.StatParametersForStage.FirstOrDefaultAsync(x => x.StageId == stageId && x.StatisticParameterId == statisticParameterId);
-            }
-           
+            return await _srv6Context.StatParametersForStage.FirstOrDefaultAsync(x => x.StageId == stageId && x.StatisticParameterId == statisticParameterId);            
         }
            
     }

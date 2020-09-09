@@ -140,6 +140,7 @@ namespace VueExample
             services.AddTransient<IColorService, ColorService>();
             services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
+            services.AddTransient<IStatParameterService, StatParameterService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
             services.AddTransient<IElementTypeService, ElementTypeService>();
             services.AddTransient<ISpecificElementTypeProvider, SpecificElementTypeProvider>();
