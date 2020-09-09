@@ -2,7 +2,6 @@ using System.Linq;
 using System.Collections.Generic;
 using VueExample.Models.SRV6;
 using VueExample.StatisticsCore.DataModels;
-using VueExample.Providers.Srv6;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 

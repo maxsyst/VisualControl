@@ -7,9 +7,7 @@ using Newtonsoft.Json;
 using VueExample.Models.SRV6;
 using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
-using VueExample.Contexts;
 using System.Linq;
-using VueExample.Providers.Srv6;
 using System.Collections.Concurrent;
 
 namespace VueExample.Controllers
@@ -51,7 +49,7 @@ namespace VueExample.Controllers
         [Route("GetDirtyCellsByMeasurementRecording")]
         public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount, [FromQuery] double k)
         {
-            string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
+            string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             var dieValuesDictionary = await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}");
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);

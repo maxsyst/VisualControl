@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VueExample.Models.SRV6;
-using VueExample.Providers.Srv6;
 using VueExample.StatisticsCore.DataModels;
 
 namespace VueExample.StatisticsCore.SingleStatisticServices

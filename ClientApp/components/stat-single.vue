@@ -6,9 +6,9 @@
             <v-container>
               <v-row>    
                 <v-col lg="6" class="d-flex align-center justify-start" v-if="!loading">  
-                <v-chip class="elevation-8" label x-large color="#303030">
-                  {{graphicName}}
-                </v-chip>
+                  <v-chip class="elevation-8" label x-large color="#303030">
+                    {{graphicName}}
+                  </v-chip>
                 </v-col>  
                 <v-col lg="6" class="d-flex align-center justify-space-around" v-if="!loading">
                 <div class="d-flex flex-column" >
@@ -43,8 +43,7 @@
                     <v-icon>cached</v-icon>
                   </v-btn>    
                </div>   
-              </div>
-                            
+              </div>                            
               <!-- <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch> -->
                </v-col> 
                <v-col v-else>
@@ -102,8 +101,7 @@
                         class="elevation-2 pa-0"  
                         :loading="loading"
                         hide-default-footer
-                        dark
-                      >
+                        dark>
                         <template v-slot:item.shortStatisticsName="{ item }">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
@@ -141,7 +139,6 @@
                             :value = "viewMode === `Мониторинг` ? item.dirtyCells.statPercentageFullWafer : item.dirtyCells.fixedPercentageFullWafer"
                             :color= "viewMode === `Мониторинг` ? 'primary' : '#80DEEA'"
                           >{{ viewMode === `Мониторинг` ? item.dirtyCells.statPercentageFullWafer + '%' : item.dirtyCells.fixedPercentageFullWafer + '%' }}</v-progress-circular>
-
                           <v-btn text icon :color="viewMode === `Мониторинг` ? 'primary' : '#80DEEA'" @click="delDirtyCells(item.dirtyCells)">
                             <v-icon>cached</v-icon>
                           </v-btn>
