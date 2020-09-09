@@ -12,8 +12,8 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
         public abstract List<VueExample.StatisticsCore.SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, List<StatParameterForStage> statParameterForStage, double divider, double k);
         protected List<VueExample.StatisticsCore.DataModels.SingleStatisticData> StatisticDataMapping(List<Statistics> statisticList, List<long?> dieList, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticList)
         {           
-           var singleStatisticDataList = new ConcurrentDictionary<string, VueExample.StatisticsCore.DataModels.SingleStatisticData>();
-           Parallel.ForEach (statisticList, statisticsItem => 
+           var singleStatisticDataList = new Dictionary<string, VueExample.StatisticsCore.DataModels.SingleStatisticData>();
+           foreach (var statisticsItem in statisticList)
            {
                 var origin = singleParameterStatisticList.FirstOrDefault(x => x.Name == statisticsItem.StatisticsName); 
                 var singleStatisticData = new DataModels.SingleStatisticData();
@@ -35,15 +35,9 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
                 singleStatisticData.ExpectedValue = statisticsItem.ExpectedValue;
                 singleStatisticData.StatisticsName = statisticsItem.StatisticsName;
                 singleStatisticData.ShortStatisticsName = $"{statisticsItem.StatisticsName.Split(' ').FirstOrDefault()}";
-                singleStatisticDataList.TryAdd(statisticsItem.StatisticsName, singleStatisticData);
-
-           });
+                singleStatisticDataList.Add(statisticsItem.StatisticsName, singleStatisticData);
+           };
            return singleStatisticDataList.Values.ToList();
-
         }
-
-         
-
-        
     }
 }

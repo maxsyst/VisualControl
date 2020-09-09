@@ -56,10 +56,6 @@ namespace VueExample.Controllers
             var dieValuesDictionary = await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}");
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
-            if(statDictionary.Count != dieValuesDictionary.Count)
-            {
-                return Ok();
-            }
             return Ok(statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesCount));
         }
 
@@ -91,10 +87,6 @@ namespace VueExample.Controllers
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphicState];
             var dieList = dieValueList.Select(x => x.DieId).ToList();
-            var sf = await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{k*10}");
-            try {
-
-            
             var singleParameterStatisticList = 
                 (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{k*10}"))[keyGraphicState];
             var statisticDataList = await statisticService
@@ -104,10 +96,6 @@ namespace VueExample.Controllers
                                                                            1.0, 
                                                                            singleParameterStatisticList);
             return Ok(statisticDataList);
-            }
-            catch(Exception ex) {
-                return Ok();
-            }
         }
         
         [HttpGet]
