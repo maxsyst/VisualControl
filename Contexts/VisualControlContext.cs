@@ -17,7 +17,7 @@ namespace VueExample.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server = localhost,1401; Database = VisualControl; User = SA; password = <zx12cv>; MultipleActiveResultSets = True;");
+            optionsBuilder.UseSqlServer(@"data source = SRV3\SRV3; Initial Catalog = VisualControl; persist security info = True; user id = vcu; password = zxvitr78KK; MultipleActiveResultSets = True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

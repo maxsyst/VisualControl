@@ -26,22 +26,19 @@ namespace VueExample.Providers
             _colorService = colorService;
         }
 
-        public async Task<AbstractChart> GetLinearFromDieValues(List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState) 
+        public async Task<AbstractChart> GetLinearFromDieValues(Dictionary <long?, DieValue> dieValuesDictionary, List<long?> dieIdList, double divider, string keyGraphicState) 
         {
             var datasetList = new ConcurrentBag<Dataset>();
-            var currentDieValues = dieValuesList.Where(x => dieIdList.Contains(x.DieId)).ToList();
+            var currentDieValues = dieIdList.Select(dieId => dieValuesDictionary[dieId]).ToList();
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
             Parallel.ForEach (currentDieValues, (dieValue) => 
             {
                 var dataset = new LinearDataset();
                 dataset.BorderColor = _colorService.GetHexColorByDieId(dieValue.DieId);
                 dataset.DieId = dieValue.DieId;
-                for (int i = 0; i < dieValue.XList.Count; i++) 
+                for (int i = 0; i < dieValue.YList.Count; i++)
                 {
-                    if (i < dieValue.YList.Count) 
-                    {
-                        dataset.Data.Add(double.Parse (dieValue.YList[i], CultureInfo.InvariantCulture) / divider);
-                    }
+                    dataset.Data.Add(double.Parse(dieValue.YList[i], CultureInfo.InvariantCulture) / divider);
                 }
                 datasetList.Add(dataset);
             });
@@ -50,7 +47,7 @@ namespace VueExample.Providers
                                          datasetList, 
                                          new ChartModels.ChartJs.Options.XAxis($"{graphic.Absciss}({graphic.AbscissUnit})", true), 
                                          new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
-            labelsList.AddRange(dieValuesList.FirstOrDefault().XList);
+            labelsList.AddRange(currentDieValues.FirstOrDefault().XList);
             return chart;
         }
 

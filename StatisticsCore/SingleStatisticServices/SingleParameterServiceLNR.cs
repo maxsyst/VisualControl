@@ -1,53 +1,55 @@
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VueExample.Models.SRV6;
-using VueExample.Providers.Srv6;
 using VueExample.StatisticsCore.DataModels;
 
 namespace VueExample.StatisticsCore.SingleStatisticServices
 {
     public class SingleParameterServiceLNR : VueExample.StatisticsCore.SingleStatisticServices.Abstract.SingleStatisticsServiceAbstract
     {
-        private readonly StatParameterService _statisticService;
-        public SingleParameterServiceLNR(StatParameterService statisticService)
+        public SingleParameterServiceLNR()
         {
-            _statisticService = statisticService;
+
         }
-        public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, int? stageId, double divider, double k)
+        public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, List<StatParameterForStage> statParameterForStage, double divider, double k)
         {
+            var dieCommonListDictionary = new ConcurrentDictionary<long?, List<string>>();
             var statisticsItem = new Statistics();
-            var dieIdList = new List<long?>();             
-            var singleParameterStatisticsList = new List<SingleParameterStatistic>();
-            var commonYList = new List<List<string>>();
-
-            foreach (var gdv in dieValues) 
+            var xList = dieValues.FirstOrDefault().XList;
+            var singleParameterStatisticsList = new ConcurrentDictionary<string, SingleParameterStatistic>();
+            Parallel.ForEach(dieValues, gdv => 
             {
-                commonYList.Add(gdv.YList);
-                dieIdList.Add(gdv.DieId);
-            }
-
-            foreach (var stat in statisticsItem.GetStatistics(dieValues.FirstOrDefault().XList, commonYList, graphic, divider)) 
+                dieCommonListDictionary.TryAdd(gdv.DieId, gdv.YList);
+            });         
+            var statisticList = statisticsItem.GetStatistics(dieValues.FirstOrDefault().XList, dieCommonListDictionary.Values.ToList(), graphic, divider);
+            Parallel.ForEach(statisticList, stat => 
             {
-                singleParameterStatisticsList.Add(new SingleParameterStatistic(stat.StatisticsName, dieIdList, stat.FullList, k).CalculateDirtyCellsFixed(_statisticService.GetByStatParameterIdAndStageId(stat.ParameterID, stageId)));
-            }
-
-            return singleParameterStatisticsList;
+                if(stat.ParameterID > 0) 
+                {
+                    singleParameterStatisticsList.TryAdd(stat.StatisticsName, new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k).CalculateDirtyCellsFixed(statParameterForStage.FirstOrDefault(x => x.StatisticParameterId == stat.ParameterID )));
+                }
+                else
+                {
+                    singleParameterStatisticsList.TryAdd(stat.StatisticsName, new SingleParameterStatistic(stat.StatisticsName, dieCommonListDictionary.Keys.ToList(), stat.FullList, k));
+                }
+            });
+            return singleParameterStatisticsList.Values.ToList();
         }
 
-        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieList, Graphic graphic, List<DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
+        public override List<SingleStatisticData> CreateSingleStatisticData(List<long?> dieIdList, Graphic graphic, ConcurrentDictionary<long?, DieValue> dieValuesList, double divider, List<VueExample.StatisticsCore.SingleParameterStatistic> singleParameterStatisticsList)
         {
+            var dieCommonListDictionary = new ConcurrentDictionary<long?, List<string>>();
             var statisticsItem = new Statistics();
-            var selectedDieList = new List<long?>();
-            var xList = dieValuesList.FirstOrDefault().XList;
-            var commonYList = new List<List<string>>();
-            foreach (var dieValue in dieValuesList.Where(d => dieList.Contains (d.DieId))) 
+            var xList = dieValuesList.FirstOrDefault().Value.XList;
+            Parallel.ForEach(dieIdList, dieId => 
             {
-                commonYList.Add(dieValue.YList);
-                selectedDieList.Add(dieValue.DieId);
-            }
-            var statistics = statisticsItem.GetStatistics(xList, commonYList, graphic, divider);
-            var singleStatisticDataList = StatisticDataMapping(statistics, selectedDieList, singleParameterStatisticsList);
+                dieCommonListDictionary.TryAdd(dieId, dieValuesList[dieId].YList);
+            });         
+            var statistics = statisticsItem.GetStatistics(xList, dieCommonListDictionary.Values.ToList(), graphic, divider);
+            var singleStatisticDataList = StatisticDataMapping(statistics, dieCommonListDictionary.Keys.ToList(), singleParameterStatisticsList);
             return singleStatisticDataList;
         }
     }

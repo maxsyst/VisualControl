@@ -2,7 +2,7 @@
     <v-container>
         <v-card>
          <v-row>
-            <v-col lg="4" offset-lg="5">
+            <v-col lg="6" offset-lg="6">
                 <v-btn outlined color="primary" @click="resetSettings">Сбросить настройки</v-btn>
             </v-col>
         </v-row>
@@ -102,7 +102,7 @@
             </v-col>
         </v-row>       
         <v-row>
-            <v-col lg="4" offset-lg="5">
+            <v-col lg="6" offset-lg="6">
                 <v-btn v-if="validation" color="green" @click="applySettings">Применить настройки</v-btn>
                 <v-btn v-else outlined color="pink">Заполните все поля</v-btn>
             </v-col>

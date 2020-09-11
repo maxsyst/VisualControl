@@ -10,12 +10,12 @@
                       :size="50"
                       :width="2"
                       :value="dirtyCells.fullWafer.percentage"
-                      :color="this.$store.getters['wafermeas/calculateColor'](dirtyCells.fullWafer.percentage/ 100)">
+                      :color="this.$store.getters['wafermeas/calculateColor'](dirtyCells.fullWafer.percentage / 100)">
                     {{ dirtyCells.fullWafer.percentage + '%'}}
                     </v-progress-circular>
                     <v-progress-circular v-else
                         indeterminate
-                        color="primary"
+                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                     ></v-progress-circular>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
@@ -24,18 +24,18 @@
                     :size="50"
                     :width="2"
                     :value="dirtyCells.selectedNow.percentage"
-                    color="primary">
+                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
                     {{ dirtyCells.selectedNow.percentage + '%' }}
                   </v-progress-circular>
                    <v-progress-circular v-else
                         indeterminate
-                        color="primary"
+                       :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                     ></v-progress-circular>
             </v-col>
             <v-col lg="1" offset-lg="1" class="d-flex align-center"> 
                 <v-checkbox
                     v-model="isGraphicSelected"
-                    color="yellow darken-2"
+                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                     @change="changeGraphicSelection"
                 ></v-checkbox>
             </v-col>
@@ -46,7 +46,7 @@
 <script>
 export default {
 
-    props: ["avbSelectedDies", "keyGraphicState"],
+    props: ["avbSelectedDies", "keyGraphicState", "viewMode"],
 
     data() {
         return {
@@ -58,10 +58,10 @@ export default {
         changeGraphicSelection() {
             if(this.isGraphicSelected) {
                 this.$store.dispatch("wafermeas/deleteSelectedGraphic", this.keyGraphicState)
-                this.$store.dispatch("wafermeas/deleteFromDirtyCellsStat", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
+                this.$store.dispatch("wafermeas/deleteFromDirtyCells", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
             } else {
                 this.$store.dispatch("wafermeas/addSelectedGraphic", this.keyGraphicState)
-                this.$store.dispatch("wafermeas/addToDirtyCellsStat", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
+                this.$store.dispatch("wafermeas/addToDirtyCells", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
             }
         }
     },
@@ -77,7 +77,7 @@ export default {
         },
 
         dirtyCells() {
-            return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState)
+            return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState, this.viewMode)
         }
     },
 

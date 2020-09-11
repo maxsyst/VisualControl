@@ -37,7 +37,7 @@
                                 <template v-slot:activator>
                                     <v-btn outlined v-model="fab.measurement"
                                         small
-                                        color="primary"
+                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.measurement">close</v-icon>
@@ -140,7 +140,7 @@
                                         v-model="fab.stage"
                                         small
                                         outlined
-                                        color="primary"
+                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.stage">close</v-icon>
@@ -177,7 +177,7 @@
                                 label="Выберите новый этап">
                             </v-select>
                         </v-col>
-                        <v-col lg="2">
+                        <v-col lg="4">
                             <v-btn v-if="modes.stage.selected" outlined block color="green" class="d-flex mt-2" @click="editStage">
                                 Изменить этап
                             </v-btn>
@@ -207,7 +207,7 @@
                                         v-model="fab.element"
                                         outlined
                                         small
-                                        color="primary"
+                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                                         dark
                                         fab>
                                         <v-icon v-if="fab.element">close</v-icon>
@@ -244,7 +244,7 @@
                                 label="Выберите тип монитора">
                             </v-select>
                         </v-col>
-                        <v-col lg="2">
+                        <v-col lg="4">
                             <v-btn v-if="modes.element.selectedElement" outlined block color="green" class="d-flex mt-2" @click="editElement">
                                 Изменить элемент
                             </v-btn> 
@@ -275,7 +275,7 @@
 <<script>
 export default {
 
-    props: ["waferId", "selectedMeasurementId"],
+    props: ["waferId", "selectedMeasurementId", "viewMode"],
 
     data() {
         return {

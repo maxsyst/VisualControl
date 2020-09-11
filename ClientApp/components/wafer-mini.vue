@@ -30,7 +30,7 @@
   import Loading from 'vue-loading-overlay';
   import { mapGetters } from 'vuex';
   export default {
-    props: ['keyGraphicState', 'avbSelectedDies'],
+    props: ['keyGraphicState', 'avbSelectedDies', 'viewMode'],
     components: { Loading },
     data() {
       return {
@@ -136,19 +136,9 @@
           die.fill = isSelected ? this.dieColors.find(d => d.dieId === die.id).hexColor : "#424242"
           die.isActive = true
         })
-      }
-    },
-    
-    watch:
-    {
-      fieldWidth: {
-        immediate: true,
-        handler(newVal, oldVal) {
-          this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
-        }
       },
 
-      selectedDies: function(selectedDies) {
+      refresh: function(selectedDies) {
         if(this.mode === "initial") {
           this.goToInitial(selectedDies)
         }
@@ -164,12 +154,27 @@
         if(this.mode === "color") {
           this.goToColor(selectedDies)
         }
+      }
+    },
+    
+    watch: {
+      fieldWidth: {
+        immediate: true,
+        handler(newVal, oldVal) {
+          this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
+        }
+      },
+
+      viewMode: function() {
+        this.refresh(this.selectedDies)
+      },
+
+      selectedDies: function(selectedDies) {
+        this.refresh(selectedDies)
       }      
     },
 
-    computed:
-    {
-
+    computed: {
       ...mapGetters({
         wafer: 'wafermeas/wafer',
         selectedDies: 'wafermeas/selectedDies',
@@ -180,7 +185,7 @@
       }),
 
       dirtyCells() {
-        return this.dirtyCellsGetter(this.keyGraphicState)
+        return this.dirtyCellsGetter(this.keyGraphicState, this.viewMode)
       },
 
       mode() {

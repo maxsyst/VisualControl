@@ -7,8 +7,8 @@ using Newtonsoft.Json;
 using VueExample.Models.SRV6;
 using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
-using VueExample.Contexts;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace VueExample.Controllers
 {
@@ -16,16 +16,16 @@ namespace VueExample.Controllers
     public class StatisticController : Controller 
     {
         private readonly IAppCache cache;
-        private readonly Srv6Context _srv6Context;
         private readonly IDieValueService _dieValueService;
         private readonly IStageProvider _stageProvider;
+        private readonly IStatParameterService _statParameterService;
         private readonly StatisticsCore.Services.StatisticService statisticService;
-        public StatisticController (IAppCache cache, IStageProvider stageProvider, Srv6Context srv6Context, IDieValueService dieValueService, ISRV6GraphicService graphicService) 
+        public StatisticController (IAppCache cache, IStageProvider stageProvider, IDieValueService dieValueService, ISRV6GraphicService graphicService, IStatParameterService statParameterService) 
         {
             _dieValueService = dieValueService;
             _stageProvider = stageProvider;
-            _srv6Context = srv6Context;
-            statisticService = new StatisticsCore.Services.StatisticService(graphicService, _srv6Context);
+            _statParameterService = statParameterService;
+            statisticService = new StatisticsCore.Services.StatisticService(graphicService, statParameterService);
             this.cache = cache;
         }
 
@@ -37,11 +37,11 @@ namespace VueExample.Controllers
             var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
-            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = () => _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var dieValuesDictionary = await cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
-            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
+            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
-            var dirtyCells = statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesList.Count);
+            var dirtyCells = statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesList.Count);
             return Ok(new {goodCellsPercentage = dirtyCells.StatPercentageFullWafer, dirtyCellsArray = dirtyCells.StatList, diesCount = diesList.Count});
         }
 
@@ -49,12 +49,12 @@ namespace VueExample.Controllers
         [Route("GetDirtyCellsByMeasurementRecording")]
         public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId, [FromQuery] int diesCount, [FromQuery] double k)
         {
-            string measurementRecordingIdAsKey = Convert.ToString (measurementRecordingId);
+            string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             var dieValuesDictionary = await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}");
-            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = () => statisticService.GetSingleParameterStatisticByDieValues(dieValuesDictionary, stageId, 1.0, k);
+            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
-            return Ok(statisticService.GetDirtyCellsBySPSDictionary(statDictionary, diesCount));
+            return Ok(statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesCount));
         }
 
         [HttpGet]

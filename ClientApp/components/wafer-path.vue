@@ -4,15 +4,19 @@
             <v-col lg="8" offset-lg="1">
                 <v-row>
                     <v-col lg="4">
-                        {{digitMeasurement.digitMeasurementName}}
+                        <v-chip label x-large color="indigo">
+                             {{digitMeasurement.digitMeasurementName}}
+                        </v-chip>
                     </v-col>
                     <v-col lg="8">
-                        {{digitMeasurement.stageArray.length === 1 ?  digitMeasurement.stageArray[0].name : digitMeasurement.stageArray.reduce((p,c) => p.name + "/" + c.name) }}
+                        <v-chip label x-large color="indigo">
+                            {{digitMeasurement.stageArray.length === 1 ?  digitMeasurement.stageArray[0].name : digitMeasurement.stageArray.reduce((p,c) => p.name + "/" + c.name) }}
+                        </v-chip>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col lg="2" v-for="elementMeasurement in digitMeasurement.elementMeasurementArray" :key="elementMeasurement.idmr">
-                        <wp-card :measurementRecordingId="elementMeasurement.idmr" :elementName="elementMeasurement.virtualElement"></wp-card>
+                        <wp-card :measurementRecordingId="elementMeasurement.idmr" :waferId="waferId" :digit="digitMeasurement.digitMeasurementName" :elementName="elementMeasurement.virtualElement"></wp-card>
                     </v-col>
                 </v-row>
             </v-col>

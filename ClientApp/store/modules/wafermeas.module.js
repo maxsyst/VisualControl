@@ -35,7 +35,8 @@ export const wafermeas = {
     divider: "",
     sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 320, fieldWidth: 320 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
     dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0},
-    dirtyCellsSingleGraphics: []
+    dirtyCellsStatSingleGraphics: [],
+    dirtyCellsFixedSingleGraphics: []
   },
   
   actions: {
@@ -120,23 +121,25 @@ export const wafermeas = {
       commit('updateDirtyCellsPercentageSelected', {statPercentageSelected, fixedPercentageSelected})
     },
 
-    addToDirtyCellsStat({commit}, {keyGraphicState, avbSelectedDies}) {
-      commit('addToDirtyCellsStat', {keyGraphicState, avbSelectedDies})
+    addToDirtyCells({commit}, {keyGraphicState, avbSelectedDies}) {
+      commit('addToDirtyCells', {keyGraphicState, avbSelectedDies})
       if(Array.isArray(keyGraphicState)) {
         commit('updateUnSelectedGraphics', [])
       }
     },
 
-    deleteFromDirtyCellsStat({commit}, {keyGraphicState, avbSelectedDies}) {
+    deleteFromDirtyCells({commit}, {keyGraphicState, avbSelectedDies}) {
       commit('deleteFromDirtyCellsStat', {keyGraphicState, avbSelectedDies})
+      commit('deleteFromDirtyCellsFixed', {keyGraphicState, avbSelectedDies})
     },
-    
-    updateDirtyCellsSelectedNowSingleGraphic({commit}, {keyGraphicState, dirtyCells}) {
-      commit('updateDirtyCellsSelectedNowSingleGraphic', {keyGraphicState, dirtyCells})
+
+    updateDirtyCellsSelectedNowSingleGraphic({commit}, {keyGraphicState, dirtyCells, viewMode}) {
+      commit('updateDirtyCellsSelectedNowSingleGraphic', {keyGraphicState, dirtyCells, viewMode})
     },
 
     updateDirtyCellsFullWaferSingleGraphic({commit}, {keyGraphicState, dirtyCells}) {
-      commit('updateDirtyCellsFullWaferSingleGraphic', {keyGraphicState, dirtyCells})
+      commit('updateDirtyCellsFullWaferSingleGraphicStat', {keyGraphicState, dirtyCells})
+      commit('updateDirtyCellsFullWaferSingleGraphicFixed', {keyGraphicState, dirtyCells})
     },
 
     updateSelectedDies ({ commit }, selectedDies ) {
@@ -206,7 +209,10 @@ export const wafermeas = {
     getKeyGraphicStateLog: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).log,
     getDieValuesByKeyGraphicState: state => keyGraphicState => state.dieValues[keyGraphicState],
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
-    getDirtyCellsByGraphic: state => keyGraphicState => state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState),
+    getDirtyCellsByGraphic: (state) => function (keyGraphicState, mode) 
+                                       { return mode === "Мониторинг" 
+                                                          ? state.dirtyCellsStatSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState) 
+                                                          : state.dirtyCellsFixedSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)},
     selectedDies: state => state.selectedDies,
     unSelectedGraphics: state => state.unSelectedGraphics,
     selectedGraphics: state => state.selectedGraphics,
@@ -293,17 +299,23 @@ export const wafermeas = {
     },
 
     addToDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
-      let singleGraphicCells = Array.isArray(keyGraphicState) 
-                               ? [...new Set(keyGraphicState.reduce((p,c) => [...p, ...state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === c).fullWafer.cells], []))]
-                               : state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells  
-      state.dirtyCells.statList = [...new Set([...state.dirtyCells.statList, ...singleGraphicCells])]
+      let singleGraphicCellsStat = Array.isArray(keyGraphicState) 
+                               ? [...new Set(keyGraphicState.reduce((p,c) => [...p, ...state.dirtyCellsStatSingleGraphics.find(dc => dc.keyGraphicState === c).fullWafer.cells], []))]
+                               : state.dirtyCellsStatSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells  
+      let singleGraphicCellsFixed = Array.isArray(keyGraphicState) 
+                               ? [...new Set(keyGraphicState.reduce((p,c) => [...p, ...state.dirtyCellsFixedSingleGraphics.find(dc => dc.keyGraphicState === c).fullWafer.cells], []))]
+                               : state.dirtyCellsFixedSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells  
+      state.dirtyCells.statList = [...new Set([...state.dirtyCells.statList, ...singleGraphicCellsStat])]
       state.dirtyCells.statPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.statList.length / avbSelectedDies.length) * 100)
-      state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)    
+      state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100) 
+      state.dirtyCells.fixedList = [...new Set([...state.dirtyCells.fixedList, ...singleGraphicCellsFixed])]
+      state.dirtyCells.fixedPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.fixedList.length / avbSelectedDies.length) * 100)
+      state.dirtyCells.fixedPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.fixedList.includes(value)).length / state.selectedDies.length) * 100)    
     },
 
     deleteFromDirtyCellsStat(state, {keyGraphicState, avbSelectedDies}) {
-      let singleGraphicCells = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
-      let dirtyCellsArray = state.dirtyCellsSingleGraphics.filter(dc => dc.keyGraphicState !== keyGraphicState && state.selectedGraphics.includes(dc.keyGraphicState))
+      let singleGraphicCells = state.dirtyCellsStatSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
+      let dirtyCellsArray = state.dirtyCellsStatSingleGraphics.filter(dc => dc.keyGraphicState !== keyGraphicState && state.selectedGraphics.includes(dc.keyGraphicState))
       let cellsArray = [...new Set(dirtyCellsArray.map(x => x.fullWafer.cells).reduce((p,c) => [...p, ...c]))]
       let readyToDelete = []
       singleGraphicCells.forEach(sgc => {
@@ -315,27 +327,53 @@ export const wafermeas = {
       state.dirtyCells.statPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.statList.includes(value)).length / state.selectedDies.length) * 100)      
     },
 
+    deleteFromDirtyCellsFixed(state, {keyGraphicState, avbSelectedDies}) {
+      let singleGraphicCells = state.dirtyCellsFixedSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState).fullWafer.cells
+      let dirtyCellsArray = state.dirtyCellsFixedSingleGraphics.filter(dc => dc.keyGraphicState !== keyGraphicState && state.selectedGraphics.includes(dc.keyGraphicState))
+      let cellsArray = [...new Set(dirtyCellsArray.map(x => x.fullWafer.cells).reduce((p,c) => [...p, ...c]))]
+      let readyToDelete = []
+      singleGraphicCells.forEach(sgc => {
+        if(!cellsArray.includes(sgc)) {
+          readyToDelete.push(sgc)
+      }})
+      state.dirtyCells.fixedList = state.dirtyCells.fixedList.filter(dc => !readyToDelete.includes(dc))
+      state.dirtyCells.fixedPercentageFullWafer = Math.ceil((1.0 - state.dirtyCells.fixedList.length / avbSelectedDies.length) * 100)
+      state.dirtyCells.fixedPercentageSelected = Math.ceil((1.0 - state.selectedDies.filter(value => state.dirtyCells.fixedList.includes(value)).length / state.selectedDies.length) * 100)      
+    },
+
     updateDirtyCellsPercentageSelected(state, {statPercentageSelected, fixedPercentageSelected}) {
       state.dirtyCells.statPercentageSelected = statPercentageSelected
       state.dirtyCells.fixedPercentageSelected = fixedPercentageSelected
     },
 
-    updateDirtyCellsSelectedNowSingleGraphic(state, {keyGraphicState, dirtyCells}) {
-      let graphic = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)
+    updateDirtyCellsSelectedNowSingleGraphic(state, {keyGraphicState, dirtyCells, viewMode}) {
+      let dirtyCellsSingleGraphics = viewMode === "Мониторинг" ? state.dirtyCellsStatSingleGraphics : state.dirtyCellsFixedSingleGraphics
+      let graphic = dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)
       if(graphic === undefined) {
         graphic = {keyGraphicState, selectedNow: {cells: [], percentage: 0}, fullWafer: {cells: [], percentage: 0}}
-        state.dirtyCellsSingleGraphics.push(graphic)
+        dirtyCellsSingleGraphics.push(graphic)
       }
-      graphic.selectedNow = {cells: [...dirtyCells.cellsId], percentage: dirtyCells.statPercentage}
+      graphic.selectedNow = {cells: [...dirtyCells.cellsId], percentage: dirtyCells.percentage}
     },
 
-    updateDirtyCellsFullWaferSingleGraphic(state, {keyGraphicState, dirtyCells}) {
-      let graphic = state.dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)
+    updateDirtyCellsFullWaferSingleGraphicStat(state, {keyGraphicState, dirtyCells}) {
+      let dirtyCellsSingleGraphics =  state.dirtyCellsStatSingleGraphics
+      let graphic = dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)
       if(graphic === undefined) {
         graphic = {keyGraphicState, selectedNow: {cells: [], percentage: 100}, fullWafer: {cells: [], percentage: -1}}
-        state.dirtyCellsSingleGraphics.push(graphic)
+        dirtyCellsSingleGraphics.push(graphic)
       }
-      graphic.fullWafer = {cells: [...dirtyCells.cellsId], percentage: dirtyCells.statPercentage}
+      graphic.fullWafer = {cells: [...dirtyCells.stat.cellsId], percentage: dirtyCells.stat.percentage}
+    },
+
+    updateDirtyCellsFullWaferSingleGraphicFixed(state, {keyGraphicState, dirtyCells}) {
+      let dirtyCellsSingleGraphics = state.dirtyCellsFixedSingleGraphics
+      let graphic = dirtyCellsSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)
+      if(graphic === undefined) {
+        graphic = {keyGraphicState, selectedNow: {cells: [], percentage: 100}, fullWafer: {cells: [], percentage: -1}}
+        dirtyCellsSingleGraphics.push(graphic)
+      }
+      graphic.fullWafer = {cells: [...dirtyCells.fixed.cellsId], percentage: dirtyCells.fixed.percentage}
     },
 
     updateSelectedGraphics(state, selectedGraphics) {

@@ -114,7 +114,7 @@ namespace VueExample
             });
         
 
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
 
             
@@ -140,6 +140,7 @@ namespace VueExample
             services.AddTransient<IColorService, ColorService>();
             services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
+            services.AddTransient<IStatParameterService, StatParameterService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
             services.AddTransient<IElementTypeService, ElementTypeService>();
             services.AddTransient<ISpecificElementTypeProvider, SpecificElementTypeProvider>();
