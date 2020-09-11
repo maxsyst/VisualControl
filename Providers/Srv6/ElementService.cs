@@ -91,7 +91,7 @@ namespace VueExample.Providers.Srv6
         {
             var waferIdSqlParameter = new SqlParameter("waferId", waferId);
             var elementNameSqlParameter = new SqlParameter("name", name);
-            return await _srv6Context.Elements.FromSql("EXECUTE dbo.select_element_by_waferId_elementname @waferId, @name", waferIdSqlParameter, elementNameSqlParameter).FirstOrDefaultAsync();
+            return await _srv6Context.Elements.FromSqlRaw("EXECUTE dbo.select_element_by_waferId_elementname @waferId, @name", waferIdSqlParameter, elementNameSqlParameter).FirstOrDefaultAsync();
         }
 
         public async Task<Element> UpdateElementOnIdmr(int measurementRecordingId, int newElementId)

@@ -19,9 +19,9 @@ namespace VueExample.Controllers
     public class ExportController : Controller
     {
         private readonly IExportProvider _exportProvider;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IMapper _mapper;
-        public ExportController(IExportProvider exportProvider, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        public ExportController(IExportProvider exportProvider, IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _exportProvider = exportProvider;
             _hostingEnvironment = hostingEnvironment;

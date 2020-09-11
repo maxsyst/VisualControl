@@ -70,7 +70,7 @@ namespace VueExample.Providers.ChipVerification
             if(facilityId == 1)
                 measurementSetsViewModelList.AddRange(GenerateMaterialBasedMeasurementSets());
             var facilityIdSqlParameter = new SqlParameter("facilityID", facilityId);
-            var measurementSetsFromDb = _applicationContext.MeasurementSet.FromSql("EXECUTE dbo.MeasurementSetByFacilityID @facilityID", facilityIdSqlParameter).ToList();
+            var measurementSetsFromDb = _applicationContext.MeasurementSet.FromSqlRaw("EXECUTE dbo.MeasurementSetByFacilityID @facilityID", facilityIdSqlParameter).ToList();
             measurementSetsViewModelList.AddRange(from measurementSet in measurementSetsFromDb
                                                   select new MeasurementSetViewModel 
                                                   {MeasurementSetId = measurementSet.MeasurementSetId, 

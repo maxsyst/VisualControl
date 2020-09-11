@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using VueCliMiddleware;
@@ -108,7 +109,7 @@ namespace VueExample
                 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v0.2.2", new Info
+                c.SwaggerDoc("v0.2.2", new OpenApiInfo
                 {
                     Version = "v0.2.2",
                     Title = "SVR_API",
@@ -212,6 +213,7 @@ namespace VueExample
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
+                c.RoutePrefix = string.Empty;
             });
 
 

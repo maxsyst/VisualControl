@@ -45,8 +45,7 @@ namespace VueExample.Contexts
         public DbSet<ShortLinkEntity> ShortLinkEntities { get; set; }
         public DbSet<Divider> Dividers { get; set; }
         public DbSet<StatParameterForStage> StatParametersForStage { get; set; }
-
-        public DbQuery<PWafer> PWaferQuery { get; set; }
+        public DbSet<PWafer> PWaferQuery { get; set; }
 
         protected override void OnModelCreating (ModelBuilder modelBuilder) 
         {
