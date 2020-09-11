@@ -9,15 +9,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
+using VueCliMiddleware;
 using VueExample.Color;
 using VueExample.Contexts;
 using VueExample.Exceptions;
@@ -44,9 +45,20 @@ namespace VueExample
 
         public IConfiguration Configuration { get; }
 
-
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
+            // Add AddRazorPages if the app uses Razor Pages.
+            services.AddRazorPages();
+
+            // In production, the Vue files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
+
             services.AddResponseCompression(options=>options.EnableForHttps = true);
      
             services.Configure<GzipCompressionProviderOptions>(options =>
@@ -54,12 +66,6 @@ namespace VueExample
                 options.Level = CompressionLevel.Optimal;
             });
 
-            services.AddMvc(options => { options.CacheProfiles.Add("Default60",
-                            new CacheProfile()
-                            {
-                                Duration = 3600
-                            });
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAutoMapper();
             services.AddLazyCache();
             services.AddSignalR();
@@ -173,17 +179,20 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
             
         }
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-          
             if (env.IsDevelopment())
-            {              
-                app.UseBrowserLink();
-                app.UseStatusCodePages();
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
-                {
-                    HotModuleReplacement = true
-                });
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             app.UseGlobalExceptionHandler(x => {
@@ -197,10 +206,6 @@ namespace VueExample
                 x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
             });           
 
-            app.UseSignalR(options =>
-            {
-                options.MapHub<LivePointHub>("/livepoint");                
-            });
 
             app.UseCors("DefaultPolicy");
             app.UseSwagger();
@@ -211,25 +216,35 @@ namespace VueExample
 
 
             app.UseAuthentication();
-            app.UseStaticFiles();
             app.UseResponseCompression();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
 
+                endpoints.MapHub<LivePointHub>("/livepoint");
+
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapToVueCliProxy(
+                        "{*path}",
+                        new SpaOptions { SourcePath = "ClientApp" },
+                        npmScript: "serve",
+                        regex: "Compiled successfully");
+                }
+
+                // Add MapRazorPages if the app uses Razor Pages. Since Endpoint Routing includes support for many frameworks, adding Razor Pages is now opt -in.
+                endpoints.MapRazorPages();
             });
 
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            app.UseSpa(spa =>
             {
-                builder.UseMvc(routes =>
-                {
-                    routes.MapSpaFallbackRoute(
-                        name: "spa-fallback",
-                        defaults: new { controller = "Home", action = "Index" });
-                });
+                spa.Options.SourcePath = "ClientApp";
             });
         }
     }
