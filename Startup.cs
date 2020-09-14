@@ -57,7 +57,7 @@ namespace VueExample
             // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp1/dist";
+                configuration.RootPath = "client-migrate/dist";
             });
 
             services.AddResponseCompression(options=>options.EnableForHttps = true);
@@ -235,7 +235,7 @@ namespace VueExample
                 {
                     endpoints.MapToVueCliProxy(
                         "{*path}",
-                        new SpaOptions { SourcePath = "ClientApp" },
+                        new SpaOptions { SourcePath = "client-migrate" },
                         npmScript: "serve",
                         regex: "Compiled successfully");
                 }
@@ -246,7 +246,7 @@ namespace VueExample
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = "client-migrate";
             });
         }
     }
