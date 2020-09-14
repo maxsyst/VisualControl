@@ -3613,7 +3613,8 @@ namespace VueExample.StatisticsCore
                 {
                     hundredList.Add(yListdouble.IndexOf(d));
                 }
-                vbrdgList.Add(xListdouble[hundredList.OrderBy(x=>x).FirstOrDefault()]);
+                var vbrdg = xListdouble[hundredList.OrderBy(x => x).FirstOrDefault()];
+                vbrdgList.Add(vbrdg == xListdouble.FirstOrDefault() ? xListdouble.LastOrDefault() : vbrdg);
             }
 
             var returnList = new List<Statistics>
@@ -3623,6 +3624,7 @@ namespace VueExample.StatisticsCore
                 };
             return returnList;
         }
+
 
         private List<Statistics> GetIdVd_Progress(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
@@ -6140,7 +6142,8 @@ namespace VueExample.StatisticsCore
                 {
                     hundredList.Add(yListdouble.IndexOf(d));
                 }
-                vbrdgList.Add(xListdouble[hundredList.OrderBy(x => x).FirstOrDefault()]);
+                var vbrdg = xListdouble[hundredList.OrderBy(x => x).FirstOrDefault()];
+                vbrdgList.Add(vbrdg == xListdouble.FirstOrDefault() ? xListdouble.LastOrDefault() : vbrdg);
             }
 
             var returnList = new List<Statistics>

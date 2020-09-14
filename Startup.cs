@@ -57,7 +57,7 @@ namespace VueExample
             // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                configuration.RootPath = "ClientApp1/dist";
             });
 
             services.AddResponseCompression(options=>options.EnableForHttps = true);
@@ -107,18 +107,18 @@ namespace VueExample
                     };
                 });
                 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v0.2.2", new OpenApiInfo
-                {
-                    Version = "v0.2.2",
-                    Title = "SVR_API",
-                    Description = "SVR_MES_19_API_0.2.2"
-                });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
+            // services.AddSwaggerGen(c =>
+            // {
+            //     c.SwaggerDoc("v0.2.2", new OpenApiInfo
+            //     {
+            //         Version = "v0.2.2",
+            //         Title = "SVR_API",
+            //         Description = "SVR_MES_19_API_0.2.2"
+            //     });
+            //     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //     c.IncludeXmlComments(xmlPath);
+            // });
         
 
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
@@ -209,12 +209,12 @@ namespace VueExample
 
 
             app.UseCors("DefaultPolicy");
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
-                c.RoutePrefix = string.Empty;
-            });
+            // app.UseSwagger();
+            // app.UseSwaggerUI(c =>
+            // {
+            //     c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
+            //     c.RoutePrefix = string.Empty;
+            // });
 
 
             app.UseAuthentication();

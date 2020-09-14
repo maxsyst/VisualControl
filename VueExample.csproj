@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+     <GenerateProgramFile>false</GenerateProgramFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
@@ -51,10 +52,7 @@
   <ItemGroup>
     <Compile Remove="ViewModels\PhotoViewModel.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Remove="tsconfig.json" />
-  </ItemGroup>
-    
+  
   <ItemGroup>
     <Folder Include="ClientApp\images\" />
   </ItemGroup>
