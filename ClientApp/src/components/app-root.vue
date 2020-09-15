@@ -1,9 +1,7 @@
 <template>
-  <div id="main__app">
     <v-app dark>
-
       <v-navigation-drawer v-if="auth" fixed
-                           v-model="drawer"
+                           :value="drawer"
                            app>
         <v-toolbar flat class="transparent">
           <v-list>
@@ -13,7 +11,6 @@
                         :size="40">
                 </avatar>
               </v-list-item-avatar>
-
               <v-list-item-content>
                 <v-list-item-title>{{username}}</v-list-item-title>
               </v-list-item-content>
@@ -63,11 +60,10 @@
         <v-btn class="ma-2" color="indigo" to="/" dark fab small><v-icon>home</v-icon></v-btn>
         <v-btn to="/login" dark outlined>Выйти из системы </v-btn>
       </v-app-bar>
-      <v-content>
+      <v-main>
         <v-container fluid>
           <v-row justify-start align-center>
-            <router-view>
-            </router-view>
+           <router-view/>
           </v-row>
           <v-snackbar v-model="$store.state.alert.visible" top>
             {{ $store.state.alert.message }}
@@ -90,19 +86,18 @@
           </v-card>
         </v-dialog>
         </v-container>
-      </v-content>
+      </v-main>
     </v-app>
-  </div>
 </template>
 
 <script>
-  import { routes } from '../router/routes'
+  import { routes } from '../router/routesArray'
   import Avatar from 'vue-avatar'
     export default {
     
      data () {
         return {
-          routes
+          routes: [...routes]
         }
       },
 
@@ -155,6 +150,10 @@
     }
 </script>
 
-<style>
-
+<style lang="scss">
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 </style>

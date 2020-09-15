@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
@@ -57,7 +59,7 @@ namespace VueExample
             // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "client-migrate/dist";
+                configuration.RootPath = "ClientApp/dist";
             });
 
             services.AddResponseCompression(options=>options.EnableForHttps = true);
@@ -66,7 +68,14 @@ namespace VueExample
             {
                 options.Level = CompressionLevel.Optimal;
             });
-
+            services.AddMvc(options =>
+            {
+                options.CacheProfiles.Add("Default60",
+                    new CacheProfile()
+                    {
+                        Duration = 3600
+                    });
+            });
             services.AddAutoMapper();
             services.AddLazyCache();
             services.AddSignalR();
@@ -222,7 +231,7 @@ namespace VueExample
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
-
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -235,7 +244,7 @@ namespace VueExample
                 {
                     endpoints.MapToVueCliProxy(
                         "{*path}",
-                        new SpaOptions { SourcePath = "client-migrate" },
+                        new SpaOptions { SourcePath = "ClientApp" },
                         npmScript: "serve",
                         regex: "Compiled successfully");
                 }
@@ -246,7 +255,7 @@ namespace VueExample
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "client-migrate";
+                spa.Options.SourcePath = "ClientApp";
             });
         }
     }

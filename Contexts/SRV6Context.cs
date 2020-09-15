@@ -54,6 +54,7 @@ namespace VueExample.Contexts
             modelBuilder.ApplyConfiguration(new StandartMeasurementPatternConfiguration());
             modelBuilder.ApplyConfiguration(new StandartPatternConfiguration());
             modelBuilder.ApplyConfiguration(new FkMrPConfiguration());
+            modelBuilder.ApplyConfiguration(new PWaferConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)

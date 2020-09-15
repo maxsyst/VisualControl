@@ -106,7 +106,7 @@ export default {
             this.chartdata = chart.chartData
             this.loaded = true       
         })
-        .catch(error => {});
+        .catch(error => {console.log(error)});
       },
 
       downsample(data, threshold) {
