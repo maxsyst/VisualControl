@@ -51,10 +51,7 @@ namespace VueExample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-
-            // Add AddRazorPages if the app uses Razor Pages.
-            services.AddRazorPages();
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -249,8 +246,6 @@ namespace VueExample
                         regex: "Compiled successfully");
                 }
 
-                // Add MapRazorPages if the app uses Razor Pages. Since Endpoint Routing includes support for many frameworks, adding Razor Pages is now opt -in.
-                endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>

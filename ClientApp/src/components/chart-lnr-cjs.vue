@@ -90,6 +90,7 @@ export default {
           .then(response => {
             let chart = response.data
             chart.chartData.labels = [...chart.chartData.labels.map(x => +x)]
+            console.log(chart.options)
             this.calculateOptions(chart.options, 
                                   {min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length -1], maxTicksLimit: 11}, 
                                   {min: 0, max: 0, maxTicksLimit: 11})
