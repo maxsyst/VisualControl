@@ -13,7 +13,6 @@ import SelectBasic from '../components/select-basic.vue'
 import Kurbatov from '../components/export-kurb.vue'
 import StageTable from '../components/stage-table.vue'
 import VerificationSettings from '../components/verification-settings.vue'
-import KurbatovParameter from '../components/kurbatovparameter-view.vue'
 import StandartParameter from '../components/standartparameter-view.vue'
 import IdmrVoc from '../components/idmr-voc.vue'
 import DefectMassiveUploader from '../components/massive-uploader.vue'
@@ -68,22 +67,22 @@ export const routes = [
   { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
   { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true }, 
   { name: 'standartparameter', path: '/standart-parameter', component: StandartParameter, display: 'StandartParameter'}, 
-  { name: 'kurbatovparameter', path: '/kb-parameter', component: KurbatovParameter, display: 'KParameter', nav: true,
+  { name: 'kurbatovparameter', path: '/kb-parameter', component: () => import('../views/KurbatovPatternEditor.vue'), display: 'KParameter', nav: true,
     children: [
       {
         name: "kurbatovparameter-initial-typeisselected",
         path: 'dieType/:dieType',
-        component: KurbatovParameter
+        component: () => import('../views/KurbatovPatternEditor.vue')
       },
       {
         name: "kurbatovparameter-creating",
         path: 'dieType/:dieType/mode/creating',
-        component: KurbatovParameter
+        component: () => import('../views/KurbatovPatternEditor.vue')
       },
       {
         name: "kurbatovparameter-updating",
         path: 'dieType/:dieType/mode/updating/patternId/:patternId',
-        component: KurbatovParameter
+        component: () => import('../views/KurbatovPatternEditor.vue')
       }
     ]
   }, 

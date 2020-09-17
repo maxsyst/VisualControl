@@ -166,7 +166,7 @@ export default {
            mslNumber: "",
            filename: "",
            elements: [],
-           patterns: ["Пустой", "PHEMT05_СМКК", "PHEMT05_ВП"],
+           patterns: ["Пустой", "PHEMT05_СМКК", "PHEMT05_ВП", "CKBA_PASSIVE"],
            selectedPattern: "Пустой",
            dividers: [],
            initialDialog: true,
@@ -245,6 +245,8 @@ export default {
                 path = "kurb"
             if(this.selectedPattern === "PHEMT05_ВП")
                 path = "vp"
+            if(this.selectedPattern === "CKBA_PASSIVE")
+                path = "ckba"
             if(this.selectedPattern !== "Пустой") {
                 await   this.$http
                         .get(`/api/export/pattern/${path}`)

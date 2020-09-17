@@ -141,7 +141,7 @@
               }  
         
               for (let i = 0; i < this.selectedDies.length; i++) {            
-                let die = this.dies.find(d => d.id === selectedDies[i])         
+                let die = this.dies.find(d => d.id === this.selectedDies[i])         
                 die.fill = "#3D5AFE"
                 die.text = "#FFF9C4"           
               }          
