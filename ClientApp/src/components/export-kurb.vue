@@ -162,9 +162,10 @@ export default {
     data() {
         return {
            e1: 0,
-           waferId: "E906",
+           waferId: "Pas12",
            mslNumber: "",
            filename: "",
+           currentDate: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
            elements: [],
            patterns: ["Пустой", "PHEMT05_СМКК", "PHEMT05_ВП", "CKBA_PASSIVE"],
            selectedPattern: "Пустой",
@@ -208,7 +209,7 @@ export default {
 
        async getAvStages(waferId, elements) {
         await   this.$http
-                .get(`/api/stage/wafer/{waferId}`)
+                .get(`/api/stage/wafer/${waferId}`)
                 .then(response => {
                     elements.forEach(e => e.operation.avStages = response.data)
                 })

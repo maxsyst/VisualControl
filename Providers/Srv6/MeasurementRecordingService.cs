@@ -103,14 +103,12 @@ namespace VueExample.Providers.Srv6
             var waferIdSqlParameter = new SqlParameter("waferId", waferId);
             var stageNameSqlParameter = new SqlParameter("stageName", stageName);
             var elementIdSqlParameter = new SqlParameter("elementId", elementId);
-            return _srv6Context.MeasurementRecordings.FromSqlRaw("EXECUTE select_mr_by_stagename_waferid_elementid @waferId, @elementId, @stageName", waferIdSqlParameter, elementIdSqlParameter, stageNameSqlParameter).ToListAsync();
+            return _srv6Context.MeasurementRecordings.FromSqlInterpolated($"EXECUTE select_mr_by_stagename_waferid_elementid @waferId = {waferId}, @elementId = {elementId}, @stageName = {stageName}").ToListAsync();
         }
 
         public async Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, int dieTypeId)
         {
-            var waferIdSqlParameter = new SqlParameter("waferId", waferId);
-            var dieTypeSqlParameter = new SqlParameter("dieTypeId", dieTypeId);              
-            return await _srv6Context.MeasurementRecordings.FromSqlRaw("EXECUTE select_all_mr_by_waferid_dietypeid @waferId, @dieTypeId", waferIdSqlParameter, dieTypeSqlParameter).ToListAsync();
+            return await _srv6Context.MeasurementRecordings.FromSqlInterpolated($"EXECUTE select_all_mr_by_waferid_dietypeid @waferId = {waferId}, @dieTypeId = {dieTypeId}").ToListAsync();
         }
 
         public async Task<MeasurementRecording> UpdateStage(int measurementRecordingId, int stageId)

@@ -28,7 +28,7 @@ export default {
         },
         width: {
             type: String,
-            default: 450
+            default: "450"
         },
         keyProp: {
             type: String,
