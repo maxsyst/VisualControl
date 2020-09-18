@@ -60,7 +60,7 @@
                         :step="index + 1">
                         <v-card>
                             <v-card-text>
-                               <export-element :ref="element.key" :key.sync="element.key" :parameters.sync="element.parameters" :dividers="dividers" 
+                               <export-element :ref="element.key" :id.sync="element.key" :parameters.sync="element.parameters" :dividers="dividers" 
                                                :operation.sync="element.operation" :element.sync="element.element"></export-element>
                             </v-card-text>
                         </v-card>                                        
@@ -164,6 +164,7 @@ export default {
            e1: 0,
            waferId: "Pas12",
            mslNumber: "",
+           menu: false,
            filename: "",
            currentDate: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
            elements: [],

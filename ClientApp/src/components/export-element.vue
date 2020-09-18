@@ -78,7 +78,7 @@
                     <v-stepper-header>
                         <template v-for="(parameter, index) in parameters">
                             <v-stepper-step 
-                                :key="`${parameter}-step`"
+                                :key="`${index}-step`"
                                 :step="index + 1"
                                 color="indigo"
                                 editable>
@@ -90,7 +90,7 @@
                     <v-stepper-items>
                         <v-stepper-content
                             v-for="(parameter, index) in parameters"
-                            :key="`${parameter}-content`"
+                            :key="`${index}-content`"
                             :step="index + 1">
                             <div>
                                     <v-row>
@@ -259,6 +259,7 @@ export default {
 
     data() {
         return {      
+          menu: false,
           freakDividerParameters: ["r<sub>DS(on)</sub> (сопротивление открытого канала при Uси = 0.02В)", "R<sub>ds(on)</sub> (сопротивление открытого канала)"],
           defaultRequiredMessage : "Введите значение",
           deleteParameterDialog: false,
@@ -269,7 +270,7 @@ export default {
       }    
     },
 
-    props: ['key', 'parameters', 'dividers', 'operation', 'element'],  
+    props: ['id', 'parameters', 'dividers', 'operation', 'element'],  
 
     computed: {
         isElementReady: function() { return (this.parameters.length > 0 && this.validateElement()) }        
@@ -296,12 +297,12 @@ export default {
                             }                         
                         })
                        
-                        this.$store.commit("exportkurb/updateElementAutoIdmr", {key: this.key, operation: this.operation.number, element: this.element.name, done: 'success'});
+                        this.$store.commit("exportkurb/updateElementAutoIdmr", {key: this.id, operation: this.operation.number, element: this.element.name, done: 'success'});
                        
                     } 
                 })
                 .catch((error) => {
-                    this.$store.commit("exportkurb/updateElementAutoIdmr", {key: this.key, operation: this.operation.number, element: this.element.name, done: 'fail'});
+                    this.$store.commit("exportkurb/updateElementAutoIdmr", {key: this.id, operation: this.operation.number, element: this.element.name, done: 'fail'});
                 });  
         },
 
@@ -457,7 +458,7 @@ export default {
     watch: {
         isElementReady: {
            handler: function(newValue) {  
-                this.$store.commit("exportkurb/updateElementsReady", {key: this.key, ready: newValue});
+                this.$store.commit("exportkurb/updateElementsReady", {key: this.id, ready: newValue});
             },
             immediate: true          
         }
