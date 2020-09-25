@@ -4,6 +4,7 @@
         <bar-chart
           v-if="loaded"
           :keyGraphicState="keyGraphicState"
+          :class="rowViewMode"
           :chartdata="chartdata"
           :viewMode="viewMode"
           :options="options"/>
@@ -19,7 +20,7 @@
 <script>
 import BarChart from './barchart-cjs.vue'
 export default {
-  props: ["keyGraphicState", "measurementId", "divider", "viewMode"],
+  props: ["keyGraphicState", "measurementId", "divider", "viewMode", "rowViewMode"],
   components: { BarChart },
   data: () => ({
     loaded: false,
@@ -106,3 +107,17 @@ export default {
     }
 }
 </script>
+<style scoped>
+  .bigChart {
+    position: relative;
+    margin: auto;
+    height: 80vh;
+    width: 55vw;
+  }
+  .miniChart {
+    position: relative;
+    margin: auto;
+    height: 400px;
+    width: 400px;
+  }
+</style>

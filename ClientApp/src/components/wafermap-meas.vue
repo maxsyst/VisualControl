@@ -283,46 +283,17 @@
       </v-col>
     </v-row>
     <v-divider></v-divider>
-    <v-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" :id="`kgs-${graphic.keyGraphicState}`" :key="`kgs-${graphic.keyGraphicState}`">
-      <v-col lg="8" class="d-flex">
-        <stat-single :id="'ss_' + graphic.keyGraphicState"
-          :measurementId="selectedMeasurementId"
-          :keyGraphicState="graphic.keyGraphicState"
-          :avbSelectedDies="avbSelectedDies"
-          :divider="selectedDivider"
-          :viewMode="viewMode"
-          :statisticKf="statisticKf"
-        ></stat-single>
-        <v-divider light></v-divider>
-      </v-col>
-      <v-col v-if="selectedDies.length < 200" lg="4" class="d-flex align-self-center">
-        <chart-lnr
-          v-if="graphic.keyGraphicState.includes(`LNR`)"
-          :measurementId="selectedMeasurementId"
-          :keyGraphicState="graphic.keyGraphicState"
-          :viewMode="viewMode"
-          :divider="selectedDivider"
-        ></chart-lnr>
-        <chart-hstg
-          v-else
-          :measurementId="selectedMeasurementId"
-          :keyGraphicState="graphic.keyGraphicState"
-          :viewMode="viewMode"
-          :divider="selectedDivider"
-        ></chart-hstg>
-        <v-divider light></v-divider>
-      </v-col>     
-      <v-col v-else lg="4" class="d-flex align-self-center">
-        <v-card>
-          <v-card-text>
-            <div>Графиков для отображения: {{selectedDies.length}}</div>
-            <p>
-              Для повышения производительности графики не будут отображены. Выберите менее 200 графиков.
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <graphic-row v-for="graphic in availiableGraphics.filter(x => selectedGraphics.includes(x.keyGraphicState))" 
+                 :id="`kgs-${graphic.keyGraphicState}`" 
+                 :key="`kgs-${graphic.keyGraphicState}`"
+                 :selectedMeasurementId="selectedMeasurementId" 
+                 :keyGraphicState="graphic.keyGraphicState"
+                 :viewMode="viewMode"
+                 :selectedDivider="selectedDivider" 
+                 :statisticKf="statisticKf"
+                 :avbSelectedDies="avbSelectedDies"
+                 :selectedDiesLength="selectedDies.length">
+    </graphic-row>
   </v-container>
 </template>
 
@@ -330,12 +301,10 @@
 import { mapGetters } from 'vuex';
 import MiniReport from "./wafermeas-report.vue"
 import AmChart from "./chart-lnr.vue"
-import ChartLNR from "./chart-lnr-cjs.vue";
-import ChartHSTG from "./chart-bar-cjs.vue";
-import StatSingle from "./stat-single.vue";
 import Loading from "vue-loading-overlay";
 import WaferMap from "./wafermap-svg.vue";
 import MiniGraphicRow from "./wafermeas-minigraphicrow";
+import GraphicRowFullInfo from './GraphicRowFullInfo.vue'
 
 export default {
   data() {
@@ -362,13 +331,11 @@ export default {
   },
 
   components: {
+    "graphic-row": GraphicRowFullInfo,
     "mini-report": MiniReport,
     "micro-row": MiniGraphicRow,
-    "stat-single": StatSingle,
     "wafermap-svg": WaferMap,
     "amchart": AmChart,
-    "chart-lnr": ChartLNR,
-    "chart-hstg": ChartHSTG,
     Loading
   },
 

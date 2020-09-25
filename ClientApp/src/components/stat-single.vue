@@ -1,81 +1,28 @@
 <template>
     <v-container fluid>
-      <v-row>
-        <v-col lg="8">
-        <v-toolbar extended>          
-            <v-container>
-              <v-row>    
-                <v-col lg="6" class="d-flex align-center justify-start" v-if="!loading">  
-                  <v-chip class="elevation-8" label x-large color="#303030">
-                    {{graphicName}}
-                  </v-chip>
-                </v-col>  
-                <v-col lg="6" class="d-flex align-center justify-space-around" v-if="!loading">
-                <div class="d-flex flex-column" >
-                  <v-chip class="elevation-8" color="#303030">
-                    Годны по всей пластине
-                  </v-chip>
-                  <div class="d-flex flex-row mt-4">   
-                    <v-progress-circular
-                      :rotate="360"
-                      :size="60"
-                      :width="2"
-                      :value="viewMode==='Мониторинг' ? dirtyCellsFullWafer.stat.percentage : dirtyCellsFullWafer.fixed.percentage"
-                      :color="viewMode==='Мониторинг' ? this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.stat.percentage / 100) : this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.fixed.percentage / 100)">
-                    {{ viewMode==='Мониторинг' ? dirtyCellsFullWafer.stat.percentage + '%' : dirtyCellsFullWafer.fixed.percentage + '%'}}
-                    </v-progress-circular>
-                  </div>   
-                </div>
-              <div class="d-flex flex-column align-self-center">
-                <v-chip class="elevation-8" color="#303030">
-                  Годны из выбранных
-                </v-chip>
-                <div class="d-flex flex-row mt-4">                
-                  <v-progress-circular
-                    :rotate="360"
-                    :size="60"
-                    :width="2"
-                    :value="viewMode === 'Мониторинг' ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
-                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
-                    {{ viewMode === 'Мониторинг' ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}
-                  </v-progress-circular>
-                  <v-btn text icon :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" @click="delDirtyCells(dirtyCells)">
-                    <v-icon>cached</v-icon>
-                  </v-btn>    
-               </div>   
-              </div>                            
-              <!-- <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch> -->
-               </v-col> 
-               <v-col v-else>
-                <v-skeleton-loader
-                  class="mx-auto"
-                  type="date-picker-options">
-                </v-skeleton-loader>
-               </v-col>
-              </v-row>
-            </v-container>
-        </v-toolbar>
-        </v-col>
-        <v-col lg="4">
-          <wafer-mini v-if="(viewMode === 'Мониторинг' && dirtyCellsFullWafer.stat.percentage >= 0) || (viewMode === 'Поставка' && dirtyCellsFullWafer.fixed.percentage >= 0)"
-            :avbSelectedDies="avbSelectedDies"
-            :keyGraphicState="keyGraphicState"
-            :viewMode="viewMode"
-            :key="`wfm-${keyGraphicState}`"
-        ></wafer-mini>
-        </v-col>
-      </v-row>
+      <toolbar :loading="loading"
+               :graphicName="graphicName"
+               :dirtyCellsFullWafer="dirtyCellsFullWafer"
+               :dirtyCellsStatPercentage="dirtyCellsStatPercentage" 
+               :dirtyCellsFixedPercentage="dirtyCellsFixedPercentage"
+               :rowViewMode="rowViewMode"
+               :dirtyCells="dirtyCells" 
+               :viewMode="viewMode" 
+               :avbSelectedDies="avbSelectedDies" 
+               :keyGraphicState="keyGraphicState">
+      </toolbar>
       <v-row>
         <v-col lg="12">
           <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
             <v-tab href="#commonTable">Сводная таблица</v-tab>
             <v-tab
               v-for="stat in statArray"
+              :disabled="rowViewMode!=='miniChart'"
               :key="stat.shortStatisticsName"
               :href="'#' + stat.shortStatisticsName"
               v-html="stat.shortStatisticsName">
             </v-tab>
-            <v-tab-item
+            <v-tab-item 
               v-for="stat in statArray"
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
@@ -94,7 +41,7 @@
                   <v-row>
                     <v-col lg="12">
                       <v-data-table v-if="statArray.length > 0"
-                        :headers="viewMode==='Мониторинг' ? headersStat : headersFixed"
+                        :headers="headers"
                         :items="statArray"
                         loading-text="Загрузка данных..."
                         no-data-text="Нет данных"
@@ -164,13 +111,13 @@
 </template>
 
 <script>
-import WaferMap from "./wafer-mini.vue";
+import Toolbar from "./GraphicRowFullInfoToolbar.vue";
 import GradientFull from './Gradient/gradient-full.vue' 
 export default {
-  props: ["keyGraphicState", "measurementId", "viewMode", "divider", "statisticKf", "avbSelectedDies"],
+  props: ["keyGraphicState", "measurementId", "viewMode", "divider", "statisticKf", "avbSelectedDies", "rowViewMode"],
   components: {
-    "wafer-mini": WaferMap,
-    "gradient-full": GradientFull
+    "gradient-full": GradientFull,
+    "toolbar": Toolbar
   },
   data() {
     return {
@@ -183,101 +130,156 @@ export default {
       graphicName: "",
       activeTab: "commonTable",
       loading: true,
-      headersStat: [
+      headersConfigArray: [
+        ///MonitoringMini
         {
-          text: "Название",
-          align: "center",
-          sortable: false,
-          value: "shortStatisticsName",
-          width: '20%'
-        },
-        {
-          text: "μ",
-          align: "center",
-          sortable: false,
-          value: "expectedValue",
-          width: '10%'
-        },
-        {
-          text: "σ",
-          align: "center",
-          sortable: false,
-          value: "standartDeviation",
-          width: '10%'
-        },
-        {
-          text: "Мин",
-          align: "center",
-          sortable: false,
-          value: "minimum",
-          width: '10%'
-        },
-        {
-          text: "Макс",
-          align: "center",
-          sortable: false,
-          value: "maximum",
-          width: '10%'
-        },
-        {
-          text: "Медиана",
-          align: "center",
-          sortable: false,
-          value: "median",
-          width: '10%'
-        },
-        {
+          viewMode: "Мониторинг",
+          rowViewMode: "miniChart",
+          headers: [{
+            text: "Название",
+            align: "center",
+            sortable: false,
+            value: "shortStatisticsName",
+            width: '20%'
+          },
+          {
+            text: "μ",
+            align: "center",
+            sortable: false,
+            value: "expectedValue",
+            width: '10%'
+          },
+          {
+            text: "σ",
+            align: "center",
+            sortable: false,
+            value: "standartDeviation",
+            width: '10%'
+          },
+          {
+            text: "Мин",
+            align: "center",
+            sortable: false,
+            value: "minimum",
+            width: '10%'
+          },
+          {
+            text: "Макс",
+            align: "center",
+            sortable: false,
+            value: "maximum",
+            width: '10%'
+          },
+          {
+            text: "Медиана",
+            align: "center",
+            sortable: false,
+            value: "median",
+            width: '10%'
+          },
+          {
 
-          text: "Годны по всей пластине, %",
-          align: "start",
-          sortable: false,
-          value: "fwPercentage",
-          width: '15%'
+            text: "Годны по всей пластине, %",
+            align: "start",
+            sortable: false,
+            value: "fwPercentage",
+            width: '15%'
+          },
+          {
+            text: "Годны из выбранных, %",
+            align: "center",
+            sortable: false,
+            value: "dirtyCells",
+            width: '15%'
+          }
+        ]},
+
+        ///MonitoringBig
+        {
+          viewMode: "Мониторинг",
+          rowViewMode: "bigChart",
+          headers: [{
+            text: "Название",
+            align: "center",
+            sortable: false,
+            value: "shortStatisticsName",
+            width: '15%'
+          },
+          {
+            text: "μ",
+            align: "center",
+            sortable: false,
+            value: "expectedValue",
+            width: '10%'
+          },
+          {
+            text: "σ",
+            align: "center",
+            sortable: false,
+            value: "standartDeviation",
+            width: '10%'
+          },
+          {
+
+            text: "Годны по всей пластине, %",
+            align: "start",
+            sortable: false,
+            value: "fwPercentage",
+            width: '15%'
+          },
+          {
+            text: "Годны из выбранных, %",
+            align: "center",
+            sortable: false,
+            value: "dirtyCells",
+            width: '20%'
+          }],
         },
+
+        ///SupplyMini
         {
-          text: "Годны из выбранных, %",
-          align: "center",
-          sortable: false,
-          value: "dirtyCells",
-          width: '15%'
-        }
-      ],
-       headersFixed: [
+          viewMode: "Поставка",
+          rowViewMode: "miniChart",
+          headers: [{
+            text: "Название",
+            align: "center",
+            sortable: false,
+            value: "shortStatisticsName",
+            width: '30%'
+          },        
+          {
+            text: "Мин",
+            align: "center",
+            sortable: false,
+            value: "lowBorderFixed",
+            width: '20%'
+          },
+          {
+            text: "Макс",
+            align: "center",
+            sortable: false,
+            value: "topBorderFixed",
+            width: '20%'
+          },       
+          {
+            text: "Годны по всей пластине, %",
+            align: "start",
+            sortable: false,
+            value: "fwPercentage",
+            width: '15%'
+          },
+          {
+            text: "Годны из выбранных, %",
+            align: "center",
+            sortable: false,
+            value: "dirtyCells",
+            width: '15%'
+          }
+        ]},
         {
-          text: "Название",
-          align: "center",
-          sortable: false,
-          value: "shortStatisticsName",
-          width: '30%'
-        },
-      
-        {
-          text: "Мин",
-          align: "center",
-          sortable: false,
-          value: "lowBorderFixed",
-          width: '20%'
-        },
-        {
-          text: "Макс",
-          align: "center",
-          sortable: false,
-          value: "topBorderFixed",
-          width: '20%'
-        },       
-        {
-          text: "Годны по всей пластине, %",
-          align: "start",
-          sortable: false,
-          value: "fwPercentage",
-          width: '15%'
-        },
-        {
-          text: "Годны из выбранных, %",
-          align: "center",
-          sortable: false,
-          value: "dirtyCells",
-          width: '15%'
+          viewMode: "Поставка",
+          rowViewMode: "bigChart",
+          headers: [],
         }
       ]
     };
@@ -359,6 +361,10 @@ export default {
   },
 
   computed: {
+
+    headers() {
+       return this.headersConfigArray.find(x => x.viewMode === this.viewMode && x.rowViewMode === this.rowViewMode).headers
+    },
     
     selectedDies() {
       return this.$store.getters['wafermeas/selectedDies']

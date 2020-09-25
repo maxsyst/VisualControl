@@ -20,7 +20,7 @@ export default {
     viewMode: {
       type: String,
       default: ""
-    }
+    }   
   },
 
   mounted () {

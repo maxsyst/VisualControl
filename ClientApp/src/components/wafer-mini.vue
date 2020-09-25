@@ -1,6 +1,6 @@
 <template>
     <v-container>
-      <v-row>
+      <v-row class="d-flex flex-row">
         <v-col class="d-flex flex-column align-end">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">      
             <g v-for="(die, key) in dies" :key="die.id">

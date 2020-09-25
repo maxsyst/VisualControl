@@ -6,6 +6,7 @@
           <v-container>
             <line-chart
               :id="'LCHART_' + keyGraphicState"
+              :class="rowViewMode"
               :keyGraphicState="keyGraphicState"
               :chartdata="chartdata"
               :settings="settings"
@@ -46,7 +47,7 @@ import LineChart from './linechart-cjs.vue'
 import Settings from './graphicsettings-lnr.vue'
 export default {
   
-  props: ["keyGraphicState", "measurementId", "divider", "viewMode"],
+  props: ["keyGraphicState", "measurementId", "divider", "viewMode", "rowViewMode"],
   components: { LineChart, Settings },
   data: () => ({
     loaded: false,
@@ -90,7 +91,6 @@ export default {
           .then(response => {
             let chart = response.data
             chart.chartData.labels = [...chart.chartData.labels.map(x => +x)]
-            console.log(chart.options)
             this.calculateOptions(chart.options, 
                                   {min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length -1], maxTicksLimit: 11}, 
                                   {min: 0, max: 0, maxTicksLimit: 11})
@@ -200,8 +200,9 @@ export default {
             legend: {
               display: chartOptions.legend.display
             },
-            responsive: chartOptions.responsive,
+            responsive: true,
             responsiveAnimationDuration: chartOptions.responsiveAnimationDuration,
+            maintainAspectRatio: chartOptions.maintainAspectRatio,
             scales: {
               xAxes: [{
                 scaleLabel: {
@@ -245,3 +246,17 @@ export default {
     
 }
 </script>
+<style scoped>
+  .bigChart {
+    position: relative;
+    margin: auto;
+    height: 80vh;
+    width: 55vw;
+  }
+  .miniChart {
+    position: relative;
+    margin: auto;
+    height: 400px;
+    width: 400px;
+  }
+</style>
