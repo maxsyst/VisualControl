@@ -82,6 +82,17 @@ export default {
         this.options.scales.yAxes[0].ticks['max'] = +yAxis.current.max
       }
        this.options.scales.yAxes[0].ticks.maxTicksLimit = +yAxis.current.maxTicksLimit
+    },
+
+    resetZoom() {
+      this.$data._chart.resetZoom();
+    },
+
+    resetHighligted() {
+      if(this.oldHovered.dieId > 0) {
+          let oldHovered = this.chartdata.datasets.find(x => x.dieId === this.oldHovered.dieId)
+          oldHovered.borderWidth = 1
+      }
     }
   },
 
