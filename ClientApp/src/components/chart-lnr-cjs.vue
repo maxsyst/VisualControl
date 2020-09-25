@@ -44,6 +44,7 @@
 
 <script>  
 import LineChart from './linechart-cjs.vue'
+import ChartJsDeffered from 'chartjs-plugin-deferred';
 import Settings from './graphicsettings-lnr.vue'
 export default {
   
@@ -203,6 +204,13 @@ export default {
             responsive: true,
             responsiveAnimationDuration: chartOptions.responsiveAnimationDuration,
             maintainAspectRatio: chartOptions.maintainAspectRatio,
+            plugins: {
+              deferred: {
+                xOffset: 150,   
+                yOffset: '20%', 
+                delay: 150      
+              }
+            },
             scales: {
               xAxes: [{
                 scaleLabel: {
