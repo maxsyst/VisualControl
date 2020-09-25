@@ -20,7 +20,7 @@
 <script>
 import BarChart from './barchart-cjs.vue'
 export default {
-  props: ["keyGraphicState", "measurementId", "divider", "viewMode", "rowViewMode"],
+  props: ["keyGraphicState", "measurementId", "divider", "viewMode"],
   components: { BarChart },
   data: () => ({
     loaded: false,
@@ -35,7 +35,9 @@ export default {
    computed: {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies']
-      }
+      },
+
+      
     },
 
     watch: {

@@ -77,6 +77,10 @@ export const wafermeas = {
       commit('changeKeyGraphicStateLog', {keyGraphicState, log})
     },
 
+    changeKeyGraphicStateRowViewMode({commit}, {keyGraphicState, rowViewMode}) {
+      commit('changeKeyGraphicStateRowViewMode', {keyGraphicState, rowViewMode})
+    },
+
     clearSelectedGraphics({commit}) {
       commit('updateSelectedGraphics', [])
       commit('clearKeyGraphicStateMode')
@@ -197,16 +201,19 @@ export const wafermeas = {
     dirtyCells: state => state.dirtyCells,
     hoveredDieId: state => state.hoveredDieId,
     getGraphicSettingsKeyGraphicStates: state => keyGraphicStates => keyGraphicStates.map(function (kgs) {
+       let kgsModes = state.keyGraphicStateModes.find(k => k.keyGraphicState === kgs)
        return {
           graphicId: +kgs.split('_')[0],
           keyGraphicState: kgs,
-          mode: state.keyGraphicStateModes.find(k => k.keyGraphicState === kgs).mode,
-          isLog: state.keyGraphicStateModes.find(k => k.keyGraphicState === kgs).log
+          mode: kgsModes.mode,
+          isLog: kgsModes.log,
+          rowViewMode: kgsModes.rowViewMode
        }
     }),  
     getGraphicSettingsKeyGraphicState: state => keyGraphicState => state.graphicSettings.find(k => k.keyGraphicState === keyGraphicState).settings,
     getKeyGraphicStateMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).mode,
     getKeyGraphicStateLog: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).log,
+    getKeyGraphicStateRowViewMode: state => keyGraphicState => state.keyGraphicStateModes.find(k => k.keyGraphicState === keyGraphicState).rowViewMode,
     getDieValuesByKeyGraphicState: state => keyGraphicState => state.dieValues[keyGraphicState],
     getGraphicByGraphicState: state => keyGraphicState => state.avbGraphics.find(g => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: (state) => function (keyGraphicState, mode) 
@@ -257,7 +264,7 @@ export const wafermeas = {
     },
 
     updateKeyGraphicStateMode(state, selectedGraphics) {
-      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "initial", log: false}))
+      state.keyGraphicStateModes = selectedGraphics.map(x => ({keyGraphicState: x, mode: "initial", log: false, rowViewMode: "miniChart"}))
     },
 
     clearKeyGraphicStateMode(state) {
@@ -278,8 +285,15 @@ export const wafermeas = {
       }
     },
 
+    changeKeyGraphicStateRowViewMode(state, {keyGraphicState, rowViewMode}) {
+      let keyGraphicStateMode = state.keyGraphicStateModes.find(x => x.keyGraphicState === keyGraphicState)
+      if(keyGraphicStateMode !== undefined) {
+        keyGraphicStateMode.rowViewMode = rowViewMode
+      }
+    },
+
     addKeyGraphicStateMode(state, keyGraphicState) {
-      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "initial", log: false})
+      state.keyGraphicStateModes.push({keyGraphicState: keyGraphicState, mode: "initial", log: false, rowViewMode: "miniChart"})
     },
 
     deleteKeyGraphicStateMode(state, keyGraphicState) {

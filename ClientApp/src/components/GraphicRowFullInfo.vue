@@ -52,7 +52,7 @@ export default {
     props: ["selectedMeasurementId", "keyGraphicState", "viewMode", "selectedDivider", "statisticKf", "avbSelectedDies", "selectedDiesLength"],
     data() {
         return {
-            rowViewMode: "miniChart"
+          
         }
     },
     components: {
@@ -61,6 +61,11 @@ export default {
         "chart-hstg": ChartHSTG,
     },
     computed: {
+
+        rowViewMode() {
+          return this.$store.getters['wafermeas/getKeyGraphicStateRowViewMode'](this.keyGraphicState) 
+        },
+
         rowViewOptions() {
             if(this.rowViewMode === 'miniChart') {
                 return {

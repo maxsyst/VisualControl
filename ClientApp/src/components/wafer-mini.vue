@@ -30,7 +30,7 @@
   import Loading from 'vue-loading-overlay';
   import { mapGetters } from 'vuex';
   export default {
-    props: ['keyGraphicState', 'avbSelectedDies', 'viewMode'],
+    props: ['keyGraphicState', 'avbSelectedDies', 'viewMode', 'rowViewMode'],
     components: { Loading },
     data() {
       return {
@@ -169,6 +169,27 @@
         this.refresh(this.selectedDies)
       },
 
+      rowViewMode: function(rowViewMode) {
+        if(rowViewMode === 'bigChart') {
+          this.dies.forEach(function(die) {
+            let gDie = this.wafer.formedMapGradient.find(d => d.dieId === die.Id) 
+            die.x = gDie.x
+            die.y = gDie.y
+            die.width = gDie.width
+            die.height = gDie.height
+          })
+        }
+        if(rowViewMode === 'miniChart') {
+          this.dies.forEach(function(die) {
+            let mDie = this.wafer.formedMapMini.find(d => d.dieId === die.Id) 
+            die.x = mDie.x
+            die.y = mDie.y
+            die.width = mDie.width
+            die.height = mDie.height
+          })
+        }
+      },
+
       selectedDies: function(selectedDies) {
         this.refresh(selectedDies)
       }      
@@ -193,7 +214,7 @@
       },
 
       size() {
-        return this.sizeGetter("mini")
+        return this.rowViewMode === 'bigChart' ? this.sizeGetter("gradient") : this.sizeGetter("mini")
       },
 
       svgRotation() {
