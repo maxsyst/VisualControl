@@ -203,21 +203,21 @@ export default {
             align: "center",
             sortable: false,
             value: "shortStatisticsName",
-            width: '15%'
+            width: '25%'
           },
           {
             text: "μ",
             align: "center",
             sortable: false,
             value: "expectedValue",
-            width: '10%'
+            width: '15%'
           },
           {
             text: "σ",
             align: "center",
             sortable: false,
             value: "standartDeviation",
-            width: '10%'
+            width: '15%'
           },
           {
 
@@ -232,7 +232,7 @@ export default {
             align: "center",
             sortable: false,
             value: "dirtyCells",
-            width: '20%'
+            width: '30%'
           }],
         },
 

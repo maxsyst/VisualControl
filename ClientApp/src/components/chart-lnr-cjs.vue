@@ -29,20 +29,35 @@
         </div>
         <div class="d-flex flex-column">
           <v-col class="d-flex">
-            <v-btn color='grey darken-2' fab x-small dark @click="changeRowViewMode(rowViewMode)">
-              <v-icon v-if="rowViewMode==='miniChart'">aspect_ratio</v-icon>
-              <v-icon v-else>vertical_split</v-icon>
-            </v-btn>
+          <v-tooltip left>
+            <template v-slot:activator="{ on }">
+              <v-btn color='grey darken-2' fab x-small dark  v-on="on" @click="changeRowViewMode(rowViewMode)">
+                <v-icon v-if="rowViewMode==='miniChart'">aspect_ratio</v-icon>
+                <v-icon v-else>vertical_split</v-icon>
+              </v-btn>  
+            </template>
+            <span>{{rowViewMode==='miniChart' ? 'Увеличить график' : 'Минимизировать график'}}</span>
+          </v-tooltip>           
           </v-col>
           <v-col class="d-flex">
-            <v-btn color='grey darken-2' fab x-small dark @click="resetChart">
-              <v-icon>refresh</v-icon>
-            </v-btn>
+            <v-tooltip left>
+              <template v-slot:activator="{ on }">
+                <v-btn color='grey darken-2' fab x-small dark v-on="on" @click="resetChart">
+                <v-icon>refresh</v-icon>
+                </v-btn>
+              </template>
+              <span>Восстановить настройки графика</span>
+            </v-tooltip>            
           </v-col>
           <v-col class="d-flex">
-            <v-btn :color="showSettings === true ? 'indigo' : 'grey darken-2'" fab x-small dark @click="showSettingsContainer(showSettings)">
-              <v-icon>settings</v-icon>
-            </v-btn>
+            <v-tooltip left>
+              <template v-slot:activator="{ on }">
+              <v-btn :color="showSettings === true ? 'indigo' : 'grey darken-2'" v-on="on" fab x-small dark @click="showSettingsContainer(showSettings)">
+                <v-icon>settings</v-icon>
+              </v-btn>
+              </template>
+              <span>Настройки графика</span>
+            </v-tooltip>    
           </v-col>
         </div>
       </div>
