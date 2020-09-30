@@ -215,7 +215,7 @@ export default {
                     elements.forEach(e => e.operation.avStages = response.data)
                 })
                 .catch((error) => {
-                            
+                    console.log(error)
                 });
        },
        async exportK() {
@@ -258,7 +258,7 @@ export default {
                             this.e1 = 1
                         })
                         .catch((error) => {
-                            
+                            console.log(error)
                         });
             }
             this.initialDialog = false      

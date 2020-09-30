@@ -14,6 +14,7 @@ namespace VueExample.Contexts
         public DbSet<CodeProduct> CodeProducts { get; set; }
         public DbSet<Process> Processes { get; set; }
         public DbSet<Wafer> Wafers { get; set; }
+        public DbSet<Parcel> Parcels { get; set; }
         public DbSet<Die> Dies { get; set; }
         public DbSet<Element> Elements { get; set; }
         public DbSet<ElementType> ElementTypes { get; set; }
@@ -55,6 +56,8 @@ namespace VueExample.Contexts
             modelBuilder.ApplyConfiguration(new StandartPatternConfiguration());
             modelBuilder.ApplyConfiguration(new FkMrPConfiguration());
             modelBuilder.ApplyConfiguration(new PWaferConfiguration());
+            modelBuilder.ApplyConfiguration(new WaferConfiguration());
+            modelBuilder.ApplyConfiguration(new ParcelConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)
