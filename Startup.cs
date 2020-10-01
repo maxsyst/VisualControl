@@ -48,12 +48,10 @@ namespace VueExample
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddNewtonsoftJson();
 
-            // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
@@ -151,6 +149,7 @@ namespace VueExample
             services.AddTransient<IColorService, ColorService>();
             services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
+            services.AddTransient<IParcelProvider, ParcelProvider>();
             services.AddTransient<IStatParameterService, StatParameterService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
             services.AddTransient<IElementTypeService, ElementTypeService>();

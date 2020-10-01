@@ -10,6 +10,6 @@ namespace VueExample.Models.SRV6
         public int Id { get; set; }
         [Column("ParcelName")]
         public string Name { get; set; }
-        public IList<Wafer> Wafers { get; set; }  
+        public ICollection<Wafer> Wafers { get; set; }  
     }
 }
