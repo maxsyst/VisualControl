@@ -8,7 +8,6 @@
                :rowViewMode="rowViewMode"
                :dirtyCells="dirtyCells" 
                :viewMode="viewMode" 
-               :avbSelectedDies="avbSelectedDies" 
                :keyGraphicState="keyGraphicState">
       </toolbar>
       <v-row>
@@ -27,7 +26,6 @@
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
               <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState" 
-                             :avbSelectedDies="avbSelectedDies"
                              :measurementId="measurementId" 
                              :keyGraphicState="keyGraphicState" 
                              :statParameter="stat" 
@@ -111,10 +109,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import Toolbar from "./GraphicRowFullInfoToolbar.vue";
 import GradientFull from './Gradient/gradient-full.vue' 
 export default {
-  props: ["keyGraphicState", "measurementId", "viewMode", "divider", "statisticKf", "avbSelectedDies", "rowViewMode"],
+  props: ["keyGraphicState", "measurementId", "viewMode", "divider", "statisticKf", "rowViewMode"],
   components: {
     "gradient-full": GradientFull,
     "toolbar": Toolbar
@@ -293,6 +292,8 @@ export default {
     await this.getStatArray()
   },
 
+ 
+
   methods: {
     delDirtyCells: function(dirtyCells) {
       let deletedDies = this.viewMode === "Мониторинг" ? dirtyCells.statList : dirtyCells.fixedList
@@ -362,14 +363,15 @@ export default {
 
   computed: {
 
+    ...mapGetters({
+      selectedDies: 'wafermeas/selectedDies',
+      avbSelectedDies: 'wafermeas/avbSelectedDies'
+    }),
+
     headers() {
        return this.headersConfigArray.find(x => x.viewMode === this.viewMode && x.rowViewMode === this.rowViewMode).headers
     },
     
-    selectedDies() {
-      return this.$store.getters['wafermeas/selectedDies']
-    },
-
     dirtyCells() {
       let statArray = [];
       let fixedArray = [];

@@ -44,9 +44,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
 
-    props: ["avbSelectedDies", "keyGraphicState", "viewMode"],
+    props: ["keyGraphicState", "viewMode"],
 
     data() {
         return {
@@ -67,6 +68,10 @@ export default {
     },
 
     computed: {
+        
+        ...mapGetters({
+            avbSelectedDies: 'wafermeas/avbSelectedDies'
+        }),
 
         isGraphicSelected() {
             return this.$store.getters['wafermeas/selectedGraphics'].includes(this.keyGraphicState)

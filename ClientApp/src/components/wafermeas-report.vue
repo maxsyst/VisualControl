@@ -1,68 +1,113 @@
 <template>
     <v-container>
         <v-row dense>
-            <v-col lg="12">
-                <v-card class="elevation-8" color="#303030">
-                    <v-row>
-                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Номер пластины:
-                        </v-col>
-                        <v-col lg="3">
-                            <v-chip color="indigo" @click="$router.push({ name: 'wafer-path', params: { waferId: waferId } })" large label v-html="waferId" dark></v-chip>
-                        </v-col>
-                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Код изделия:
-                        </v-col>
-                        <v-col lg="3" class="d-flex align-center justify-center">
-                            <v-chip v-if="codeProduct.name==='Неизвестно'" color="pink darken-1" large label v-html="codeProduct.name" dark></v-chip>
-                            <v-chip v-else color="indigo lighten-1" large label v-html="codeProduct.name" dark></v-chip>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </v-col>
+                <div class="d-flex">
+                    <div class="d-flex align-start">                            
+                        <div class="d-flex flex-row">
+                            <div class="d-flex flex-column flex-grow-1">
+                                <v-chip class="d-lg-flex" color="indigo" @click="$router.push({ name: 'wafer-path', params: { waferId: waferId } })" x-large label v-html="waferId" dark></v-chip>
+                                <div class="d-flex">
+                                    <v-card class="elevation-8" color="#303030">
+                                        <v-card-text>
+                                            <p>Шаблон</p>
+                                            <v-chip class="d-lg-block" v-if="codeProduct.name==='Неизвестно'" color="pink darken-1" label v-html="codeProduct.name" dark></v-chip>
+                                            <v-chip class="d-lg-block" v-else color="indigo" label v-html="codeProduct.name" dark></v-chip>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                                <div class="d-flex">
+                                    <v-card class="elevation-8" color="#303030">
+                                        <v-card-text>
+                                            <p>Партия</p>
+                                            <v-chip class="d-lg-block" v-if="parcel.name==='Неизвестно'" color="pink darken-1" label v-html="parcel.name" dark></v-chip>
+                                            <v-chip class="d-lg-block" v-else color="indigo" label v-html="parcel.name" dark></v-chip>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                             <v-btn 
+                                                fab
+                                                dark
+                                                x-small
+                                                outlined
+                                                color="green"
+                                                @click="modes.measurement.edit=true">
+                                                <v-icon>edit</v-icon>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row">
+                            <v-card class="elevation-8" color="#303030">
+                                <v-card-text>                                  
+                                    <p>Операция</p>
+                                    <v-chip class="d-lg-block" v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
+                                    <v-chip class="d-lg-block" v-else color="indigo" label v-html="measurement.name" dark></v-chip>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn 
+                                        fab
+                                        dark
+                                        x-small
+                                        outlined
+                                        color="green"
+                                        @click="modes.measurement.edit=true">
+                                        <v-icon>edit</v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                        fab
+                                        dark
+                                        x-small
+                                        outlined
+                                        color="pink"
+                                        @click="modes.measurement.delete=true">
+                                        <v-icon>delete</v-icon>
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <v-card class="elevation-8" color="#303030">
+                                <v-card-text>
+                                    <p>Элемент</p>
+                                    <v-chip class="d-lg-block" v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
+                                    <v-chip class="d-lg-block" v-else color="indigo" label v-html="element.name" dark></v-chip>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn 
+                                        fab
+                                        dark
+                                        x-small
+                                        outlined
+                                        color="green"
+                                        @click="modes.element.edit=true">
+                                        <v-icon>edit</v-icon>
+                                    </v-btn>
+                                </v-card-actions>
+                                
+                            </v-card>
+                          
+                        </div>
+                    </div>
+                    <selectedDiesInfo :selectedMeasurementId="selectedMeasurementId" :viewMode="viewMode">
+                    </selectedDiesInfo>
+                </div>
         </v-row>
          <v-row dense> 
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
                         <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Номер операции:
+                            Операция
                         </v-col>
                         <v-col lg="5" class="d-flex align-center">
                             <v-chip v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
                             <v-chip v-else color="indigo" label v-html="measurement.name" dark></v-chip>
                         </v-col>
                         <v-col lg="2" offset-lg="2" class="d-flex align-center">
-                            <v-speed-dial v-if="selectedMeasurementId>0 && !modes.measurement.edit && !modes.measurement.delete" v-model="fab.measurement" open-on-hover direction="right"  transition="slide-y-reverse-transition">
-                                <template v-slot:activator>
-                                    <v-btn outlined v-model="fab.measurement"
-                                        small
-                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
-                                        dark
-                                        fab>
-                                        <v-icon v-if="fab.measurement">close</v-icon>
-                                        <v-icon v-else>settings</v-icon>
-                                    </v-btn>
-                                </template>
-                                <v-btn 
-                                    fab
-                                    dark
-                                    small
-                                    outlined
-                                    color="green"
-                                    @click="modes.measurement.edit=true">
-                                    <v-icon>edit</v-icon>
-                                </v-btn>
-                                <v-btn
-                                    fab
-                                    dark
-                                    small
-                                    outlined
-                                    color="pink"
-                                    @click="modes.measurement.delete=true">
-                                    <v-icon>delete</v-icon>
-                                </v-btn>
-                            </v-speed-dial>
+                            
                         </v-col>
                     </v-row>
                 </v-card>
@@ -127,7 +172,7 @@
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
                         <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Текущий этап:
+                            Этап
                         </v-col>
                         <v-col lg="5" class="d-flex align-center">
                              <v-chip v-if="stage.stageName === 'Неизвестно'" color="pink darken-1" label v-html="stage.stageName" dark></v-chip>
@@ -194,36 +239,14 @@
                 <v-card class="elevation-8" color="#303030">
                     <v-row>
                         <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Элемент:
+                            Элемент
                         </v-col>
                         <v-col lg="5" class="d-flex align-center">
                             <v-chip v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
                             <v-chip v-else color="indigo" label v-html="element.name" dark></v-chip>
                         </v-col>
                         <v-col lg="2" offset-lg="2" class="d-flex align-center">
-                            <v-speed-dial v-if="selectedMeasurementId>0" v-model="fab.element" open-on-hover direction="right"  transition="slide-y-reverse-transition">
-                                <template v-slot:activator>
-                                    <v-btn
-                                        v-model="fab.element"
-                                        outlined
-                                        small
-                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
-                                        dark
-                                        fab>
-                                        <v-icon v-if="fab.element">close</v-icon>
-                                        <v-icon v-else>settings</v-icon>
-                                    </v-btn>
-                                </template>
-                                <v-btn 
-                                    fab
-                                    dark
-                                    small
-                                    outlined
-                                    color="green"
-                                    @click="modes.element.edit=true">
-                                    <v-icon>edit</v-icon>
-                                </v-btn>
-                            </v-speed-dial>
+                           
                         </v-col>
                     </v-row>
                 </v-card>
@@ -272,7 +295,8 @@
     </v-container>
 </template>
 
-<<script>
+<script>
+import SelectedDiesInfo from './SelectedDiesInfo.vue';
 export default {
 
     props: ["waferId", "selectedMeasurementId", "viewMode"],
@@ -284,13 +308,18 @@ export default {
                 stage: {edit: false, avStages: [], selected: {}}, 
                 element: {edit: false, selectedElement: "", selectedDieType: "", dieTypes: [], avElements: []}
             },
-            fab: {measurement: false, element: false, stage: false},
+            fab: {measurement: false, element: false, stage: false, parcel: false},
             measurement: {name: "Не выбрано"},
             codeProduct: {name: "Неизвестно"},
             element: {name: "Неизвестно"},
-            stage: {stageName: "Неизвестно"}
+            stage: {stageName: "Неизвестно"},
+            parcel: {name: "Неизвестно"}
         }
     },   
+
+    components: {
+        "selectedDiesInfo": SelectedDiesInfo
+    },
 
     methods: {
         editMeasurement: async function() {
@@ -384,6 +413,17 @@ export default {
             }
         },
 
+        getParcel: async function(waferId) {
+            let response = await this.$http.get(`/api/parcel/waferId/${waferId}`)
+            if(response.status === 200) {
+                return response.data
+            }
+            else {
+                this.showSnackBar(response.data)
+                return;
+            }
+        },
+
         getElement: async function(measurementRecordingId) {
             try {
                 let response = await this.$http.get(`/api/element/getbyidmr?idmr=${measurementRecordingId}`)
@@ -414,10 +454,11 @@ export default {
     },
 
     watch: {
-        waferId: async function(newValue) {
-            this.codeProduct = await this.getCodeProduct(newValue)
-            this.modes.stage.avStages = (await this.$http.get(`/api/stage/wafer/${newValue}`)).data
-            this.modes.element.dieTypes = (await this.$http.get(`/api/dietype/wafer/${newValue}`)).data
+        waferId: async function(waferId) {
+            this.codeProduct = await this.getCodeProduct(waferId)
+            this.modes.stage.avStages = (await this.$http.get(`/api/stage/wafer/${waferId}`)).data
+            this.modes.element.dieTypes = (await this.$http.get(`/api/dietype/wafer/${waferId}`)).data
+            this.parcel = await this.getParcel(waferId)
             if(this.modes.element.dieTypes.length > 0) {
                 this.modes.element.selectedDieType = this.modes.element.dieTypes[0].dieTypeId
             }
@@ -427,6 +468,7 @@ export default {
             this.measurement = this.$store.getters['wafermeas/measurements'].find(x => x.id === this.selectedMeasurementId)
             this.element = await this.getElement(this.measurement.id)
             this.stage = await this.getStage(this.measurement.stageId)
+         
             Object.assign(this.modes.stage.selected, this.stage)
         },
 

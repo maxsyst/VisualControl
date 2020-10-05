@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.ViewModels;
 
 namespace VueExample.Controllers
 {
@@ -17,14 +19,17 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ParcelViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("id/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id) 
         {
-            var parcel =  await _parcelProvider.GetById(id);
-            return parcel == null ? NotFound() : Ok(parcel);
+            var parcel = await _parcelProvider.GetById(id);
+            return parcel == null ? (IActionResult)NotFound() : Ok(parcel);          
         }
         
         [HttpGet]
+        [ProducesResponseType(typeof(ParcelViewModel), StatusCodes.Status200OK)]
         [Route("waferid/{waferId}")]
         public async Task<IActionResult> GetByWaferId([FromRoute] string waferId) 
         {

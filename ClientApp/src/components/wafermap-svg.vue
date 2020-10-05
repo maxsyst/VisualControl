@@ -42,7 +42,14 @@
     </v-btn>
     
   </v-bottom-navigation>
-
+  <div class="d-flex flex-column">
+                  <v-btn :color="mapMode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='selected'">
+                    Вбр
+                  </v-btn>
+                  <v-btn :color="mapMode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='dirty'">
+                    Гдн
+                  </v-btn>
+  </div>
 </v-container>
 </template>
 
@@ -50,11 +57,12 @@
   import Loading from 'vue-loading-overlay';
   import { mapGetters } from 'vuex';
   export default {
-    props: ['avbSelectedDies', 'mapMode', 'viewMode'],
+    props: ['viewMode'],
     components: { Loading },
     data() {
       return {
         dies: [],
+        mapMode: 'selected',
         activeBtn: 1,
         showNav: false,
         x: 0,
@@ -235,6 +243,7 @@
     {
       ...mapGetters({
         dirtyCells: 'wafermeas/dirtyCells',
+        avbSelectedDies: 'wafermeas/avbSelectedDies',
         selectedDies: 'wafermeas/selectedDies',
         wafer: 'wafermeas/wafer',
         sizes: 'wafermeas/size'

@@ -15,7 +15,7 @@
 <script>
   import { mapGetters } from 'vuex';
   export default {
-    props: ['gradientSteps', "avbSelectedDies"],
+    props: ['gradientSteps'],
     data() {
       return {
         dies: [],
@@ -82,7 +82,8 @@
       ...mapGetters({
         selectedDies: 'wafermeas/selectedDies',
         wafer: 'wafermeas/wafer',
-        sizeGetter: 'wafermeas/size'
+        sizeGetter: 'wafermeas/size',
+        avbSelectedDies: 'wafermeas/avbSelectedDies',
       }),
 
       size() {

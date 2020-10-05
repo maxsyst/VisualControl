@@ -57,7 +57,6 @@
         </v-col>
         <v-col :lg="responsiveSettings.waferMiniFlexSize">
           <wafer-mini v-if="(viewMode === 'Мониторинг' && dirtyCellsFullWafer.stat.percentage >= 0) || (viewMode === 'Поставка' && dirtyCellsFullWafer.fixed.percentage >= 0)"
-            :avbSelectedDies="avbSelectedDies"
             :keyGraphicState="keyGraphicState"
             :rowViewMode="rowViewMode"
             :viewMode="viewMode"
@@ -70,7 +69,7 @@
 <script>
 import WaferMap from "./wafer-mini.vue";
 export default {
-    props: ["loading", "graphicName", "dirtyCellsFullWafer", "dirtyCellsStatPercentage", "dirtyCellsFixedPercentage", "dirtyCells", "viewMode", "rowViewMode", "avbSelectedDies", "keyGraphicState"],
+    props: ["loading", "graphicName", "dirtyCellsFullWafer", "dirtyCellsStatPercentage", "dirtyCellsFixedPercentage", "dirtyCells", "viewMode", "rowViewMode", "keyGraphicState"],
     data() {
         return {
             

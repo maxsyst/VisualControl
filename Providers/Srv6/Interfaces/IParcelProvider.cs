@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
 using VueExample.Models.SRV6;
+using VueExample.ViewModels;
 
 namespace VueExample.Providers.Srv6.Interfaces
 {
     public interface IParcelProvider
     {
-        Task<Parcel> GetById(int id);
-        Task<Parcel> GetByWaferId(string waferId);
+        Task<ParcelViewModel> GetById(int id);
+        Task<ParcelViewModel> GetByWaferId(string waferId);
     }
 }

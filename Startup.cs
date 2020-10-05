@@ -181,7 +181,6 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterBordersService, KurbatovParameterBordersService>();
             services.AddTransient<IKurbatovParameterProvider, KurbatovParameterProvider>();
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -35,7 +35,7 @@
                         <v-tab href="#gradientMapTab">Карта градиента</v-tab>
                         <v-tab href="#histogramTab">Гистограмма распределения</v-tab>
                         <v-tab-item value="gradientMapTab">
-                            <gradient-map :gradientSteps="gradientData.gradientSteps" :avbSelectedDies="avbSelectedDies"></gradient-map>
+                            <gradient-map :gradientSteps="gradientData.gradientSteps"></gradient-map>
                         </v-tab-item>
                         <v-tab-item value="histogramTab">
                             <gradient-hstg :gradientSteps="gradientData.gradientSteps"></gradient-hstg>
@@ -82,7 +82,7 @@
     import GradientWafer from './gradient-wafer.vue' 
     import GradientHstg from './gradient-histogram.vue' 
     export default {
-        props: ['measurementId', 'avbSelectedDies', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
+        props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
         components: {
             "gradient-map": GradientWafer,
             "gradient-hstg": GradientHstg

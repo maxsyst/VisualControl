@@ -3,7 +3,9 @@ const defaultState = () => {
     dieValues: {},
     selectedDies: [],
     keyGraphicStateModes: [],
+    avbSelectedDies: [],
     graphicSettings: [],
+    mapMode: 'selected',
     hoveredDieId: {},
     dieColors: [],
     avbGraphics: [],
@@ -22,6 +24,7 @@ export const wafermeas = {
   state: {
     dieValues: {},
     selectedDies: [],
+    avbSelectedDies: [],
     keyGraphicStateModes: [],
     hoveredDieId: {},
     graphicSettings: [],
@@ -33,6 +36,7 @@ export const wafermeas = {
     colors: {green: 0.8, orange: 0.6, red: 0.1, indigo: 0},
     wafer: {id: 0, formedMapBig: {dies: [], orientation: ""}, formedMapGradient: {dies: [], orientation: ""}, formedMapMini: {dies: [], orientation: ""}},    
     divider: "",
+    mapMode: 'selected',
     sizes: {big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 320, fieldWidth: 320 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 }},
     dirtyCells: {fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0},
     dirtyCellsStatSingleGraphics: [],
@@ -63,6 +67,10 @@ export const wafermeas = {
 
     clearDieValues({commit}) {
       commit('clearDieValues')
+    },
+
+    updateMapMode({commit}, newMode) {
+      commit('updateMapMode', newMode)
     },
 
     unHoverWaferMini({commit}) {
@@ -150,6 +158,10 @@ export const wafermeas = {
       commit('updateSelectedDies', selectedDies)
     },
 
+    updateAvbSelectedDies ({ commit }, avbSelectedDies ) {
+      commit('updateAvbSelectedDies', avbSelectedDies)
+    },
+
     updateAvbGraphics({ commit }, avbGraphics) {
       commit('updateAvbGraphics', avbGraphics)
     },
@@ -199,6 +211,7 @@ export const wafermeas = {
       } 
     },
     dirtyCells: state => state.dirtyCells,
+    mapMode: state => state.mapMode,
     hoveredDieId: state => state.hoveredDieId,
     getGraphicSettingsKeyGraphicStates: state => keyGraphicStates => keyGraphicStates.map(function (kgs) {
        let kgsModes = state.keyGraphicStateModes.find(k => k.keyGraphicState === kgs)
@@ -221,6 +234,7 @@ export const wafermeas = {
                                                           ? state.dirtyCellsStatSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState) 
                                                           : state.dirtyCellsFixedSingleGraphics.find(dc => dc.keyGraphicState === keyGraphicState)},
     selectedDies: state => state.selectedDies,
+    avbSelectedDies: state => state.avbSelectedDies,
     unSelectedGraphics: state => state.unSelectedGraphics,
     selectedGraphics: state => state.selectedGraphics,
     avbGraphics: state => state.avbGraphics,
@@ -298,6 +312,10 @@ export const wafermeas = {
 
     deleteKeyGraphicStateMode(state, keyGraphicState) {
       state.keyGraphicStateModes = state.keyGraphicStateModes.filter(x => x.keyGraphicState !== keyGraphicState)
+    },
+
+    updateMapMode(state, newMode) {
+      state.mapMode = newMode
     },
 
     unHoverWaferMini(state) {
@@ -410,6 +428,10 @@ export const wafermeas = {
 
     updateSelectedDies (state, selectedDies) {
       state.selectedDies = [...selectedDies]
+    },
+
+    updateAvbSelectedDies (state, avbSelectedDies) {
+      state.avbSelectedDies = [...avbSelectedDies]
     },
 
     updateAvbGraphics(state, avbGraphics) {

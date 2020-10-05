@@ -60,7 +60,7 @@
       :is-full-page="true"
     ></loading>
     <v-row wrap>
-      <v-col lg="5">
+      <v-col lg="6">
         <v-row justify-center column>
           <mini-report :waferId="selectedWafer" :selectedMeasurementId="selectedMeasurementId" :viewMode="viewMode"></mini-report>
         </v-row>
@@ -134,6 +134,14 @@
                           label="Выберите приведение к мм"
                         ></v-select>
                       </v-col>
+                      <v-col>
+                        <v-select v-if="selectedMeasurementId>0" :items="['Мониторинг', 'Поставка']"
+                          outlined
+                          v-model="viewMode" 
+                          :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                          label="Выберите режим"> 
+                       </v-select>
+                      </v-col>
                     </v-row>
                     <v-row justify-center column v-if="loading">
                       <v-col lg="6">
@@ -187,7 +195,7 @@
                   <v-col lg="8">
                     <v-card dark> 
                       <perfect-scrollbar>
-                        <micro-row class="mt-2" v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`" :avbSelectedDies="avbSelectedDies" :keyGraphicState="graphic.keyGraphicState" :viewMode="viewMode"></micro-row>
+                        <micro-row class="mt-2" v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`" :keyGraphicState="graphic.keyGraphicState" :viewMode="viewMode"></micro-row>
                       </perfect-scrollbar>
                     </v-card>
                   </v-col>
@@ -243,43 +251,10 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col lg="4" offset-lg="1">
+      <v-col lg="5" offset-lg="1">
         <wafermap-svg
-          :avbSelectedDies="avbSelectedDies"
-          :viewMode="viewMode"
-          :mapMode="mapMode">
+          :viewMode="viewMode">
         </wafermap-svg>
-      </v-col>
-      <v-col lg="2">
-          <v-select v-if="selectedMeasurementId>0" :items="['Мониторинг', 'Поставка']"
-                    outlined
-                    v-model="viewMode" 
-                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
-                    label="Выберите режим"> 
-          </v-select>
-          <v-chip color="#303030" v-if="avbSelectedDies.length > 0" dark>{{"Выбрано " + selectedDies.length + " из " + avbSelectedDies.length + " кристаллов" }}</v-chip>
-          <v-card class="mt-2" color="#303030" dark v-if="avbSelectedDies.length > 0">            
-            <v-card-text class="d-flex justify-space-between">
-              <div class="d-flex flex-column">
-                  <v-btn :color="mapMode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='selected'">
-                    Вбр
-                  </v-btn>
-                  <v-btn :color="mapMode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='dirty'">
-                    Гдн
-                  </v-btn>
-                </div>
-                <v-progress-circular
-                  :rotate="360"
-                  :size="90"
-                  :width="3"
-                  :value="(selectedDies.length / avbSelectedDies.length)*100"
-                  :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
-                  {{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
-            </v-card-actions>
-          </v-card>
       </v-col>
     </v-row>
     <v-divider></v-divider>
@@ -291,7 +266,6 @@
                  :viewMode="viewMode"
                  :selectedDivider="selectedDivider" 
                  :statisticKf="statisticKf"
-                 :avbSelectedDies="avbSelectedDies"
                  :selectedDiesLength="selectedDies.length">
     </graphic-row>
   </v-container>
@@ -306,11 +280,11 @@ import WaferMap from "./wafermap-svg.vue";
 import MiniGraphicRow from "./wafermeas-minigraphicrow";
 import GraphicRowFullInfo from './GraphicRowFullInfo.vue'
 
+
 export default {
   data() {
     return {
       viewMode: "Мониторинг",
-      mapMode: "selected",
       toggle_exclusive: null,
       fabToTop: false,
       fabToNext: false,
@@ -320,7 +294,6 @@ export default {
       activeTab: "wafer",
       wafers: [],
       dividers: [],
-      avbSelectedDies: [],
       selectedWafer: "",
       selectedDivider: "1.0",
       selectedMeasurementId: 0,
@@ -352,6 +325,7 @@ export default {
 
     ...mapGetters({
       dirtyCells: 'wafermeas/dirtyCells',
+      avbSelectedDies: 'wafermeas/avbSelectedDies',
       selectedDies: 'wafermeas/selectedDies',
       selectedGraphics: 'wafermeas/selectedGraphics',
       unSelectedGraphics: 'wafermeas/unSelectedGraphics',
@@ -439,7 +413,7 @@ export default {
                 this.$store.dispatch("wafermeas/updateDieValues", dieValues)
                 let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))                
                 let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
-                this.avbSelectedDies = [...diesList]
+                this.$store.dispatch("wafermeas/updateAvbSelectedDies", [...diesList])
                 this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
                 this.selectedDivider = params.shortLinkVm.divider.dividerK
                 this.$store.dispatch("wafermeas/updateSelectedDies", [...params.shortLinkVm.selectedDies])
@@ -463,7 +437,7 @@ export default {
       this.$store.dispatch("wafermeas/updateDieValues", dieValues)
       let keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
       let diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
-      this.avbSelectedDies = [...diesList]
+      this.$store.dispatch("wafermeas/updateAvbSelectedDies", [...diesList])
       this.$store.dispatch("wafermeas/updateDirtyCells", (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
       this.$store.dispatch("wafermeas/updateSelectedDies", diesList)
       this.delDirtyCells(this.viewMode === 'Мониторинг' ? this.dirtyCells.statList : this.dirtyCells.fixedList, this.avbSelectedDies)

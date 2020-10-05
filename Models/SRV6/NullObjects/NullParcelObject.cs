@@ -5,7 +5,7 @@ namespace VueExample.Models.SRV6.NullObjects
         public NullParcelObject() : base()
         {
             this.Id = 0;
-            this.Name = "NoParcel";
+            this.Name = "Неизвестно";
         }
     }
 }

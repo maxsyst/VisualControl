@@ -4,7 +4,6 @@
         <stat-single :id="'ss_' + keyGraphicState"
           :measurementId="selectedMeasurementId"
           :keyGraphicState="keyGraphicState"
-          :avbSelectedDies="avbSelectedDies"
           :divider="selectedDivider"
           :rowViewMode="rowViewMode"
           :viewMode="viewMode"
@@ -49,7 +48,7 @@ import ChartLNR from "./chart-lnr-cjs.vue";
 import ChartHSTG from "./chart-bar-cjs.vue";
 import StatSingle from "./stat-single.vue";
 export default {
-    props: ["selectedMeasurementId", "keyGraphicState", "viewMode", "selectedDivider", "statisticKf", "avbSelectedDies", "selectedDiesLength"],
+    props: ["selectedMeasurementId", "keyGraphicState", "viewMode", "selectedDivider", "statisticKf", "selectedDiesLength"],
     data() {
         return {
           

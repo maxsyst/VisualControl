@@ -30,7 +30,7 @@
   import Loading from 'vue-loading-overlay';
   import { mapGetters } from 'vuex';
   export default {
-    props: ['keyGraphicState', 'avbSelectedDies', 'viewMode', 'rowViewMode'],
+    props: ['keyGraphicState', 'viewMode', 'rowViewMode'],
     components: { Loading },
     data() {
       return {
@@ -199,6 +199,7 @@
       ...mapGetters({
         wafer: 'wafermeas/wafer',
         selectedDies: 'wafermeas/selectedDies',
+        avbSelectedDies: 'wafermeas/avbSelectedDies',
         sizeGetter: 'wafermeas/size',
         dieColors: 'wafermeas/dieColors',
         modeGetter: 'wafermeas/getKeyGraphicStateMode',
