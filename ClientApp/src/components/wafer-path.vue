@@ -5,7 +5,7 @@
                 <v-row>
                     <v-col lg="4">
                         <v-chip label x-large color="indigo">
-                             {{digitMeasurement.digitMeasurementName}}
+                            {{digitMeasurement.digitMeasurementName}}
                         </v-chip>
                     </v-col>
                     <v-col lg="8">
@@ -60,20 +60,20 @@ export default {
                     }, [])
                     let initialArray = [...this.initialArray]
                     this.digitMeasurementDictionary = [...new Set(initialArray.map(x => x.key).filter(f => Number.isInteger(+f.charAt(0))).sort((a,b) => +a - +b))]
-                                                      .map(function(digitName) {
-                        let digitMeasurementArray = initialArray.filter(x => x.key === digitName)
-                        return {
-                            digitMeasurementName: digitName,
-                            stageArray: [...new Map(digitMeasurementArray.map(x => x.stage).map(item => [item["id"], item])).values()],
-                            elementMeasurementArray: digitMeasurementArray.map(function(x, index) {
-                                return {
-                                    trueElement: x.trueElement,
-                                    virtualElement: x.virtualElement.length > 0 ? x.virtualElement : "EL_" + (index + 1),
-                                    idmr: x.idmr,
-                                    statDirtyCellsPercentage: 0.0
-                                }
-                            }) 
-                        }
+                        .map(function(digitName) {
+                            let digitMeasurementArray = initialArray.filter(x => x.key === digitName)
+                            return {
+                                digitMeasurementName: digitName,
+                                stageArray: [...new Map(digitMeasurementArray.map(x => x.stage).map(item => [item["id"], item])).values()],
+                                elementMeasurementArray: digitMeasurementArray.map(function(x, index) {
+                                    return {
+                                        trueElement: x.trueElement,
+                                        virtualElement: x.virtualElement.length > 0 ? x.virtualElement : "EL_" + (index + 1),
+                                        idmr: x.idmr,
+                                        statDirtyCellsPercentage: 0.0
+                                    }
+                                }) 
+                            }
                     })
                 }
                 if(response.status === 204) {
