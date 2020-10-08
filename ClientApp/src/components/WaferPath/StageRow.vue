@@ -34,7 +34,7 @@ export default {
     },
 
     async mounted() {
-       let dirtyCellsCardsInfo = await this.getDirtyCellsCardsInfo(this.digitMeasurement.elementMeasurementArray.map(x => x.idmr))
+       this.dirtyCellsCardsInfo = await this.getDirtyCellsCardsInfo(this.digitMeasurement.elementMeasurementArray.map(x => x.idmr))
     },
 
     methods: {
@@ -44,7 +44,7 @@ export default {
                                             measurementRecordingIdArray: [...elementMeasurementIdArray]
                                         },
                                         paramsSerializer: params => {
-                                            return $qs.stringify(params)
+                                            return this.$qs.stringify(params)
                                         }
             })).data
         }

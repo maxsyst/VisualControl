@@ -1,118 +1,146 @@
 <template>
     <v-container>
         <v-row dense>
-                <div class="d-flex">
-                    <div class="d-flex align-start">                            
-                        <div class="d-flex flex-row">
-                            <div class="d-flex flex-column flex-grow-1">
+            <v-col lg="6">
+                <v-row>
+                    <v-col lg="12">
+                        <v-card class="elevation-8" color="#303030">
+                            <v-card-text>
                                 <v-chip class="d-lg-flex" color="indigo" @click="$router.push({ name: 'wafer-path', params: { waferId: waferId } })" x-large label v-html="waferId" dark></v-chip>
-                                <div class="d-flex">
-                                    <v-card class="elevation-8" color="#303030">
-                                        <v-card-text>
-                                            <p>Шаблон</p>
-                                            <v-chip class="d-lg-block" v-if="codeProduct.name==='Неизвестно'" color="pink darken-1" label v-html="codeProduct.name" dark></v-chip>
-                                            <v-chip class="d-lg-block" v-else color="indigo" label v-html="codeProduct.name" dark></v-chip>
-                                        </v-card-text>
-                                    </v-card>
-                                </div>
-                                <div class="d-flex">
-                                    <v-card class="elevation-8" color="#303030">
-                                        <v-card-text>
-                                            <p>Партия</p>
-                                            <v-chip class="d-lg-block" v-if="parcel.name==='Неизвестно'" color="pink darken-1" label v-html="parcel.name" dark></v-chip>
-                                            <v-chip class="d-lg-block" v-else color="indigo" label v-html="parcel.name" dark></v-chip>
-                                        </v-card-text>
-                                        <v-card-actions>
-                                             <v-btn 
-                                                fab
-                                                dark
-                                                x-small
-                                                outlined
-                                                color="green"
-                                                @click="modes.measurement.edit=true">
-                                                <v-icon>edit</v-icon>
-                                            </v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <div class="d-flex flex-row">
-                            <v-card class="elevation-8" color="#303030">
-                                <v-card-text>                                  
-                                    <p>Операция</p>
-                                    <v-chip class="d-lg-block" v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
-                                    <v-chip class="d-lg-block" v-else color="indigo" label v-html="measurement.name" dark></v-chip>
-                                </v-card-text>
-                                <v-card-actions>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    
+                </v-row>
+                <v-row>
+                    <v-col lg="12">
+                        <v-card class="elevation-8" color="#303030">
+                            <v-card-text>
+                                <p>Партия</p>
+                                <v-chip class="d-lg-block" v-if="parcel.name==='Неизвестно'" color="pink darken-1" label v-html="parcel.name" dark></v-chip>
+                                <v-chip class="d-lg-block" v-else color="indigo" label v-html="parcel.name" dark></v-chip>
+                            </v-card-text>
+                            <v-card-actions>
                                     <v-btn 
-                                        fab
-                                        dark
-                                        x-small
-                                        outlined
-                                        color="green"
-                                        @click="modes.measurement.edit=true">
-                                        <v-icon>edit</v-icon>
-                                    </v-btn>
-                                    <v-btn
-                                        fab
-                                        dark
-                                        x-small
-                                        outlined
-                                        color="pink"
-                                        @click="modes.measurement.delete=true">
-                                        <v-icon>delete</v-icon>
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <v-card class="elevation-8" color="#303030">
-                                <v-card-text>
-                                    <p>Элемент</p>
-                                    <v-chip class="d-lg-block" v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
-                                    <v-chip class="d-lg-block" v-else color="indigo" label v-html="element.name" dark></v-chip>
-                                </v-card-text>
-                                <v-card-actions>
+                                    fab
+                                    dark
+                                    x-small
+                                    outlined
+                                    color="green"
+                                    @click="modes.measurement.edit=true">
+                                    <v-icon>edit</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-col>
+            <v-col lg="6">
+                <v-row>
+                    <v-col lg="12">
+                        <v-card class="elevation-8" color="#303030">
+                            <v-card-text>
+                                <p>Шаблон</p>
+                                <v-chip class="d-lg-block" v-if="codeProduct.name==='Неизвестно'" color="pink darken-1" label v-html="codeProduct.name" dark></v-chip>
+                                <v-chip class="d-lg-block" v-else color="indigo" label v-html="codeProduct.name" dark></v-chip>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col lg="12">
+                        <selectedDiesInfo :selectedMeasurementId="selectedMeasurementId" :viewMode="viewMode">
+                        </selectedDiesInfo>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col lg="12">
+                        <v-card class="elevation-8" color="#303030">
+                            <v-card-text>
+                                <p>Этап</p>
+                                <v-chip class="d-lg-block" v-if="stage.stageName === 'Неизвестно'" color="pink darken-1" label v-html="stage.stageName" dark></v-chip>
+                                <v-chip class="d-lg-block" v-else color="indigo" label v-html="stage.stageName" dark></v-chip>
+                            </v-card-text>
+                            <v-card-actions>
                                     <v-btn 
-                                        fab
-                                        dark
-                                        x-small
-                                        outlined
-                                        color="green"
-                                        @click="modes.element.edit=true">
-                                        <v-icon>edit</v-icon>
-                                    </v-btn>
-                                </v-card-actions>
-                                
-                            </v-card>
-                          
-                        </div>
-                    </div>
-                    <selectedDiesInfo :selectedMeasurementId="selectedMeasurementId" :viewMode="viewMode">
-                    </selectedDiesInfo>
-                </div>
+                                    fab
+                                    dark
+                                    x-small
+                                    outlined
+                                    color="green"
+                                    @click="modes.measurement.edit=true">
+                                    <v-icon>edit</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-col>
         </v-row>
-         <v-row dense> 
-            <v-col lg="12">
+        <v-row dense>
+            <v-col lg="6">
                 <v-card class="elevation-8" color="#303030">
-                    <v-row>
-                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Операция
-                        </v-col>
-                        <v-col lg="5" class="d-flex align-center">
-                            <v-chip v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
-                            <v-chip v-else color="indigo" label v-html="measurement.name" dark></v-chip>
-                        </v-col>
-                        <v-col lg="2" offset-lg="2" class="d-flex align-center">
-                            
-                        </v-col>
-                    </v-row>
+                    <v-card-text>                                  
+                        <p>Операция</p>
+                        <v-chip class="d-lg-block" v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
+                        <v-chip class="d-lg-block" v-else color="indigo" label v-html="measurement.name" dark></v-chip>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn 
+                            fab
+                            dark
+                            x-small
+                            outlined
+                            color="green"
+                            @click="modes.measurement.edit=true">
+                            <v-icon>edit</v-icon>
+                        </v-btn>
+                        <v-btn
+                            fab
+                            dark
+                            x-small
+                            outlined
+                            color="pink"
+                            @click="modes.measurement.delete=true">
+                            <v-icon>delete</v-icon>
+                        </v-btn>
+                    </v-card-actions>
+                    </v-card>
+            </v-col>
+            <v-col lg="6">
+                <v-card class="elevation-8" color="#303030">
+                    <v-card-text>
+                        <p>Элемент</p>
+                        <v-chip class="d-lg-block" v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
+                        <v-chip class="d-lg-block" v-else color="indigo" label v-html="element.name" dark></v-chip>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn 
+                            fab
+                            dark
+                            x-small
+                            outlined
+                            color="green"
+                            @click="modes.element.edit=true">
+                            <v-icon>edit</v-icon>
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
+        <v-row dense> 
+            <v-col lg="12">
+                
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="12">
+            </v-col>
+        </v-row>
+
+
         <v-row dense v-if="modes.measurement.edit || modes.measurement.delete"> 
                 <v-col lg="12">
                
@@ -167,46 +195,6 @@
                 </v-card>
             </v-col>
         </v-row>
-         <v-row dense>
-            <v-col lg="12">
-                <v-card class="elevation-8" color="#303030">
-                    <v-row>
-                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Этап
-                        </v-col>
-                        <v-col lg="5" class="d-flex align-center">
-                             <v-chip v-if="stage.stageName === 'Неизвестно'" color="pink darken-1" label v-html="stage.stageName" dark></v-chip>
-                            <v-chip v-else color="indigo" label v-html="stage.stageName" dark></v-chip>
-                        </v-col>
-                        <v-col lg="2" offset-lg="2" class="d-flex align-center">
-                            <v-speed-dial v-if="selectedMeasurementId>0" v-model="fab.stage" open-on-hover direction="right"  transition="slide-y-reverse-transition">
-                                <template v-slot:activator>
-                                    <v-btn
-                                        v-model="fab.stage"
-                                        small
-                                        outlined
-                                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
-                                        dark
-                                        fab>
-                                        <v-icon v-if="fab.stage">close</v-icon>
-                                        <v-icon v-else>settings</v-icon>
-                                    </v-btn>
-                                </template>
-                                <v-btn
-                                    fab
-                                    dark
-                                    outlined
-                                    small
-                                    color="green"
-                                    @click="modes.stage.edit=true">
-                                    <v-icon>edit</v-icon>
-                                </v-btn>
-                            </v-speed-dial>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </v-col>
-        </v-row>
         <v-row dense v-if="modes.stage.edit"> 
             <v-col lg="12">
                 <v-card class="elevation-8" color="#303030">
@@ -229,24 +217,6 @@
                              <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelStageEdit">
                                Отменить изменение
                             </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </v-col>
-        </v-row>
-        <v-row dense>
-            <v-col lg="12">
-                <v-card class="elevation-8" color="#303030">
-                    <v-row>
-                        <v-col lg="2" offset-lg="1" class="d-flex align-center">
-                            Элемент
-                        </v-col>
-                        <v-col lg="5" class="d-flex align-center">
-                            <v-chip v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
-                            <v-chip v-else color="indigo" label v-html="element.name" dark></v-chip>
-                        </v-col>
-                        <v-col lg="2" offset-lg="2" class="d-flex align-center">
-                           
                         </v-col>
                     </v-row>
                 </v-card>

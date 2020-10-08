@@ -31,7 +31,7 @@ namespace VueExample.Controllers
 
         [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecordingArray")]
-        public async Task<IActionResult> GetDirtyCellsByMeasurementRecordingArray ([FromQuery] int[] measurementRecordingIdArray)
+        public async Task<IActionResult> GetDirtyCellsByMeasurementRecordingArray([FromQuery] int[] measurementRecordingIdArray)
         {
             var k = 1.5;
             var resultList = new List<object>();
