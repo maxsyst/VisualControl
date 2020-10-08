@@ -1,5 +1,4 @@
 import HomePage from '../components/home-page.vue'
-import PWafer from '../components/pwafer.vue'
 import DefectCard from '../components/defect-card.vue'
 import DefectSingle from '../components/defect-single.vue'
 import DefectVue from '../components/defect-mainvue.vue'
@@ -8,7 +7,6 @@ import DangerLevel from '../components/dangerlevel-crud.vue'
 import DefectType from '../components/defecttype-crud.vue'
 import Device from '../components/device-crud.vue'
 import WaferMap from '../components/wafermap-full.vue'
-import WaferPath from '../components/wafer-path.vue'
 import SelectBasic from '../components/select-basic.vue'
 import Kurbatov from '../components/export-kurb.vue'
 import StageTable from '../components/stage-table.vue'
@@ -42,9 +40,9 @@ export const routes = [
   { path: '/defect/:defectid', component: DefectCard },
   { name: 'adddefect', path: '/adddefect', component: DefectSingle, display: 'Добавление дефекта', nav: true },
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
-  { name: 'pwafer', path: '/pwafer', component: PWafer, display: 'Просмотр измерений', nav: true },  
+  { name: 'pwafer', path: '/pwafer', component: () => import('../components/pwafer.vue'), display: 'Просмотр измерений', nav: true },  
   { name: 'shortlink-handler', path: '/sl/:guid', component: ShortLinkHandler },
-  { name: 'wafer-path', path: '/waferpath/:waferId', component: WaferPath },
+  { name: 'wafer-path', path: '/waferpath/:waferId', component: () => import('../components/WaferPath/FullView.vue') },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
     children: [
     { 

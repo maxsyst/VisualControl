@@ -37,15 +37,15 @@
 
 <script>
 export default {
-    props: ["waferId", "measurementRecordingId", "digit", "elementName"],
+    props: ["waferId", "digit", "elementName", "dirtyCellsInfo"],
     data() {
         return {
-            dirtyCellsInfo: {},
+            
         }
     },
 
     async mounted() {
-        this.dirtyCellsInfo = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecordingOnly?measurementRecordingId=${this.measurementRecordingId}`)).data
+       // this.dirtyCellsInfo = (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecordingOnly?measurementRecordingId=${this.measurementRecordingId}`)).data
     },
 
     computed: {

@@ -2,23 +2,7 @@
     <v-container>
         <v-row v-for="digitMeasurement in digitMeasurementDictionary" :key="digitMeasurement.digitMeasurementName">
             <v-col lg="8" offset-lg="1">
-                <v-row>
-                    <v-col lg="4">
-                        <v-chip label x-large color="indigo">
-                            {{digitMeasurement.digitMeasurementName}}
-                        </v-chip>
-                    </v-col>
-                    <v-col lg="8">
-                        <v-chip label x-large color="indigo">
-                            {{digitMeasurement.stageArray.length === 1 ?  digitMeasurement.stageArray[0].name : digitMeasurement.stageArray.reduce((p,c) => p.name + "/" + c.name) }}
-                        </v-chip>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col lg="2" v-for="elementMeasurement in digitMeasurement.elementMeasurementArray" :key="elementMeasurement.idmr">
-                        <wp-card :measurementRecordingId="elementMeasurement.idmr" :waferId="waferId" :digit="digitMeasurement.digitMeasurementName" :elementName="elementMeasurement.virtualElement"></wp-card>
-                    </v-col>
-                </v-row>
+               <StageRow :waferId="waferId" :digitMeasurement="digitMeasurement"></StageRow>
             </v-col>
             <v-col lg="3">
 
@@ -28,7 +12,7 @@
 </template>
 
 <script>
-import Card from "./waferpath-card.vue";
+const StageRow = () => import("./StageRow.vue")
 export default {
     data() {
         return {
@@ -40,7 +24,7 @@ export default {
     },
 
     components: {
-        "wp-card": Card
+        "StageRow": StageRow
     },
 
     async mounted() {

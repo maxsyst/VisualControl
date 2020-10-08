@@ -12,6 +12,7 @@ import Vuelidate from 'vuelidate'
 import AsyncComputed from 'vue-async-computed'
 import UUID from 'vue-uuid'
 import PerfectScrollbar from 'vue2-perfect-scrollbar'
+import qs from 'qs'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
@@ -28,6 +29,7 @@ Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
 Vue.prototype.$http = axios;
 Vue.prototype._ = lodash
+Vue.prototype.$qs = qs
 sync(store, router);
 
 const opts =  {
