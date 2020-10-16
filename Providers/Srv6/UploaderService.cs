@@ -49,7 +49,6 @@ namespace VueExample.Providers.Srv6
                 {
                     uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, UploadStatus = "initial"});
                 }
-                    
             }
             return uploadingFileStatusList;
         }
