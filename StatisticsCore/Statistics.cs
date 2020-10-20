@@ -1209,6 +1209,40 @@ namespace VueExample.StatisticsCore
             return returnList;
         }
 
+        private List<Statistics> GetCMIM_BURN(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
+
+
+            var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
+
+            var returnList = new List<Statistics>
+                {
+
+                    GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
+                    GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.0625).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
+
+                };
+            return returnList;
+        }
+
+        private List<Statistics> GetCMIM_SNOW(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
+            var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
+
+            var returnList = new List<Statistics>
+                {
+
+                    GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
+                    GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.01).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
+
+                };
+            return returnList;
+        }
+
 
         private List<Statistics> GetVbr(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
@@ -1269,8 +1303,6 @@ namespace VueExample.StatisticsCore
                 };
             return returnList;
         }
-
-
 
         private List<Statistics> GetLeak(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
