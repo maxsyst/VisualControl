@@ -6,6 +6,7 @@ namespace VueExample.Providers.Srv6.Interfaces
 {
     public interface IProcessProvider
     {
+        Task<Process> GetById(int processId);
         Task<Process> GetProcessByCodeProductId(int codeProductId);
         Task<Process> GetProcessByDieTypeId(int dieTypeId);
         Task<Process> GetByWaferId(string waferId);

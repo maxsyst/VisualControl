@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +27,16 @@ namespace VueExample.Controllers
         {
             var parcel = await _parcelProvider.GetById(id);
             return parcel == null ? (IActionResult)NotFound() : Ok(parcel);          
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<ParcelViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("processId/{processId:int}")]
+        public async Task<IActionResult> GetByProcessId([FromRoute] int processId) 
+        {
+            var parcelList = await _parcelProvider.GetByProcessId(processId);
+            return parcelList.Count == 0 ? (IActionResult)NotFound() : Ok(parcelList);          
         }
         
         [HttpGet]

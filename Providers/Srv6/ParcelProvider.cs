@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,6 +23,11 @@ namespace VueExample.Providers.Srv6
         public async Task<ParcelViewModel> GetById(int id)
         {
             return _mapper.Map<Parcel, ParcelViewModel>(await _srv6Context.Parcels.FirstOrDefaultAsync(x => x.Id == id));
+        }
+
+        public Task<List<ParcelViewModel>> GetByProcessId(int processId)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task<ParcelViewModel> GetByWaferId(string waferId)
