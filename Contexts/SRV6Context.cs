@@ -58,6 +58,8 @@ namespace VueExample.Contexts
             modelBuilder.ApplyConfiguration(new PWaferConfiguration());
             modelBuilder.ApplyConfiguration(new WaferConfiguration());
             modelBuilder.ApplyConfiguration(new ParcelConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProcessConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)

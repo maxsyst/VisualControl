@@ -19,6 +19,8 @@ namespace VueExample.Models
         public int ProcessId { get; set; }
         [Column("Cp_Name")]
         public string CodeProductName { get; set; }
-        public List<DieTypeCodeProduct> DieTypeCodeProducts { get; set; }
+        public Process Process { get; set; }
+        public IList<DieTypeCodeProduct> DieTypeCodeProducts { get; set; }
+        public IList<Wafer> Wafers { get; set; }
     }
 }

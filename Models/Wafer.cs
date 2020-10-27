@@ -13,5 +13,6 @@ namespace VueExample.Models
         [Column("id_parcel")]
         public int? ParcelId { get; set; }
         public Parcel Parcel { get; set; }
+        public CodeProduct CodeProduct { get; set; }
     }
 }
