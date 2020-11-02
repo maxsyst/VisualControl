@@ -32,9 +32,11 @@ namespace VueExample.StatisticsCore.Services
         }
         public async Task PopulateKurbatovXLSByValues(KurbatovXLS kurbatovXLS)
         {
-            foreach (var kurbatovParameter in kurbatovXLS.kpList)
+            List<KurbatovParameter> list = kurbatovXLS.kpList.ToList();
+            for (int i = 0; i < list.Count; i++)
             {
-                await GetDieValues(kurbatovParameter); 
+                KurbatovParameter kurbatovParameter = list[i];
+                kurbatovXLS.kpList[i].advList.AddRange((await GetDieValues(kurbatovParameter)).ToList()); 
             }
             kurbatovXLS.FindDirty();            
         }
@@ -56,7 +58,7 @@ namespace VueExample.StatisticsCore.Services
 
         
 
-        private async Task GetDieValues(KurbatovParameter kurbatovParameter, double k = 1.5)
+        private async Task<List<AtomicDieValue>> GetDieValues(KurbatovParameter kurbatovParameter, double k = 1.5)
         {
             string measurementRecordingIdAsKey = Convert.ToString(kurbatovParameter.MeasurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(kurbatovParameter.MeasurementRecordingId)).StageId;
@@ -91,7 +93,7 @@ namespace VueExample.StatisticsCore.Services
                     
                 }
             }
-           
+            return kurbatovParameter.advList;
         }
 
         private string GetStatus(double lower, double upper, double value)

@@ -119,7 +119,7 @@ namespace VueExample.Controllers
         [Route("wafer/{waferid}/dietype/{dieTypeId:int}")]
         public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId, [FromRoute] int dieTypeId)
         {
-            var measurementRecordingList = dieTypeId == 0 ? (await _measurementRecordingService.GetByWaferId(waferId)).Distinct().ToList() 
+            var measurementRecordingList = dieTypeId == 0 ? (await _measurementRecordingService.GetByWaferId(waferId)).GroupBy(x => x.Id).Select(x => x.FirstOrDefault()).ToList() 
                                                           : (await _measurementRecordingService.GetByWaferIdAndDieType(waferId, dieTypeId)).Distinct().ToList();
             if(measurementRecordingList.Count == 0)
             {

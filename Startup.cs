@@ -11,13 +11,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
+using VueCliMiddleware;
 using VueExample.Color;
 using VueExample.Contexts;
 using VueExample.Exceptions;
@@ -44,22 +48,29 @@ namespace VueExample
 
         public IConfiguration Configuration { get; }
 
-
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews().AddNewtonsoftJson();
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
+
             services.AddResponseCompression(options=>options.EnableForHttps = true);
      
             services.Configure<GzipCompressionProviderOptions>(options =>
             {
                 options.Level = CompressionLevel.Optimal;
             });
-
-            services.AddMvc(options => { options.CacheProfiles.Add("Default60",
-                            new CacheProfile()
-                            {
-                                Duration = 3600
-                            });
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options =>
+            {
+                options.CacheProfiles.Add("Default60",
+                    new CacheProfile()
+                    {
+                        Duration = 3600
+                    });
+            });
             services.AddAutoMapper();
             services.AddLazyCache();
             services.AddSignalR();
@@ -100,25 +111,23 @@ namespace VueExample
                     };
                 });
                 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v0.2.2", new Info
-                {
-                    Version = "v0.2.2",
-                    Title = "SVR_API",
-                    Description = "SVR_MES_19_API_0.2.2"
-                });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
+            // services.AddSwaggerGen(c =>
+            // {
+            //     c.SwaggerDoc("v0.2.2", new OpenApiInfo
+            //     {
+            //         Version = "v0.2.2",
+            //         Title = "SVR_API",
+            //         Description = "SVR_MES_19_API_0.2.2"
+            //     });
+            //     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //     c.IncludeXmlComments(xmlPath);
+            // });
         
 
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
 
-            
-            
            // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
            
             services.AddScoped<IUserProvider, UserProvider>();
@@ -140,6 +149,7 @@ namespace VueExample
             services.AddTransient<IColorService, ColorService>();
             services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
+            services.AddTransient<IParcelProvider, ParcelProvider>();
             services.AddTransient<IStatParameterService, StatParameterService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
             services.AddTransient<IElementTypeService, ElementTypeService>();
@@ -171,19 +181,20 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterBordersService, KurbatovParameterBordersService>();
             services.AddTransient<IKurbatovParameterProvider, KurbatovParameterProvider>();
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
-            
         }
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-          
             if (env.IsDevelopment())
-            {              
-                app.UseBrowserLink();
-                app.UseStatusCodePages();
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
-                {
-                    HotModuleReplacement = true
-                });
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             app.UseGlobalExceptionHandler(x => {
@@ -197,39 +208,44 @@ namespace VueExample
                 x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
             });           
 
-            app.UseSignalR(options =>
-            {
-                options.MapHub<LivePointHub>("/livepoint");                
-            });
 
             app.UseCors("DefaultPolicy");
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
-            });
+            // app.UseSwagger();
+            // app.UseSwaggerUI(c =>
+            // {
+            //     c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
+            //     c.RoutePrefix = string.Empty;
+            // });
 
 
             app.UseAuthentication();
-            app.UseStaticFiles();
             app.UseResponseCompression();
-
-            app.UseMvc(routes =>
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHub<LivePointHub>("/livepoint");
+
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapToVueCliProxy(
+                        "{*path}",
+                        new SpaOptions { SourcePath = "ClientApp" },
+                        npmScript: "serve",
+                        regex: "Compiled successfully");
+                }
 
             });
 
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            app.UseSpa(spa =>
             {
-                builder.UseMvc(routes =>
-                {
-                    routes.MapSpaFallbackRoute(
-                        name: "spa-fallback",
-                        defaults: new { controller = "Home", action = "Index" });
-                });
+                spa.Options.SourcePath = "ClientApp";
             });
         }
     }

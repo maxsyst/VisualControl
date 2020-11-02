@@ -76,8 +76,7 @@ namespace VueExample.Providers.ChipVerification
 
         public MeasurementOnlineStatus GetMeasurementOnlineStatus(int measurementId)
         {         
-            var measurementIdSqlParameter = new SqlParameter("measurementID", measurementId);
-            var measurementOnlineStatus = _applicationContext.MeasurementOnlineStatus.FromSql("EXECUTE GetMeasurementOnlineStatus @measurementID", measurementIdSqlParameter).FirstOrDefault();
+            var measurementOnlineStatus = _applicationContext.MeasurementOnlineStatus.FromSqlInterpolated($"EXECUTE GetMeasurementOnlineStatus @measurementID = {measurementId}").FirstOrDefault();
             return measurementOnlineStatus;            
         }
 

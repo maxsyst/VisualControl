@@ -42,5 +42,10 @@ namespace VueExample.Providers
             var codeProducts = await _codeProductProvider.GetCodeProductsByDieType(dieTypeId);
             return await GetProcessByCodeProductId(codeProducts.FirstOrDefault().IdCp) ?? throw new RecordNotFoundException();
         }
+
+        public async Task<Process> GetById(int processId)
+        {
+            return await _srv6Context.Processes.FirstOrDefaultAsync(x => x.ProcessId == processId);
+        }
     }
 }

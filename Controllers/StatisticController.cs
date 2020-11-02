@@ -30,6 +30,28 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [Route("GetDirtyCellsByMeasurementRecordingArray")]
+        public async Task<IActionResult> GetDirtyCellsByMeasurementRecordingArray([FromQuery] int[] measurementRecordingIdArray)
+        {
+            var k = 1.5;
+            var resultList = new List<object>();
+            for (int i = 0; i < measurementRecordingIdArray.Length; i++)
+            {
+                var measurementRecordingId =  measurementRecordingIdArray[i];
+                var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
+                string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
+                var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
+                Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+                var dieValuesDictionary = await cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
+                Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
+                var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
+                var dirtyCells = statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesList.Count);
+                resultList.Add(new {goodCellsPercentage = dirtyCells.StatPercentageFullWafer, dirtyCellsArray = dirtyCells.StatList, diesCount = diesList.Count, MeasurementId = measurementRecordingId});
+            }
+            return Ok(resultList);
+        }
+
+        [HttpGet]
         [Route("GetDirtyCellsByMeasurementRecordingOnly")]
         public async Task<IActionResult> GetDirtyCellsByMeasurementRecording ([FromQuery] int measurementRecordingId)
         {

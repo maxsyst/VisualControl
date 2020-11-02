@@ -59,13 +59,8 @@ namespace VueExample.Providers.ChipVerification
 
            for(int i = 0;  i < atomicMeasurementViewModelList.Count(); i++) 
            {
-                var measurementIdSqlParameter = new SqlParameter("@MeasurementID", atomicMeasurementViewModelList[i].MeasurementId);
-                var deviceIdSqlParameter = new SqlParameter("@DeviceID", atomicMeasurementViewModelList[i].DeviceId);
-                var graphicIdSqlParameter = new SqlParameter("@GraphicID", atomicMeasurementViewModelList[i].GraphicId);
-                var portNumberSqlParameter = new SqlParameter("@PortNumber", atomicMeasurementViewModelList[i].PortNumber);
-                var lastPoint = await _applicationContext.Point.FromSql("EXECUTE GetLastPoint @MeasurementID, @DeviceID, @GraphicID, @PortNumber", measurementIdSqlParameter, deviceIdSqlParameter, 
-                                                                                          graphicIdSqlParameter, portNumberSqlParameter).
-                                                                                          FirstOrDefaultAsync();
+                var lastPoint = await _applicationContext.Point.FromSqlInterpolated($"EXECUTE GetLastPoint @MeasurementID = {atomicMeasurementViewModelList[i].MeasurementId}, @DeviceID = {atomicMeasurementViewModelList[i].DeviceId}, @GraphicID = {atomicMeasurementViewModelList[i].GraphicId}, @PortNumber = {atomicMeasurementViewModelList[i].PortNumber}")
+                                                               .FirstOrDefaultAsync();
                 livePointViewModelList.Add(new LivePointViewModel{Value = lastPoint.Value, MeasurementId = atomicMeasurementViewModelList[i].MeasurementId});
            }
 

@@ -38,7 +38,7 @@ namespace VueExample.Providers
 
         public async Task Delete(int standartMeasurementPatternId)
         {
-            var standartMeasurementPattern = _srv6Context.StandartMeasurementPatterns.FindAsync(standartMeasurementPatternId) ?? throw new RecordNotFoundException();
+            var standartMeasurementPattern = await _srv6Context.StandartMeasurementPatterns.FindAsync(standartMeasurementPatternId) ?? throw new RecordNotFoundException();
             _srv6Context.Remove(standartMeasurementPattern);
             await _srv6Context.SaveChangesAsync();
         }

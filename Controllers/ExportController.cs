@@ -11,6 +11,7 @@ using System;
 using OfficeOpenXml.Style;
 using AutoMapper;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace VueExample.Controllers
 {
@@ -19,9 +20,9 @@ namespace VueExample.Controllers
     public class ExportController : Controller
     {
         private readonly IExportProvider _exportProvider;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IMapper _mapper;
-        public ExportController(IExportProvider exportProvider, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        public ExportController(IExportProvider exportProvider, IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _exportProvider = exportProvider;
             _hostingEnvironment = hostingEnvironment;
@@ -41,13 +42,13 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [Route("create-kurb")]
-        public IActionResult CreateKurb([FromBody] JObject kurbatovXLSBodyJObject)
+        public async Task<IActionResult> CreateKurb([FromBody] JObject kurbatovXLSBodyJObject)
         {
             var kurbatovXLSBody = kurbatovXLSBodyJObject.ToObject<KurbatovXLSBodyModel>();
             var xlsList = kurbatovXLSBody.kurbatovXLSViewModelList.Select(x => _mapper.Map<KurbatovXLS>(x)).ToList();             
             foreach (var xls in xlsList)
             {
-                _exportProvider.PopulateKurbatovXLSByValues(xls);
+                await _exportProvider.PopulateKurbatovXLSByValues(xls);
             }
 
             var XlsxContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -311,6 +312,45 @@ namespace VueExample.Controllers
             xlsList.Add(row16);
             xlsList.Add(row17);
 
+            return Ok(xlsList);
+        }
+
+        [HttpGet]
+        [Route(("pattern/ckba"))]
+        public IActionResult GetPatternCkba()
+        {
+            var xlsList = new List<KurbatovXLSViewModel>();
+                  
+            var row1 = new KurbatovXLSViewModel();
+            row1.ElementName = "Risol_TC8";
+            row1.OperationNumber = "560.00.00";
+            row1.StageName = "Снятие рабочей пластины с пластины-носителя";
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "Risol", Lower = 0.1, DividerId = 1, RussianParameterName="Сопротивление межприборной изоляции, ГОм", ParameterNameStat="Risol"});
+
+            var row2 = new KurbatovXLSViewModel();
+            row2.ElementName = "Rhole_TC20";
+            row2.OperationNumber = "560.00.00";
+            row2.StageName = "Снятие рабочей пластины с пластины-носителя";
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление металлизированного отверстия, Ом", ParameterNameStat="Rhole"});
+            
+            var row3 = new KurbatovXLSViewModel();
+            row3.ElementName = "Rind_TC21"; 
+            row3.OperationNumber = "560.00.00";
+            row3.StageName = "Снятие рабочей пластины с пластины-носителя";
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "Rind", Upper = 3.6, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности, Ом", ParameterNameStat="Rind"});
+            
+            var row4 = new KurbatovXLSViewModel();
+            row4.ElementName = "CAP_TC23";
+            row4.OperationNumber = "560.00.00";
+            row4.StageName = "Снятие рабочей пластины с пластины-носителя";
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 270, Upper = 350, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)"});
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc", Lower = 20, DividerId = 1, RussianParameterName="Пробивное напряжение МДМ-конденсатора, В", ParameterNameStat="U<sub>BRC</sub> (пробивное напряжение МДМ-конденсатора)"});
+          
+            xlsList.Add(row1);
+            xlsList.Add(row2);
+            xlsList.Add(row3);
+            xlsList.Add(row4);
+       
             return Ok(xlsList);
         }
        

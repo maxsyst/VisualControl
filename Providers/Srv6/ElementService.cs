@@ -1,3 +1,4 @@
+using System;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using VueExample.Providers.Srv6.Interfaces;
 using System.Collections.Generic;
 using VueExample.ViewModels;
 using AutoMapper;
+using VueExample.Models;
 
 namespace VueExample.Providers.Srv6
 {
@@ -89,9 +91,20 @@ namespace VueExample.Providers.Srv6
 
         public async Task<Element> GetByNameAndWafer(string name, string waferId)
         {
-            var waferIdSqlParameter = new SqlParameter("waferId", waferId);
-            var elementNameSqlParameter = new SqlParameter("name", name);
-            return await _srv6Context.Elements.FromSql("EXECUTE dbo.select_element_by_waferId_elementname @waferId, @name", waferIdSqlParameter, elementNameSqlParameter).FirstOrDefaultAsync();
+            var elementList = from codeProduct in _srv6Context.CodeProducts
+                              join wafer in _srv6Context.Wafers on codeProduct.IdCp equals wafer.CodeProductId
+                              join dieTypeCodeProduct in _srv6Context.DieTypeCodeProducts on codeProduct.IdCp equals dieTypeCodeProduct.CodeProductId
+                              join dieType in _srv6Context.DieTypes on dieTypeCodeProduct.DieTypeId equals dieType.DieTypeId
+                              join dieTypeElementType in _srv6Context.DieTypeElements on dieType.DieTypeId equals dieTypeElementType.DieTypeId
+                              join element in _srv6Context.Elements on dieTypeElementType.ElementId equals element.ElementId
+                              where wafer.WaferId == waferId && element.Name == name
+                              select new Element {Name = element.Name, 
+                                                  ElementId = element.ElementId, 
+                                                  TypeId = element.TypeId, 
+                                                  Comment = element.Comment, 
+                                                  PhotoPath = element.PhotoPath, 
+                                                  DocName = element.DocName};
+            return await elementList.FirstOrDefaultAsync();            
         }
 
         public async Task<Element> UpdateElementOnIdmr(int measurementRecordingId, int newElementId)

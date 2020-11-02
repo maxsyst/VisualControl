@@ -14,6 +14,7 @@ namespace VueExample.Contexts
         public DbSet<CodeProduct> CodeProducts { get; set; }
         public DbSet<Process> Processes { get; set; }
         public DbSet<Wafer> Wafers { get; set; }
+        public DbSet<Parcel> Parcels { get; set; }
         public DbSet<Die> Dies { get; set; }
         public DbSet<Element> Elements { get; set; }
         public DbSet<ElementType> ElementTypes { get; set; }
@@ -45,8 +46,7 @@ namespace VueExample.Contexts
         public DbSet<ShortLinkEntity> ShortLinkEntities { get; set; }
         public DbSet<Divider> Dividers { get; set; }
         public DbSet<StatParameterForStage> StatParametersForStage { get; set; }
-
-        public DbQuery<PWafer> PWaferQuery { get; set; }
+        public DbSet<PWafer> PWaferQuery { get; set; }
 
         protected override void OnModelCreating (ModelBuilder modelBuilder) 
         {
@@ -55,6 +55,11 @@ namespace VueExample.Contexts
             modelBuilder.ApplyConfiguration(new StandartMeasurementPatternConfiguration());
             modelBuilder.ApplyConfiguration(new StandartPatternConfiguration());
             modelBuilder.ApplyConfiguration(new FkMrPConfiguration());
+            modelBuilder.ApplyConfiguration(new PWaferConfiguration());
+            modelBuilder.ApplyConfiguration(new WaferConfiguration());
+            modelBuilder.ApplyConfiguration(new ParcelConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProcessConfiguration());
         }
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)
