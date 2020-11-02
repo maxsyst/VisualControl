@@ -31,6 +31,18 @@
                 <v-card-actions>
                 </v-card-actions>
               </v-card>
+              <v-card
+                min-height="150"
+                shaped
+                color="indigo"
+                @click="$router.push({ name: 'control-charts'})"
+                class="d-flex ma-1">
+                  <v-card-text class="headline font-weight-bold">
+                    Контрольные карты
+                  </v-card-text>
+                <v-card-actions>
+                </v-card-actions>
+              </v-card>
             </div>
             <div class="d-flex flex-row justify-space-around">
               <v-card

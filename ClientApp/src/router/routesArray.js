@@ -42,6 +42,7 @@ export const routes = [
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
   { name: 'pwafer', path: '/pwafer', component: () => import('../components/pwafer.vue'), display: 'Просмотр измерений', nav: true },  
   { name: 'shortlink-handler', path: '/sl/:guid', component: ShortLinkHandler },
+  { name: 'control-charts', path: '/controlCharts', display: 'Контрольные карты', component: () => import('../components/ControlCharts/FullView.vue'), nav: true},
   { name: 'wafer-path', path: '/waferpath/:waferId', component: () => import('../components/WaferPath/FullView.vue') },
   { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
     children: [
