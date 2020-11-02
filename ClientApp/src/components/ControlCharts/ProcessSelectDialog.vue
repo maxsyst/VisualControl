@@ -45,6 +45,7 @@
         methods: {
             changeProcess: function (selectedProcess) {
                 this.$store.dispatch("controlCharts/changeProcess", selectedProcess)
+                this.$store.dispatch("controlCharts/getWafersWithParcels", {ctx: this, selectedProcess})
             } 
         }
 

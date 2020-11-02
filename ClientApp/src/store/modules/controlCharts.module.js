@@ -1,6 +1,7 @@
 const defaultState = () => {
     return {
-        selectedProcess: {}
+        selectedProcess: {},
+        wafersWithParcels: []
     }
   }
   
@@ -8,7 +9,8 @@ const defaultState = () => {
     namespaced: true,
     state: {
         selectedProcess: {},
-        processesList: []
+        processesList: [],
+        wafersWithParcels: []
     },
     
     actions: {
@@ -29,13 +31,19 @@ const defaultState = () => {
             let processesList = (await ctx.$http.get(`/api/process/all`)).data
             commit('getProcessesFromDb', processesList) 
         }
+      },
+
+      async getWafersWithParcels({commit}, {ctx, selectedProcess}) {
+        let wafersWithParcels = (await ctx.$http.get(`/api/parcel/processId/${selectedProcess.processId}`)).data
+        commit('changeWafersWithParcels', wafersWithParcels) 
       }
     },
   
     getters: {
         isProcessSelected: state => Object.keys(state.selectedProcess).length === 0 && state.selectedProcess .constructor === Object,
         selectedProcess: state => state.selectedProcess,
-        processesList: state => [...state.processesList]
+        processesList: state => [...state.processesList],
+        wafersWithParcels: state => [...state.wafersWithParcels]
     },
   
     mutations: {
@@ -54,6 +62,10 @@ const defaultState = () => {
 
       getProcessesFromDb(state, processesList) {
         state.processesList = [...processesList]  
+      },
+
+      changeWafersWithParcels(state, wafersWithParcels) {
+        state.wafersWithParcels = [...wafersWithParcels]  
       }
 
     }

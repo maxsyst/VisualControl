@@ -30,7 +30,7 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<ParcelViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ParcelWithWafersViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("processId/{processId:int}")]
         public async Task<IActionResult> GetByProcessId([FromRoute] int processId) 
