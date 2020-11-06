@@ -14,7 +14,9 @@
     "array-smooth": "^1.0.0",
     "axios": "^0.15.3",
     "chart.js": "^2.8.0",
+    "chartjs-plugin-deferred": "^1.0.1",
     "chartjs-plugin-downsample": "^1.1.0",
+    "chartjs-plugin-zoom": "^0.7.7",
     "core-js": "^3.6.5",
     "date-and-time": "^0.7.0",
     "filepond": "^3.3.2",
@@ -110,8 +112,7 @@
     "vue-lodash": "^2.1.2",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^2.7.0",
-    "webpack-cli": "^3.1.2",
-    "webpack-hot-middleware": "^2.21.2"
+    "webpack-cli": "^3.1.2"
   },
   "eslintConfig": {
     "root": true,

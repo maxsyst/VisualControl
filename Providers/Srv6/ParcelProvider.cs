@@ -37,7 +37,7 @@ namespace VueExample.Providers.Srv6
                                                                 ParcelName = x.Parcel.Name, 
                                                                 ParcelId = x.Parcel.Id, 
                                                                 ChildrenWafers = 
-                                                                        x.Parcel.Wafers.Select(w => new WaferViewModel {WaferId = w.WaferId, CodeProductId = w.CodeProductId})
+                                                                        x.Parcel.Wafers.Select(w => new SimpleWaferId {Id = w.WaferId, Name = w.WaferId})
                                                                                        .ToList()})
                                                  .AsNoTracking()
                                                  .ToListAsync();

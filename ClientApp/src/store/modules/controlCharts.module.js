@@ -1,7 +1,8 @@
 const defaultState = () => {
     return {
         selectedProcess: {},
-        wafersWithParcels: []
+        wafersWithParcels: [],
+        selectedWafers: []
     }
   }
   
@@ -10,7 +11,8 @@ const defaultState = () => {
     state: {
         selectedProcess: {},
         processesList: [],
-        wafersWithParcels: []
+        wafersWithParcels: [],
+        selectedWafers: []
     },
     
     actions: {
@@ -24,6 +26,10 @@ const defaultState = () => {
 
       changeProcess({commit}, process) {
         commit('changeProcess', process)
+      },
+
+      changeSelectedWafers({commit}, wafersArray) {
+        commit('changeSelectedWafers', wafersArray)
       },
 
       async getProcessesFromDb({commit, getters}, {ctx}) {
@@ -43,6 +49,7 @@ const defaultState = () => {
         isProcessSelected: state => Object.keys(state.selectedProcess).length === 0 && state.selectedProcess .constructor === Object,
         selectedProcess: state => state.selectedProcess,
         processesList: state => [...state.processesList],
+        selectedWafers: state => [...state.selectedWafers],
         wafersWithParcels: state => [...state.wafersWithParcels]
     },
   
@@ -58,6 +65,10 @@ const defaultState = () => {
 
       changeProcess(state, process) {
         state.selectedProcess = Object.assign({}, process)
+      },
+      
+      changeSelectedWafers(state, wafersArray) {
+        state.selectedWafers = [...wafersArray]
       },
 
       getProcessesFromDb(state, processesList) {
