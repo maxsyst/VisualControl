@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace VueExample.Models.SRV6
 {
@@ -14,5 +16,9 @@ namespace VueExample.Models.SRV6
         public string MinAverage { get; set; }
         public string MaxAverage { get; set; }
         public string TypeAverage { get; set; }
+        [JsonIgnore]
+        public StatisticParameter StatisticParameter { get; set; }
+        [JsonIgnore]
+        public Stage Stage { get; set; }
     }
 }

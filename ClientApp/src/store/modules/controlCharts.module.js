@@ -1,8 +1,12 @@
 const defaultState = () => {
     return {
         selectedProcess: {},
+        selectedStage: {},
+        selectedStatParameter: {},
         wafersWithParcels: [],
-        selectedWafers: []
+        selectedWafers: [],
+        stagesList: [],
+        statParametersList: []
     }
   }
   
@@ -10,9 +14,13 @@ const defaultState = () => {
     namespaced: true,
     state: {
         selectedProcess: {},
+        selectedStage: {},
+        selectedStatParameter: {},
         processesList: [],
         wafersWithParcels: [],
-        selectedWafers: []
+        selectedWafers: [],
+        stagesList: [],
+        statParametersList: []
     },
     
     actions: {
@@ -28,6 +36,14 @@ const defaultState = () => {
         commit('changeProcess', process)
       },
 
+      changeSelectedStage({commit}, stage) {
+        commit('changeSelectedStage', stage)
+      },
+
+      changeSelectedStatParameter({commit}, statParameter) {
+        commit('changeSelectedStatParameter', statParameter)
+      },
+
       changeSelectedWafers({commit}, wafersArray) {
         commit('changeSelectedWafers', wafersArray)
       },
@@ -39,6 +55,21 @@ const defaultState = () => {
         }
       },
 
+      async getStagesByProcessId({commit}, {ctx, processId}) {
+        let stagesList = (await ctx.$http.get(`/api/stage/process/${processId}`)).data
+        commit('changeStagesList', stagesList) 
+      },
+
+      async getStatParametersByStage ({commit}, {ctx, stageId}) {
+        try {
+          let statParametersList = (await ctx.$http.get(`/api/statisticparameter/stage/${stageId}`)).data
+          commit('changeStatParametersList', statParametersList) 
+        } 
+        catch {
+          commit('changeStatParametersList', [])
+        }
+      },
+
       async getWafersWithParcels({commit}, {ctx, selectedProcess}) {
         let wafersWithParcels = (await ctx.$http.get(`/api/parcel/processId/${selectedProcess.processId}`)).data
         commit('changeWafersWithParcels', wafersWithParcels) 
@@ -46,9 +77,11 @@ const defaultState = () => {
     },
   
     getters: {
-        isProcessSelected: state => Object.keys(state.selectedProcess).length === 0 && state.selectedProcess .constructor === Object,
+        isProcessSelected: state => Object.keys(state.selectedProcess).length === 0 && state.selectedProcess.constructor === Object,
         selectedProcess: state => state.selectedProcess,
         processesList: state => [...state.processesList],
+        stagesList: state => [...state.stagesList],
+        statParametersList: state => [...state.statParametersList],
         selectedWafers: state => [...state.selectedWafers],
         wafersWithParcels: state => [...state.wafersWithParcels]
     },
@@ -66,9 +99,25 @@ const defaultState = () => {
       changeProcess(state, process) {
         state.selectedProcess = Object.assign({}, process)
       },
+
+      changeSelectedStage(state, selectedStage) {
+        state.selectedStage = Object.assign({}, selectedStage)
+      },
+
+      changeSelectedStatParameter(state, statParameter) {
+        state.selectedStatParameter = Object.assign({}, statParameter)
+      },
+
+      changeStagesList(state, stagesList) {
+        state.stagesList = [...stagesList]
+      },
       
       changeSelectedWafers(state, wafersArray) {
         state.selectedWafers = [...wafersArray]
+      },
+
+      changeStatParametersList(state, statParametersList) {
+        state.statParametersList = [...statParametersList]
       },
 
       getProcessesFromDb(state, processesList) {
