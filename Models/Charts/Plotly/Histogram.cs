@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace VueExample.Models.Charts.Plotly
 {
     public class Histogram

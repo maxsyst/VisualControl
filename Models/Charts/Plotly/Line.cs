@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace VueExample.Models.Charts.Plotly
 {
     public class Line

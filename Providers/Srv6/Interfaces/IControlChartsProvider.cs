@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using VueExample.Models.Charts;
+
 namespace VueExample.Providers.Srv6.Interfaces
 {
     public interface IControlChartsProvider

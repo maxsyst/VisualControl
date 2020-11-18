@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using VueExample.Models.Charts.Plotly;
+
 namespace VueExample.Models.Charts
 {
     public class ControlChartsData
