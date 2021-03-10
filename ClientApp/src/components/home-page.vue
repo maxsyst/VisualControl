@@ -31,6 +31,18 @@
                 <v-card-actions>
                 </v-card-actions>
               </v-card>
+               <v-card
+                min-height="70"
+                shaped
+                color="indigo"
+                @click="$router.push({ name: 'MeasurementAttemptsLastView'})"
+                class="d-flex ma-1">
+                  <v-card-text class="headline font-weight-bold">
+                    Vertx
+                  </v-card-text>
+                <v-card-actions>
+                </v-card-actions>
+              </v-card>
               <v-card
                 min-height="150"
                 shaped

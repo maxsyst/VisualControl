@@ -100,6 +100,22 @@ export const routes = [
   { name: 'verificationsettings', path: '/vsettings', component: VerificationSettings, display: 'Редактирование параметров испытаний', nav: true }, 
 
   {
+    path: 'vertx/MeasurementAttemptsLast',
+    name: 'MeasurementAttemptsLastView',
+    component: () => import('../components/Vertx/Views/MeasurementAttemptLast'),
+  },
+  {
+    path: '/measurementAttempt/:measurementAttemptId',
+    name: 'measurementAttempt',
+    component: () => import('../components/Vertx/Views/MeasurementAttempt'),
+    children: [{
+      name: 'measurement-single',
+      path: 'measurement/:measurementId',
+      component: () => import('../components/Vertx/Views/SingleMeasurement'),
+    }],
+  },
+
+  {
     name: 'defectsbywafer',
     path: '/defects/:selectedWafer',
     display: 'Просмотр дефектов',
