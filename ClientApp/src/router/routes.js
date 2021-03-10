@@ -39,79 +39,87 @@ export const routes = [
   { path: '/defect/:defectid', component: DefectCard },
   { name: 'adddefect', path: '/adddefect', component: DefectSingle, display: 'Добавление дефекта', nav: true },
   { name: 'defects', path: '/defects', component: DefectVue, display: 'Просмотр дефектов', nav: true },
-  { name: 'pwafer', path: '/pwafer',  component: () => import('../components/pwafer.vue'), display: 'Просмотр измерений', nav: true },  
+  { name: 'pwafer', path: '/pwafer', component: () => import('../components/pwafer.vue'), display: 'Просмотр измерений', nav: true },
   { name: 'shortlink-handler', path: '/sl/:guid', component: ShortLinkHandler },
-  { name: 'control-charts', path: '/controlCharts', display: 'Контрольные карты', component: () => import('../components/ControlCharts/FullView.vue'), nav: true},
-  { name: 'wafer-path', path: '/waferpath/:waferId', component: () => import('../components/WaferPath/FullView.vue')},
-  { name: 'wafermeasurement', path: '/wafermeas', component: WaferMeas, 
-    children: [
-    { 
-      name: 'wafermeasurement-shortlink', 
-      path: 'waferId/:waferId/measurement/:measurementName/sl/:guid', 
-      props: route => {return {shortLinkVm: route.params.shortLinkVm, guid: route.params.guid}}, 
-      component: WaferMeas
-    },
-
-    {
-      name: 'wafermeasurement-onlywafer',
-      path: 'waferId/:waferId',
-      component: WaferMeas
-    },
-    {
-      name: 'wafermeasurement-fullselected',
-      path: 'waferId/:waferId/measurement/:measurementName',
-      component: WaferMeas
-    }]                                                                                                              
-  },
-  { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true }, 
-  { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true }, 
-  { name: 'standartparameter', path: '/standart-parameter', component: StandartParameter, display: 'StandartParameter'}, 
-  { name: 'kurbatovparameter', path: '/kb-parameter', component: () => import('../views/KurbatovPatternEditor.vue'), display: 'KParameter', nav: true,
+  { name: 'control-charts', path: '/controlCharts', display: 'Контрольные карты', component: () => import('../components/ControlCharts/FullView.vue'), nav: true },
+  { name: 'wafer-path', path: '/waferpath/:waferId', component: () => import('../components/WaferPath/FullView.vue') },
+  {
+    name: 'wafermeasurement',
+    path: '/wafermeas',
+    component: WaferMeas,
     children: [
       {
-        name: "kurbatovparameter-initial-typeisselected",
+        name: 'wafermeasurement-shortlink',
+        path: 'waferId/:waferId/measurement/:measurementName/sl/:guid',
+        props: route => { return { shortLinkVm: route.params.shortLinkVm, guid: route.params.guid } },
+        component: WaferMeas
+      },
+
+      {
+        name: 'wafermeasurement-onlywafer',
+        path: 'waferId/:waferId',
+        component: WaferMeas
+      },
+      {
+        name: 'wafermeasurement-fullselected',
+        path: 'waferId/:waferId/measurement/:measurementName',
+        component: WaferMeas
+      }]
+  },
+  { name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true },
+  { name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true },
+  { name: 'standartparameter', path: '/standart-parameter', component: StandartParameter, display: 'StandartParameter' },
+  {
+    name: 'kurbatovparameter',
+    path: '/kb-parameter',
+    component: () => import('../views/KurbatovPatternEditor.vue'),
+    display: 'KParameter',
+    nav: true,
+    children: [
+      {
+        name: 'kurbatovparameter-initial-typeisselected',
         path: 'dieType/:dieType',
         component: () => import('../views/KurbatovPatternEditor.vue')
       },
       {
-        name: "kurbatovparameter-creating",
+        name: 'kurbatovparameter-creating',
         path: 'dieType/:dieType/mode/creating',
         component: () => import('../views/KurbatovPatternEditor.vue')
       },
       {
-        name: "kurbatovparameter-updating",
+        name: 'kurbatovparameter-updating',
         path: 'dieType/:dieType/mode/updating/patternId/:patternId',
         component: () => import('../views/KurbatovPatternEditor.vue')
       }
     ]
-  }, 
-  { name: 'stagetable', path: '/stt/:processId', component: StageTable, props: route => {return {processId: +route.params.processId}}},
+  },
+  { name: 'stagetable', path: '/stt/:processId', component: StageTable, props: route => { return { processId: +route.params.processId } } },
   { name: 'uploader', path: '/uu', component: Uploader, display: 'Загрузка измерений', nav: true, uploadingArea: true },
-  { name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true }, 
-  { name: 'idmrvoc', path: '/idmr-voc/:waferId/:selectedDieType', component: IdmrVoc, display: 'Редактирование измерений', props: true }, 
-  { name: 'dietypesettings', path: '/dts', component: DieTypeSettings, display: 'Настройка элементов', nav: true, uploadingArea: true },  
+  { name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true },
+  { name: 'idmrvoc', path: '/idmr-voc/:waferId/:selectedDieType', component: IdmrVoc, display: 'Редактирование измерений', props: true },
+  { name: 'dietypesettings', path: '/dts', component: DieTypeSettings, display: 'Настройка элементов', nav: true, uploadingArea: true },
   { name: 'uploader-fg', path: '/ufg', component: UploaderFg, display: 'Типы измерений', nav: true, uploadingArea: true },
   { name: 'uploader-final', path: '/uploading', component: UploaderFinal, props: true },
-  { name: 'uploader-cp', path: '/uu/:selectedCodeProductFolder', component: Uploader, display: 'Загрузка', props: true }, 
-  { name: 'uploader-cpw', path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder', component: Uploader, display: 'Загрузка измерений', props: true }, 
-  { name: 'uploader-cpwi', path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder/:mrArray', component: Uploader, display: 'Загрузка измерений', props: true }, 
+  { name: 'uploader-cp', path: '/uu/:selectedCodeProductFolder', component: Uploader, display: 'Загрузка', props: true },
+  { name: 'uploader-cpw', path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder', component: Uploader, display: 'Загрузка измерений', props: true },
+  { name: 'uploader-cpwi', path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder/:mrArray', component: Uploader, display: 'Загрузка измерений', props: true },
 
-  { name: 'verificationsettings', path: '/vsettings', component: VerificationSettings, display: 'Редактирование параметров испытаний', nav: true }, 
-  
+  { name: 'verificationsettings', path: '/vsettings', component: VerificationSettings, display: 'Редактирование параметров испытаний', nav: true },
+
   {
     path: 'vertx/MeasurementAttemptsLast',
     name: 'MeasurementAttemptsLastView',
-    component: () => import('../components/Vertx/Views/MeasurementAttemptLast'),
+    component: () => import('../components/Vertx/Views/MeasurementAttemptsLast.vue')
   },
   {
     path: '/measurementAttempt/:measurementAttemptId',
     name: 'measurementAttempt',
-    component: () => import('../components/Vertx/Views/MeasurementAttempt'),
+    component: () => import('../components/Vertx/Views/MeasurementAttempt.vue'),
     children: [{
       name: 'measurement-single',
       path: 'measurement/:measurementId',
-      component: () => import('../components/Vertx/Views/SingleMeasurement'),
-    }],
+      component: () => import('../components/Vertx/Views/SingleMeasurement.vue')
+    }]
   },
 
   {
@@ -141,4 +149,3 @@ export const routes = [
     redirect: '/404'
   }
 ]
-

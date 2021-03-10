@@ -33,31 +33,31 @@
 
 <script>
 
-import CharacteristicTabs from '@/components/MeasurementAttempt/CharacteristicTabs';
-import MeasurementTable from '@/components/MeasurementAttempt/MeasurementTable';
+import CharacteristicTabs from '../MeasurementAttempt/CharacteristicTabs'
+import MeasurementTable from '../MeasurementAttempt/MeasurementTable'
 
 export default {
   components: {
     MeasurementTable,
-    CharacteristicTabs,
+    CharacteristicTabs
   },
-  data() {
+  data () {
     return {
       loaded: false,
       measurementAttemptId: '',
       isSingleMeasurement: false,
       tableData: [],
-      characteristicList: [],
-    };
+      characteristicList: []
+    }
   },
 
-  async mounted() {
-    this.measurementAttemptId = this.$route.params.measurementAttemptId;
-    this.tableData = (await this.$axios.get(`/api/v1/measurement/measurementAttemptId/${this.measurementAttemptId}`)).data;
-    this.characteristicList = (await this.$axios.get(`/api/v1/measurement/id/${this.tableData[0].id}/characteristics`)).data;
-    this.loaded = true;
-  },
-};
+  async mounted () {
+    this.measurementAttemptId = this.$route.params.measurementAttemptId
+    this.tableData = (await this.$http.get(`/api/vertx/measurement/measurementAttemptId/${this.measurementAttemptId}`)).data
+    this.characteristicList = (await this.$http.get(`/api/vertx/measurement/id/${this.tableData[0].id}/characteristics`)).data
+    this.loaded = true
+  }
+}
 </script>
 
 <style scoped>

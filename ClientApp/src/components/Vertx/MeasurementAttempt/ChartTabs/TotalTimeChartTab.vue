@@ -14,15 +14,14 @@
 </template>
 
 <script>
-import TotalTimeAmChart from '@/components/AmCharts/TotalTimeAmChart';
-
+import TotalTimeAmChart from '../../AmCharts/TotalTimeAmChart'
 export default {
   name: 'TotalTimeChartTab',
   components: {
-    TotalTimeAmChart,
+    TotalTimeAmChart
   },
   props: ['characteristic', 'sourceId', 'isSingleMeasurement'],
-  data() {
+  data () {
     return {
       loaded: false,
       withoutBadPoints: true,
@@ -33,32 +32,32 @@ export default {
         serieName: 'name',
         smoothing: {
           require: false,
-          power: 8,
+          power: 8
         },
         axisY:
             {
               strictMinMax: false,
               min: 0,
-              max: 0,
+              max: 0
             },
         colors:
             {
               backgroundColor: '#303030',
               textColor: '#ffffff',
-              gridColor: '#ffcc00',
-            },
-      },
-    };
+              gridColor: '#ffcc00'
+            }
+      }
+    }
   },
-  async created() {
+  async created () {
     const data = this.isSingleMeasurement
-      ? (await this.$axios.get(`/api/v1/point/measurementId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`)).data
-      : (await this.$axios.get(`/api/v1/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}/date`)).data;
-    this.chartData = { ...data };
-    this.chartSettings.characteristic = { ...this.characteristic };
-    this.loaded = true;
-  },
-};
+      ? (await this.$http.get(`/api/vertx/point/measurementId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`)).data
+      : (await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}/date`)).data
+    this.chartData = { ...data }
+    this.chartSettings.characteristic = { ...this.characteristic }
+    this.loaded = true
+  }
+}
 </script>
 
 <style scoped>

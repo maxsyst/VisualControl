@@ -18,7 +18,7 @@ namespace VueExample.Controllers.Vertx
         public async Task<IActionResult> GetLastUpdates()
         {
             var list = await _aggregationService.GetNLastMeasurementAttemptsWithMdv(-1);
-            return list.Count == 0 ? NotFound() : Ok(list);
+            return list.Count == 0 ? (IActionResult)NotFound() : Ok(list);
         }
 
         [HttpGet]
@@ -26,7 +26,7 @@ namespace VueExample.Controllers.Vertx
         public async Task<IActionResult> GetLastNUpdates([FromRoute] int n)
         {
             var list = await _aggregationService.GetNLastMeasurementAttemptsWithMdv(n);
-            return list.Count == 0 ? NotFound() : Ok(list);
+            return list.Count == 0 ? (IActionResult)NotFound() : Ok(list);
         }
     }
 }

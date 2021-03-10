@@ -41,24 +41,24 @@
 
 <script>
 
-import TestTimeChartTab from '@/components/MeasurementAttempt/ChartTabs/TestTimeChartTab';
-import TotalTimeChartTab from '@/components/MeasurementAttempt/ChartTabs/TotalTimeChartTab';
-import StartTimeChartTab from '@/components/MeasurementAttempt/ChartTabs/StartTimeChartTab';
+import TestTimeChartTab from '../MeasurementAttempt/ChartTabs/TestTimeChartTab'
+import TotalTimeChartTab from '../MeasurementAttempt/ChartTabs/TotalTimeChartTab'
+import StartTimeChartTab from '../MeasurementAttempt/ChartTabs/StartTimeChartTab'
 
 export default {
   name: 'ChartTabs',
   components: {
     TestTimeTab: TestTimeChartTab,
     TotalTimeTab: TotalTimeChartTab,
-    StartTimeTab: StartTimeChartTab,
+    StartTimeTab: StartTimeChartTab
   },
   props: ['characteristic', 'sourceId', 'isSingleMeasurement'],
-  data() {
+  data () {
     return {
-      activeTab: 'testTimeTab',
-    };
-  },
-};
+      activeTab: 'testTimeTab'
+    }
+  }
+}
 </script>
 
 <style scoped>

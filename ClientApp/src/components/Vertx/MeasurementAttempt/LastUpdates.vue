@@ -30,34 +30,34 @@
 <script>
 export default {
   props: ['tableData'],
-  data() {
+  data () {
     return {
       headers: [
         {
-          text: 'Номер кристалла', align: 'center', sortable: false, value: 'code', divider: true, width: '20%',
+          text: 'Номер кристалла', align: 'center', sortable: false, value: 'code', divider: true, width: '20%'
         },
         {
-          text: 'Номер пластины', sortable: false, align: 'center', value: 'waferId', divider: true, width: '20%',
+          text: 'Номер пластины', sortable: false, align: 'center', value: 'waferId', divider: true, width: '20%'
         },
         {
-          text: 'Последнее измерение', sortable: false, align: 'center', value: 'measurementName', divider: true, width: '20%',
+          text: 'Последнее измерение', sortable: false, align: 'center', value: 'measurementName', divider: true, width: '20%'
         },
         {
-          text: 'Время последнего измерения', sortable: false, align: 'center', value: 'lastUpdateDate', divider: true, width: '20%',
+          text: 'Время последнего измерения', sortable: false, align: 'center', value: 'lastUpdateDate', divider: true, width: '20%'
         },
         {
-          text: 'measurementAttemptId', sortable: false, align: 'center', value: 'measurementAttemptId', divider: true, width: '10%',
-        },
-      ],
-    };
+          text: 'measurementAttemptId', sortable: false, align: 'center', value: 'measurementAttemptId', divider: true, width: '10%'
+        }
+      ]
+    }
   },
   methods: {
-    async goToMeasurementAttempt(payload) {
+    async goToMeasurementAttempt (payload) {
       console.log(payload)
-      await this.$router.push({ name: 'measurementAttempt', params: { measurementAttemptId: payload.measurementAttemptId } });
-    },
-  },
-};
+      await this.$router.push({ name: 'measurementAttempt', params: { measurementAttemptId: payload.measurementAttemptId } })
+    }
+  }
+}
 </script>
 
 <style scoped>

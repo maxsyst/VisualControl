@@ -9,25 +9,25 @@
 </template>
 
 <script>
-import CharacteristicTabs from '@/components/MeasurementAttempt/CharacteristicTabs';
+import CharacteristicTabs from '../MeasurementAttempt/CharacteristicTabs'
 
 export default {
   name: 'SingleMeasurement',
   components: {
-    CharacteristicTabs,
+    CharacteristicTabs
   },
-  data() {
+  data () {
     return {
       measurementId: '602f98361a39ae85bb647d9a',
       characteristicList: [],
-      isSingleMeasurement: true,
-    };
+      isSingleMeasurement: true
+    }
   },
-  async mounted() {
-    this.measurementId = this.$route.params.measurementId;
-    this.characteristicList = (await this.$axios.get(`/api/v1/measurement/id/${this.measurementId}/characteristics`)).data;
-  },
-};
+  async mounted () {
+    this.measurementId = this.$route.params.measurementId
+    this.characteristicList = (await this.$http.get(`/api/vertx/measurement/id/${this.measurementId}/characteristics`)).data
+  }
+}
 </script>
 
 <style scoped>

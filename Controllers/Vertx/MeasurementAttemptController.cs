@@ -30,7 +30,7 @@ namespace VueExample.Controllers.Vertx
                 measurementAttemptResponseModel =
                     _mapper.Map<MeasurementAttemptResponseModel>(await _measurementAttemptService.CreateMeasurementAttempt(measurementAttempt));
             }
-            catch (DuplicateException e)
+            catch (DuplicateException)
             {
                 return Conflict();
             }
@@ -44,7 +44,7 @@ namespace VueExample.Controllers.Vertx
         {
             var measurementAttempt = await _measurementAttemptService.GetByNameAndMdvId(measurementName, mdvId);
             return measurementAttempt is null
-                ? NotFound()
+                ? (IActionResult)NotFound()
                 : Ok(_mapper.Map<MeasurementAttemptResponseModel>(measurementAttempt));
         }
 
@@ -54,7 +54,7 @@ namespace VueExample.Controllers.Vertx
         {
             var measurementAttemptList = await _measurementAttemptService.GetByMdvId(mdvId);
             return measurementAttemptList.Count == 0
-                ? NotFound()
+                ? (IActionResult)NotFound()
                 : Ok(measurementAttemptList);
         }
 

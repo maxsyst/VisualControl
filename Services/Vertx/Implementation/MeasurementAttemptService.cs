@@ -82,7 +82,7 @@ namespace VueExample.Services.Vertx.Implementation
         public async Task<string> GetPenultMeasurementId(ObjectId measurementAttemptId)
         {
             var measurementAttempt = await GetById(measurementAttemptId);
-            return measurementAttempt.MeasurementsId[^2] ?? string.Empty;
+            return measurementAttempt.MeasurementsId.ElementAt(measurementAttempt.MeasurementsId.Count - 2) ?? string.Empty;
         }
 
         public async Task<string> GetLastMeasurementId(ObjectId measurementAttemptId)

@@ -48,7 +48,7 @@ namespace VueExample.Controllers.Vertx
         {
             var measurement = await _measurementService.GetById(new ObjectId(measurementId));
             return measurement is null
-                ? NotFound()
+                ? (IActionResult)NotFound()
                 : Ok(_mapper.Map<MeasurementResponseModel>(measurement));
         }
 
@@ -64,7 +64,7 @@ namespace VueExample.Controllers.Vertx
                 currentDuration += measurement.DurationSeconds;
             }
             return measurementResponseList.Count == 0
-                ? NotFound()
+                ? (IActionResult)NotFound()
                 : Ok(measurementResponseList);
         }
 
@@ -74,7 +74,7 @@ namespace VueExample.Controllers.Vertx
         {
             var measurementList = await _measurementService.GetAllCharacteristics(new ObjectId(measurementId));
             return measurementList.Count == 0
-                ? NotFound()
+                ? (IActionResult)NotFound()
                 : Ok(measurementList);
         }
 
@@ -84,7 +84,7 @@ namespace VueExample.Controllers.Vertx
         {
             var measurement = await _measurementService.GetByName(measurementName);
             return measurement is null
-                ? NotFound()
+                ? (IActionResult)NotFound()
                 : Ok(_mapper.Map<MeasurementResponseModel>(measurement));
         }
 
