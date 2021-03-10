@@ -53,7 +53,6 @@ export default {
   },
   methods: {
     async goToMeasurementAttempt (payload) {
-      console.log(payload)
       await this.$router.push({ name: 'measurementAttempt', params: { measurementAttemptId: payload.measurementAttemptId } })
     }
   }

@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import axios from 'axios'
+import moment from 'moment'
 import App from './components/app-root.vue'
 import './registerServiceWorker'
 import router from './router/index'
 import store from './store'
 import { sync } from 'vuex-router-sync'
-import lodash from 'lodash';  
+import lodash from 'lodash'
 import Vuetify from 'vuetify'
 import Lightbox from 'vue-my-photos'
 import Vuelidate from 'vuelidate'
@@ -16,6 +17,10 @@ import qs from 'qs'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
+import 'moment-duration-format'
+import 'vue-swatches/dist/vue-swatches.min.css'
+
+
 
 Vue.config.productionTip = false
 Vue.component('lightbox', Lightbox)
@@ -27,14 +32,15 @@ Vue.use(Vuelidate)
 Vue.use(UUID)
 Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
-Vue.prototype.$http = axios;
+Vue.prototype.$http = axios
 Vue.prototype._ = lodash
 Vue.prototype.$qs = qs
-sync(store, router);
+Vue.prototype.moment = moment
+sync(store, router)
 
-const opts =  {
+const opts = {
   icons: {
-    iconfont: 'md',
+    iconfont: 'md'
   },
   theme:
   {

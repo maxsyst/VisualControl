@@ -10,6 +10,8 @@ import * as am4core from '@amcharts/amcharts4/core'
 import * as am4charts from '@amcharts/amcharts4/charts'
 import am4lang from '@amcharts/amcharts4/lang/ru_RU'
 import Gradient from 'javascript-color-gradient'
+import moment from 'moment'
+import 'moment-duration-format'
 
 export default {
   props: ['data', 'settings'],
@@ -85,7 +87,7 @@ export default {
       series.name = this.settings.serieName === 'name' ? pointsData.name : new Date(pointsData.creationDate)
         .toLocaleString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' })
       series.data = pointsData.points
-        .map((p) => ({ duration: p.fromStartDate.totalMilliseconds, value: p.value }))
+        .map((p) => ({ duration: moment.duration(p.fromStartDate), value: p.value }))
     })
 
     am4core.useTheme(am4themes_myTheme)
