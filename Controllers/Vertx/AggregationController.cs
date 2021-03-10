@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Vertx.Mongo.Abstract;
+using VueExample.Services.Vertx.Abstract;
 
-namespace Vertx.Controllers
+namespace VueExample.Controllers.Vertx
 {
     [Route("api/vertx/[controller]")]
     public class AggregationController : Controller
@@ -18,7 +18,7 @@ namespace Vertx.Controllers
         public async Task<IActionResult> GetLastUpdates()
         {
             var list = await _aggregationService.GetNLastMeasurementAttemptsWithMdv(-1);
-            return list.Count == 0 ? (IActionResult)NotFound() : Ok(list);
+            return list.Count == 0 ? NotFound() : Ok(list);
         }
 
         [HttpGet]
@@ -26,7 +26,7 @@ namespace Vertx.Controllers
         public async Task<IActionResult> GetLastNUpdates([FromRoute] int n)
         {
             var list = await _aggregationService.GetNLastMeasurementAttemptsWithMdv(n);
-            return list.Count == 0 ? (IActionResult)NotFound() : Ok(list);
+            return list.Count == 0 ? NotFound() : Ok(list);
         }
     }
 }

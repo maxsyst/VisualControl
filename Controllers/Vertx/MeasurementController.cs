@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using Vertx.InputModels;
-using Vertx.Models;
-using Vertx.Mongo.Abstract;
-using Vertx.ResponseModels;
 using VueExample.Exceptions;
+using VueExample.Models.Vertx;
+using VueExample.Services.Vertx.Abstract;
+using VueExample.ViewModels.Vertx.InputModels;
+using VueExample.ViewModels.Vertx.ResponseModels;
 
-namespace Vertx.Controllers
+namespace VueExample.Controllers.Vertx
 {
     [Route("api/vertx/[controller]")]
     public class MeasurementController : Controller
@@ -23,7 +23,7 @@ namespace Vertx.Controllers
             _mapper = mapper;
             _measurementService = measurementService;
         }
-        
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateMeasurement([FromBody] MeasurementInputModel measurementInputModel)
         {
@@ -48,10 +48,10 @@ namespace Vertx.Controllers
         {
             var measurement = await _measurementService.GetById(new ObjectId(measurementId));
             return measurement is null
-                ? (IActionResult) NotFound()
+                ? NotFound()
                 : Ok(_mapper.Map<MeasurementResponseModel>(measurement));
         }
-        
+
         [HttpGet]
         [Route("measurementAttemptId/{measurementAttemptId}")]
         public async Task<IActionResult> GetByMeasurementAttemptId([FromRoute] string measurementAttemptId)
@@ -64,17 +64,17 @@ namespace Vertx.Controllers
                 currentDuration += measurement.DurationSeconds;
             }
             return measurementResponseList.Count == 0
-                ? (IActionResult) NotFound()
+                ? NotFound()
                 : Ok(measurementResponseList);
         }
-        
+
         [HttpGet]
         [Route("id/{measurementId}/characteristics")]
         public async Task<IActionResult> GetAllCharacteristics([FromRoute] string measurementId)
         {
             var measurementList = await _measurementService.GetAllCharacteristics(new ObjectId(measurementId));
             return measurementList.Count == 0
-                ? (IActionResult) NotFound()
+                ? NotFound()
                 : Ok(measurementList);
         }
 
@@ -84,7 +84,7 @@ namespace Vertx.Controllers
         {
             var measurement = await _measurementService.GetByName(measurementName);
             return measurement is null
-                ? (IActionResult) NotFound()
+                ? NotFound()
                 : Ok(_mapper.Map<MeasurementResponseModel>(measurement));
         }
 

@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.IO.Compression;
-using System.Reflection;
 using System.Text;
 using AutoMapper;
 using GlobalExceptionHandler.WebApi;
@@ -17,10 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
 using VueCliMiddleware;
 using VueExample.Color;
 using VueExample.Contexts;
@@ -34,6 +29,8 @@ using VueExample.Providers.ChipVerification.Abstract;
 using VueExample.Providers.Srv6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services;
+using VueExample.Services.Vertx.Abstract;
+using VueExample.Services.Vertx.Implementation;
 using VueExample.StatisticsCore.Abstract;
 using VueExample.StatisticsCore.Services;
 

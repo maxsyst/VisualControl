@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using Vertx.InputModels;
-using Vertx.Models;
-using Vertx.Mongo.Abstract;
-using Vertx.ResponseModels;
+using VueExample.Models.Vertx;
+using VueExample.Services.Vertx.Abstract;
+using VueExample.ViewModels.Vertx.InputModels;
+using VueExample.ViewModels.Vertx.ResponseModels;
 
 namespace Vertx.Controllers
 {

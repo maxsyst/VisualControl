@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Vertx.InputModels;
-using Vertx.Models;
-using Vertx.Mongo.Abstract;
-using Vertx.ResponseModels;
 using VueExample.Exceptions;
+using VueExample.Models.Vertx;
+using VueExample.Services.Vertx.Abstract;
+using VueExample.ViewModels.Vertx.InputModels;
+using VueExample.ViewModels.Vertx.ResponseModels;
 
-namespace Vertx.Controllers
+namespace VueExample.Controllers.Vertx
 {
     [Route("api/vertx/[controller]")]
     public class MeasurementAttemptController : Controller
@@ -19,7 +19,7 @@ namespace Vertx.Controllers
             _mapper = mapper;
             _measurementAttemptService = measurementAttemptService;
         }
-        
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] MeasurementAttemptInputModel measurementAttemptInputModel)
         {
@@ -37,26 +37,26 @@ namespace Vertx.Controllers
 
             return CreatedAtAction("Create", measurementAttemptResponseModel);
         }
-        
+
         [HttpGet]
         [Route("name/{measurementName}/mdvId/{mdvId}")]
         public async Task<IActionResult> GetByNameAndMdvId([FromRoute] string measurementName, [FromRoute] string mdvId)
         {
             var measurementAttempt = await _measurementAttemptService.GetByNameAndMdvId(measurementName, mdvId);
             return measurementAttempt is null
-                ? (IActionResult) NotFound()
+                ? NotFound()
                 : Ok(_mapper.Map<MeasurementAttemptResponseModel>(measurementAttempt));
         }
-        
+
         [HttpGet]
         [Route("mdvId/{mdvId}")]
         public async Task<IActionResult> GetByMdvId([FromRoute] string mdvId)
         {
             var measurementAttemptList = await _measurementAttemptService.GetByMdvId(mdvId);
             return measurementAttemptList.Count == 0
-                ? (IActionResult) NotFound()
+                ? NotFound()
                 : Ok(measurementAttemptList);
         }
-        
+
     }
 }
