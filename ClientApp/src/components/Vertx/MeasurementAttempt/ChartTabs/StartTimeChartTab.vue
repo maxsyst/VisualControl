@@ -38,7 +38,7 @@ export default {
     StartTimeAmChart,
     ColorTable
   },
-  props: ['characteristic', 'sourceId', 'isSingleMeasurement'],
+  props: ['characteristic', 'sourceId'],
   data () {
     return {
       loaded: false,
@@ -76,9 +76,7 @@ export default {
     }
   },
   async created () {
-    const data = this.isSingleMeasurement
-      ? (await this.$http.get(`/api/vertx/point/measurementId/${this.sourceId}/characteristicName/${this.characteristic.name}/seconds/${this.seconds}`)).data
-      : (await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/seconds/${this.seconds}`)).data
+    const data = (await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/seconds/${this.seconds}`)).data
     this.chartData = { ...data }
     this.chartSettings.characteristic = { ...this.characteristic }
     this.loaded = true

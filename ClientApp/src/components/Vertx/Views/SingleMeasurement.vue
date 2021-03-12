@@ -1,31 +1,28 @@
 <template>
-  <v-row>
-    <CharacteristicTabs
-      :characteristic-data="characteristicList"
-      :source-id="measurementId"
-      :is-single-measurement="isSingleMeasurement"
-    />
-  </v-row>
+  <v-container>
+    <v-row v-for="(characteristic, index) in characteristicList" :key="index">
+      <h3>{{characteristic.name}}</h3>
+      <SingleMeasurementRow class="mt-8" :characteristic="characteristic" :measurementId="measurementId"></SingleMeasurementRow>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import CharacteristicTabs from '../MeasurementAttempt/CharacteristicTabs'
-
+import SingleMeasurementRow from '../SingleMeasurement/SingleCharacteristicRow'
 export default {
-  name: 'SingleMeasurement',
   components: {
-    CharacteristicTabs
+    SingleMeasurementRow
   },
   data () {
     return {
-      measurementId: '602f98361a39ae85bb647d9a',
-      characteristicList: [],
-      isSingleMeasurement: true
+      measurementId: '',
+      characteristicList: []
     }
   },
   async mounted () {
     this.measurementId = this.$route.params.measurementId
-    this.characteristicList = (await this.$http.get(`/api/vertx/measurement/id/${this.measurementId}/characteristics`)).data
+    const characteristicList = (await this.$http.get(`/api/vertx/measurement/id/${this.measurementId}/characteristics`)).data
+    this.characteristicList = [...characteristicList]
   }
 }
 </script>

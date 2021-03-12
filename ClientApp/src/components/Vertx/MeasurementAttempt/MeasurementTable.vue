@@ -7,6 +7,7 @@
       disableItemsPerPage: true
     }"
     :items="tableData"
+    @click:row="goToSingleMeasurement"
   >
     <template #item.creationDate="{ item }">
       <span>{{ new Date(item.creationDate).toLocaleString("ru-RU", { year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
@@ -31,52 +32,61 @@
 export default {
   name: 'MeasurementTable',
   props: ['tableData'],
-  data() {
+  data () {
     return {
       headers: [
         {
-          text: 'Название', align: 'center', sortable: false, value: 'name', divider: true, width: '10%',
+          text: 'Название', align: 'center', sortable: false, value: 'name', divider: true, width: '10%'
         },
         {
-          text: 'Дата включения', sortable: false, align: 'center', value: 'creationDate', divider: true, width: '13.5%',
+          text: 'Дата включения', sortable: false, align: 'center', value: 'creationDate', divider: true, width: '13.5%'
         },
         {
-          text: 'Время включения', sortable: false, align: 'center', value: 'durationPreSeconds', divider: true, width: '7.5%',
+          text: 'Время включения', sortable: false, align: 'center', value: 'durationPreSeconds', divider: true, width: '7.5%'
         },
         {
-          text: 'Продолжительность теста', sortable: false, align: 'center', value: 'durationSeconds', divider: true, width: '7.5%',
+          text: 'Продолжительность теста', sortable: false, align: 'center', value: 'durationSeconds', divider: true, width: '7.5%'
         },
         {
-          text: 'Плата согласования', sortable: false, align: 'center', value: 'matchingBoard', divider: true, width: '5%',
+          text: 'Плата согласования', sortable: false, align: 'center', value: 'matchingBoard', divider: true, width: '5%'
         },
         {
-          text: 'Согласование', sortable: false, align: 'center', value: 'matching', divider: true, width: '5%',
+          text: 'Согласование', sortable: false, align: 'center', value: 'matching', divider: true, width: '5%'
         },
         {
-          text: 'Vgate, В', sortable: false, align: 'center', value: 'vgate', divider: true, width: '4%',
+          text: 'Vgate, В', sortable: false, align: 'center', value: 'vgate', divider: true, width: '4%'
         },
         {
-          text: 'Vpower, В', sortable: false, align: 'center', value: 'vpower', divider: true, width: '4%',
+          text: 'Vpower, В', sortable: false, align: 'center', value: 'vpower', divider: true, width: '4%'
         },
         {
-          text: 'Датчик температуры', sortable: false, align: 'center', value: 'temperatureSensor', divider: true, width: '5%',
+          text: 'Датчик температуры', sortable: false, align: 'center', value: 'temperatureSensor', divider: true, width: '5%'
         },
         {
-          text: 'Измерительный канал', sortable: false, align: 'center', value: 'measurementChannel', divider: true, width: '5%',
+          text: 'Измерительный канал', sortable: false, align: 'center', value: 'measurementChannel', divider: true, width: '5%'
         },
         {
-          text: 'Цели', sortable: false, align: 'center', value: 'goal', divider: true, width: '10%',
+          text: 'Цели', sortable: false, align: 'center', value: 'goal', divider: true, width: '10%'
         },
         {
-          text: 'Примечания', sortable: false, align: 'center', value: 'notes', divider: true, width: '10%',
+          text: 'Примечания', sortable: false, align: 'center', value: 'notes', divider: true, width: '10%'
         },
         {
-          text: 'Комментарии', sortable: false, align: 'center', value: 'comments', divider: true, width: '10%',
+          text: 'Комментарии', sortable: false, align: 'center', value: 'comments', divider: true, width: '10%'
         },
-      ],
-    };
+        {
+          text: 'MeasurementId', sortable: false, align: 'center', value: 'id', divider: true, width: '10%'
+        }
+      ]
+    }
   },
-};
+  methods: {
+    goToSingleMeasurement: async function (payload) {
+      await this.$router.push({ name: 'measurement-single', params: { measurementId: payload.id } })
+    }
+  }
+}
+
 </script>
 
 <style scoped>

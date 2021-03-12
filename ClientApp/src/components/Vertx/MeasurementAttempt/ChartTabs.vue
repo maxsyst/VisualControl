@@ -19,21 +19,18 @@
       <TestTimeTab
         :characteristic="characteristic"
         :source-id="sourceId"
-        :is-single-measurement="isSingleMeasurement"
       />
     </v-tab-item>
     <v-tab-item value="totalTimeTab">
       <TotalTimeTab
         :characteristic="characteristic"
         :source-id="sourceId"
-        :is-single-measurement="isSingleMeasurement"
       />
     </v-tab-item>
     <v-tab-item value="startTimeTab">
       <StartTimeTab
         :characteristic="characteristic"
         :source-id="sourceId"
-        :is-single-measurement="isSingleMeasurement"
       />
     </v-tab-item>
   </v-tabs>
@@ -52,7 +49,7 @@ export default {
     TotalTimeTab: TotalTimeChartTab,
     StartTimeTab: StartTimeChartTab
   },
-  props: ['characteristic', 'sourceId', 'isSingleMeasurement'],
+  props: ['characteristic', 'sourceId'],
   data () {
     return {
       activeTab: 'testTimeTab'

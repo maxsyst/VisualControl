@@ -24,7 +24,6 @@
           v-if="characteristicList.length > 0"
           :characteristic-data="characteristicList"
           :source-id="measurementAttemptId"
-          :is-single-measurement="isSingleMeasurement"
         />
       </v-card-text>
     </v-card>
@@ -45,7 +44,6 @@ export default {
     return {
       loaded: false,
       measurementAttemptId: '',
-      isSingleMeasurement: false,
       tableData: [],
       characteristicList: []
     }

@@ -108,19 +108,20 @@ export const routes = [
   { name: 'verificationsettings', path: '/vsettings', component: VerificationSettings, display: 'Редактирование параметров испытаний', nav: true },
 
   {
-    path: 'vertx/MeasurementAttemptsLast',
+    path: '/vertx/MeasurementAttemptsLast',
     name: 'MeasurementAttemptsLastView',
     component: () => import('../components/Vertx/Views/MeasurementAttemptsLast.vue')
   },
   {
-    path: 'vertx/measurementAttempt/:measurementAttemptId',
+    path: '/vertx/measurementAttempt/:measurementAttemptId',
     name: 'measurementAttempt',
-    component: () => import('../components/Vertx/Views/MeasurementAttempt.vue'),
-    children: [{
-      name: 'measurement-single',
-      path: 'vertx/measurement/:measurementId',
-      component: () => import('../components/Vertx/Views/SingleMeasurement.vue')
-    }]
+    component: () => import('../components/Vertx/Views/MeasurementAttempt.vue')
+  },
+
+  {
+    name: 'measurement-single',
+    path: '/vertx/measurement/:measurementId',
+    component: () => import('../components/Vertx/Views/SingleMeasurement.vue')
   },
 
   {

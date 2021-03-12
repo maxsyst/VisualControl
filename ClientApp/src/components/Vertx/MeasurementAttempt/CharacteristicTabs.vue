@@ -21,7 +21,6 @@
       <ChartTabs
         :characteristic="characteristic"
         :source-id="sourceId"
-        :is-single-measurement="isSingleMeasurement"
       />
     </v-tab-item>
   </v-tabs>
@@ -35,7 +34,7 @@ export default {
   components: {
     ChartTabs
   },
-  props: ['characteristicData', 'sourceId', 'isSingleMeasurement'],
+  props: ['characteristicData', 'sourceId'],
   data () {
     return {
 
