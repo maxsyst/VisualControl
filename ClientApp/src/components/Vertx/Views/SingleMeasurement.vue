@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <v-row v-for="(characteristic, index) in characteristicList" :key="index">
-      <h3>{{characteristic.name}}</h3>
       <SingleMeasurementRow class="mt-8" :characteristic="characteristic" :measurementId="measurementId"></SingleMeasurementRow>
     </v-row>
   </v-container>

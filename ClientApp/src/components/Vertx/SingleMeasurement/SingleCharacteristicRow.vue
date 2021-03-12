@@ -1,8 +1,19 @@
 <template>
-   <div class="d-flex flex-row">
-        <SingleCharacteristicChart :characteristic="characteristic" :chartData="chartData" :loaded="loaded"></SingleCharacteristicChart>
-        <SingleCharacteristicStatistic></SingleCharacteristicStatistic>
+  <div class="d-flex">
+    <div class="flex-column">
+      <v-chip class="chip" label x-large>
+        <span>{{ characteristic.name }}</span>
+      </v-chip>
+      <div class="flex-row mt-2">
+        <SingleCharacteristicChart
+          :characteristic="characteristic"
+          :chartData="chartData"
+          :loaded="loaded"
+        ></SingleCharacteristicChart>
+        <SingleCharacteristicStatistic v-if="loaded" :chartData="chartData" :measurementId="measurementId"></SingleCharacteristicStatistic>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -24,7 +35,11 @@ export default {
   },
 
   async created () {
-    const data = (await this.$http.get(`/api/vertx/point/measurementId/${this.measurementId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`)).data
+    const data = (
+      await this.$http.get(
+        `/api/vertx/point/measurementId/${this.measurementId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`
+      )
+    ).data
     this.chartData = { ...data }
     this.loaded = true
   }

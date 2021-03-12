@@ -1,6 +1,5 @@
 import { userService } from '../../services'
 import router from '../../router/index'
-// eslint-disable-next-line no-undef
 const user = JSON.parse(localStorage.getItem('user'))
 const initialState = user
   ? { status: { loggedIn: true }, user }

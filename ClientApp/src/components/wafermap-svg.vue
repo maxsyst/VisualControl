@@ -1,5 +1,5 @@
 <template>
-<v-container>  
+<v-container>
     <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
       <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
@@ -13,14 +13,14 @@
             absolute
             offset-y>
       <v-list>
-        <v-list-item v-for="(item, index) in menuItems" :key="index">                    
+        <v-list-item v-for="(item, index) in menuItems" :key="index">
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
 
-    <v-bottom-navigation 
-      v-if="dies.length>0" 
+    <v-bottom-navigation
+      v-if="dies.length>0"
       :value="showNav"
       v-model="currentOrientation"
       color="transparent">
@@ -40,7 +40,7 @@
     <v-btn :value="270" text color="#fc0">
       270°
     </v-btn>
-    
+
   </v-bottom-navigation>
   <div class="d-flex flex-column">
                   <v-btn :color="mapMode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='selected'">
@@ -54,192 +54,190 @@
 </template>
 
 <script>
-  import Loading from 'vue-loading-overlay';
-  import { mapGetters } from 'vuex';
-  export default {
-    props: ['viewMode'],
-    components: { Loading },
-    data() {
-      return {
-        dies: [],
-        mapMode: 'selected',
-        activeBtn: 1,
-        showNav: false,
-        x: 0,
-        y: 0,
-        initialOrientation: -1,
-        currentOrientation: -1,
-        fieldViewBox: "",
-        menuItems: [
-         { title: "Mocking" }
-        ],
-        menu: false
-      }
-    },
+import Loading from 'vue-loading-overlay'
+import { mapGetters } from 'vuex'
+export default {
+  props: ['viewMode'],
+  components: { Loading },
+  data () {
+    return {
+      dies: [],
+      mapMode: 'selected',
+      activeBtn: 1,
+      showNav: false,
+      x: 0,
+      y: 0,
+      initialOrientation: -1,
+      currentOrientation: -1,
+      fieldViewBox: '',
+      menuItems: [
+        { title: 'Mocking' }
+      ],
+      menu: false
+    }
+  },
 
-    methods:
+  methods:
     {
-      selectDie(e) {
+      selectDie (e) {
         e.preventDefault()
-        let dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id      
+        const dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id
         if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
-          let position =  this.selectedDies.indexOf(dieId);
-          if ( ~position ) {
-            this.selectedDies.splice(position, 1);
-            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+          const position = this.selectedDies.indexOf(dieId)
+          if (~position) {
+            this.selectedDies.splice(position, 1)
+            this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies)
           } else {
-            this.selectedDies.push(dieId);
-            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies);
+            this.selectedDies.push(dieId)
+            this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies)
           }
         }
-      
       },
 
-      showmenu(e) {
+      showmenu (e) {
         e.preventDefault()
         if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
           this.showMenu = false
-          this.x = e.clientX;
-          this.y = e.clientY;
-          let selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value]
+          this.x = e.clientX
+          this.y = e.clientY
+          const selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value]
           this.$nextTick(() => {
             this.menu = true
-            this.menuItems[0].title = "Код кристалла: " + selectedDie.code
+            this.menuItems[0].title = 'Код кристалла: ' + selectedDie.code
           })
         }
       }
     },
-    
-    watch: {
-      'wafer.id': function(newVal) {
-          this.dies = this.wafer.formedMapBig.dies              
-          this.initialOrientation = +this.wafer.formedMapBig.orientation;
-          this.currentOrientation = this.initialOrientation;
-          this.showNav = false;
-          this.dies.forEach(die => {
-            die.fill = "#A1887F";
-            die.text = "#303030"
+
+  watch: {
+    'wafer.id': function (newVal) {
+      this.dies = this.wafer.formedMapBig.dies
+      this.initialOrientation = +this.wafer.formedMapBig.orientation
+      this.currentOrientation = this.initialOrientation
+      this.showNav = false
+      this.dies.forEach(die => {
+        die.fill = '#A1887F'
+        die.text = '#303030'
+        die.fillOpacity = 1.0
+        die.isActive = false
+      })
+    },
+
+    fieldWidth: {
+      immediate: true,
+      handler (newVal, oldVal) {
+        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`
+      }
+    },
+
+    viewMode: function (viewMode) {
+      if (this.dies.length > 0) {
+        if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
+          this.dies.forEach(function (die) {
+            die.fill = '#A1887F'
+            die.text = '#303030'
             die.fillOpacity = 1.0
-            die.isActive = false;
-          });
-      },    
-
-      fieldWidth: {
-        immediate: true,
-        handler(newVal, oldVal) {
-          this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
-        }
-      },
-
-      viewMode: function(viewMode){
-        if(this.dies.length > 0) {
-          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
-            this.dies.forEach(function(die) {
-              die.fill = "#A1887F"
-              die.text = "#303030"
-              die.fillOpacity = 1.0
-              die.isActive = false;
-            });
-            if(this.mapMode === "selected") {
-              for (let i = 0; i < this.avbSelectedDies.length; i++) {
-                let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-                die.fill = "#8C9EFF";
-                die.text = "#303030"
-                die.isActive = true;
-              }  
-        
-              for (let i = 0; i < this.selectedDies.length; i++) {            
-                let die = this.dies.find(d => d.id === this.selectedDies[i])         
-                die.fill = "#3D5AFE"
-                die.text = "#FFF9C4"           
-              }          
-            }
-            if(this.mapMode === "dirty") {
-              this.avbSelectedDies.forEach(avb => {
-                let die = this.dies.find(d => d.id === avb)
-                die.fill = viewMode === 'Мониторинг' 
-                       ? this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
-                       : this.dirtyCells.fixedList.includes(die.id) ? "#E91E63" : "#4CAF50"
-                die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
-                die.text = this.selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
-                die.isActive = true;
-              })
-            }
-          }
-        }
-      },
-
-      mapMode: function(newVal) {
-        if(newVal === "selected") {
-            for (let i = 0; i < this.avbSelectedDies.length; i++) {
-              let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-              die.fill = "#8C9EFF";
-              die.text = "#303030"
-              die.fillOpacity = 1.0
-              die.isActive = true;
-            }  
-        
-            for (let i = 0; i < this.selectedDies.length; i++) {   
-              let die = this.dies.find(d => d.id === this.selectedDies[i])         
-              die.fill = "#3D5AFE"
-              die.text = "#FFF9C4"      
-            }        
-        }
-
-        if(newVal === "dirty") {
-          this.avbSelectedDies.forEach(avb => {
-            let die = this.dies.find(d => d.id === avb)
-            die.fill = this.viewMode === 'Мониторинг' 
-                       ? this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
-                       : this.dirtyCells.fixedList.includes(die.id) ? "#E91E63" : "#4CAF50"
-            die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
-            die.text = this.selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
-            die.isActive = true
+            die.isActive = false
           })
-        }
-      },
-
-      selectedDies: function(selectedDies) {
-        if(this.dies.length > 0) {
-          if (this.avbSelectedDies.length > 0 && selectedDies.length > 0) {
-            this.dies.forEach(function(die) {
-              die.fill = "#A1887F"
-              die.text = "#303030"
-              die.fillOpacity = 1.0
-              die.isActive = false;
-            });
-            if(this.mapMode === "selected") {
-              for (let i = 0; i < this.avbSelectedDies.length; i++) {
-                let die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-                die.fill = "#8C9EFF";
-                die.text = "#303030"
-                die.isActive = true;
-              }  
-        
-              for (let i = 0; i < selectedDies.length; i++) {            
-                let die = this.dies.find(d => d.id === selectedDies[i])         
-                die.fill = "#3D5AFE"
-                die.text = "#FFF9C4"           
-              }          
+          if (this.mapMode === 'selected') {
+            for (let i = 0; i < this.avbSelectedDies.length; i++) {
+              const die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+              die.fill = '#8C9EFF'
+              die.text = '#303030'
+              die.isActive = true
             }
-            if(this.mapMode === "dirty") {
-              this.avbSelectedDies.forEach(avb => {
-                let die = this.dies.find(d => d.id === avb)
-                die.fill = this.viewMode === 'Мониторинг' 
-                       ? this.dirtyCells.statList.includes(die.id) ? "#E91E63" : "#4CAF50"
-                       : this.dirtyCells.fixedList.includes(die.id) ? "#E91E63" : "#4CAF50"
-                die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5
-                die.text = selectedDies.includes(die.id) ? "#303030" : "#FFF9C4" 
-                die.isActive = true;
-              })
+
+            for (let i = 0; i < this.selectedDies.length; i++) {
+              const die = this.dies.find(d => d.id === this.selectedDies[i])
+              die.fill = '#3D5AFE'
+              die.text = '#FFF9C4'
             }
           }
+          if (this.mapMode === 'dirty') {
+            this.avbSelectedDies.forEach(avb => {
+              const die = this.dies.find(d => d.id === avb)
+              die.fill = viewMode === 'Мониторинг'
+                ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
+                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50'
+              die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+              die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4'
+              die.isActive = true
+            })
+          }
         }
-        
       }
     },
 
-    computed:
+    mapMode: function (newVal) {
+      if (newVal === 'selected') {
+        for (let i = 0; i < this.avbSelectedDies.length; i++) {
+          const die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+          die.fill = '#8C9EFF'
+          die.text = '#303030'
+          die.fillOpacity = 1.0
+          die.isActive = true
+        }
+
+        for (let i = 0; i < this.selectedDies.length; i++) {
+          const die = this.dies.find(d => d.id === this.selectedDies[i])
+          die.fill = '#3D5AFE'
+          die.text = '#FFF9C4'
+        }
+      }
+
+      if (newVal === 'dirty') {
+        this.avbSelectedDies.forEach(avb => {
+          const die = this.dies.find(d => d.id === avb)
+          die.fill = this.viewMode === 'Мониторинг'
+            ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
+            : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50'
+          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
+          die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4'
+          die.isActive = true
+        })
+      }
+    },
+
+    selectedDies: function (selectedDies) {
+      if (this.dies.length > 0) {
+        if (this.avbSelectedDies.length > 0 && selectedDies.length > 0) {
+          this.dies.forEach(function (die) {
+            die.fill = '#A1887F'
+            die.text = '#303030'
+            die.fillOpacity = 1.0
+            die.isActive = false
+          })
+          if (this.mapMode === 'selected') {
+            for (let i = 0; i < this.avbSelectedDies.length; i++) {
+              const die = this.dies.find(d => d.id === this.avbSelectedDies[i])
+              die.fill = '#8C9EFF'
+              die.text = '#303030'
+              die.isActive = true
+            }
+
+            for (let i = 0; i < selectedDies.length; i++) {
+              const die = this.dies.find(d => d.id === selectedDies[i])
+              die.fill = '#3D5AFE'
+              die.text = '#FFF9C4'
+            }
+          }
+          if (this.mapMode === 'dirty') {
+            this.avbSelectedDies.forEach(avb => {
+              const die = this.dies.find(d => d.id === avb)
+              die.fill = this.viewMode === 'Мониторинг'
+                ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
+                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50'
+              die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5
+              die.text = selectedDies.includes(die.id) ? '#303030' : '#FFF9C4'
+              die.isActive = true
+            })
+          }
+        }
+      }
+    }
+  },
+
+  computed:
     {
       ...mapGetters({
         dirtyCells: 'wafermeas/dirtyCells',
@@ -248,48 +246,47 @@
         wafer: 'wafermeas/wafer',
         sizes: 'wafermeas/size'
       }),
-      
-      size() {
-        return this.sizes("big")
+
+      size () {
+        return this.sizes('big')
       },
 
-      cutting() {
-        //ONLY IF HEIGHT === WIDTH
-        let bBorder = this.size.fieldHeight / 6;
-        let tBorder = this.size.fieldHeight / 6 * 5;
+      cutting () {
+        // ONLY IF HEIGHT === WIDTH
+        const bBorder = this.size.fieldHeight / 6
+        const tBorder = this.size.fieldHeight / 6 * 5
         if (this.initialOrientation === -1) {
-          return `0,0 0,0`
+          return '0,0 0,0'
         }
         switch (this.initialOrientation) {
           case 0:
             return `${bBorder},${this.size.fieldHeight} ${tBorder},${this.size.fieldHeight}`
-            break;
+            break
           case 90:
-            return `0,${bBorder} 0,${tBorder}`;
+            return `0,${bBorder} 0,${tBorder}`
             break
           case 180:
-            return `${bBorder},0 ${tBorder},0`;
-            break;
+            return `${bBorder},0 ${tBorder},0`
+            break
           case 270:
-            return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`;
-            break;
+            return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`
+            break
           default:
-            return `0,0 0,0`;
+            return '0,0 0,0'
         }
-
       },
 
-      fontSize() {
+      fontSize () {
         return this.dies[0].height > 15 ? 12 : 6
       },
 
-      svgRotation() {
+      svgRotation () {
         return {
           transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`
         }
       }
     }
-  }
+}
 </script>
 
 <style scoped>
@@ -306,5 +303,4 @@
    user-select: none;
   }
 
- 
 </style>
