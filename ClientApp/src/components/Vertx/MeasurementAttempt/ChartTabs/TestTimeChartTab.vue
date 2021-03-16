@@ -36,6 +36,10 @@ export default {
           require: false,
           power: 8
         },
+        axisX: {
+          strictMinMax: true,
+          min: 0
+        },
         axisY:
             {
               strictMinMax: false,
@@ -47,7 +51,10 @@ export default {
             {
               backgroundColor: '#303030',
               textColor: '#ffffff',
-              gridColor: '#ffcc00'
+              gridColor: '#ffcc00',
+              chartColors: {
+                first: '#40e0d0', middle: '#ff8c00', last: '#ff0080'
+              }
             }
       }
     }

@@ -25,13 +25,14 @@ export default {
       }
     }
 
-    const colorGradient = new Gradient()
-    const color1 = '#40e0d0'
-    const color2 = '#ff8c00'
-    const color3 = '#ff0080'
-    colorGradient.setMidpoint(Object.entries(this.data).length)
-    colorGradient.setGradient(color1, color2, color3)
-    chart.colors.list = [...colorGradient.getArray().map((x) => am4core.color(x))]
+    if (this.settings.colors.chartColor === undefined) {
+      const colorGradient = new Gradient()
+      colorGradient.setMidpoint(Object.entries(this.data).length)
+      colorGradient.setGradient(this.settings.colors.chartColors.first, this.settings.colors.chartColors.middle, this.settings.colors.chartColors.last)
+      chart.colors.list = [...colorGradient.getArray().map((x) => am4core.color(x))]
+    } else {
+      chart.colors.list = [am4core.color(this.settings.colors.chartColor)]
+    }
 
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis())
     dateAxis.title.text = 'Дата испытаний'

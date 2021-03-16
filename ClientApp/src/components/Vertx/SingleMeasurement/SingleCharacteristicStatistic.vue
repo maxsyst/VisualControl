@@ -5,19 +5,25 @@
         <template v-slot:default>
           <thead>
             <tr>
+              <th class="text-center">Характеристика</th>
+              <th class="text-center">Единица измерения</th>
               <th class="text-center">Начальное значение</th>
               <th class="text-center">Среднее значение</th>
               <th class="text-center">Последнее значение</th>
               <th class="text-center">Изменение за период(абсолютное)</th>
               <th class="text-center">Изменение за период(в процентах)</th>
+              <th class="text-center">Период стабилизации(минут)</th>
             </tr>
           </thead>
           <tbody>
+            <td class="text-center font-weight-black border">{{characteristic.name}}</td>
+            <td class="text-center border">{{characteristic.unit}}</td>
             <td class="text-center border">{{statistic.firstValue.toFixed(3)}}</td>
             <td class="text-center border">{{statistic.averageValue.toFixed(3)}}</td>
             <td class="text-center border">{{statistic.lastValue.toFixed(3)}}</td>
             <td class="text-center border">{{statistic.periodOscillation.absolute.toFixed(3)}}</td>
             <td class="text-center border">{{statistic.periodOscillation.percent.toFixed(3)}}%</td>
+            <td class="text-center border">{{Math.floor(startPeriod)}}</td>
           </tbody>
         </template>
       </v-simple-table>
@@ -27,7 +33,7 @@
 
 <script>
 export default {
-  props: ['chartData', 'measurementId'],
+  props: ['chartData', 'measurementId', 'startPeriod', 'characteristic'],
   data () {
     return {
       pointsData: [],

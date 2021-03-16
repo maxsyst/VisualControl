@@ -3,12 +3,12 @@
         <v-card-subtitle>
           <div class="d-flex justify-space-between">
             <v-chip label>
-              <span>Полный период</span>
+              <span>Период стабилизации</span>
             </v-chip>
             <v-btn color="indigo" fab x-small dark @click="showSettingsContainer(showSettings)">
               <v-icon>settings</v-icon>
             </v-btn>
-          </div>
+          </div>          
         </v-card-subtitle>
         <v-card-text>
             <StartTimeAmChart
@@ -56,7 +56,7 @@ export default {
               backgroundColor: '#303030',
               textColor: '#ffffff',
               gridColor: '#ffcc00',
-              chartColor: '#ff0080'
+              chartColor: '#8E2DE2'
             }
       }
     }
