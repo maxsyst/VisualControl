@@ -217,11 +217,7 @@ namespace VueExample.Services.Vertx.Implementation
             return pointsDictionary;
         }
 
-        private List<Point> SiftPoints(List<Point> points, int siftedK)
-        {
-            var k = points.Count / siftedK;
-            return k == 0 ? points.ToList() : points.Where((p, index) => index % k == 0).ToList();
-        }
+        private List<Point> SiftPoints(List<Point> points, int siftedK) => siftedK == 0 ? points.ToList() : points.Where((p, index) => index % (points.Count / siftedK) == 0).ToList();
 
         private List<Point> RemoveBadPoints(List<Point> points)
         {

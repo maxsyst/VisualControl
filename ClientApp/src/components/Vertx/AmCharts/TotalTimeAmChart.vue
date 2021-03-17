@@ -6,14 +6,11 @@
 </template>
 
 <script>
-import * as am4core from '@amcharts/amcharts4/core'
-import * as am4charts from '@amcharts/amcharts4/charts'
-import am4lang from '@amcharts/amcharts4/lang/ru_RU'
 import Gradient from 'javascript-color-gradient'
-
 export default {
   props: ['data', 'settings'],
   mounted () {
+    const { am4core, am4charts, am4lang } = this.$am4core()
     const chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart)
     chart.language.locale = am4lang
     const { gridColor } = this.settings.colors

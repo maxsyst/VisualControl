@@ -17,10 +17,11 @@ import qs from 'qs'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
-import 'moment-duration-format'
 import 'vue-swatches/dist/vue-swatches.min.css'
-
-
+import 'moment-duration-format'
+import * as am4core from '@amcharts/amcharts4/core'
+import * as am4charts from '@amcharts/amcharts4/charts'
+import am4lang from '@amcharts/amcharts4/lang/ru_RU'
 
 Vue.config.productionTip = false
 Vue.component('lightbox', Lightbox)
@@ -32,6 +33,13 @@ Vue.use(Vuelidate)
 Vue.use(UUID)
 Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
+Vue.prototype.$am4core = () => {
+  return {
+    am4core,
+    am4charts,
+    am4lang
+  }
+}
 Vue.prototype.$http = axios
 Vue.prototype._ = lodash
 Vue.prototype.$qs = qs

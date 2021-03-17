@@ -1,29 +1,30 @@
 <template>
-  <div class="d-flex">
-    <div class="flex-column">
-      <SingleCharacteristicStatistic v-if="loaded.fullPeriod" :startPeriod="startPeriod" :chartData="chartData.fullPeriod" :characteristic="characteristic" :measurementId="measurementId"></SingleCharacteristicStatistic>
-      <div class="d-flex flex-row mt-2">
-        <div class="flex-row">
+  <v-container>
+    <v-row>
+      <v-col lg="12">
+        <SingleCharacteristicStatistic v-if="loaded.fullPeriod" :startPeriod="startPeriod" :chartData="chartData.fullPeriod" :characteristic="characteristic" :measurementId="measurementId"></SingleCharacteristicStatistic>
+      </v-col>
+    </v-row>
+    <v-row>
+        <v-col lg="7">
           <SingleCharacteristicChart
             :characteristic="characteristic"
             :chartData="chartData.fullPeriod"
             :axisX="axisX.fullPeriod"
             :loaded="loaded.fullPeriod"
           ></SingleCharacteristicChart>
-        </div>
-        <div class="flex-row mx-2">
+        </v-col>
+        <v-col lg="5">
           <SingleCharacteristicStartPeriodChart
             :characteristic="characteristic"
             :chartData="chartData.startPeriod"
             :axisX="axisX.startPeriod"
             :loaded="loaded.startPeriod"
           ></SingleCharacteristicStartPeriodChart>
-        </div>
-      </div>
-    </div>
-  </div>
+        </v-col>
+    </v-row>
+  </v-container>
 </template>
-
 <script>
 import moment from 'moment'
 import 'moment-duration-format'

@@ -6,13 +6,7 @@
 </template>
 
 <script>
-import * as am4core from '@amcharts/amcharts4/core'
-import * as am4charts from '@amcharts/amcharts4/charts'
-import am4lang from '@amcharts/amcharts4/lang/ru_RU'
 import Gradient from 'javascript-color-gradient'
-import moment from 'moment'
-import 'moment-duration-format'
-
 export default {
   props: ['data', 'settings'],
 
@@ -45,6 +39,7 @@ export default {
     }
   },
   mounted () {
+    const { am4core, am4charts, am4lang } = this.$am4core()
     const chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart)
     chart.language.locale = am4lang
     const { gridColor } = this.settings.colors
@@ -88,8 +83,9 @@ export default {
       series.name = this.settings.serieName === 'name' ? pointsData.name : new Date(pointsData.creationDate)
         .toLocaleString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' })
       series.data = pointsData.points
-        .map((p) => ({ duration: moment.duration(p.fromStartDate), value: p.value }))
+        .map((p) => ({ duration: this.moment.duration(p.fromStartDate), value: p.value }))
     })
+    chart.series.showOnInit = false
 
     am4core.useTheme(am4themes_myTheme)
 
@@ -111,6 +107,7 @@ export default {
       dateAxis.min = this.settings.axisX.min
     }
     dateAxis.max = this.settings.minutes === 0 ? undefined : this.settings.minutes * 60000
+    chart.svgContainer.autoResize = false
     this.chart = chart
   },
 
