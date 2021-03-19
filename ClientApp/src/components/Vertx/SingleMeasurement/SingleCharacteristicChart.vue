@@ -5,7 +5,7 @@
             <v-chip label>
               <span>Полный период</span>
             </v-chip>
-            <v-btn color="indigo" fab x-small dark @click="showSettingsContainer(showSettings)">
+            <v-btn color="indigo" fab x-small dark @click="showSettingsContainer()">
               <v-icon>settings</v-icon>
             </v-btn>
           </div>
@@ -59,6 +59,11 @@ export default {
               chartColor: '#ff0080'
             }
       }
+    }
+  },
+  methods: {
+    showSettingsContainer: function () {      
+      
     }
   },
   async created () {

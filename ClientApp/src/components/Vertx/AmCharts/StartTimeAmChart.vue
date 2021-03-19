@@ -21,6 +21,9 @@ export default {
     'settings.colors.backgroundColor': function (color) {
       this.chart.background.fill = color
     },
+    'settings.colors.chartColor': function (color) {
+      
+    },
     'settings.colors.gridColor': function (color) {
       const dateAxis = this.chart.map.getKey('DAX_0001')
       const valueAxis = this.chart.map.getKey('VAX_0001')
@@ -84,8 +87,8 @@ export default {
         .toLocaleString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' })
       series.data = pointsData.points
         .map((p) => ({ duration: this.moment.duration(p.fromStartDate), value: p.value }))
+      series.showOnInit = false
     })
-    chart.series.showOnInit = false
 
     am4core.useTheme(am4themes_myTheme)
 

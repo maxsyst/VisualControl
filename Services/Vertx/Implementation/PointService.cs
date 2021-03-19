@@ -21,10 +21,10 @@ namespace VueExample.Services.Vertx.Implementation
 
 
         public PointService(IMongoDatabase mongoDatabase,
-            IMeasurementAttemptService measurementAttemptService,
-            IMeasurementService measurementService,
-            IMeasurementSetPlusUnitService measurementSetPlusUnitService,
-            IMeasurementSetService measurementSetService)
+                            IMeasurementAttemptService measurementAttemptService,
+                            IMeasurementService measurementService,
+                            IMeasurementSetPlusUnitService measurementSetPlusUnitService,
+                            IMeasurementSetService measurementSetService)
         {
             _measurementAttemptService = measurementAttemptService;
             _measurementService = measurementService;
