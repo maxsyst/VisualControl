@@ -22,7 +22,11 @@ export default {
       this.chart.background.fill = color
     },
     'settings.colors.chartColor': function (color) {
-      
+      Object.entries(this.data).forEach((m) => {
+        const [measurementId] = m
+        const serie = this.chart.map.getKey(measurementId)
+        serie.stroke = color
+      })
     },
     'settings.colors.gridColor': function (color) {
       const dateAxis = this.chart.map.getKey('DAX_0001')
