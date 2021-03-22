@@ -75,8 +75,9 @@ export default {
           power: 8
         },
         axisX: {
-          strictMinMax: false,
-          min: 0
+          strictMinMax: true,
+          min: 0,
+          max: 10
         },
         axisY: {
           strictMinMax: false,

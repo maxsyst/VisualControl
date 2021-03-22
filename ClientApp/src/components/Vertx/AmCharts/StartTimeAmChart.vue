@@ -112,8 +112,8 @@ export default {
     if (this.settings.axisX.strictMinMax) {
       dateAxis.strictMinMax = true
       dateAxis.min = this.settings.axisX.min
+      dateAxis.max = this.settings.axisX.max
     }
-    dateAxis.max = this.settings.minutes === 0 ? undefined : this.settings.minutes * 60000
     chart.svgContainer.autoResize = false
     this.chart = chart
   },

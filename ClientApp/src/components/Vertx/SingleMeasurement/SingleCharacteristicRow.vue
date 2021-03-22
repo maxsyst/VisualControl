@@ -9,9 +9,13 @@
         <v-col lg="7">
           <SingleCharacteristicChart
             :characteristic="characteristic"
+            :siftedK="siftedK"
+            :withoutBadPoints="withoutBadPoints"
             :chartData="chartData.fullPeriod"
             :axisX="axisX.fullPeriod"
             :loaded="loaded.fullPeriod"
+            @withoutbadpoint-change="withoutBadPointsChange"
+            @siftedK-change="siftedKChange"
           ></SingleCharacteristicChart>
         </v-col>
         <v-col lg="5">
@@ -41,19 +45,18 @@ export default {
   data () {
     return {
       siftedK: 200,
-      startPeriod: 0,
       withoutBadPoints: true,
+      startPeriod: 0,
       loaded: {
         fullPeriod: false,
         startPeriod: false
       },
       axisX: {
         fullPeriod: {
-          strictMinMax: false,
+          strictMinMax: true,
           min: 0
         },
         startPeriod: {
-          strictMinMax: true,
           min: 0
         }
       },
@@ -64,16 +67,42 @@ export default {
     }
   },
 
+  methods: {
+    withoutBadPointsChange: async function (withoutBadPoints) {
+      this.withoutBadPoints = withoutBadPoints
+      this.loaded.fullPeriod = false
+      const data = (
+        await this.$http.get(
+          `/api/vertx/point/measurementId/${this.measurementId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`
+        )
+      ).data
+      this.chartData.fullPeriod = { ...data }
+      this.loaded.fullPeriod = true
+    },
+
+    siftedKChange: async function (k) {
+      this.loaded.fullPeriod = false
+      this.siftedK = k
+      const data = (
+        await this.$http.get(
+          `/api/vertx/point/measurementId/${this.measurementId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`
+        )
+      ).data
+      this.chartData.fullPeriod = { ...data }
+      this.loaded.fullPeriod = true
+    }
+  },
+
   async created () {
     let data = (
       await this.$http.get(
         `/api/vertx/point/measurementId/${this.measurementId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`
       )
     ).data
-    this.loaded.fullPeriod = true
     const startPeriod = moment.duration(data[this.measurementId].points[0].fromStartDate).asSeconds()
     this.startPeriod = moment.duration(data[this.measurementId].points[0].fromStartDate).asMinutes()
     this.chartData.fullPeriod = { ...data }
+    this.loaded.fullPeriod = true
     data = (
       await this.$http.get(
         `/api/vertx/point/measurementId/${this.measurementId}/characteristicName/${this.characteristic.name}/seconds/${startPeriod}`
