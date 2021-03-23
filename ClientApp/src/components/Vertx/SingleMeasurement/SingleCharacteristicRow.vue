@@ -13,7 +13,7 @@
             :withoutBadPoints="withoutBadPoints"
             :chartData="chartData.fullPeriod"
             :axisX="axisX.fullPeriod"
-            :loaded="loaded.fullPeriod&&expanded"
+            :loaded="loaded.fullPeriod"
             @withoutbadpoint-change="withoutBadPointsChange"
             @siftedK-change="siftedKChange"
           ></SingleCharacteristicChart>
@@ -23,7 +23,7 @@
             :characteristic="characteristic"
             :chartData="chartData.startPeriod"
             :axisX="axisX.startPeriod"
-            :loaded="loaded.startPeriod&&expanded"
+            :loaded="loaded.startPeriod"
           ></SingleCharacteristicStartPeriodChart>
           </v-card>
       </v-expansion-panel-content>
@@ -46,7 +46,6 @@ export default {
   },
   data () {
     return {
-      expanded: false,
       siftedK: 200,
       withoutBadPoints: true,
       startPeriod: 0,
@@ -71,8 +70,12 @@ export default {
   },
 
   methods: {
-    expandPanel: function () {
-      this.expanded = true
+    expandPanel: async function () {
+      this.loaded.fullPeriod = false
+      const temp = {...this.chartData.fullPeriod }
+      this.chartData.fullPeriod = {}
+      this.chartData.fullPeriod = temp
+      this.loaded.fullPeriod = true
     },
 
     withoutBadPointsChange: async function (withoutBadPoints) {

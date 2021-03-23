@@ -12,6 +12,7 @@ namespace VueExample.Services.Vertx.Abstract
         Task<MeasurementSetPlusUnit> GetById(string generatedId, ObjectId measurementId);
 
         Task<LastUpdate> ChangeLastUpdate(string characteristicName, LastUpdate lastUpdate, ObjectId measurementId);
+        Task<bool> ChangeCharacteristicUnit(string characteristicName, string characteristicUnit, ObjectId measurementId);
 
         Task<MeasurementSetPlusUnit> GetByCharacteristicNameAndMeasurementId(string characteristicName,
             ObjectId measurementId);

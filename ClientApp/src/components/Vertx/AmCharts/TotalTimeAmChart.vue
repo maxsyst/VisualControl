@@ -75,7 +75,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .hello {
   width: 100%;
   height: 500px;

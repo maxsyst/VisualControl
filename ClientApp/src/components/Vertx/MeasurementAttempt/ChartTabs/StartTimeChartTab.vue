@@ -8,7 +8,7 @@
       />
       <v-skeleton-loader
         v-else
-        class="mx-auto"
+        class="mx-auto hello"
         type="image, actions"
       />
     </v-card-text>

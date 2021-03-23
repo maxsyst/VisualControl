@@ -47,6 +47,23 @@ namespace VueExample.Services.Vertx.Implementation
             return lastUpdate;
         }
 
+        public async Task<bool> ChangeCharacteristicUnit(string characteristicName, string characteristicUnit, ObjectId measurementId)
+        {
+           var measurementSetPlusUnit =
+                await GetByCharacteristicNameAndMeasurementId(characteristicName, measurementId);
+            if(measurementSetPlusUnit == null) {
+                return false;
+            }
+            var filter = Builders<Measurement>.Filter.And(
+                Builders<Measurement>.Filter.Where(x => x.Id == measurementId),
+                Builders<Measurement>.Filter.ElemMatch(x => x.MeasurementSetPlusUnits,
+                    c => c.GeneratedId == measurementSetPlusUnit.GeneratedId));
+             var update = Builders<Measurement>.Update.Set(x => x.MeasurementSetPlusUnits[-1].Characteristic, new Characteristic(characteristicName, characteristicUnit));
+            await _measurementCollection.FindOneAndUpdateAsync(filter, update,
+                new FindOneAndUpdateOptions<Measurement> { IsUpsert = true });
+            return true;
+        }
+
         public async Task<MeasurementSetPlusUnit> GetById(string generatedId, ObjectId measurementId)
         {
             var measurement = await _measurementCollection

@@ -51,7 +51,7 @@
         :data="chartData"
         :settings="chartSettings"
       />
-      <v-skeleton-loader v-else class="mx-auto" type="image" />
+      <v-skeleton-loader v-else class="mx-auto hello" type="image" />
     </v-card-text>
   </v-card>
 </template>
