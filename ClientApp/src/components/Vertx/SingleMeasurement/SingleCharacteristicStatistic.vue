@@ -22,13 +22,15 @@
               </v-chip>
             </td>
             <td class="text-center border">
-              <v-chip label v-if="characteristic.unit">
-                <span>{{ characteristic.unit }}</span>
-              </v-chip>
-              <v-btn color="pink" v-if="!unitEditor" outlined x-small @click.stop="showUnitEditor">
-                Не установлено
-              </v-btn>
-              <div class="d-flex flex-row" v-if="unitEditor">
+              <div v-if="!unitEditor">
+                <v-chip label v-if="characteristic.unit" @click.stop="showUnitEditor">
+                  <span>{{ characteristic.unit }}</span>
+                </v-chip>
+                <v-btn color="pink" v-else outlined x-small @click.stop="showUnitEditor">
+                  Не установлено
+                </v-btn>
+              </div>
+              <div class="d-flex flex-row" v-else>
                  <v-text-field
                     dense
                     v-model="characteristicUnit"
@@ -93,6 +95,7 @@ export default {
   methods: {
     showUnitEditor: function () {
       this.unitEditor = true
+      this.characteristicUnit = this.characteristic.unit
     },
 
     closeUnitEditor: function () {
@@ -108,9 +111,16 @@ export default {
       try {
         await this.$http.post('/api/vertx/measurementsetplusunit/updateCharacteristicUnit', characteristicViewModel)
         this.showSnackBar('Единица измерения успешно изменена')
+        this.characteristic.unit = this.characteristicUnit
       } catch (ex) {
         this.showSnackBar('Ошибка при изменении единицы измерения')
+      } finally {
+        this.unitEditor = false
       }
+    },
+
+    showSnackBar (text) {
+      this.$store.dispatch('alert/success', text)
     }
   },
   mounted () {

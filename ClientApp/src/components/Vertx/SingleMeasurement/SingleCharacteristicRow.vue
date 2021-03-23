@@ -2,7 +2,7 @@
   <v-container>
    <v-expansion-panels>
     <v-expansion-panel @change="expandPanel">
-      <v-expansion-panel-header>
+      <v-expansion-panel-header @click.stop="showUnitEditor">
          <SingleCharacteristicStatistic v-if="loaded.fullPeriod" :startPeriod="startPeriod" :chartData="chartData.fullPeriod" :characteristic="characteristic" :measurementId="measurementId"></SingleCharacteristicStatistic>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
