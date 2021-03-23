@@ -72,10 +72,11 @@ export default {
   methods: {
     expandPanel: async function () {
       this.loaded.fullPeriod = false
-      const temp = {...this.chartData.fullPeriod }
-      this.chartData.fullPeriod = {}
-      this.chartData.fullPeriod = temp
-      this.loaded.fullPeriod = true
+      this.loaded.startPeriod = false
+      this.$nextTick(() => {
+        this.loaded.fullPeriod = true
+        this.loaded.startPeriod = true
+      })
     },
 
     withoutBadPointsChange: async function (withoutBadPoints) {
