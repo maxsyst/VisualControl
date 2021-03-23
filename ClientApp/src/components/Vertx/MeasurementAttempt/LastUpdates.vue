@@ -44,9 +44,6 @@ export default {
         },
         {
           text: 'Время последнего измерения', sortable: false, align: 'center', value: 'lastUpdateDate', divider: true, width: '20%'
-        },
-        {
-          text: 'measurementAttemptId', sortable: false, align: 'center', value: 'measurementAttemptId', divider: true, width: '10%'
         }
       ]
     }

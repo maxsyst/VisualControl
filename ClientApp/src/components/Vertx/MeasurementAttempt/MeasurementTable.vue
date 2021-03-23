@@ -18,12 +18,6 @@
     <template #item.durationPreSeconds="{ item }">
       <span>{{ (item.durationPreSeconds === 0 ? "00:00" : moment.duration(item.durationPreSeconds, 'seconds').format("hh:mm:ss")) }}</span>
     </template>
-    <template #item.notes="{ item }">
-      <span>{{ item.notes.length === 0 ? "" : item.notes.reduce((p,c) => p + "\n" + c) }}</span>
-    </template>
-    <template #item.comments="{ item }">
-      <span>{{ item.comments.length === 0 ? "" : item.comments.reduce((p,c) => p.text + "\n" + c.text) }}</span>
-    </template>
   </v-data-table>
 </template>
 
@@ -64,18 +58,6 @@ export default {
         },
         {
           text: 'Измерительный канал', sortable: false, align: 'center', value: 'measurementChannel', divider: true, width: '5%'
-        },
-        {
-          text: 'Цели', sortable: false, align: 'center', value: 'goal', divider: true, width: '10%'
-        },
-        {
-          text: 'Примечания', sortable: false, align: 'center', value: 'notes', divider: true, width: '10%'
-        },
-        {
-          text: 'Комментарии', sortable: false, align: 'center', value: 'comments', divider: true, width: '10%'
-        },
-        {
-          text: 'MeasurementId', sortable: false, align: 'center', value: 'id', divider: true, width: '10%'
         }
       ]
     }
