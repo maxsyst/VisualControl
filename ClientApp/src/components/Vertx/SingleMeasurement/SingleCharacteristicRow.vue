@@ -1,32 +1,34 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col lg="12">
-        <SingleCharacteristicStatistic v-if="loaded.fullPeriod" :startPeriod="startPeriod" :chartData="chartData.fullPeriod" :characteristic="characteristic" :measurementId="measurementId"></SingleCharacteristicStatistic>
-      </v-col>
-    </v-row>
-    <v-row>
-        <v-col lg="7">
-          <SingleCharacteristicChart
+   <v-expansion-panels>
+    <v-expansion-panel @change="expandPanel">
+      <v-expansion-panel-header>
+         <SingleCharacteristicStatistic v-if="loaded.fullPeriod" :startPeriod="startPeriod" :chartData="chartData.fullPeriod" :characteristic="characteristic" :measurementId="measurementId"></SingleCharacteristicStatistic>
+      </v-expansion-panel-header>
+      <v-expansion-panel-content>
+        <v-card class="mt-2 elevation-8">
+         <SingleCharacteristicChart
             :characteristic="characteristic"
             :siftedK="siftedK"
             :withoutBadPoints="withoutBadPoints"
             :chartData="chartData.fullPeriod"
             :axisX="axisX.fullPeriod"
-            :loaded="loaded.fullPeriod"
+            :loaded="loaded.fullPeriod&&expanded"
             @withoutbadpoint-change="withoutBadPointsChange"
             @siftedK-change="siftedKChange"
           ></SingleCharacteristicChart>
-        </v-col>
-        <v-col lg="5">
+          </v-card>
+          <v-card class="mt-2 elevation-8">
           <SingleCharacteristicStartPeriodChart
             :characteristic="characteristic"
             :chartData="chartData.startPeriod"
             :axisX="axisX.startPeriod"
-            :loaded="loaded.startPeriod"
+            :loaded="loaded.startPeriod&&expanded"
           ></SingleCharacteristicStartPeriodChart>
-        </v-col>
-    </v-row>
+          </v-card>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
   </v-container>
 </template>
 <script>
@@ -44,6 +46,7 @@ export default {
   },
   data () {
     return {
+      expanded: false,
       siftedK: 200,
       withoutBadPoints: true,
       startPeriod: 0,
@@ -68,6 +71,10 @@ export default {
   },
 
   methods: {
+    expandPanel: function () {
+      this.expanded = true
+    },
+
     withoutBadPointsChange: async function (withoutBadPoints) {
       this.withoutBadPoints = withoutBadPoints
       this.loaded.fullPeriod = false

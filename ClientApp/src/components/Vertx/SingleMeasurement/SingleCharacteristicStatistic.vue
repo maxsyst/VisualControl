@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="elevation-8">
     <v-card-text>
       <v-simple-table>
         <template v-slot:default>

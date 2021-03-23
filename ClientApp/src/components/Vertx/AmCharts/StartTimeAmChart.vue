@@ -95,12 +95,13 @@ export default {
     })
 
     am4core.useTheme(am4themes_myTheme)
-
-    chart.legend = new am4charts.Legend()
-    chart.legend.useDefaultMarker = true
-    const markerTemplate = chart.legend.markers.template
-    markerTemplate.width = 40
-    markerTemplate.height = 40
+    if (this.settings.type !== 'singleStartPeriod' && this.settings.type !== 'singleFullPeriod') {
+      chart.legend = new am4charts.Legend()
+      chart.legend.useDefaultMarker = true
+      const markerTemplate = chart.legend.markers.template
+      markerTemplate.width = 40
+      markerTemplate.height = 40
+    }
 
     valueAxis.strictMinMax = false
     if (this.settings.axisY.strictMinMax) {

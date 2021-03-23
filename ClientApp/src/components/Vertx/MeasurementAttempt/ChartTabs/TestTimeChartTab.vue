@@ -29,6 +29,7 @@ export default {
       siftedK: 200,
       chartData: {},
       chartSettings: {
+        type: 'attemptTestTime',
         characteristic: {},
         minutes: 0,
         serieName: 'name',

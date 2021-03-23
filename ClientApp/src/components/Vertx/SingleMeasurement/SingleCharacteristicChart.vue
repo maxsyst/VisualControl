@@ -29,6 +29,7 @@
                   <v-list-item-action>
                     <v-text-field
                       :value="siftedK"
+                      :error-messages="[rules.siftedK.required, rules.siftedK.counter, rules.siftedK.isNumber, rules.siftedK.positive]"
                       @change="siftedKChange($event)">
                       </v-text-field>
                   </v-list-item-action>
@@ -77,7 +78,16 @@ export default {
   data () {
     return {
       showSettings: false,
+      rules: {
+        siftedK: {
+          required: value => !!value || 'Требуется значение',
+          counter: value => value.length <= 500 || 'Макс 500 точек',
+          isNumber: value => Number.isInteger(value) || 'Введите число',
+          positive: value => +value > 0 || 'Введите положительное число'
+        }
+      },
       chartSettings: {
+        type: 'singleFullPeriod',
         characteristic: {},
         serieName: 'name',
         smoothing: {

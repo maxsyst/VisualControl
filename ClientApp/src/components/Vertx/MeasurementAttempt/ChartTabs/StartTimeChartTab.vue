@@ -45,6 +45,7 @@ export default {
       seconds: 43200,
       chartData: {},
       chartSettings: {
+        type: 'attemptStartTime',
         characteristic: {},
         minutes: 10,
         serieName: 'name',

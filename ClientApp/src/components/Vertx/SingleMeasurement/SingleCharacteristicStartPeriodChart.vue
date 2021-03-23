@@ -68,6 +68,7 @@ export default {
     return {
       showSettings: false,
       chartSettings: {
+        type: 'singleStartPeriod',
         characteristic: {},
         serieName: 'name',
         smoothing: {
