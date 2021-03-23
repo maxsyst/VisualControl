@@ -1,4 +1,5 @@
 <template>
+  <v-container fluid>
   <div class="d-flex flex-column mt-auto">
     <v-card
       color="#303030"
@@ -28,6 +29,7 @@
       </v-card-text>
     </v-card>
   </div>
+  </v-container>
 </template>
 
 <script>

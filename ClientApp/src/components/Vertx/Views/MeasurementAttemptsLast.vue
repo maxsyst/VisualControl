@@ -1,21 +1,21 @@
 <template>
-  <div class="d-flex flex-column mt-auto">
+  <v-container fluid>
     <v-card
       color="#303030"
       class="elevation-8"
     >
-      <v-card-text>
-        <LastUpdates
-          v-if="loaded"
-          :table-data="tableData"
-        />
-        <v-skeleton-loader
-          v-else
-          type="table"
-        />
-      </v-card-text>
-    </v-card>
-  </div>
+        <v-card-text>
+            <LastUpdates
+              v-if="loaded"
+              :table-data="tableData"
+            />
+            <v-skeleton-loader
+              v-else
+              type="table"
+            />
+        </v-card-text>
+      </v-card>
+    </v-container>
 </template>
 
 <script>

@@ -44,20 +44,20 @@
             </td>
             <td class="text-center border">
               <v-btn color="primary" outlined small @click.stop="">
-                {{ statistic.firstValue.toFixed(3) }}
+                {{  Math.abs(statistic.firstValue) < 1E-3 && statistic.firstValue !== 0 ? statistic.firstValue.toExponential(1) : statistic.firstValue.toFixed(3) }}
               </v-btn>
             </td>
             <td class="text-center border">
-              {{ statistic.averageValue.toFixed(3) }}
+              {{  Math.abs(statistic.averageValue) < 1E-3 && statistic.averageValue !== 0 ? statistic.averageValue.toExponential(1) : statistic.averageValue.toFixed(3) }}
             </td>
             <td class="text-center border">
               <v-btn color="primary" outlined small @click.stop="">
-                {{ statistic.lastValue.toFixed(3) }}
+                {{  Math.abs(statistic.lastValue) < 1E-3 && statistic.lastValue !== 0 ? statistic.lastValue.toExponential(1) : statistic.lastValue.toFixed(3) }}
               </v-btn>
 
             </td>
             <td class="text-center border">
-              {{ statistic.periodOscillation.absolute.toFixed(3) }}
+               {{ Math.abs(statistic.periodOscillation.absolute) < 1E-3 && statistic.periodOscillation.absolute !== 0 ? statistic.periodOscillation.absolute.toExponential(1) : statistic.periodOscillation.absolute.toFixed(3) }}
             </td>
             <td class="text-center border">
               <v-btn color="success" outlined small @click.stop="">
