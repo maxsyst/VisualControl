@@ -27,25 +27,25 @@
 </template>
 
 <script>
-import ChartTabs from './ChartTabs'
+import ChartTabs from './ChartTabs.vue';
 
 export default {
   name: 'CharacteristicTabs',
   components: {
-    ChartTabs
+    ChartTabs,
   },
   props: ['characteristicData', 'sourceId'],
-  data () {
+  data() {
     return {
 
-    }
+    };
   },
   computed: {
-    activeTab () {
-      return this.characteristicData.length === 0 ? '' : `${this.characteristicData[0].name}Tab`
-    }
-  }
-}
+    activeTab() {
+      return this.characteristicData.length === 0 ? '' : `${this.characteristicData[0].name}Tab`;
+    },
+  },
+};
 </script>
 
 <style scoped>

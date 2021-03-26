@@ -127,193 +127,187 @@
 </template>
 
 <script>
-import DefectCard from './defect-card.vue'
-import Loading from 'vue-loading-overlay'
-import 'vue-loading-overlay/dist/vue-loading.css'
+import Loading from 'vue-loading-overlay';
+import DefectCard from './defect-card.vue';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   props: ['selectedWafer', 'selectedsingledieId', 'dangerlevelspec'],
   components: {
-    'defect-card': DefectCard, Loading
+    'defect-card': DefectCard, Loading,
   },
 
-  created () {
+  created() {
     this.$http.get('/api/wafer/getallwithdefects').then((response) => {
-      this.wafers = response.data
-    })
+      this.wafers = response.data;
+    });
   },
 
   computed:
     {
 
-      availableDangerLevels () {
+      availableDangerLevels() {
         switch (this.dangerlevelspec) {
           case 'all':
-            return [0, 1, 2]
-            break
+            return [0, 1, 2];
+            break;
           case 'bad':
-            return [2]
-            break
+            return [2];
+            break;
           case 'notgood':
-            return [1, 2]
-            break
+            return [1, 2];
+            break;
           case 'good':
-            return [0]
-            break
+            return [0];
+            break;
           default:
-            return [0, 1, 2]
+            return [0, 1, 2];
         }
       },
 
-      allDiesIsSelected () {
-        return (this.defectFilter.avbDiesList) && (this.defectFilter.avbDiesList.length === this.selectedDies.length)
+      allDiesIsSelected() {
+        return (this.defectFilter.avbDiesList) && (this.defectFilter.avbDiesList.length === this.selectedDies.length);
       },
 
-      someDiesIsSelected () {
-        return (this.defectFilter.avbDiesList) && (this.defectFilter.avbDiesList.length !== this.selectedDies.length) && (this.selectedDies.length > 0)
+      someDiesIsSelected() {
+        return (this.defectFilter.avbDiesList) && (this.defectFilter.avbDiesList.length !== this.selectedDies.length) && (this.selectedDies.length > 0);
       },
 
-      selectAllDiesButtonText () {
+      selectAllDiesButtonText() {
         if (!this.allDiesIsSelected) {
-          return 'Выбрать все кристаллы'
-        } else {
-          return 'Снять выбор с кристаллов'
+          return 'Выбрать все кристаллы';
         }
+        return 'Снять выбор с кристаллов';
       },
 
-      defectsOnCurrentPage () {
-        return this.selectedDefects.slice((this.pageIndex - 1) * 4, (this.pageIndex - 1) * 4 + 4)
-      }
+      defectsOnCurrentPage() {
+        return this.selectedDefects.slice((this.pageIndex - 1) * 4, (this.pageIndex - 1) * 4 + 4);
+      },
 
     },
 
   watch:
     {
 
-      '$route' (to, from) {
-
-      },
-
       selectedWafer:
       {
-        handler: function (val, oldVal) {
+        handler(val) {
           if (val != null) {
-            const selectedWafer = this.selectedWafer
+            const { selectedWafer } = this;
 
-            this.selectedDies = []
-            this.selectedDefects = []
+            this.selectedDies = [];
+            this.selectedDefects = [];
             this.$http.get(`/api/defect/getbywaferid?waferId=${selectedWafer}`).then((response) => {
-              this.defects = response.data
-              const defects = this.defects
-              this.filterLoading = true
+              this.defects = response.data;
+              this.filterLoading = true;
               this.$http.get('/api/defectfilter/GetDefectFilter', {
                 params: {
-                  defects: JSON.stringify(this.defects)
-                }
+                  defects: JSON.stringify(this.defects),
+                },
               })
                 .then((response) => {
                   if (response.data.errorCode === 'OK') {
-                    this.defectFilter = response.data.body
+                    this.defectFilter = response.data.body;
 
-                    const currentdie = this.defectFilter.avbDiesList.find(x => x.dieId == this.selectedsingledieId)
+                    const currentdie = this.defectFilter.avbDiesList.find((x) => x.dieId === this.selectedsingledieId);
                     if (this.selectedsingledieId && currentdie) {
-                      this.selectedDies.push(currentdie.dieId)
+                      this.selectedDies.push(currentdie.dieId);
                     } else {
-                      this.$router.push({ name: 'defectsbywafer', params: { selectedWafer: val } })
+                      this.$router.push({ name: 'defectsbywafer', params: { selectedWafer: val } });
                     }
                   } else {
-                    this.defectFilter = []
-                    this.$router.push({ name: 'defects' })
+                    this.defectFilter = [];
+                    this.$router.push({ name: 'defects' });
                     this.$swal({
                       type: response.data.responseType,
                       text: 'Дефектов на пластине не найдено',
                       toast: true,
                       showConfirmButton: false,
                       position: 'top-end',
-                      timer: 4000
-                    })
+                      timer: 4000,
+                    });
                   }
-                  this.filterLoading = false
-                })
-            })
+                  this.filterLoading = false;
+                });
+            });
           }
         },
-        immediate: true
+        immediate: true,
       },
 
-      selectedDies: function () {
-        this.defectFilter.avbStagesList.forEach(x => x.disabled = false)
-        this.defectFilter.avbDefectTypesList.forEach(x => x.disabled = false)
-        this.defectFilter.avbDangerLevelList.forEach(x => x.disabled = false)
+      selectedDies() {
+        this.defectFilter.avbStagesList.forEach((x) => x.disabled = false);
+        this.defectFilter.avbDefectTypesList.forEach((x) => x.disabled = false);
+        this.defectFilter.avbDangerLevelList.forEach((x) => x.disabled = false);
 
         if (this.selectedDies.length != this.defectFilter.avbDiesList.length) {
-          const avbDefects = this.defects.filter(d => this.selectedDies.some(t => t == d.dieId))
+          const avbDefects = this.defects.filter((d) => this.selectedDies.some((t) => t == d.dieId));
 
-          const avbStages = [...new Set(avbDefects.map(d => d = d.stageId))]
-          this.defectFilter.avbStagesList.forEach(x => {
-            if (!avbStages.some(a => a == x.stageId)) {
-              x.disabled = true
-              this.selectedStages = this.selectedStages.filter(c => c != x.stageId)
+          const avbStages = [...new Set(avbDefects.map((d) => d = d.stageId))];
+          this.defectFilter.avbStagesList.forEach((x) => {
+            if (!avbStages.some((a) => a == x.stageId)) {
+              x.disabled = true;
+              this.selectedStages = this.selectedStages.filter((c) => c != x.stageId);
             }
-          })
+          });
 
-          const avbTypes = [...new Set(avbDefects.map(d => d = d.defectTypeId))]
-          this.defectFilter.avbDefectTypesList.forEach(x => {
-            if (!avbTypes.some(a => a == x.defectTypeId)) {
-              x.disabled = true
-              this.selectedDefectType = this.selectedDefectType.filter(c => c != x.defectTypeId)
+          const avbTypes = [...new Set(avbDefects.map((d) => d = d.defectTypeId))];
+          this.defectFilter.avbDefectTypesList.forEach((x) => {
+            if (!avbTypes.some((a) => a == x.defectTypeId)) {
+              x.disabled = true;
+              this.selectedDefectType = this.selectedDefectType.filter((c) => c != x.defectTypeId);
             }
-          })
+          });
 
-          this.defectFilter.avbDangerLevelList.forEach(x => {
-            if (![...new Set(avbDefects.map(d => d = d.dangerLevelId))].some(a => a == x.dangerLevelId)) {
-              x.disabled = true
-              this.selectedDangerLevel = this.selectedDangerLevel.filter(c => c != x.dangerLevelId)
+          this.defectFilter.avbDangerLevelList.forEach((x) => {
+            if (![...new Set(avbDefects.map((d) => d = d.dangerLevelId))].some((a) => a == x.dangerLevelId)) {
+              x.disabled = true;
+              this.selectedDangerLevel = this.selectedDangerLevel.filter((c) => c != x.dangerLevelId);
             }
-          })
+          });
           if (this.selectedsingledieId) {
-            this.showAllAvailableDefects()
-            this.$router.push({ name: 'defectsbywafer', params: { selectedWafer: this.selectedWafer } })
+            this.showAllAvailableDefects();
+            this.$router.push({ name: 'defectsbywafer', params: { selectedWafer: this.selectedWafer } });
           }
         }
-      }
+      },
 
     },
 
   methods:
     {
-      selectAllDies: function () {
+      selectAllDies() {
         if (!this.allDiesIsSelected) {
-          this.selectedDies = this.defectFilter.avbDiesList.map(d => { return d.dieId })
+          this.selectedDies = this.defectFilter.avbDiesList.map((d) => d.dieId);
         } else {
-          this.selectedDies = []
+          this.selectedDies = [];
         }
       },
 
-      showAllAvailableDefects: function () {
-        this.selectedStages = this.defectFilter.avbStagesList.filter(x => !x.disabled).map(c => c.stageId)
-        this.selectedDangerLevel = this.defectFilter.avbDangerLevelList.filter(x => !x.disabled && this.availableDangerLevels.some(t => t == x.danger)).map(c => c.dangerLevelId)
-        this.selectedDefectType = this.defectFilter.avbDefectTypesList.filter(x => !x.disabled).map(c => c.defectTypeId)
-        this.showDefects()
+      showAllAvailableDefects() {
+        this.selectedStages = this.defectFilter.avbStagesList.filter((x) => !x.disabled).map((c) => c.stageId);
+        this.selectedDangerLevel = this.defectFilter.avbDangerLevelList.filter((x) => !x.disabled && this.availableDangerLevels.some((t) => t === x.danger)).map((c) => c.dangerLevelId);
+        this.selectedDefectType = this.defectFilter.avbDefectTypesList.filter((x) => !x.disabled).map((c) => c.defectTypeId);
+        this.showDefects();
       },
 
-      showDefects: function () {
-        this.selectedDefects = this.defects.filter(x => this.selectedStages.some(s => s == x.stageId) && this.selectedDies.some(d => d == x.dieId) && this.selectedDefectType.some(t => t == x.defectTypeId) && this.selectedDangerLevel.some(t => t == x.dangerLevelId))
-        if (this.selectedDefects.length == 0) {
+      showDefects() {
+        this.selectedDefects = this.defects.filter((x) => this.selectedStages.some((s) => s === x.stageId) && this.selectedDies.some((d) => d === x.dieId) && this.selectedDefectType.some((t) => t === x.defectTypeId) && this.selectedDangerLevel.some((t) => t === x.dangerLevelId));
+        if (this.selectedDefects.length === 0) {
           this.$swal({
             type: 'warning',
             text: 'Дефектов не найдено',
             toast: true,
             showConfirmButton: false,
             position: 'top-end',
-            timer: 4000
-          })
+            timer: 4000,
+          });
         }
-      }
+      },
 
     },
 
-  data () {
+  data() {
     return {
       pageIndex: 1,
       filterLoading: false,
@@ -325,9 +319,9 @@ export default {
       wafers: [],
       defects: [],
       defectFilter: {},
-      dies: []
+      dies: [],
 
-    }
-  }
-}
+    };
+  },
+};
 </script>

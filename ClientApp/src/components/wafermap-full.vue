@@ -125,12 +125,13 @@
 </template>
 
 <script>
-import WaferMap from './wafermap-trtd.vue'
-import DefectCard from './defect-card.vue'
-import BadGoodDonutChart from './donut-amcharts.vue'
+import WaferMap from './wafermap-trtd.vue';
+import DefectCard from './defect-card.vue';
+import BadGoodDonutChart from './donut-amcharts.vue';
+
 export default {
 
-  data () {
+  data() {
     return {
 
       defectiveDiesSearchProps: { dangerLevel: '', defectType: '' },
@@ -147,90 +148,90 @@ export default {
       availableDefectTypes: [],
       availableDangerLevels: [],
       checkboxAllTypes: true,
-      checkboxOnlyBad: true
+      checkboxOnlyBad: true,
 
-    }
+    };
   },
 
   components: {
-    'wafermap-trtd': WaferMap, 'defect-card': DefectCard, 'donut-bg': BadGoodDonutChart
+    'wafermap-trtd': WaferMap, 'defect-card': DefectCard, 'donut-bg': BadGoodDonutChart,
   },
 
   methods:
     {
-      showDefects (selectedDefects) {
-        this.footer = true
-        this.selectedDefects = selectedDefects
-      }
+      showDefects(selectedDefects) {
+        this.footer = true;
+        this.selectedDefects = selectedDefects;
+      },
     },
 
-  created () {
+  created() {
     this.$http.get('/api/wafer/getallwithdefects').then((response) => {
-      this.wafers = response.data
-    })
+      this.wafers = response.data;
+    });
   },
 
   computed:
     {
-      selectedDangerLevelLabel () {
-        return this.checkboxOnlyBad ? 'Выбрано' : 'Выберите опасность дефекта'
+      selectedDangerLevelLabel() {
+        return this.checkboxOnlyBad ? 'Выбрано' : 'Выберите опасность дефекта';
       },
 
-      selectedDefectTypeLabel () {
-        return this.checkboxAllTypes ? 'Все типы дефектов' : 'Выберите тип дефекта'
+      selectedDefectTypeLabel() {
+        return this.checkboxAllTypes ? 'Все типы дефектов' : 'Выберите тип дефекта';
       },
 
-      badgood3DChartApi () {
-        return '/api/chart/getbadgood'
+      badgood3DChartApi() {
+        return '/api/chart/getbadgood';
       },
 
-      badgood3DChartParameters () {
-        return { type: 'amcharts' }
-      }
+      badgood3DChartParameters() {
+        return { type: 'amcharts' };
+      },
 
     },
 
   watch:
     {
-      selectedWafer: function (val, oldVal) {
+      selectedWafer(val, oldVal) {
         if (val != null) {
-          this.waferId = this.selectedWafer
-          this.checkboxOnlyBad = true
-          this.checkboxAllTypes = true
+          this.waferId = this.selectedWafer;
+          this.checkboxOnlyBad = true;
+          this.checkboxAllTypes = true;
         }
       },
 
-      checkboxOnlyBad: function () {
-        this.selectedDangerLevel = 1
+      checkboxOnlyBad() {
+        this.selectedDangerLevel = 1;
       },
 
-      checkboxAllTypes: function () {
-        this.selectedDefectType = 'all'
+      checkboxAllTypes() {
+        this.selectedDefectType = 'all';
       },
 
-      selectedDefectType: function () {
-        this.defectiveDiesSearchProps = { dangerLevel: this.selectedDangerLevel, defectType: this.selectedDefectType }
+      selectedDefectType() {
+        this.defectiveDiesSearchProps = { dangerLevel: this.selectedDangerLevel, defectType: this.selectedDefectType };
       },
 
-      selectedDangerLevel: function () {
-        this.defectiveDiesSearchProps = { dangerLevel: this.selectedDangerLevel, defectType: this.selectedDefectType }
+      selectedDangerLevel() {
+        this.defectiveDiesSearchProps = { dangerLevel: this.selectedDangerLevel, defectType: this.selectedDefectType };
       },
 
-      waferId: async function () {
+      async waferId() {
         await this.$http.get(`/api/defecttype/getbywaferid?waferId=${this.waferId}`)
           .then((response) => {
-            this.availableDefectTypes = response.data
-          })
+            this.availableDefectTypes = response.data;
+          });
 
         await this.$http.get(`/api/dangerlevel/getbywaferid?waferId=${this.waferId}`)
           .then((response) => {
-            this.availableDangerLevels = response.data
-          })
-        this.defectiveDiesSearchProps = { dangerLevel: 1, defectType: 'all' }
-      }
-    }
+            this.availableDangerLevels = response.data;
+          });
+        this.defectiveDiesSearchProps = { dangerLevel: 1, defectType: 'all' };
+      },
+    },
 
-}
+};
 
 </script>
 

@@ -76,7 +76,7 @@
 <script>
 export default {
   props: ['chartData', 'measurementId', 'startPeriod', 'characteristic'],
-  data () {
+  data() {
     return {
       unitEditor: false,
       characteristicUnit: '',
@@ -87,54 +87,52 @@ export default {
         lastValue: 0,
         periodOscillation: {
           percent: 0,
-          absolute: 0
-        }
-      }
-    }
+          absolute: 0,
+        },
+      },
+    };
   },
   methods: {
-    showUnitEditor: function () {
-      this.unitEditor = true
-      this.characteristicUnit = this.characteristic.unit
+    showUnitEditor() {
+      this.unitEditor = true;
+      this.characteristicUnit = this.characteristic.unit;
     },
 
-    closeUnitEditor: function () {
-      this.unitEditor = false
+    closeUnitEditor() {
+      this.unitEditor = false;
     },
 
-    updateCharacteristicUnit: async function () {
+    async updateCharacteristicUnit() {
       const characteristicViewModel = {
         characteristicName: this.characteristic.name,
         characteristicUnit: this.characteristicUnit,
-        measurementId: this.measurementId
-      }
+        measurementId: this.measurementId,
+      };
       try {
-        await this.$http.post('/api/vertx/measurementsetplusunit/updateCharacteristicUnit', characteristicViewModel)
-        this.showSnackBar('Единица измерения успешно изменена')
-        this.characteristic.unit = this.characteristicUnit
+        await this.$http.post('/api/vertx/measurementsetplusunit/updateCharacteristicUnit', characteristicViewModel);
+        this.showSnackBar('Единица измерения успешно изменена');
+        this.characteristic.unit = this.characteristicUnit;
       } catch (ex) {
-        this.showSnackBar('Ошибка при изменении единицы измерения')
+        this.showSnackBar('Ошибка при изменении единицы измерения');
       } finally {
-        this.unitEditor = false
+        this.unitEditor = false;
       }
     },
 
-    showSnackBar (text) {
-      this.$store.dispatch('alert/success', text)
-    }
+    showSnackBar(text) {
+      this.$store.dispatch('alert/success', text);
+    },
   },
-  mounted () {
+  mounted() {
     this.pointsData = this.chartData[this.measurementId].points.map(
-      x => x.value
-    )
-    this.statistic.firstValue = _.first(this.pointsData)
-    this.statistic.lastValue = _.last(this.pointsData)
-    this.statistic.averageValue = _.meanBy(this.pointsData)
-    this.statistic.periodOscillation.absolute =
-      this.statistic.lastValue - this.statistic.firstValue
-    this.statistic.periodOscillation.percent =
-      (this.statistic.periodOscillation.absolute / this.statistic.firstValue) *
-      100
-  }
-}
+      (x) => x.value,
+    );
+    this.statistic.firstValue = _.first(this.pointsData);
+    this.statistic.lastValue = _.last(this.pointsData);
+    this.statistic.averageValue = _.meanBy(this.pointsData);
+    this.statistic.periodOscillation.absolute = this.statistic.lastValue - this.statistic.firstValue;
+    this.statistic.periodOscillation.percent = (this.statistic.periodOscillation.absolute / this.statistic.firstValue)
+      * 100;
+  },
+};
 </script>

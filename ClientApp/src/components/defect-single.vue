@@ -1,5 +1,5 @@
 <template>
-  
+
     <v-container grid-list-lg>
       <loading :active.sync="isLoading"
                :can-cancel="false"
@@ -7,9 +7,6 @@
                :loader="overlayLoader"
                :is-full-page="false"></loading>
 
-
-
-     
         <v-layout align-start justify-center row>
 
           <v-flex lg4>
@@ -24,10 +21,7 @@
 
           </v-flex>
 
-
-
         </v-layout>
-     
 
         <v-layout align-start justify-center row>
 
@@ -45,7 +39,6 @@
 
           </v-flex>
         </v-layout>
-
 
         <v-layout align-start justify-center row>
 
@@ -66,129 +59,119 @@
 
             <photo-uploader :reset="resetPhotoUploader" v-on:fileLoaded="fileLoaded"></photo-uploader>
 
-
           </v-flex>
         </v-layout>
 
 </v-container>
-  
 
 </template>
 
 <script>
 
-  import photouploader from './photo-uploader.vue';
-  import Loading from 'vue-loading-overlay';
-  import 'vue-loading-overlay/dist/vue-loading.css';
-  export default {
-    data() {
-      return {
-        overlayColor: "#3434ff",
-        overlayLoader: "spinner",
-        isLoading: true,
-        debouncedSaveDefect: {},
-        wafers: [],
-        resetPhotoUploader: "",
-        dies: [],
-        stages: [],
-        dangerlevels: [],
-        defecttypes: [],
-        loadedFiles: [],
-        selectedStage: {},
-        selectedDie: {},
-        selectedWafer: {},
-        selectedDangerLevel: {},
-        selectedDefectType: {}
-      }
-    },
-    components: {
-      'photo-uploader': photouploader, Loading
-    },
-    watch:
+import Loading from 'vue-loading-overlay';
+import photouploader from './photo-uploader.vue';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
+export default {
+  data() {
+    return {
+      overlayColor: '#3434ff',
+      overlayLoader: 'spinner',
+      isLoading: true,
+      debouncedSaveDefect: {},
+      wafers: [],
+      resetPhotoUploader: '',
+      dies: [],
+      stages: [],
+      dangerlevels: [],
+      defecttypes: [],
+      loadedFiles: [],
+      selectedStage: {},
+      selectedDie: {},
+      selectedWafer: {},
+      selectedDangerLevel: {},
+      selectedDefectType: {},
+    };
+  },
+  components: {
+    'photo-uploader': photouploader, Loading,
+  },
+  watch:
     {
-      selectedWafer: async function () {
-        var selectedWaferId = this.selectedWafer.waferId;
-        let response = await this.$http.get(`/api/die/getbywaferid?waferid=${selectedWaferId}`);
+      async selectedWafer() {
+        const selectedWaferId = this.selectedWafer.waferId;
+        const response = await this.$http.get(`/api/die/getbywaferid?waferid=${selectedWaferId}`);
         this.dies = response.data;
         this.selectedDie = this.dies[0];
-        var codeproductid = this.selectedWafer.codeProductId;
-        let responseStages = await this.$http.get(`/api/stage/codeproductid/${codeproductid}`);
+        const codeproductid = this.selectedWafer.codeProductId;
+        const responseStages = await this.$http.get(`/api/stage/codeproductid/${codeproductid}`);
         this.stages = responseStages.data;
         this.selectedStage = this.stages[0];
-      }
+      },
     },
-    methods:
+  methods:
     {
-      savedefect: async function ()
-      {
-        if (this.loadedFiles.length == 0)
-        {
-            this.$swal({
-              type: 'error',
-              text: 'Загрузите фото дефекта',
-              toast: true,
-              showConfirmButton: false,
-              position: 'top-end',
-              timer: 4000
-            });
-        }
-        else
-        {
-          this.resetPhotoUploader = "noreset";
-          let defectdata =
-            {
-                waferId: this.selectedDie.waferId,
-                operator: "Strelnikov",
-                dieCode: this.selectedDie.code,
-                dieId: this.selectedDie.dieId,
-                defectTypeId: this.selectedDefectType.defectTypeId,
-                dangerLevelId: this.selectedDangerLevel.dangerLevelId,
-                stageId: this.selectedStage.stageId,
-                LoadedPhotosList: this.loadedFiles
-            };
+      async savedefect() {
+        if (this.loadedFiles.length == 0) {
+          this.$swal({
+            type: 'error',
+            text: 'Загрузите фото дефекта',
+            toast: true,
+            showConfirmButton: false,
+            position: 'top-end',
+            timer: 4000,
+          });
+        } else {
+          this.resetPhotoUploader = 'noreset';
+          const defectdata = {
+            waferId: this.selectedDie.waferId,
+            operator: 'Strelnikov',
+            dieCode: this.selectedDie.code,
+            dieId: this.selectedDie.dieId,
+            defectTypeId: this.selectedDefectType.defectTypeId,
+            dangerLevelId: this.selectedDangerLevel.dangerLevelId,
+            stageId: this.selectedStage.stageId,
+            LoadedPhotosList: this.loadedFiles,
+          };
           this.isLoading = true;
-          let response = await this.$http.post(`/api/defect/savenewdefect`, defectdata);
-          this.loadedFiles = [];                            
-          this.resetPhotoUploader = "reset";          
+          const response = await this.$http.post('/api/defect/savenewdefect', defectdata);
+          this.loadedFiles = [];
+          this.resetPhotoUploader = 'reset';
           this.$swal({
             type: response.data.responseType,
             text: response.data.message,
             toast: true,
             showConfirmButton: false,
             position: 'top-end',
-            timer: 4000
+            timer: 4000,
           });
-          this.isLoading = false;     
-
+          this.isLoading = false;
         }
       },
 
-      fileLoaded: function (fileId)
-      {
-         this.loadedFiles.push(fileId);
-      }
+      fileLoaded(fileId) {
+        this.loadedFiles.push(fileId);
+      },
 
     },
-    async created() {
+  async created() {
+    let response = await this.$http.get('/api/wafer/all');
+    this.wafers = response.data;
+    this.selectedWafer = this.wafers[0];
 
+    response = await this.$http.get('/api/dangerlevel/getall');
+    this.dangerlevels = response.data;
+    this.selectedDangerLevel = this.dangerlevels[0];
 
-      let response = await this.$http.get(`/api/wafer/all`);
-      this.wafers = response.data;
-      this.selectedWafer = this.wafers[0];
+    response = await this.$http.get('/api/defecttype/getall');
+    this.defecttypes = response.data;
+    this.selectedDefectType = this.defecttypes[0];
 
-      response = await this.$http.get(`/api/dangerlevel/getall`);
-      this.dangerlevels = response.data;
-      this.selectedDangerLevel = this.dangerlevels[0];
+    this.isLoading = false;
+    this.debouncedSaveDefect = this._.debounce(this.savedefect, 2000);
+  },
 
-      response = await this.$http.get(`/api/defecttype/getall`);
-      this.defecttypes = response.data;
-      this.selectedDefectType = this.defecttypes[0];
-
-      this.isLoading = false;
-      this.debouncedSaveDefect = this._.debounce(this.savedefect, 2000);
-    }
-    
-  }
+};
 
 </script>
 <style>

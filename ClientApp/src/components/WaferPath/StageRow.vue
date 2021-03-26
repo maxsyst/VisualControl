@@ -21,35 +21,33 @@
 </template>
 
 <script>
-const SingleCard = () => import("./SingleCard.vue")
+const SingleCard = () => import('./SingleCard.vue');
 export default {
-    props: ["digitMeasurement", "waferId"],
-    data() {
-        return {
-            dirtyCellsCardsInfo : []
-        }
-    },
-    components: {
-        "SingleCard": SingleCard
-    },
+  props: ['digitMeasurement', 'waferId'],
+  data() {
+    return {
+      dirtyCellsCardsInfo: [],
+    };
+  },
+  components: {
+    SingleCard,
+  },
 
-    async mounted() {
-       this.dirtyCellsCardsInfo = await this.getDirtyCellsCardsInfo(this.digitMeasurement.elementMeasurementArray.map(x => x.idmr))
-    },
+  async mounted() {
+    this.dirtyCellsCardsInfo = await this.getDirtyCellsCardsInfo(this.digitMeasurement.elementMeasurementArray.map((x) => x.idmr));
+  },
 
-    methods: {
-        async getDirtyCellsCardsInfo(elementMeasurementIdArray) {
-            return (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecordingArray`, {
-                                        params: {
-                                            measurementRecordingIdArray: [...elementMeasurementIdArray]
-                                        },
-                                        paramsSerializer: params => {
-                                            return this.$qs.stringify(params)
-                                        }
-            })).data
-        }
-    }
-}
+  methods: {
+    async getDirtyCellsCardsInfo(elementMeasurementIdArray) {
+      return (await this.$http.get('/api/statistic/GetDirtyCellsByMeasurementRecordingArray', {
+        params: {
+          measurementRecordingIdArray: [...elementMeasurementIdArray],
+        },
+        paramsSerializer: (params) => this.$qs.stringify(params),
+      })).data;
+    },
+  },
+};
 </script>
 
 <style>

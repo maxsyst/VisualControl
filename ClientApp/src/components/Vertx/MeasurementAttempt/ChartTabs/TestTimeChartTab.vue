@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import StartTimeAmChart from '../../AmCharts/StartTimeAmChart'
+import StartTimeAmChart from '../../AmCharts/StartTimeAmChart.vue';
 
 export default {
   name: 'TestTimeChartTab',
