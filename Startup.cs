@@ -124,6 +124,7 @@ namespace VueExample
 
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
+            services.AddDbContext<VisualControlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VisualControlContext")), ServiceLifetime.Transient);
 
            // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
              services.AddScoped<IMongoDatabase>(s =>
@@ -146,7 +147,9 @@ namespace VueExample
             services.AddTransient<ISRV6GraphicService, GraphicService>();
             services.AddTransient<IStandartWaferService, StandartWaferService>();
             services.AddTransient<IUploaderService, UploaderService>();
+            services.AddTransient<IDangerLevelProvider, DangerLevelProvider>();
             services.AddTransient<IDefectProvider, DefectProvider>();
+            services.AddTransient<IDefectTypeProvider, DefectTypeProvider>();
             services.AddTransient<IMeasurementRecordingService, MeasurementRecordingService>();
             services.AddTransient<IPhotoProvider, PhotoProvider>();
             services.AddTransient<IFileGraphicUploaderService, FileGraphicUploaderService>();
@@ -199,15 +202,14 @@ namespace VueExample
             else
             {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts();
-                app.UseHttpsRedirection();
             }
 
             app.UseGlobalExceptionHandler(x => {
                 x.ContentType = "application/json";
                 x.ResponseBody(s => JsonConvert.SerializeObject(new
                 {
-                    Message = "An error occurred while processing your request"
+                    MessageX = x,
+                    MessageS = s
                 }));
                 x.Map<RecordNotFoundException>().ToStatusCode(StatusCodes.Status404NotFound);
                 x.Map<CollectionIsEmptyException>().ToStatusCode(StatusCodes.Status404NotFound);

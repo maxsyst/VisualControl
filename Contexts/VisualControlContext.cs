@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VueExample.Models;
 
@@ -15,9 +11,9 @@ namespace VueExample.Contexts
         public DbSet<Photo> Photos { get; set; }
         public DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public VisualControlContext(DbContextOptions<VisualControlContext> options): base(options)
         {
-            optionsBuilder.UseSqlServer(@"data source = SRV3\SRV3; Initial Catalog = VisualControl; persist security info = True; user id = vcu; password = zxvitr78KK; MultipleActiveResultSets = True;");
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

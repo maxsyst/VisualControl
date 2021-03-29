@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VueExample.Models;
 using VueExample.Providers;
+using VueExample.Providers.Abstract;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ResponseObjects;
 using VueExample.ViewModels;
@@ -15,9 +16,11 @@ namespace VueExample.Services
     {
         private readonly IWaferProvider _waferProvider;
         private readonly IDieProvider _dieProvider;
-        public MassiveUploaderService(IWaferProvider waferProvider, IDieProvider dieProvider)
+        private readonly IDefectTypeProvider _defectTypeProvider;
+        public MassiveUploaderService(IWaferProvider waferProvider, IDieProvider dieProvider, IDefectTypeProvider defectTypeProvider)
         {
             _dieProvider = dieProvider;
+            _defectTypeProvider = defectTypeProvider;
             _waferProvider = waferProvider;
         }
         public async Task<ResponseObjects.FullResponseObject<List<DefectViewModel>>> FindDefectsInFolder(string path)
@@ -56,8 +59,7 @@ namespace VueExample.Services
                 return response;
             }
 
-            DefectTypeProvider defectTypeProvider = new DefectTypeProvider();
-            var defectTypes = defectTypeProvider.GetAll();
+            var defectTypes = _defectTypeProvider.GetDefectTypes();
 
             var diesCodes = dies.Select(x => x.Code).ToList();
 

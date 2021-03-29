@@ -13,11 +13,12 @@ namespace VueExample.Controllers
     public class WaferController : Controller
     {
         private readonly IWaferProvider _waferProvider;
-        private readonly DefectProvider _defectProvider = new DefectProvider();
+        private readonly IDefectProvider _defectProvider;
         
-        public WaferController(IWaferProvider waferProvider)
+        public WaferController(IWaferProvider waferProvider, IDefectProvider defectProvider)
         {
             _waferProvider = waferProvider;
+            _defectProvider = defectProvider;
         }
 
         [HttpGet]
@@ -35,11 +36,11 @@ namespace VueExample.Controllers
            return Ok(await _waferProvider.GetPWafer());
         }
 
-        [HttpGet]
-        [Route("getallwithdefects")]
-        public IActionResult GetAllWithDefects()
-        {
-            return Ok(_defectProvider.GetAll().Select(x=>x.WaferId).Distinct());
-        }
+        // [HttpGet]
+        // [Route("getallwithdefects")]
+        // public IActionResult GetAllWithDefects()
+        // {
+        //     return Ok(_defectProvider.GetAll().Select(x=>x.WaferId).Distinct());
+        // }
     }
 }

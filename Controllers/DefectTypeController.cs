@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Providers;
+using VueExample.Providers.Abstract;
 using VueExample.ViewModels;
 
 namespace VueExample.Controllers
@@ -9,12 +10,13 @@ namespace VueExample.Controllers
     [Route("api/[controller]/[action]")]
     public class DefectTypeController : Controller
     {
-        readonly DefectTypeProvider _defectTypeProvider = new DefectTypeProvider();
+        readonly IDefectTypeProvider _defectTypeProvider;
         private readonly IDefectProvider _defectProvider;
 
-        public DefectTypeController(IDefectProvider defectProvider)
+        public DefectTypeController(IDefectProvider defectProvider, IDefectTypeProvider defectTypeProvider)
         {
             _defectProvider = defectProvider;
+            _defectTypeProvider = defectTypeProvider;
         }
 
         [HttpGet]
@@ -32,11 +34,11 @@ namespace VueExample.Controllers
             
         }
 
-        [HttpGet]
-        public IActionResult GetById(int defectTypeId)
-        {
-            return Ok(_defectTypeProvider.GetById(defectTypeId));
-        }
+        // [HttpGet]
+        // public IActionResult GetById(int defectTypeId)
+        // {
+        //     return Ok(_defectTypeProvider.GetById(defectTypeId));
+        // }
 
         [HttpGet]
         public IActionResult GetByWaferId(string waferId)
