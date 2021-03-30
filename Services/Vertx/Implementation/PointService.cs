@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Globalization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace VueExample.Services.Vertx.Implementation
 {
     public class PointService : IPointService
     {
+        private readonly ILivePointService _livePointService;
         private readonly IMongoCollection<MeasurementSet> _measurementSetCollection;
         private readonly IMeasurementAttemptService _measurementAttemptService;
         private readonly IMeasurementService _measurementService;
@@ -21,11 +23,13 @@ namespace VueExample.Services.Vertx.Implementation
 
 
         public PointService(IMongoDatabase mongoDatabase,
+                            ILivePointService livePointService,
                             IMeasurementAttemptService measurementAttemptService,
                             IMeasurementService measurementService,
                             IMeasurementSetPlusUnitService measurementSetPlusUnitService,
                             IMeasurementSetService measurementSetService)
         {
+            _livePointService = livePointService;
             _measurementAttemptService = measurementAttemptService;
             _measurementService = measurementService;
             _measurementSetPlusUnitService = measurementSetPlusUnitService;
@@ -64,6 +68,12 @@ namespace VueExample.Services.Vertx.Implementation
             await _measurementSetCollection.UpdateOneAsync(Builders<MeasurementSet>.Filter.Where(x => x.Id == measurementSet.Id),
                 Builders<MeasurementSet>.Update.Push(x => x.Points, point),
                 new UpdateOptions { IsUpsert = true });
+            await _livePointService.Create(new LivePoint {
+                Value = Convert.ToString(lastUpdate.Value, CultureInfo.InvariantCulture),
+                CharacteristicName = measurementSetPlusUnit.Characteristic.Name,
+                MeasurementName = measurement.Name,
+                Date = lastUpdate.Date
+            });
             return point;
         }
 

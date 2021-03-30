@@ -125,19 +125,22 @@ namespace VueExample
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
             services.AddDbContext<VisualControlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VisualControlContext")), ServiceLifetime.Transient);
+            services.AddDbContext<LivePointContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LivePointContext")), ServiceLifetime.Transient);
 
            // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
              services.AddScoped<IMongoDatabase>(s =>
                 new MongoClient(Configuration.GetConnectionString("Mongo")).GetDatabase("vertx_excel")
             );
+
+            services.AddScoped<IUserProvider, UserProvider>();
             services.AddTransient<IMdvService, MdvService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMeasurementAttemptService, MeasurementAttemptService>();
             services.AddTransient<IMeasurementSetService, MeasurementSetService>();
             services.AddTransient<IMeasurementSetPlusUnitService, MeasurementSetPlusUnitService>();
             services.AddTransient<IPointService, PointService>();
+            services.AddTransient<ILivePointService, LivePointService>();
             services.AddTransient<IAggregationService, AggregationService>();
-            services.AddScoped<IUserProvider, UserProvider>();
             services.AddTransient<IWaferMapProvider, WaferMapProvider>();
             services.AddTransient<IDeviceTypeProvider, DeviceTypeProvider>();
             services.AddTransient<IDieProvider, DieProvider>();
