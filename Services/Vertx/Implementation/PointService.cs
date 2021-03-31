@@ -68,12 +68,12 @@ namespace VueExample.Services.Vertx.Implementation
             await _measurementSetCollection.UpdateOneAsync(Builders<MeasurementSet>.Filter.Where(x => x.Id == measurementSet.Id),
                 Builders<MeasurementSet>.Update.Push(x => x.Points, point),
                 new UpdateOptions { IsUpsert = true });
-            // await _livePointService.Create(new LivePoint {
-            //     Value = Convert.ToString(lastUpdate.Value, CultureInfo.InvariantCulture),
-            //     CharacteristicName = measurementSetPlusUnit.Characteristic.Name,
-            //     MeasurementName = measurement.Name,
-            //     Date = lastUpdate.Date
-            // });
+            await _livePointService.Create(new LivePoint {
+                Value = Convert.ToString(lastUpdate.Value, CultureInfo.InvariantCulture),
+                CharacteristicName = measurementSetPlusUnit.Characteristic.Name,
+                MeasurementName = measurement.Name,
+                Date = lastUpdate.Date
+            });
             return point;
         }
 

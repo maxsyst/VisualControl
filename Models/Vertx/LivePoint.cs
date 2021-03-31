@@ -7,10 +7,10 @@ namespace VueExample.Models.Vertx
     public class LivePoint
     {
         [Column("id")]
-        public long Id { get; set; }
+        public Int64 Id { get; set; }
         [Column("value")]
         public string Value { get; set; }
-        [Column("characteriticName")]
+        [Column("characteristicName")]
         public string CharacteristicName { get; set; }
         [Column("date")]
         public DateTime Date { get; set; }
