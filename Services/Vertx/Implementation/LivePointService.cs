@@ -10,10 +10,10 @@ namespace VueExample.Services.Vertx.Implementation
 {
     public class LivePointService : ILivePointService
     {
-        private readonly LivePointContext _livePointContext;
-        public LivePointService(LivePointContext livePointContext)
+        private readonly ApplicationContext _livePointContext;
+        public LivePointService(ApplicationContext applicationContext)
         {
-            _livePointContext = livePointContext;
+            _livePointContext = applicationContext;
         }
         public async Task<LivePoint> Create(LivePoint livePoint)
         {

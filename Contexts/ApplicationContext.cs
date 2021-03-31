@@ -6,6 +6,7 @@ namespace VueExample.Contexts
 {
     public class ApplicationContext : DbContext 
     {        
+        public DbSet<Models.Vertx.LivePoint> LivePoints { get; set; }
         public DbSet<Models.Point> Point { get; set; }
         public DbSet<Graphic> Graphic { get; set; }
         public DbSet<Material> Material { get; set; }

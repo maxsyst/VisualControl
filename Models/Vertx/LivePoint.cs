@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VueExample.Models.Vertx
 {
-    [Table("Points")]
+    [Table("LivePoints")]
     public class LivePoint
     {
         [Column("id")]
