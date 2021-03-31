@@ -57,7 +57,7 @@ namespace VueExample.Services.Vertx.Implementation
             var measurementSetsIds = await GetAllByMeasurementIdsSetPlusUnitId(measurementId, measurementSetPlusUnitId);
             if (measurementSetsIds.Count > 0)
             {
-                await GetById(new ObjectId(measurementSetsIds.Last()));
+                return await GetById(new ObjectId(measurementSetsIds.Last()));
             }
             return null;
         }

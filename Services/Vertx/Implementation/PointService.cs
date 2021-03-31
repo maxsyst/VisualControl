@@ -68,12 +68,12 @@ namespace VueExample.Services.Vertx.Implementation
             await _measurementSetCollection.UpdateOneAsync(Builders<MeasurementSet>.Filter.Where(x => x.Id == measurementSet.Id),
                 Builders<MeasurementSet>.Update.Push(x => x.Points, point),
                 new UpdateOptions { IsUpsert = true });
-            await _livePointService.Create(new LivePoint {
-                Value = Convert.ToString(lastUpdate.Value, CultureInfo.InvariantCulture),
-                CharacteristicName = measurementSetPlusUnit.Characteristic.Name,
-                MeasurementName = measurement.Name,
-                Date = lastUpdate.Date
-            });
+            // await _livePointService.Create(new LivePoint {
+            //     Value = Convert.ToString(lastUpdate.Value, CultureInfo.InvariantCulture),
+            //     CharacteristicName = measurementSetPlusUnit.Characteristic.Name,
+            //     MeasurementName = measurement.Name,
+            //     Date = lastUpdate.Date
+            // });
             return point;
         }
 
@@ -125,9 +125,11 @@ namespace VueExample.Services.Vertx.Implementation
                         Id = measurement.Id.ToString(),
                         Name = measurement.Name,
                         CreationDate = measurement.CreationDate,
-                        Points = withoutBadPoints
-                            ? RemoveBadPoints(SiftPoints(pointsList, siftedK))
-                            : SiftPoints(pointsList, siftedK)
+                        Points = pointsList.Count > siftedK 
+                                                    ? withoutBadPoints
+                                                        ? RemoveBadPoints(SiftPoints(pointsList, siftedK))
+                                                        : SiftPoints(pointsList, siftedK)
+                                                    : pointsList           
                     }
                 }
             };
@@ -182,9 +184,12 @@ namespace VueExample.Services.Vertx.Implementation
                 }
 
                 measurementResponseModelWithPoints.Points = pointsList.ToList();
-                measurementResponseModelWithPoints.Points = withoutBadPoints
-                    ? RemoveBadPoints(SiftPoints(measurementResponseModelWithPoints.Points, siftedK))
-                    : SiftPoints(measurementResponseModelWithPoints.Points, siftedK);
+                if(measurementResponseModelWithPoints.Points.Count > siftedK) 
+                {
+                    measurementResponseModelWithPoints.Points = withoutBadPoints
+                        ? RemoveBadPoints(SiftPoints(measurementResponseModelWithPoints.Points, siftedK))
+                        : SiftPoints(measurementResponseModelWithPoints.Points, siftedK);
+                }
                 pointsDictionary.Add(measurementId, measurementResponseModelWithPoints);
                 currentDuration = currentDuration + nextDuration;
             }
@@ -201,9 +206,12 @@ namespace VueExample.Services.Vertx.Implementation
             {
                 var measurementResponseModelWithPoints =
                     await GetByMeasurement(new ObjectId(measurementId), characteristicName);
-                measurementResponseModelWithPoints.Points = withoutBadPoints
+                if(measurementResponseModelWithPoints.Points.Count > siftedK) 
+                {
+                    measurementResponseModelWithPoints.Points = withoutBadPoints
                     ? RemoveBadPoints(SiftPoints(measurementResponseModelWithPoints.Points, siftedK))
                     : SiftPoints(measurementResponseModelWithPoints.Points, siftedK);
+                }             
                 pointsDictionary.Add(measurementId, measurementResponseModelWithPoints);
             }
 
