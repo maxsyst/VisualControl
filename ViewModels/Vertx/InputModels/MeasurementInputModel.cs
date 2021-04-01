@@ -19,4 +19,11 @@ namespace VueExample.ViewModels.Vertx.InputModels
         public string Matching { get; set; }
         public string MatchingBoard { get; set; }
     }
+
+    public class MeasurementWithMdvInputModel
+    {
+        public MeasurementInputModel MeasurementInputModel { get; set; }
+        public string WaferId { get; set; }
+        public string Code { get; set; }
+    }
 }

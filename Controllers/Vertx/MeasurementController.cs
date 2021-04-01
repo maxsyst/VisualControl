@@ -15,18 +15,49 @@ namespace VueExample.Controllers.Vertx
     [Route("api/vertx/[controller]")]
     public class MeasurementController : Controller
     {
+        private readonly IMdvService _mdvService;
+        private readonly IMeasurementAttemptService _measurementAttemptService;
         private readonly IMeasurementService _measurementService;
         private readonly IMapper _mapper;
 
-        public MeasurementController(IMapper mapper, IMeasurementService measurementService)
+        public MeasurementController(IMapper mapper, IMeasurementService measurementService, IMdvService mdvService, IMeasurementAttemptService measurementAttemptService)
         {
             _mapper = mapper;
+            _mdvService = mdvService;
+            _measurementAttemptService = measurementAttemptService;
             _measurementService = measurementService;
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateMeasurement([FromBody] MeasurementInputModel measurementInputModel)
         {
+            var measurement = _mapper.Map<Measurement>(measurementInputModel);
+            MeasurementResponseModel measurementResponseModel;
+            try
+            {
+                measurementResponseModel =
+                    _mapper.Map<MeasurementResponseModel>(await _measurementService.Create(measurement, new ObjectId(measurementInputModel.MeasurementAttemptId)));
+            }
+            catch (DuplicateException e)
+            {
+                return Conflict(e);
+            }
+
+            return CreatedAtAction("CreateMeasurement", measurementResponseModel);
+        }
+
+        
+        [HttpPost("create/withmdv")]
+        public async Task<IActionResult> CreateMeasurementWithMdv([FromBody] MeasurementWithMdvInputModel measurementWithMdvInputModel)
+        {
+            var mdv = await _mdvService.GetByWaferAndCode(measurementWithMdvInputModel.WaferId, measurementWithMdvInputModel.Code);
+            if(mdv == null) 
+            {
+                return (IActionResult)NotFound();
+            }
+            var measurementAttempt = await _measurementAttemptService.GetMasterByMdvId(mdv.Id.ToString());
+            var measurementInputModel = measurementWithMdvInputModel.MeasurementInputModel;
+            measurementInputModel.MeasurementAttemptId = measurementAttempt.Id.ToString();
             var measurement = _mapper.Map<Measurement>(measurementInputModel);
             MeasurementResponseModel measurementResponseModel;
             try
