@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using VueExample.Exceptions;
 using VueExample.Models.Vertx;
 using VueExample.Services.Vertx.Abstract;
 
@@ -35,7 +36,7 @@ namespace VueExample.Services.Vertx.Implementation
             }
             else 
             {
-                return null;
+               throw new DuplicateException();
             }
         }
 

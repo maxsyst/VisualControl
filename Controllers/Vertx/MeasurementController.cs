@@ -36,7 +36,7 @@ namespace VueExample.Controllers.Vertx
             }
             catch (DuplicateException e)
             {
-                return Conflict();
+                return Conflict(e);
             }
 
             return CreatedAtAction("CreateMeasurement", measurementResponseModel);

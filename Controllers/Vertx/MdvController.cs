@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using VueExample.Exceptions;
 using VueExample.Models.Vertx;
 using VueExample.Services.Vertx.Abstract;
 using VueExample.ViewModels.Vertx.InputModels;
@@ -24,20 +26,26 @@ namespace VueExample.Controllers.Vertx
         [Route("create")]
         public async Task<IActionResult> CreateMdv([FromBody] MdvInputModel mdvInputModel)
         {
-            var mdv = await _mdvService.CreateMdv(new Mdv
+            if(String.IsNullOrEmpty(mdvInputModel.Code) || String.IsNullOrEmpty(mdvInputModel.WaferId)) 
             {
-                WaferId = mdvInputModel.WaferId,
-                Code = mdvInputModel.Code,
-                Description = mdvInputModel.Description
-            });
-            if(mdv == null) {
-                return (IActionResult)Conflict();
+                return BadRequest();
             }
-            else 
+            MdvResponseModel mdvResponse;
+            try
             {
-                return CreatedAtAction("CreateMdv", _mapper.Map<MdvResponseModel>(mdv));
+                var mdv = await _mdvService.CreateMdv(new Mdv
+                {
+                    WaferId = mdvInputModel.WaferId,
+                    Code = mdvInputModel.Code,
+                    Description = mdvInputModel.Description
+                });
+                mdvResponse = _mapper.Map<MdvResponseModel>(mdv);        
             }
-           
+            catch(DuplicateException e) 
+            {
+                return (IActionResult)Conflict(e);
+            }    
+            return CreatedAtAction("CreateMdv", mdvResponse);
         }
 
 
