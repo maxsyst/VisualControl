@@ -20,16 +20,23 @@ namespace VueExample.Services.Vertx.Implementation
 
         public async Task<Mdv> CreateMdv(Mdv mdv)
         {
-            await _mdvCollection.InsertOneAsync(mdv);
-            var measurementAttempt = new MeasurementAttempt
+            if(await GetByWaferAndCode(mdv.WaferId, mdv.Code) == null)
             {
-                MdvId = mdv.Id,
-                MeasurementsId = new List<string>(),
-                Name = "master",
-                RootMeasurementId = string.Empty
-            };
-            await _measurementAttemptCollection.InsertOneAsync(measurementAttempt);
-            return mdv;
+                await _mdvCollection.InsertOneAsync(mdv);
+                var measurementAttempt = new MeasurementAttempt
+                {
+                    MdvId = mdv.Id,
+                    MeasurementsId = new List<string>(),
+                    Name = "master",
+                    RootMeasurementId = string.Empty
+                };
+                await _measurementAttemptCollection.InsertOneAsync(measurementAttempt);
+                return mdv;
+            }
+            else 
+            {
+                return null;
+            }
         }
 
         public async Task<bool> Delete(ObjectId id)

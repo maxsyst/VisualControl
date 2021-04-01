@@ -30,8 +30,14 @@ namespace VueExample.Controllers.Vertx
                 Code = mdvInputModel.Code,
                 Description = mdvInputModel.Description
             });
-            var response = _mapper.Map<MdvResponseModel>(mdv);
-            return CreatedAtAction("CreateMdv", response);
+            if(mdv == null) {
+                return (IActionResult)Conflict();
+            }
+            else 
+            {
+                return CreatedAtAction("CreateMdv", _mapper.Map<MdvResponseModel>(mdv));
+            }
+           
         }
 
 

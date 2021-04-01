@@ -53,10 +53,8 @@ namespace VueExample.Services.Vertx.Implementation
                 return new Point();
             }
 
-            var measurementSet = await _measurementSetService.GetLastMeasurementSet(measurement.Id,
-                measurementSetPlusUnit.GeneratedId);
-            var isNecessary =
-                _measurementSetPlusUnitService.IsNecessaryToCreateNewMeasurementSet(isNewSet, measurementSet);
+            var measurementSet = await _measurementSetService.GetLastMeasurementSet(measurement.Id, measurementSetPlusUnit.GeneratedId);
+            var isNecessary = _measurementSetPlusUnitService.IsNecessaryToCreateNewMeasurementSet(isNewSet, measurementSet);
             if (isNecessary)
             {
                 measurementSet = await _measurementSetService.Create(measurement.Id, measurementSetPlusUnit.GeneratedId);
