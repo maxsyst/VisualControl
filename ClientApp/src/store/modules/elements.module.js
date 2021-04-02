@@ -1,39 +1,37 @@
 export const elements = {
   namespaced: true,
   state: {
-    elements: []
+    elements: [],
   },
 
   getters: {
-    getElements: state => [...state.elements]
+    getElements: (state) => [...state.elements],
   },
 
   mutations: {
-    fillElements (state, payload) {
-      state.elements = [...payload]
+    fillElements(state, payload) {
+      state.elements = [...payload];
     },
-    addtoElements (state, payload) {
+    addtoElements(state, payload) {
       state.elements = [...state.elements, {
         elementId: payload.elementId,
         name: payload.name,
         comment: payload.comment,
         docName: payload.docName,
         typeId: payload.typeId,
-        isAvaliableToDelete: true
-      }]
+        isAvaliableToDelete: true,
+      }];
     },
-    updateElement (state, payload) {
-      const updatedElement = state.elements.find(x => x.elementId === payload.elementId)
-      updatedElement.name = payload.name
-      updatedElement.comment = payload.comment
+    updateElement(state, payload) {
+      const updatedElement = state.elements.find((x) => x.elementId === payload.elementId);
+      updatedElement.name = payload.name;
+      updatedElement.comment = payload.comment;
     },
-    deleteFromElements (state, payload) {
-      state.elements = state.elements.filter(function (value) {
-        return value.name !== payload
-      })
+    deleteFromElements(state, payload) {
+      state.elements = state.elements.filter((value) => value.name !== payload);
     },
-    clearElements (state) {
-      state.elements = []
-    }
-  }
-}
+    clearElements(state) {
+      state.elements = [];
+    },
+  },
+};

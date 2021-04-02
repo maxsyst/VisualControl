@@ -129,7 +129,10 @@
       "parser": "babel-eslint",
       "ecmaVersion": 2020
     },
-    "rules": {},
+    "rules": {
+       "import/extensions": [0, { "<js>": "always" }],
+       "import/prefer-default-export": 0
+    },
     "overrides": [
       {
         "files": [

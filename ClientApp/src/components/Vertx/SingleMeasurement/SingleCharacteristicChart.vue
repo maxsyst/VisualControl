@@ -68,23 +68,24 @@
 </template>
 
 <script>
-import StartTimeAmChart from '../AmCharts/StartTimeAmChart'
-import VSwatches from 'vue-swatches'
+import VSwatches from 'vue-swatches';
+import StartTimeAmChart from '../AmCharts/StartTimeAmChart.vue';
+
 export default {
   props: ['characteristic', 'chartData', 'axisX', 'loaded', 'siftedK', 'withoutBadPoints'],
   components: {
-    StartTimeAmChart, VSwatches
+    StartTimeAmChart, VSwatches,
   },
-  data () {
+  data() {
     return {
       showSettings: false,
       rules: {
         siftedK: {
-          required: value => !!value || 'Требуется значение',
-          counter: value => value.length <= 500 || 'Макс 500 точек',
-          isNumber: value => Number.isInteger(value) || 'Введите число',
-          positive: value => +value > 0 || 'Введите положительное число'
-        }
+          required: (value) => !!value || 'Требуется значение',
+          counter: (value) => value.length <= 500 || 'Макс 500 точек',
+          isNumber: (value) => Number.isInteger(value) || 'Введите число',
+          positive: (value) => +value > 0 || 'Введите положительное число',
+        },
       },
       chartSettings: {
         type: 'singleFullPeriod',
@@ -92,39 +93,39 @@ export default {
         serieName: 'name',
         smoothing: {
           require: false,
-          power: 8
+          power: 8,
         },
         axisX: {
           strictMinMax: false,
-          min: 0
+          min: 0,
         },
         axisY: {
           strictMinMax: false,
           min: 0,
-          max: 0
+          max: 0,
         },
         colors: {
           backgroundColor: '#303030',
           textColor: '#ffffff',
           gridColor: '#ffcc00',
-          chartColor: '#ff0080'
-        }
-      }
-    }
+          chartColor: '#ff0080',
+        },
+      },
+    };
   },
   methods: {
-    showSettingsContainer: function () {},
-    withoutBadPointsChange: function (withoutBadPoints) {
-      this.$emit('withoutbadpoint-change', withoutBadPoints)
+    showSettingsContainer() {},
+    withoutBadPointsChange(withoutBadPoints) {
+      this.$emit('withoutbadpoint-change', withoutBadPoints);
     },
 
-    siftedKChange: function (k) {
-      this.$emit('siftedK-change', k)
-    }
+    siftedKChange(k) {
+      this.$emit('siftedK-change', k);
+    },
   },
-  async created () {
-    this.chartSettings.characteristic = { ...this.characteristic }
-    this.chartSettings.axisX = Object.assign({}, this.axisX)
-  }
-}
+  async created() {
+    this.chartSettings.characteristic = { ...this.characteristic };
+    this.chartSettings.axisX = { ...this.axisX };
+  },
+};
 </script>

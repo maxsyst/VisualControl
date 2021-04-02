@@ -51,7 +51,7 @@ namespace VueExample.Controllers.Vertx
         public async Task<IActionResult> CreateMeasurementWithMdv([FromBody] MeasurementWithMdvInputModel measurementWithMdvInputModel)
         {
             var mdv = await _mdvService.GetByWaferAndCode(measurementWithMdvInputModel.WaferId, measurementWithMdvInputModel.Code);
-            if(mdv == null) 
+            if (mdv == null) 
             {
                 return (IActionResult)NotFound();
             }
@@ -69,7 +69,6 @@ namespace VueExample.Controllers.Vertx
             {
                 return Conflict(e);
             }
-
             return CreatedAtAction("CreateMeasurement", measurementResponseModel);
         }
 
