@@ -393,125 +393,123 @@
 </template>
 
 <script>
-import { required } from "vuelidate/lib/validators";
+import { required } from 'vuelidate/lib/validators';
+
 export default {
   data() {
     return {
       menu: false,
       freakDividerParameters: [
-        "r<sub>DS(on)</sub> (сопротивление открытого канала при Uси = 0.02В)",
-        "R<sub>ds(on)</sub> (сопротивление открытого канала)"
+        'r<sub>DS(on)</sub> (сопротивление открытого канала при Uси = 0.02В)',
+        'R<sub>ds(on)</sub> (сопротивление открытого канала)',
       ],
-      defaultRequiredMessage: "Введите значение",
+      defaultRequiredMessage: 'Введите значение',
       deleteParameterDialog: false,
       measurementRecordings: [],
       e1: 0,
-      done: "loading"
+      done: 'loading',
     };
   },
 
-  props: ["id", "parameters", "dividers", "operation", "element"],
+  props: ['id', 'parameters', 'dividers', 'operation', 'element'],
 
   computed: {
-    isElementReady: function() {
+    isElementReady() {
       return this.parameters.length > 0 && this.validateElement();
-    }
+    },
   },
 
   methods: {
     async getAutoIdmr(waferId, stageName) {
       await this.$http
         .get(
-          `api/measurementrecording/getbyelement?waferId=${waferId}&elementName=${this.element.name}&stageName=${stageName}`
+          `api/measurementrecording/getbyelement?waferId=${waferId}&elementName=${this.element.name}&stageName=${stageName}`,
         )
-        .then(response => {
-          const data = response.data;
+        .then((response) => {
+          const { data } = response;
           if (response.status === 200) {
             this.measurementRecordings = data;
-            this.parameters.forEach(parameter => {
-              const currentMr = this.measurementRecordings.find(x =>
-                x.avStatisticParameters.includes(
-                  parameter.selectedStatParameter
-                )
-              );
+            this.parameters.forEach((parameter) => {
+              const currentMr = this.measurementRecordings.find((x) => x.avStatisticParameters.includes(
+                parameter.selectedStatParameter,
+              ));
               if (currentMr) {
                 parameter.statParameterArray = currentMr.avStatisticParameters;
                 if (!parameter.selectedStatParameter) {
-                  parameter.selectedStatParameter =
-                    parameter.statParameterArray[0];
+                  parameter.selectedStatParameter = parameter.statParameterArray[0];
                 }
                 parameter.waferId = waferId;
                 parameter.measurementRecording = currentMr.id;
                 parameter.shortLink.success = true;
-                parameter.shortLink.errorMessage = "";
+                parameter.shortLink.errorMessage = '';
               }
             });
 
-            this.$store.commit("exportkurb/updateElementAutoIdmr", {
+            this.$store.commit('exportkurb/updateElementAutoIdmr', {
               key: this.id,
               operation: this.operation.number,
               element: this.element.name,
-              done: "success"
+              done: 'success',
             });
           }
         })
-        .catch(error => {
-          this.$store.commit("exportkurb/updateElementAutoIdmr", {
+        .catch((error) => {
+          this.$store.commit('exportkurb/updateElementAutoIdmr', {
             key: this.id,
             operation: this.operation.number,
             element: this.element.name,
-            done: "fail"
+            done: 'fail',
           });
         });
     },
 
     cleanParameter(parameter) {
-      parameter.waferId = "";
+      parameter.waferId = '';
       parameter.measurementRecording = 0;
       parameter.statParameterArray = [];
-      parameter.shortLink = { value: "", success: "", errorMessage: "" };
+      parameter.shortLink = { value: '', success: '', errorMessage: '' };
     },
 
     createParameter() {
       const parameter = {
-        parameterName: { value: "", isValidDirty: false, isValid: true },
-        russianParameterName: { value: "", isValidDirty: false, isValid: true },
-        waferId: "",
-        measurementRecording: { id: "0", name: "Неизвестно" },
-        selectedStatParameter: "",
+        parameterName: { value: '', isValidDirty: false, isValid: true },
+        russianParameterName: { value: '', isValidDirty: false, isValid: true },
+        waferId: '',
+        measurementRecording: { id: '0', name: 'Неизвестно' },
+        selectedStatParameter: '',
         bounds: {
           lower: {
-            value: "",
+            value: '',
             isValidDirty: false,
             isValid: true,
-            errorMessages: []
+            errorMessages: [],
           },
           upper: {
-            value: "",
+            value: '',
             isValidDirty: false,
             isValid: true,
-            errorMessages: []
-          }
+            errorMessages: [],
+          },
         },
         dividerId: 1,
-        divider: "1.0",
+        divider: '1.0',
         statParameterArray: [],
-        shortLink: { value: "", success: "", errorMessage: "" }
+        shortLink: { value: '', success: '', errorMessage: '' },
       };
       this.parameters.push(parameter);
-      this.e1++;
+      this.e1 += 1;
     },
     deleteParameter() {
       this.parameters.splice(this.e1 - 1, 1);
       this.deleteParameterDialog = false;
-      this.e1--;
+      this.e1 -= 1;
     },
 
     validateElement() {
       this.$v.$touch();
       if (
-        !this.$v.operation.number.required ||
-        !this.$v.element.name.required
+        !this.$v.operation.number.required
+        || !this.$v.element.name.required
       ) {
         return false;
       }
@@ -540,7 +538,7 @@ export default {
       }
 
       if (currentParameter.shortLink.success) {
-        const isNumber = n => !isNaN(parseFloat(n)) && !isNaN(n - 0);
+        const isNumber = (n) => !Number.isNaN(parseFloat(n)) && !Number.isNaN(n - 0);
         const lowerBound = currentParameter.bounds.lower;
         const upperBound = currentParameter.bounds.upper;
         lowerBound.errorMessages = [];
@@ -552,96 +550,95 @@ export default {
         if (lowerBound.value && !isNumber(lowerBound.value)) {
           lowerBound.isValid = false;
           lowerBound.errorMessages.push(
-            "Введите значение в правильном формате"
+            'Введите значение в правильном формате',
           );
         }
         if (upperBound.value && !isNumber(upperBound.value)) {
           upperBound.isValid = false;
           upperBound.errorMessages.push(
-            "Введите значение в правильном формате"
+            'Введите значение в правильном формате',
           );
         }
         if (!lowerBound.value && !upperBound.value) {
           lowerBound.isValid = false;
           upperBound.isValid = false;
           lowerBound.errorMessages.push(
-            "Должна быть установлена хотя бы одна граница"
+            'Должна быть установлена хотя бы одна граница',
           );
           upperBound.errorMessages.push(
-            "Должна быть установлена хотя бы одна граница"
+            'Должна быть установлена хотя бы одна граница',
           );
         }
-        ("");
+        ('');
         if (
-          lowerBound.value &&
-          upperBound.value &&
-          lowerBound.isValid &&
-          upperBound.isValid &&
-          parseFloat(lowerBound.value) > parseFloat(upperBound.value)
+          lowerBound.value
+          && upperBound.value
+          && lowerBound.isValid
+          && upperBound.isValid
+          && parseFloat(lowerBound.value) > parseFloat(upperBound.value)
         ) {
           upperBound.isValid = false;
           upperBound.errorMessages.push(
-            "Верхняя граница должна быть больше нижней"
+            'Верхняя граница должна быть больше нижней',
           );
         }
       }
 
       if (
-        currentParameter.russianParameterName.isValid &&
-        currentParameter.parameterName.isValid &&
-        currentParameter.shortLink.success &&
-        currentParameter.bounds.lower.isValid &&
-        currentParameter.bounds.upper.isValid
+        currentParameter.russianParameterName.isValid
+        && currentParameter.parameterName.isValid
+        && currentParameter.shortLink.success
+        && currentParameter.bounds.lower.isValid
+        && currentParameter.bounds.upper.isValid
       ) {
         return true;
       }
       return false;
     },
     async shortLinkHandler(shortLink, index) {
-      const generatedId = shortLink.split("=")[1];
+      const generatedId = shortLink.split('=')[1];
       const parameter = this.parameters[index];
       await this.$http
         .get(`api/shortlink/${generatedId}/element-export`)
-        .then(response => {
-          const data = response.data;
+        .then((response) => {
+          const { data } = response;
           if (response.status === 200) {
             this.measurementRecordings = data;
             const currentMeasurementRecording = this.measurementRecordings[0];
-            parameter.statParameterArray =
-              currentMeasurementRecording.avStatisticParameters;
+            parameter.statParameterArray = currentMeasurementRecording.avStatisticParameters;
             if (!parameter.selectedStatParameter) {
               parameter.selectedStatParameter = parameter.statParameterArray[0];
             }
             parameter.waferId = currentMeasurementRecording.waferId;
             parameter.measurementRecording = currentMeasurementRecording.id;
             parameter.shortLink.success = true;
-            parameter.shortLink.errorMessage = "";
+            parameter.shortLink.errorMessage = '';
           } else {
             parameter.shortLink.success = false;
             parameter.shortLink.errorMessage = data.reduce(
-              (r, c) => r + "/n" + c.message
+              (r, c) => `${r}/n${c.message}`,
             );
           }
         })
-        .catch(error => {
+        .catch(() => {
           parameter.shortLink.success = false;
-          parameter.shortLink.errorMessage = "Не удалось обработать ссылку";
+          parameter.shortLink.errorMessage = 'Не удалось обработать ссылку';
         });
     },
     changeDividerId(parameter) {
       parameter.divider = this.freakDividerParameters.includes(
-        parameter.selectedStatParameter
+        parameter.selectedStatParameter,
       )
         ? (
-            1 / this.dividers.find(_ => _.id == parameter.dividerId).dividerK
-          ).toFixed(3)
-        : (+this.dividers.find(_ => _.id == parameter.dividerId)
-            .dividerK).toFixed(3);
+          1 / this.dividers.find((_) => _.id == parameter.dividerId).dividerK
+        ).toFixed(3)
+        : (+this.dividers.find((_) => _.id == parameter.dividerId)
+          .dividerK).toFixed(3);
     },
 
     changeMeasurementRecording(parameter) {
       parameter.statParameterArray = this.measurementRecordings.filter(
-        x => x.id == parameter.measurementRecording
+        (x) => x.id == parameter.measurementRecording,
       )[0].avStatisticParameters;
     },
 
@@ -658,31 +655,31 @@ export default {
       } else {
         this.e1 = n - 1;
       }
-    }
+    },
   },
   watch: {
     isElementReady: {
-      handler: function(newValue) {
-        this.$store.commit("exportkurb/updateElementsReady", {
+      handler(newValue) {
+        this.$store.commit('exportkurb/updateElementsReady', {
           key: this.id,
-          ready: newValue
+          ready: newValue,
         });
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   validations: {
     operation: {
       number: {
-        required
-      }
+        required,
+      },
     },
     element: {
       name: {
-        required
-      }
-    }
-  }
+        required,
+      },
+    },
+  },
 };
 </script>
 

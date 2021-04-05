@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using MathNet.Numerics;
 using VueExample.Models.SRV6;
 
@@ -5843,12 +5841,12 @@ namespace VueExample.StatisticsCore
             var tenList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => tenIndex < 0 ? yListdouble[0] : yListdouble[tenIndex]).ToList();
 
             var returnList = new List<Statistics>
-                {
+            {
 
                     GetFullStatisticsFromList(sixList, "R<sub>IS(6V)</sub>", "Ом"),
                     GetFullStatisticsFromList(tenList, "R<sub>IS(10V)</sub>", "Ом"),
 
-                };
+            };
             return returnList;
         }
 
