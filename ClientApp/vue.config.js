@@ -1,7 +1,7 @@
 module.exports = {
   lintOnSave: false,
   devServer: {
-    proxy: 'http://192.168.11.218:8080',
+    proxy: 'http://localhost:5000',
   },
   outputDir: 'dist',
 };

@@ -57,7 +57,8 @@ namespace VueExample.Providers.Srv6
 
         public async Task<List<Element>> GetByDieType(int dieTypeId)
         {
-            var elementList = await _srv6Context.Elements.Join(_srv6Context.DieTypeElements, 
+            var elementList = await _srv6Context.Elements
+                                                .Join(_srv6Context.DieTypeElements, 
                                                         c => c.ElementId, 
                                                         p => p.ElementId, 
                                                         (c,p) => new {Element = c, DieTypeElement = p})

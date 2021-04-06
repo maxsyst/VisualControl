@@ -413,7 +413,7 @@ export default {
     async goToCreatingMode() {
       this.initialDialog = false;
       this.mode = 'creating';
-      await this.fillSmpStorage().then((r) => this.$router.push({ name: 'kurbatovparameter-creating', params: { dieType: this.selectedDieTypeId } }));
+      await this.fillSmpStorage().then(() => this.$router.push({ name: 'kurbatovparameter-creating', params: { dieType: this.selectedDieTypeId } }));
     },
 
     async fillSmpStorage() {
@@ -433,7 +433,7 @@ export default {
         })
         .then(() => {
           if (_.isEmpty(this.selectedPattern)) {
-            this.showSnackbar('Шаблоны не найдены');
+            this.showSnackbar('Нет созданных шаблонов');
             this.reset();
           }
         })

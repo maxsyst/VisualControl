@@ -140,5 +140,11 @@ namespace VueExample.Providers.Srv6
             }
             return standartPatternFull;
         }
+
+        public async Task<List<StandartPattern>> GetAll()
+        {
+            var standartPatterns = (List<StandartPatternEntity>)(await _standartPatternProvider.GetAll());
+            return _mapper.Map<List<StandartPatternEntity>, List<StandartPattern>>(standartPatterns);
+        }
     }
 }
