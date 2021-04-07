@@ -299,7 +299,7 @@ export default {
           .then((response) => { this.patterns = response.data; this.selectedPattern = this.patterns.find((x) => x.id === selectedPatternId) || {}; })
           .then(() => { if (!this.patterns.map((x) => x.id).includes(this.selectedPattern.id)) throw new Error(); })
           .then(async () => await this.getSelectedPattern(this.selectedPattern))
-          .catch((error) => { this.showSnackbar('Ошибка пути'); this.reset(); });
+          .catch(() => { this.showSnackbar('Ошибка пути'); this.reset(); });
       }
     },
 
@@ -410,14 +410,14 @@ export default {
           this.initialDialog = false;
           this.closeLoading();
         })
-        .catch((error) => { this.showSnackbar('В шаблоне не содержатся данные'); this.closeLoading(); });
+        .catch(() => { this.showSnackbar('В шаблоне не содержатся данные'); this.closeLoading(); });
     },
 
     async getAllDieTypes() {
       await this.$http
         .get('/api/dietype/all')
         .then((response) => { this.dieTypes = response.data; })
-        .catch((error) => this.showSnackbar('Типы кристаллов не найдены в БД'));
+        .catch(() => this.showSnackbar('Типы кристаллов не найдены в БД'));
     },
 
     async getProcessByDieId(selectedDieTypeId) {

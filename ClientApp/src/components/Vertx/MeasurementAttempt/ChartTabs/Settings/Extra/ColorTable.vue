@@ -29,19 +29,19 @@
   </v-simple-table>
 </template>
 <script>
-import VSwatches from 'vue-swatches'
+import VSwatches from 'vue-swatches';
 
 export default {
   name: 'ColorTable',
   components: {
-    VSwatches
+    VSwatches,
   },
   props: ['colorObject'],
-  data () {
+  data() {
     return {
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style scoped>

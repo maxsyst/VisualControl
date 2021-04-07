@@ -193,9 +193,9 @@ export default {
 
   watch:
     {
-      selectedWafer(val, oldVal) {
-        if (val != null) {
-          this.waferId = this.selectedWafer;
+      selectedWafer(newValue) {
+        if (newValue != null) {
+          this.waferId = newValue;
           this.checkboxOnlyBad = true;
           this.checkboxAllTypes = true;
         }

@@ -38,24 +38,24 @@
 
 <script>
 
-import TestTimeChartTab from '../MeasurementAttempt/ChartTabs/TestTimeChartTab'
-import TotalTimeChartTab from '../MeasurementAttempt/ChartTabs/TotalTimeChartTab'
-import StartTimeChartTab from '../MeasurementAttempt/ChartTabs/StartTimeChartTab'
+import TestTimeChartTab from './ChartTabs/TestTimeChartTab.vue';
+import TotalTimeChartTab from './ChartTabs/TotalTimeChartTab.vue';
+import StartTimeChartTab from './ChartTabs/StartTimeChartTab.vue';
 
 export default {
   name: 'ChartTabs',
   components: {
     TestTimeTab: TestTimeChartTab,
     TotalTimeTab: TotalTimeChartTab,
-    StartTimeTab: StartTimeChartTab
+    StartTimeTab: StartTimeChartTab,
   },
   props: ['characteristic', 'sourceId'],
-  data () {
+  data() {
     return {
-      activeTab: 'testTimeTab'
-    }
-  }
-}
+      activeTab: 'testTimeTab',
+    };
+  },
+};
 </script>
 
 <style scoped>

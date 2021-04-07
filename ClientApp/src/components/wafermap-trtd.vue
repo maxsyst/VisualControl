@@ -7,7 +7,8 @@
                     :points="cutting" />
 
       <g v-for="(die, key) in dies" :key="die.id">
-        <rect  :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" @click="showmenu" @contextmenu="showmenu" />
+        <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill"
+              @click="showmenu" @contextmenu="showmenu" />
 
       </g>
 
@@ -55,11 +56,8 @@
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
-
 export default {
   props: ['waferId', 'defectiveDiesSearchProps', 'streetSize', 'fieldHeight', 'fieldWidth'],
-  components: { Loading },
   data() {
     return {
       dies: [],
@@ -89,9 +87,6 @@ export default {
             const defects = response.data;
             const request = { defects, dieCode: this.dies.find((x) => x.id === this.selectedDieId).code };
             this.$emit('show-footer', request);
-          })
-          .catch((error) => {
-
           });
       },
 
@@ -113,10 +108,10 @@ export default {
     {
       waferId: {
         immediate: true,
-        async handler(newVal, oldVal) {
+        async handler(newValue) {
           this.isloading = true;
           const fieldObject = {};
-          fieldObject.waferId = this.waferId;
+          fieldObject.waferId = newValue;
           fieldObject.fieldHeight = this.fieldHeight;
           fieldObject.fieldWidth = this.fieldWidth;
           fieldObject.streetSize = this.streetSize;
@@ -146,15 +141,17 @@ export default {
             .then((response) => {
               this.defectiveDies = response.data;
             })
-            .catch((error) => {
+            .catch(() => {
               this.defectiveDies = [];
             });
         } else {
-          this.$http.get(`/api/defectivedie/getbydefecttype?waferId=${this.waferId}&defectTypeId=${this.defectiveDiesSearchProps.defectType}&dangerLevelId=${this.defectiveDiesSearchProps.dangerLevel}`)
+          this.$http.get(`/api/defectivedie/getbydefecttype?waferId=${this.waferId}
+                                                            &defectTypeId=${this.defectiveDiesSearchProps.defectType}
+                                                            &dangerLevelId=${this.defectiveDiesSearchProps.dangerLevel}`)
             .then((response) => {
               this.defectiveDies = response.data;
             })
-            .catch((error) => {
+            .catch(() => {
               this.defectiveDies = [];
             });
         }
@@ -168,7 +165,7 @@ export default {
         }
 
         if (this.dies.length > 0 && this.defectiveDies.length > 0) {
-          for (var i = 0; i < this.defectiveDies.length; i++) {
+          for (let i = 0; i < this.defectiveDies.length; i += 1) {
             // Bad smell
             this.dies.find((d) => d.id === this.defectiveDies[i].dieId).fill = this.defectiveDies[i].color;
             this.dies.find((d) => d.id === this.defectiveDies[i].dieId).isActive = true;
@@ -178,8 +175,8 @@ export default {
 
       fieldWidth: {
         immediate: true,
-        handler(newVal, oldVal) {
-          this.fieldViewBox = `0 0 ${this.fieldHeight} ${this.fieldWidth}`;
+        handler(newValue) {
+          this.fieldViewBox = `0 0 ${this.fieldHeight} ${newValue}`;
         },
       },
 
@@ -190,23 +187,19 @@ export default {
       cutting() {
         // ONLY IF HEIGHT === WIDTH
         const bBorder = this.fieldHeight / 6;
-        const tBorder = this.fieldHeight / 6 * 5;
+        const tBorder = (this.fieldHeight / 6) * 5;
         if (this.initialOrientation === -1) {
           return '0,0 0,0';
         }
         switch (this.initialOrientation) {
           case 0:
             return `${bBorder},${this.fieldHeight} ${tBorder},${this.fieldHeight}`;
-            break;
           case 90:
             return `0,${bBorder} 0,${tBorder}`;
-            break;
           case 180:
             return `${bBorder},0 ${tBorder},0`;
-            break;
           case 270:
             return `${this.fieldHeight},${bBorder} ${this.fieldHeight},${tBorder}`;
-            break;
           default:
             return '0,0 0,0';
         }

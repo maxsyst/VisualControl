@@ -1,10 +1,10 @@
-<template>   
+<template>
      <v-skeleton-loader v-if="loading"
                           class="mx-auto"
                           type="date-picker-days">
     </v-skeleton-loader>
     <v-container v-else>
-        <v-row>            
+        <v-row>
             <v-col lg="6">
                 <v-row>
                 <v-simple-table>
@@ -20,7 +20,13 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><v-chip color="indigo" label v-html="statParameter.unit.trim() ? statParameter.shortStatisticsName + ', ' + statParameter.unit : statParameter.shortStatisticsName" dark></v-chip></td>
+                            <td><v-chip color="indigo"
+                                        label
+                                        v-html="statParameter.unit.trim()
+                                            ? statParameter.shortStatisticsName + ', ' + statParameter.unit : statParameter.shortStatisticsName"
+                                            dark>
+                                </v-chip>
+                            </td>
                             <td>{{ statParameter.expectedValue }}</td>
                             <td>{{ statParameter.standartDeviation }}</td>
                             <td>{{ statParameter.minimum }}</td>
@@ -74,67 +80,72 @@
             </v-col>
         </v-row>
         <v-row>
-            
+
         </v-row>
     </v-container>
 </template>
 <script>
-    import GradientWafer from './gradient-wafer.vue' 
-    import GradientHstg from './gradient-histogram.vue' 
-    export default {
-        props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
-        components: {
-            "gradient-map": GradientWafer,
-            "gradient-hstg": GradientHstg
-        },
-        data() {
-            return {
-               loading: false,
-               activeTab: "gradientMapTab",
-               gradientData: {},
-               stepsQuantity: 32
-        }
-    },
+import GradientWafer from './gradient-wafer.vue';
+import GradientHstg from './gradient-histogram.vue';
 
-    methods: {
-        deleteByColor(dieList) {
-            this.$store.dispatch("wafermeas/updateSelectedDies", this.selectedDies.filter(x => !dieList.includes(x)));
-        }
-    },
+export default {
+  props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
+  components: {
+    'gradient-map': GradientWafer,
+    'gradient-hstg': GradientHstg,
+  },
+  data() {
+    return {
+      loading: false,
+      activeTab: 'gradientMapTab',
+      gradientData: {},
+      stepsQuantity: 32,
+    };
+  },
 
-    watch: {
-        selectedDies: async function(newVal) {
-            this.gradientData = (await this.$http
-                .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({measurementRecordingId: this.measurementId,
-                                                                                        stepsQuantity: this.stepsQuantity,
-                                                                                        divider: this.divider, 
-                                                                                        keyGraphicState: this.keyGraphicState, 
-                                                                                        statParameter: this.statParameter.statisticsName,
-                                                                                        k: this.statisticKf,
-                                                                                        selectedDiesId: [...this.selectedDies]})}`)).data
-        }
+  methods: {
+    deleteByColor(dieList) {
+      this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies.filter((x) => !dieList.includes(x)));
     },
+  },
 
-    computed:
+  watch: {
+    async selectedDies(newValue) {
+      this.gradientData = (await this.$http
+        .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({
+          measurementRecordingId: this.measurementId,
+          stepsQuantity: this.stepsQuantity,
+          divider: this.divider,
+          keyGraphicState: this.keyGraphicState,
+          statParameter: this.statParameter.statisticsName,
+          k: this.statisticKf,
+          selectedDiesId: [...newValue],
+        })}`)).data;
+    },
+  },
+
+  computed:
     {
       selectedDies() {
-        return this.$store.getters['wafermeas/selectedDies']
-      }
+        return this.$store.getters['wafermeas/selectedDies'];
+      },
     },
 
-    async mounted() {
-        this.loading = true
-        this.gradientData = (await this.$http
-            .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({measurementRecordingId: this.measurementId,
-                                                                                      stepsQuantity: this.stepsQuantity,
-                                                                                      divider: this.divider, 
-                                                                                      keyGraphicState: this.keyGraphicState, 
-                                                                                      statParameter: this.statParameter.statisticsName,
-                                                                                      k: this.statisticKf,
-                                                                                      selectedDiesId: [...this.selectedDies]})}`)).data
-        this.loading = false
-    }
-}
+  async mounted() {
+    this.loading = true;
+    this.gradientData = (await this.$http
+      .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({
+        measurementRecordingId: this.measurementId,
+        stepsQuantity: this.stepsQuantity,
+        divider: this.divider,
+        keyGraphicState: this.keyGraphicState,
+        statParameter: this.statParameter.statisticsName,
+        k: this.statisticKf,
+        selectedDiesId: [...this.selectedDies],
+      })}`)).data;
+    this.loading = false;
+  },
+};
 </script>
 
 <style scoped>

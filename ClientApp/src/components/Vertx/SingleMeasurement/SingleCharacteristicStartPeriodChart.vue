@@ -57,14 +57,15 @@
 </template>
 
 <script>
-import StartTimeAmChart from '../AmCharts/StartTimeAmChart'
-import VSwatches from 'vue-swatches'
+import VSwatches from 'vue-swatches';
+import StartTimeAmChart from '../AmCharts/StartTimeAmChart';
+
 export default {
   props: ['characteristic', 'chartData', 'axisX', 'loaded'],
   components: {
-    StartTimeAmChart, VSwatches
+    StartTimeAmChart, VSwatches,
   },
-  data () {
+  data() {
     return {
       showSettings: false,
       chartSettings: {
@@ -73,30 +74,30 @@ export default {
         serieName: 'name',
         smoothing: {
           require: false,
-          power: 8
+          power: 8,
         },
         axisX: {
           strictMinMax: true,
           min: 0,
-          max: 10
+          max: 10,
         },
         axisY: {
           strictMinMax: false,
           min: 0,
-          max: 0
+          max: 0,
         },
         colors: {
           backgroundColor: '#303030',
           textColor: '#ffffff',
           gridColor: '#ffcc00',
-          chartColor: '#8E2DE2'
-        }
-      }
-    }
+          chartColor: '#8E2DE2',
+        },
+      },
+    };
   },
-  async created () {
-    this.chartSettings.characteristic = { ...this.characteristic }
-    this.chartSettings.axisX = Object.assign({}, this.axisX)
-  }
-}
+  async created() {
+    this.chartSettings.characteristic = { ...this.characteristic };
+    this.chartSettings.axisX = { ...this.axisX };
+  },
+};
 </script>

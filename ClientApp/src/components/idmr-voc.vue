@@ -118,14 +118,20 @@
   <v-row justify="center">
     <v-dialog v-model="editing.dialog" persistent max-width="450px">
         <v-card>
-        <v-card-title><v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Название операции вводить без оп.</v-chip></v-card-title>
+        <v-card-title>
+          <v-chip color="pink" label text-color="white"><v-icon left>warning</v-icon>Название операции вводить без оп.</v-chip>
+        </v-card-title>
         <v-card-text style="height: 200px;">
             <v-text-field outlined label="Старое название операции" readonly v-model="editing.measurementRecording.name"></v-text-field>
             <v-text-field outlined label="Новое название операции" v-model="editing.newName"></v-text-field>
         </v-card-text>
         <v-card-actions class="d-flex justify-lg-space-between">
            <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
-           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name" color="success" @click="updateMeasurementRecordingName(editing.measurementRecording, editing.newName)">Обновить название</v-btn>
+           <v-btn v-if="editing.newName && editing.newName!==editing.measurementRecording.name"
+                  color="success"
+                  @click="updateMeasurementRecordingName(editing.measurementRecording, editing.newName)">
+                  Обновить название
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -179,7 +185,7 @@ export default {
             const { processId } = response.data;
             this.$router.push({ name: 'stagetable', params: { processId } });
           })
-          .catch((error) => {
+          .catch(() => {
             this.showSnackbar('Ошибка сервера');
           });
       },
@@ -240,12 +246,12 @@ export default {
 
       async deleteSelectedMeasurements(selectedMeasurements) {
         await this.$http.delete('/api/measurementrecording/delete/list', { data: selectedMeasurements })
-          .then((response) => {
+          .then(() => {
             this.stagesArray[this.e1 - 1].measurementRecordingList = this.stagesArray[this.e1 - 1].measurementRecordingList.filter((x) => !selectedMeasurements.includes(x.id));
             this.showSnackbar(`Удалено измерений -> ${selectedMeasurements.length}`);
             this.wipeDeleting();
           })
-          .catch((error) => {
+          .catch(() => {
             this.showSnackbar('Ошибка при удалении');
           });
       },
@@ -258,7 +264,7 @@ export default {
             this.stagesArray[this.e1 - 1].measurementRecordingList.find((x) => x.id == response.data.id).name = response.data.name;
             this.wipeEditing();
           })
-          .catch((error) => {
+          .catch(() => {
             this.showSnackbar('Ошибка при изменении названия');
           });
       },
@@ -319,10 +325,10 @@ export default {
             },
           },
         })
-          .then((response) => {
+          .then(() => {
             this.showSnackbar('Этап успешно изменен');
           })
-          .catch((error) => {
+          .catch(() => {
             this.showSnackbar('Произошла ошибка при изменении этапа');
           });
       },
@@ -342,7 +348,7 @@ export default {
           .then((response) => {
             this.showSnackbar(`Элемент успешно изменен на ${response.data.name}`);
           })
-          .catch((error) => {
+          .catch(() => {
             this.showSnackbar('Произошла ошибка при изменении элемента');
           });
       },
@@ -365,7 +371,7 @@ export default {
       },
     },
 
-    async selectedDieType(newVal, oldVal) {
+    async selectedDieType(newVal) {
       if (newVal !== 0) {
         this.showLoading('Загрузка...');
         this.$router.push({ name: 'idmrvoc', params: { waferId: this.waferId, selectedDieType: newVal } });

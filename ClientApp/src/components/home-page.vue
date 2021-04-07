@@ -1,5 +1,5 @@
 <template>
-    <v-container> 
+    <v-container>
       <div class="d-flex flex-row justify-center align-center ma-4">
         <div>
           <v-card
@@ -200,10 +200,10 @@
 
 <script>
 export default {
-  data () {
-    return {}
-  }
-}
+  data() {
+    return {};
+  },
+};
 </script>
 
 <style scoped>

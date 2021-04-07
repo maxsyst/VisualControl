@@ -77,12 +77,10 @@
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
 import { mapGetters } from 'vuex';
 
 export default {
   props: ['viewMode'],
-  components: { Loading },
   data() {
     return {
       dies: [],
@@ -134,6 +132,7 @@ export default {
     },
 
   watch: {
+    // eslint-disable-next-line func-names
     'wafer.id': function (newVal) {
       this.dies = this.wafer.formedMapBig.dies;
       this.initialOrientation = +this.wafer.formedMapBig.orientation;
@@ -164,14 +163,14 @@ export default {
             die.isActive = false;
           });
           if (this.mapMode === 'selected') {
-            for (let i = 0; i < this.avbSelectedDies.length; i++) {
+            for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
               const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
               die.fill = '#8C9EFF';
               die.text = '#303030';
               die.isActive = true;
             }
 
-            for (let i = 0; i < this.selectedDies.length; i++) {
+            for (let i = 0; i < this.selectedDies.length; i += 1) {
               const die = this.dies.find((d) => d.id === this.selectedDies[i]);
               die.fill = '#3D5AFE';
               die.text = '#FFF9C4';
@@ -194,7 +193,7 @@ export default {
 
     mapMode(newVal) {
       if (newVal === 'selected') {
-        for (let i = 0; i < this.avbSelectedDies.length; i++) {
+        for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
           const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
           die.fill = '#8C9EFF';
           die.text = '#303030';
@@ -202,7 +201,7 @@ export default {
           die.isActive = true;
         }
 
-        for (let i = 0; i < this.selectedDies.length; i++) {
+        for (let i = 0; i < this.selectedDies.length; i += 1) {
           const die = this.dies.find((d) => d.id === this.selectedDies[i]);
           die.fill = '#3D5AFE';
           die.text = '#FFF9C4';
@@ -232,14 +231,14 @@ export default {
             die.isActive = false;
           });
           if (this.mapMode === 'selected') {
-            for (let i = 0; i < this.avbSelectedDies.length; i++) {
+            for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
               const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
               die.fill = '#8C9EFF';
               die.text = '#303030';
               die.isActive = true;
             }
 
-            for (let i = 0; i < selectedDies.length; i++) {
+            for (let i = 0; i < selectedDies.length; i += 1) {
               const die = this.dies.find((d) => d.id === selectedDies[i]);
               die.fill = '#3D5AFE';
               die.text = '#FFF9C4';
@@ -278,7 +277,7 @@ export default {
       cutting() {
         // ONLY IF HEIGHT === WIDTH
         const bBorder = this.size.fieldHeight / 6;
-        const tBorder = this.size.fieldHeight / 6 * 5;
+        const tBorder = (this.size.fieldHeight / 6) * 5;
         if (this.initialOrientation === -1) {
           return '0,0 0,0';
         }

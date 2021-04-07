@@ -6,7 +6,12 @@
                     <v-col lg="12">
                         <v-card class="elevation-8" color="#303030">
                             <v-card-text>
-                                <v-chip class="d-lg-flex" color="indigo" @click="$router.push({ name: 'wafer-path', params: { waferId: waferId } })" x-large label v-html="waferId" dark></v-chip>
+                                <v-chip class="d-lg-flex"
+                                        color="indigo"
+                                        @click="$router.push({ name: 'wafer-path', params: { waferId: waferId } })"
+                                        x-large label
+                                        v-html="waferId" dark>
+                                </v-chip>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -19,7 +24,11 @@
                         <v-card class="elevation-8" color="#303030">
                             <v-card-text>
                                 <p>Партия</p>
-                                <v-chip class="d-lg-block" v-if="parcel.name==='Неизвестно'" color="pink darken-1" label v-html="parcel.name" dark></v-chip>
+                                <v-chip class="d-lg-block"
+                                        v-if="parcel.name==='Неизвестно'"
+                                        color="pink darken-1"
+                                        label v-html="parcel.name" dark>
+                                </v-chip>
                                 <v-chip class="d-lg-block" v-else color="indigo" label v-html="parcel.name" dark></v-chip>
                             </v-card-text>
                             <v-card-actions>
@@ -43,7 +52,11 @@
                         <v-card class="elevation-8" color="#303030">
                             <v-card-text>
                                 <p>Шаблон</p>
-                                <v-chip class="d-lg-block" v-if="codeProduct.name==='Неизвестно'" color="pink darken-1" label v-html="codeProduct.name" dark></v-chip>
+                                <v-chip class="d-lg-block"
+                                        v-if="codeProduct.name==='Неизвестно'"
+                                        color="pink darken-1" label
+                                        v-html="codeProduct.name" dark>
+                                </v-chip>
                                 <v-chip class="d-lg-block" v-else color="indigo" label v-html="codeProduct.name" dark></v-chip>
                             </v-card-text>
                         </v-card>
@@ -60,7 +73,10 @@
                         <v-card class="elevation-8" color="#303030">
                             <v-card-text>
                                 <p>Этап</p>
-                                <v-chip class="d-lg-block" v-if="stage.stageName === 'Неизвестно'" color="pink darken-1" label v-html="stage.stageName" dark></v-chip>
+                                <v-chip class="d-lg-block"
+                                        v-if="stage.stageName === 'Неизвестно'"
+                                        color="pink darken-1" label v-html="stage.stageName" dark>
+                                </v-chip>
                                 <v-chip class="d-lg-block" v-else color="indigo" label v-html="stage.stageName" dark></v-chip>
                             </v-card-text>
                             <v-card-actions>
@@ -84,7 +100,9 @@
                 <v-card class="elevation-8" color="#303030">
                     <v-card-text>
                         <p>Операция</p>
-                        <v-chip class="d-lg-block" v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark></v-chip>
+                        <v-chip class="d-lg-block"
+                                v-if="measurement.name === 'Не выбрано'" color="pink darken-1" label v-html="measurement.name" dark>
+                        </v-chip>
                         <v-chip class="d-lg-block" v-else color="indigo" label v-html="measurement.name" dark></v-chip>
                     </v-card-text>
                     <v-card-actions>
@@ -113,7 +131,10 @@
                 <v-card class="elevation-8" color="#303030">
                     <v-card-text>
                         <p>Элемент</p>
-                        <v-chip class="d-lg-block" v-if="element.name === 'Неизвестно'" color="pink darken-1" label v-html="element.name" dark></v-chip>
+                        <v-chip class="d-lg-block"
+                                v-if="element.name === 'Неизвестно'"
+                                color="pink darken-1" label v-html="element.name" dark>
+                        </v-chip>
                         <v-chip class="d-lg-block" v-else color="indigo" label v-html="element.name" dark></v-chip>
                     </v-card-text>
                     <v-card-actions>
@@ -162,7 +183,8 @@
                             </v-text-field>
                         </v-col>
                         <v-col lg="2">
-                            <v-btn v-if="Array.isArray(validationNewMeasurementName)" outlined block color="green" class="d-flex mt-2" @click="editMeasurement">
+                            <v-btn v-if="Array.isArray(validationNewMeasurementName)"
+                                   outlined block color="green" class="d-flex mt-2" @click="editMeasurement">
                                Изменить
                             </v-btn>
                              <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelMeasurementEdit">
@@ -182,8 +204,10 @@
                             </v-text-field>
                         </v-col>
                         <v-col lg="2">
-                            <v-btn v-if="modes.measurement.deletePassword" :error-messages="!modes.measurement.deletePassword
-                                                                             ? 'Введите пароль' : []"  outlined block color="green" class="d-flex mt-2" @click="deleteMeasurement">
+                            <v-btn v-if="modes.measurement.deletePassword"
+                                    :error-messages="!modes.measurement.deletePassword
+                                      ? 'Введите пароль' : []"  outlined block color="green" class="d-flex mt-2"
+                                      @click="deleteMeasurement">
                                Удалить измерение
                             </v-btn>
                              <v-btn outlined block color="pink" class="d-flex mt-2" @click="cancelMeasurementEdit">
@@ -335,19 +359,19 @@ export default {
           },
         },
       })
-        .then((response) => {
+        .then(() => {
           Object.assign(this.element, response.data);
           this.cancelElementEdit();
           this.showSnackBar(`Элемент успешно изменен на ${this.element.name}`);
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackBar('Произошла ошибка при изменении элемента');
         });
     },
 
     async deleteMeasurement() {
       await this.$http.delete(`/api/measurementrecording/delete/${this.selectedMeasurementId}?superuser=${this.modes.measurement.deletePassword}`)
-        .then((response) => {
+        .then(() => {
           this.$store.dispatch('wafermeas/deleteMeasurement', this.selectedMeasurementId);
           this.cancelMeasurementEdit();
           this.showSnackBar('Операция успешно удалена');
@@ -431,13 +455,13 @@ export default {
     },
 
     async selectedMeasurementId(newValue) {
-      this.measurement = this.$store.getters['wafermeas/measurements'].find((x) => x.id === this.selectedMeasurementId);
+      this.measurement = this.$store.getters['wafermeas/measurements'].find((x) => x.id === newValue);
       this.element = await this.getElement(this.measurement.id);
       this.stage = await this.getStage(this.measurement.stageId);
-
       Object.assign(this.modes.stage.selected, this.stage);
     },
 
+    // eslint-disable-next-line func-names
     'modes.element.selectedDieType': async function (newValue) {
       if (newValue !== 'undefined') {
         const dieType = this.modes.element.dieTypes.find((x) => x.name === newValue);

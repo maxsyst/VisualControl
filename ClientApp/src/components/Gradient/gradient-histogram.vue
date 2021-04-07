@@ -1,4 +1,4 @@
-<template>   
+<template>
     <v-container>
         <bar-chart
           :chartdata="histogramData"
@@ -6,60 +6,62 @@
     </v-container>
 </template>
 <script>
-    import BarChart from './barchart-hstg.vue'
-    export default {
-        props: ['gradientSteps'],
-        components: { BarChart },
-        data() {
-            return {
-               loading: false,
-               histogramData: {},
-               options:{
-                   legend:{display:false},
-                   xAxis:{label:"Название шага",display:true},
-                   yAxis:{label:"Количество",display:true},
-                   responsive:false,
-                   showLines:false,
-                   responsiveAnimationDuration:0,
-                   animation:{duration:0},
-                   hover:{animationDuration:0}}
-                }
-    },
+import BarChart from './barchart-hstg.vue';
 
-    methods: {
-        initHistogramData(gradientSteps) {
-            let histogramData = {
-                labels: gradientSteps.map(x => x.name),
-                datasets: [
-                    {
-                        backgroundColor: gradientSteps.map(x => x.color),
-                        data: gradientSteps.map(x => x.dieList.length),
-                        fill: false,
-                        borderWidth: 1,
-                        pointHoverRadius: 0,
-                        pointRadius: 0
-                    }
-                ]
-            }
-            this.histogramData = histogramData
-        }
-    },
+export default {
+  props: ['gradientSteps'],
+  components: { BarChart },
+  data() {
+    return {
+      loading: false,
+      histogramData: {},
+      options: {
+        legend: { display: false },
+        xAxis: { label: 'Название шага', display: true },
+        yAxis: { label: 'Количество', display: true },
+        responsive: false,
+        showLines: false,
+        responsiveAnimationDuration: 0,
+        animation: { duration: 0 },
+        hover: { animationDuration: 0 },
+      },
+    };
+  },
 
-    watch: {
-        gradientSteps: function(newVal) {
-            this.initHistogramData(newVal)
-        }
+  methods: {
+    initHistogramData(gradientSteps) {
+      const histogramData = {
+        labels: gradientSteps.map((x) => x.name),
+        datasets: [
+          {
+            backgroundColor: gradientSteps.map((x) => x.color),
+            data: gradientSteps.map((x) => x.dieList.length),
+            fill: false,
+            borderWidth: 1,
+            pointHoverRadius: 0,
+            pointRadius: 0,
+          },
+        ],
+      };
+      this.histogramData = histogramData;
     },
+  },
 
-    computed:
+  watch: {
+    gradientSteps(newVal) {
+      this.initHistogramData(newVal);
+    },
+  },
+
+  computed:
     {
       selectedDies() {
-        return this.$store.getters['wafermeas/selectedDies']
-      }
+        return this.$store.getters['wafermeas/selectedDies'];
+      },
     },
 
-    async mounted() {
-        this.initHistogramData(this.gradientSteps)
-    }
-}
+  async mounted() {
+    this.initHistogramData(this.gradientSteps);
+  },
+};
 </script>

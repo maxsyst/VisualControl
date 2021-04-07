@@ -14,14 +14,15 @@
 </template>
 
 <script>
-import TotalTimeAmChart from '../../AmCharts/TotalTimeAmChart'
+import TotalTimeAmChart from '../../AmCharts/TotalTimeAmChart';
+
 export default {
   name: 'TotalTimeChartTab',
   components: {
-    TotalTimeAmChart
+    TotalTimeAmChart,
   },
   props: ['characteristic', 'sourceId'],
-  data () {
+  data() {
     return {
       loaded: false,
       withoutBadPoints: true,
@@ -32,13 +33,13 @@ export default {
         serieName: 'name',
         smoothing: {
           require: false,
-          power: 8
+          power: 8,
         },
         axisY:
             {
               strictMinMax: false,
               min: 0,
-              max: 0
+              max: 0,
             },
         colors:
             {
@@ -46,22 +47,22 @@ export default {
               textColor: '#ffffff',
               gridColor: '#ffcc00',
               chartColors: {
-                first: '#40e0d0', middle: '#ff8c00', last: '#ff0080'
-              }
-            }
-      }
-    }
+                first: '#40e0d0', middle: '#ff8c00', last: '#ff0080',
+              },
+            },
+      },
+    };
   },
-  async created () {
+  async created() {
     // const data = this.isSingleMeasurement
     //   ? (await this.$http.get(`/api/vertx/point/measurementId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}`)).data
-      
-    const data = (await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}/date`)).data;
-    this.chartData = { ...data }
-    this.chartSettings.characteristic = { ...this.characteristic }
-    this.loaded = true
-  }
-}
+
+    const { data } = await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}/date`);
+    this.chartData = { ...data };
+    this.chartSettings.characteristic = { ...this.characteristic };
+    this.loaded = true;
+  },
+};
 </script>
 
 <style scoped>

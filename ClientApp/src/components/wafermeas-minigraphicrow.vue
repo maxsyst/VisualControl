@@ -2,7 +2,8 @@
     <v-card class="elevation-8" color="#303030">
         <v-row>
             <v-col lg="4" offset-lg="1" class="d-flex align-center justify-start">
-                <v-chip :color="isGraphicSelected ? 'indigo' : 'pink'" label v-html="graphic.graphicName" @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
+                <v-chip :color="isGraphicSelected ? 'indigo' : 'pink'" label v-html="graphic.graphicName"
+                        @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
                  <v-progress-circular v-if="dirtyCells && dirtyCells.fullWafer.percentage >= 0"

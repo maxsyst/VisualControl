@@ -271,252 +271,244 @@
 </template>
 
 <script>
-import { createKurbatovParameter as createKurbatovParameterFromService } from '../services/kurbatovparameter.service.js'
+import { createKurbatovParameter as createKurbatovParameterFromService } from '../services/kurbatovparameter.service.js';
 
 export default {
   props: {
-    guid: String
+    guid: String,
   },
 
-  data () {
+  data() {
     return {
       step: 0,
       stepperKey: 0,
-      forbiddenStandartParameters: []
-    }
+      forbiddenStandartParameters: [],
+    };
   },
 
   methods: {
     createKurbatovParameter: createKurbatovParameterFromService,
 
-    updateMslName (mslName) {
-      console.log(mslName)
+    updateMslName(mslName) {
+      console.log(mslName);
       this.$store.dispatch('smpstorage/updateMslNameSmp', {
         guid: this.guid,
-        mslName
-      })
+        mslName,
+      });
     },
 
-    updateElement (element) {
+    updateElement(element) {
       this.$store.dispatch('smpstorage/updateElementSmp', {
         guid: this.guid,
-        element
-      })
+        element,
+      });
     },
 
-    updateStage (stage) {
+    updateStage(stage) {
       this.$store.dispatch('smpstorage/updateStageSmp', {
         guid: this.guid,
-        stage
-      })
+        stage,
+      });
     },
 
-    updateDivider (divider) {
+    updateDivider(divider) {
       this.$store.dispatch('smpstorage/updateDividerSmp', {
         guid: this.guid,
-        divider
-      })
+        divider,
+      });
     },
 
-    createParameter () {
-      const kp = this.createKurbatovParameter(this.guid)
-      this.step = this.smp.kpList.length
-      this.stepperKeyUpdate()
+    createParameter() {
+      const kp = this.createKurbatovParameter(this.guid);
+      this.step = this.smp.kpList.length;
+      this.stepperKeyUpdate();
       this.forbiddenStandartParameters.push({
         key: kp.key,
-        forbiddenIds: this.forbiddenStandartParameters.map(x => x.selectedId),
-        selectedId: 0
-      })
+        forbiddenIds: this.forbiddenStandartParameters.map((x) => x.selectedId),
+        selectedId: 0,
+      });
     },
 
-    updateStandartParameter (standartParameter, kp) {
-      const oldStandartParameterId = kp.standartParameter.id
-      this.forbiddenStandartParameters.forEach(f => {
+    updateStandartParameter(standartParameter, kp) {
+      const oldStandartParameterId = kp.standartParameter.id;
+      this.forbiddenStandartParameters.forEach((f) => {
         f.forbiddenIds = f.forbiddenIds.filter(
-          x => x !== oldStandartParameterId
-        )
+          (x) => x !== oldStandartParameterId,
+        );
         if (f.key !== kp.key) {
-          f.forbiddenIds.push(standartParameter.id)
+          f.forbiddenIds.push(standartParameter.id);
         } else {
-          f.selectedId = standartParameter.id
+          f.selectedId = standartParameter.id;
         }
-      })
+      });
       this.$store.dispatch('smpstorage/updateKp', {
         objName: 'standartParameter',
         guid: this.guid,
         kpKey: kp.key,
-        obj: standartParameter
-      })
+        obj: standartParameter,
+      });
       this.$store.dispatch('smpstorage/updateKp', {
         objName: 'validationRules',
         guid: this.guid,
         kpKey: kp.key,
-        obj: { parameterRq: true }
-      })
+        obj: { parameterRq: true },
+      });
     },
 
-    updateWithBounds (withBounds, kp) {
-      let validationRules =
-        withBounds === null || !withBounds
-          ? {
-            boundsRq: true,
-            lowerBoundIsNumeric: true,
-            upperBoundIsNumeric: true,
-            lowerBoundLowerThanUpperBound: true
-          }
-          : _.isEmpty(kp.bounds.lower) && _.isEmpty(kp.bounds.upper)
-            ? { boundsRq: false }
-            : {}
-      validationRules =
-        withBounds &&
-        kp.bounds.lower !== '' &&
-        kp.bounds.upper !== '' &&
-        +kp.bounds.lower >= +kp.bounds.upper
-          ? { ...validationRules, lowerBoundLowerThanUpperBound: false }
-          : { ...validationRules }
-      validationRules =
-        withBounds && isNaN(kp.bounds.lower)
-          ? { ...validationRules, lowerBoundIsNumeric: false }
-          : { ...validationRules }
-      validationRules =
-        withBounds && isNaN(kp.bounds.upper)
-          ? { ...validationRules, upperBoundIsNumeric: false }
-          : { ...validationRules }
+    updateWithBounds(withBounds, kp) {
+      let validationRules = withBounds === null || !withBounds
+        ? {
+          boundsRq: true,
+          lowerBoundIsNumeric: true,
+          upperBoundIsNumeric: true,
+          lowerBoundLowerThanUpperBound: true,
+        }
+        : _.isEmpty(kp.bounds.lower) && _.isEmpty(kp.bounds.upper)
+          ? { boundsRq: false }
+          : {};
+      validationRules = withBounds
+        && kp.bounds.lower !== ''
+        && kp.bounds.upper !== ''
+        && +kp.bounds.lower >= +kp.bounds.upper
+        ? { ...validationRules, lowerBoundLowerThanUpperBound: false }
+        : { ...validationRules };
+      validationRules = withBounds && isNaN(kp.bounds.lower)
+        ? { ...validationRules, lowerBoundIsNumeric: false }
+        : { ...validationRules };
+      validationRules = withBounds && isNaN(kp.bounds.upper)
+        ? { ...validationRules, upperBoundIsNumeric: false }
+        : { ...validationRules };
       this.$store.dispatch('smpstorage/updateKp', {
         objName: 'withBounds',
         guid: this.guid,
         kpKey: kp.key,
-        obj: { value: withBounds }
-      })
+        obj: { value: withBounds },
+      });
       this.$store.dispatch('smpstorage/updateKp', {
         objName: 'validationRules',
         guid: this.guid,
         kpKey: kp.key,
-        obj: validationRules
-      })
+        obj: validationRules,
+      });
     },
 
-    updateBounds (newBound, bound, kp) {
-      const bounds =
-        bound === 'upper'
-          ? { lower: kp.bounds.lower, upper: newBound }
-          : { lower: newBound, upper: kp.bounds.upper }
-      let validationRules =
-        bound === 'upper'
-          ? _.isEmpty(kp.bounds.lower) && _.isEmpty(newBound)
-            ? { boundsRq: false }
-            : !_.isEmpty(kp.bounds.lower) &&
-              !_.isEmpty(newBound) &&
-              +kp.bounds.lower >= +newBound
-              ? { boundsRq: true, lowerBoundLowerThanUpperBound: false }
-              : {
-                boundsRq: true,
-                upperBoundIsNumeric: true,
-                lowerBoundLowerThanUpperBound: true
-              }
-          : _.isEmpty(kp.bounds.upper) && _.isEmpty(newBound)
-            ? { boundsRq: false }
-            : !_.isEmpty(kp.bounds.upper) &&
-            !_.isEmpty(newBound) &&
-            +kp.bounds.upper <= +newBound
-              ? { boundsRq: true, lowerBoundLowerThanUpperBound: false }
-              : {
-                boundsRq: true,
-                lowerBoundIsNumeric: true,
-                lowerBoundLowerThanUpperBound: true
-              }
-      validationRules =
-        bound === 'upper' && isNaN(newBound)
-          ? { ...validationRules, upperBoundIsNumeric: false }
-          : { ...validationRules }
-      validationRules =
-        bound === 'lower' && isNaN(newBound)
-          ? { ...validationRules, lowerBoundIsNumeric: false }
-          : { ...validationRules }
+    updateBounds(newBound, bound, kp) {
+      const bounds = bound === 'upper'
+        ? { lower: kp.bounds.lower, upper: newBound }
+        : { lower: newBound, upper: kp.bounds.upper };
+      let validationRules = bound === 'upper'
+        ? _.isEmpty(kp.bounds.lower) && _.isEmpty(newBound)
+          ? { boundsRq: false }
+          : !_.isEmpty(kp.bounds.lower)
+              && !_.isEmpty(newBound)
+              && +kp.bounds.lower >= +newBound
+            ? { boundsRq: true, lowerBoundLowerThanUpperBound: false }
+            : {
+              boundsRq: true,
+              upperBoundIsNumeric: true,
+              lowerBoundLowerThanUpperBound: true,
+            }
+        : _.isEmpty(kp.bounds.upper) && _.isEmpty(newBound)
+          ? { boundsRq: false }
+          : !_.isEmpty(kp.bounds.upper)
+            && !_.isEmpty(newBound)
+            && +kp.bounds.upper <= +newBound
+            ? { boundsRq: true, lowerBoundLowerThanUpperBound: false }
+            : {
+              boundsRq: true,
+              lowerBoundIsNumeric: true,
+              lowerBoundLowerThanUpperBound: true,
+            };
+      validationRules = bound === 'upper' && isNaN(newBound)
+        ? { ...validationRules, upperBoundIsNumeric: false }
+        : { ...validationRules };
+      validationRules = bound === 'lower' && isNaN(newBound)
+        ? { ...validationRules, lowerBoundIsNumeric: false }
+        : { ...validationRules };
       this.$store.dispatch('smpstorage/updateKp', {
         objName: 'bounds',
         guid: this.guid,
         kpKey: kp.key,
-        obj: bounds
-      })
+        obj: bounds,
+      });
       this.$store.dispatch('smpstorage/updateKp', {
         objName: 'validationRules',
         guid: this.guid,
         kpKey: kp.key,
-        obj: validationRules
-      })
+        obj: validationRules,
+      });
     },
 
-    deleteParameter (step) {
-      const kp = this.smp.kpList[step - 1]
+    deleteParameter(step) {
+      const kp = this.smp.kpList[step - 1];
       this.$store.dispatch('smpstorage/deleteFromKpList', {
         guid: this.guid,
-        kp
-      })
-      this.step--
+        kp,
+      });
+      this.step--;
       this.forbiddenStandartParameters = this.forbiddenStandartParameters.filter(
-        x => x.key !== kp.key
-      )
-      this.forbiddenStandartParameters.forEach(f => {
+        (x) => x.key !== kp.key,
+      );
+      this.forbiddenStandartParameters.forEach((f) => {
         f.forbiddenIds = f.forbiddenIds.filter(
-          x => x !== kp.standartParameter.id
-        )
-      })
+          (x) => x !== kp.standartParameter.id,
+        );
+      });
     },
 
-    stepperKeyUpdate () {
-      this.stepperKey = this.stepperKey + '-steppervalid'
+    stepperKeyUpdate() {
+      this.stepperKey += '-steppervalid';
     },
 
-    nextStep (n) {
-      this.step = n === this.smp.kpList.length ? 1 : n + 1
+    nextStep(n) {
+      this.step = n === this.smp.kpList.length ? 1 : n + 1;
     },
 
-    prevStep (n) {
-      this.step = n === 1 ? this.smp.kpList.length : n - 1
+    prevStep(n) {
+      this.step = n === 1 ? this.smp.kpList.length : n - 1;
     },
 
-    recalculateForbiddenStandartParameters (kpList) {
-      const selectedStandartParameters = kpList.map(x => x.standartParameter.id)
-      return kpList.map(kp => ({
+    recalculateForbiddenStandartParameters(kpList) {
+      const selectedStandartParameters = kpList.map((x) => x.standartParameter.id);
+      return kpList.map((kp) => ({
         forbiddenIds: selectedStandartParameters.filter(
-          x => x !== kp.standartParameter.id
+          (x) => x !== kp.standartParameter.id,
         ),
         key: kp.key,
-        selectedId: kp.standartParameter.id
-      }))
+        selectedId: kp.standartParameter.id,
+      }));
     },
 
-    validationBoundsErrors (validationRules, bound) {
-      if (!validationRules.boundsRq) return ['Выберите хотя бы одну границу']
-      if (!validationRules.lowerBoundLowerThanUpperBound) { return ['Нижняя граница должна быть меньше'] }
-      if (!validationRules.lowerBoundIsNumeric && bound === 'lower') { return ['Значение границы должно быть числом'] }
-      if (!validationRules.upperBoundIsNumeric && bound === 'upper') { return ['Значение границы должно быть числом'] }
-      return []
-    }
+    validationBoundsErrors(validationRules, bound) {
+      if (!validationRules.boundsRq) return ['Выберите хотя бы одну границу'];
+      if (!validationRules.lowerBoundLowerThanUpperBound) { return ['Нижняя граница должна быть меньше']; }
+      if (!validationRules.lowerBoundIsNumeric && bound === 'lower') { return ['Значение границы должно быть числом']; }
+      if (!validationRules.upperBoundIsNumeric && bound === 'upper') { return ['Значение границы должно быть числом']; }
+      return [];
+    },
   },
 
   computed: {
-    smp () {
-      return this.$store.getters['smpstorage/currentSmp'](this.guid)
+    smp() {
+      return this.$store.getters['smpstorage/currentSmp'](this.guid);
     },
 
-    validationIsCorrect () {
-      return this.$store.getters['smpstorage/validationIsCorrect'](this.guid)
+    validationIsCorrect() {
+      return this.$store.getters['smpstorage/validationIsCorrect'](this.guid);
     },
 
-    standartParameters () {
-      return this.$store.getters['smpstorage/standartParameters']
-    }
+    standartParameters() {
+      return this.$store.getters['smpstorage/standartParameters'];
+    },
   },
 
-  mounted () {
+  mounted() {
     this.smp.kpList.length === 0
       ? this.createParameter()
       : (this.forbiddenStandartParameters = [
         ...this.forbiddenStandartParameters,
-        ...this.recalculateForbiddenStandartParameters(this.smp.kpList)
-      ])
-  }
-}
+        ...this.recalculateForbiddenStandartParameters(this.smp.kpList),
+      ]);
+  },
+};
 </script>

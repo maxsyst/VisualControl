@@ -66,7 +66,8 @@
         </v-row>
         <v-row justify-center column>
           <v-col>
-            <v-tabs v-model="activeTab"  :background-color="viewMode === 'Мониторинг' ? 'indigo' : '#00838F'" dark slider-color="primary" icons-and-text>
+            <v-tabs v-model="activeTab"
+                    :background-color="viewMode === 'Мониторинг' ? 'indigo' : '#00838F'" dark slider-color="primary" icons-and-text>
               <v-tab href="#wafer">
                 Выбор измерения
                 <v-icon>table_chart</v-icon>
@@ -167,7 +168,8 @@
                                 </v-select>
                               </v-col>
                               <v-col lg="8">
-                                <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" class="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
+                                <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                                       сlass="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
                               </v-col>
                             </v-row>
                             <v-row>
@@ -200,7 +202,9 @@
                     </v-card>
                   </v-col>
                   <v-col lg="4">
-                  <v-btn  :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined small @click="selectAllGraphics">Выбрать все графики</v-btn>
+                  <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined small @click="selectAllGraphics">
+                    Выбрать все графики
+                  </v-btn>
                   <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
                   <v-card class="mr-2 mt-2 mb-4" color="#303030" dark>
                       <v-card-text>
@@ -237,9 +241,11 @@
                             :size="90"
                             :width="3"
                             :value="viewMode === 'Мониторинг' ? dirtyCells.statPercentageSelected : dirtyCells.fixedPercentageSelected"
-                            :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">{{ viewMode === 'Мониторинг' ? dirtyCells.statPercentageSelected : dirtyCells.fixedPercentageSelected}}%
+                            :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
+                            {{ viewMode === 'Мониторинг' ? dirtyCells.statPercentageSelected : dirtyCells.fixedPercentageSelected}}%
                           </v-progress-circular>
-                          <v-btn outlined  :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" @click="delDirtyCells(viewMode === 'Мониторинг' ? dirtyCells.statList : dirtyCells.fixedList, selectedDies)">
+                          <v-btn outlined :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                                 @click="delDirtyCells(viewMode === 'Мониторинг' ? dirtyCells.statList : dirtyCells.fixedList, selectedDies)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </v-card-text>
@@ -275,7 +281,6 @@
 import { mapGetters } from 'vuex';
 import Loading from 'vue-loading-overlay';
 import MiniReport from './wafermeas-report.vue';
-import AmChart from './chart-lnr.vue';
 import WaferMap from './wafermap-svg.vue';
 import MiniGraphicRow from './wafermeas-minigraphicrow';
 import GraphicRowFullInfo from './GraphicRowFullInfo.vue';
@@ -307,7 +312,6 @@ export default {
     'mini-report': MiniReport,
     'micro-row': MiniGraphicRow,
     'wafermap-svg': WaferMap,
-    amchart: AmChart,
     Loading,
   },
 
@@ -378,7 +382,7 @@ export default {
           this.shortLinkSrv6 = response.data.shortLink;
           this.showSnackbar('Ссылка успешно создана');
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackbar('Ошибка при генерации ссылки');
         });
     },
@@ -412,7 +416,8 @@ export default {
         const keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues));
         const diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
         this.$store.dispatch('wafermeas/updateAvbSelectedDies', [...diesList]);
-        this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
+        this.$store.dispatch('wafermeas/updateDirtyCells',
+          (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
         this.selectedDivider = params.shortLinkVm.divider.dividerK;
         this.$store.dispatch('wafermeas/updateSelectedDies', [...params.shortLinkVm.selectedDies]);
         this.$store.dispatch('wafermeas/updateSelectedGraphics', [...params.shortLinkVm.selectedGraphics.map((g) => g.keyGraphicState)]);
@@ -459,7 +464,8 @@ export default {
         if (this.selectedGraphics.length !== this.availiableGraphics.length) {
           this.$store.dispatch('wafermeas/updateSelectedGraphics', [...this.availiableGraphics.map((g) => g.keyGraphicState)]);
           if (this.unSelectedGraphics.length > 0) {
-            this.$store.dispatch('wafermeas/addToDirtyCells', { keyGraphicState: this.unSelectedGraphics.map((g) => g.keyGraphicState), avbSelectedDies: this.avbSelectedDies });
+            this.$store.dispatch('wafermeas/addToDirtyCells',
+              { keyGraphicState: this.unSelectedGraphics.map((g) => g.keyGraphicState), avbSelectedDies: this.avbSelectedDies });
           }
         }
       });
@@ -476,7 +482,8 @@ export default {
 
     async statisticKf(k) {
       this.loading = true;
-      this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data);
+      this.$store.dispatch('wafermeas/updateDirtyCells',
+        (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data);
       this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies);
       this.loading = false;
     },
