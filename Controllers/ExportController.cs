@@ -163,6 +163,87 @@ namespace VueExample.Controllers
             return Ok(xlsList);
         }
 
+
+         [HttpGet]
+        [Route(("pattern/sky"))]
+        public IActionResult GetPatternSKY()
+        {
+            var xlsList = new List<KurbatovXLSViewModel>();
+
+            var row1 = new KurbatovXLSViewModel();
+            row1.ElementName = "TC14";
+            row1.OperationNumber = "105.10.00";
+            row1.StageName = "Этап1";
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "Rm0", Upper = 3, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>M0</sub>"});
+
+            var row2 = new KurbatovXLSViewModel();
+            row2.ElementName = "TC3";
+            row2.OperationNumber = "105.10.00";
+            row2.StageName = "Этап1";
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "Risol", Lower = 1E9, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>IS(6V)</sub>"});
+
+            var row3 = new KurbatovXLSViewModel();
+            row3.ElementName = "TC15";
+            row3.OperationNumber = "180.55.00";
+            row3.StageName = "Этап2";
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "Rm1", Upper = 3, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>M1</sub>"});
+
+            var row4 = new KurbatovXLSViewModel();
+            row4.ElementName = "TC17";
+            row4.OperationNumber = "180.55.00";
+            row4.StageName = "Этап2";
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "Rm0-m1", Upper = 3, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="Rm0-m1"});
+
+            var row5 = new KurbatovXLSViewModel();
+            row5.ElementName = "TC6";
+            row5.OperationNumber = "280.50.00";
+            row5.StageName = "Этап3";
+            row5.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="C<sub>MIM</sub>"});
+
+            var row6 = new KurbatovXLSViewModel();
+            row6.ElementName = "TC7";
+            row6.OperationNumber = "280.50.00";
+            row6.StageName = "Этап3";
+            row6.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="C<sub>MIM</sub>"});
+
+            var row7 = new KurbatovXLSViewModel();
+            row7.ElementName = "TC13";
+            row7.OperationNumber = "280.50.00";
+            row7.StageName = "Этап3";
+            row7.parameters.Add(new KurbatovParameter{ParameterName = "Rlw", Upper = 3.6, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="Rl2"});
+            
+            var row8 = new KurbatovXLSViewModel();
+            row8.ElementName = "TC12";
+            row8.OperationNumber = "560.00.00";
+            row8.StageName = "Этап4";
+            row8.parameters.Add(new KurbatovParameter{ParameterName = "Rl", Upper = 3.6, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="Rl1"});
+          
+            var row9 = new KurbatovXLSViewModel();
+            row9.ElementName = "TC20";
+            row9.OperationNumber = "560.00.00";
+            row9.StageName = "Этап4";
+            row9.parameters.Add(new KurbatovParameter{ParameterName = "Rvia", Upper = 5, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>VIA</sub>"});
+
+            var row10 = new KurbatovXLSViewModel();
+            row10.ElementName = "TC5";
+            row10.OperationNumber = "560.00.00";
+            row10.StageName = "Этап4";
+            row10.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr1", Lower = 42, Upper = 58, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R"});         
+          
+           
+            xlsList.Add(row1);
+            xlsList.Add(row2);
+            xlsList.Add(row3);
+            xlsList.Add(row4);
+            xlsList.Add(row5);
+            xlsList.Add(row6);
+            xlsList.Add(row7);
+            xlsList.Add(row8);
+            xlsList.Add(row9);
+            xlsList.Add(row10);
+            return Ok(xlsList);
+        }
+
         [HttpGet]
         [Route(("pattern/kurb"))]
         public IActionResult GetPatternKurb()

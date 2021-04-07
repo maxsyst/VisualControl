@@ -13,6 +13,8 @@
                 <v-menu
                     v-model="menu"
                     :nudge-width="200"
+                    :close-on-click="false"
+                    :close-on-content-click="false"
                     offset-x>
                 <template v-slot:activator="{ on }">
                         <v-btn
@@ -169,7 +171,7 @@ export default {
       filename: '',
       currentDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
       elements: [],
-      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE'],
+      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY'],
       selectedPattern: 'Пустой',
       dividers: [],
       initialDialog: true,
@@ -251,6 +253,7 @@ export default {
         if (this.selectedPattern === 'PHEMT05_СМКК') path = 'kurb';
         if (this.selectedPattern === 'PHEMT05_ВП') path = 'vp';
         if (this.selectedPattern === 'CKBA_PASSIVE') path = 'ckba';
+        if (this.selectedPattern === 'SKY') path = 'sky';
         if (this.selectedPattern !== 'Пустой') {
           await this.$http
             .get(`/api/export/pattern/${path}`)
@@ -350,12 +353,6 @@ export default {
       .get('/api/divider/all')
       .then((response) => {
         this.dividers = response.data;
-      });
-
-    await this.$http
-      .get('/api/standartpattern/all')
-      .then((response) => {
-        this.patterns = response.data;
       });
   },
 };
