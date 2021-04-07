@@ -54,12 +54,13 @@
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay'
-import { mapGetters } from 'vuex'
+import Loading from 'vue-loading-overlay';
+import { mapGetters } from 'vuex';
+
 export default {
   props: ['viewMode'],
   components: { Loading },
-  data () {
+  data() {
     return {
       dies: [],
       mapMode: 'selected',
@@ -71,170 +72,170 @@ export default {
       currentOrientation: -1,
       fieldViewBox: '',
       menuItems: [
-        { title: 'Mocking' }
+        { title: 'Mocking' },
       ],
-      menu: false
-    }
+      menu: false,
+    };
   },
 
   methods:
     {
-      selectDie (e) {
-        e.preventDefault()
-        const dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id
+      selectDie(e) {
+        e.preventDefault();
+        const dieId = this.dies[+e.currentTarget.attributes.dieIndex.value].id;
         if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
-          const position = this.selectedDies.indexOf(dieId)
+          const position = this.selectedDies.indexOf(dieId);
           if (~position) {
-            this.selectedDies.splice(position, 1)
-            this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies)
+            this.selectedDies.splice(position, 1);
+            this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies);
           } else {
-            this.selectedDies.push(dieId)
-            this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies)
+            this.selectedDies.push(dieId);
+            this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies);
           }
         }
       },
 
-      showmenu (e) {
-        e.preventDefault()
+      showmenu(e) {
+        e.preventDefault();
         if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
-          this.showMenu = false
-          this.x = e.clientX
-          this.y = e.clientY
-          const selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value]
+          this.showMenu = false;
+          this.x = e.clientX;
+          this.y = e.clientY;
+          const selectedDie = this.dies[+e.currentTarget.attributes.dieIndex.value];
           this.$nextTick(() => {
-            this.menu = true
-            this.menuItems[0].title = 'Код кристалла: ' + selectedDie.code
-          })
+            this.menu = true;
+            this.menuItems[0].title = `Код кристалла: ${selectedDie.code}`;
+          });
         }
-      }
+      },
     },
 
   watch: {
     'wafer.id': function (newVal) {
-      this.dies = this.wafer.formedMapBig.dies
-      this.initialOrientation = +this.wafer.formedMapBig.orientation
-      this.currentOrientation = this.initialOrientation
-      this.showNav = false
-      this.dies.forEach(die => {
-        die.fill = '#A1887F'
-        die.text = '#303030'
-        die.fillOpacity = 1.0
-        die.isActive = false
-      })
+      this.dies = this.wafer.formedMapBig.dies;
+      this.initialOrientation = +this.wafer.formedMapBig.orientation;
+      this.currentOrientation = this.initialOrientation;
+      this.showNav = false;
+      this.dies.forEach((die) => {
+        die.fill = '#A1887F';
+        die.text = '#303030';
+        die.fillOpacity = 1.0;
+        die.isActive = false;
+      });
     },
 
     fieldWidth: {
       immediate: true,
-      handler (newVal, oldVal) {
-        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`
-      }
+      handler(newVal, oldVal) {
+        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
+      },
     },
 
-    viewMode: function (viewMode) {
+    viewMode(viewMode) {
       if (this.dies.length > 0) {
         if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
-          this.dies.forEach(function (die) {
-            die.fill = '#A1887F'
-            die.text = '#303030'
-            die.fillOpacity = 1.0
-            die.isActive = false
-          })
+          this.dies.forEach((die) => {
+            die.fill = '#A1887F';
+            die.text = '#303030';
+            die.fillOpacity = 1.0;
+            die.isActive = false;
+          });
           if (this.mapMode === 'selected') {
             for (let i = 0; i < this.avbSelectedDies.length; i++) {
-              const die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-              die.fill = '#8C9EFF'
-              die.text = '#303030'
-              die.isActive = true
+              const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
+              die.fill = '#8C9EFF';
+              die.text = '#303030';
+              die.isActive = true;
             }
 
             for (let i = 0; i < this.selectedDies.length; i++) {
-              const die = this.dies.find(d => d.id === this.selectedDies[i])
-              die.fill = '#3D5AFE'
-              die.text = '#FFF9C4'
+              const die = this.dies.find((d) => d.id === this.selectedDies[i]);
+              die.fill = '#3D5AFE';
+              die.text = '#FFF9C4';
             }
           }
           if (this.mapMode === 'dirty') {
-            this.avbSelectedDies.forEach(avb => {
-              const die = this.dies.find(d => d.id === avb)
+            this.avbSelectedDies.forEach((avb) => {
+              const die = this.dies.find((d) => d.id === avb);
               die.fill = viewMode === 'Мониторинг'
                 ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
-                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50'
-              die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
-              die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4'
-              die.isActive = true
-            })
+                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50';
+              die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
+              die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
+              die.isActive = true;
+            });
           }
         }
       }
     },
 
-    mapMode: function (newVal) {
+    mapMode(newVal) {
       if (newVal === 'selected') {
         for (let i = 0; i < this.avbSelectedDies.length; i++) {
-          const die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-          die.fill = '#8C9EFF'
-          die.text = '#303030'
-          die.fillOpacity = 1.0
-          die.isActive = true
+          const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
+          die.fill = '#8C9EFF';
+          die.text = '#303030';
+          die.fillOpacity = 1.0;
+          die.isActive = true;
         }
 
         for (let i = 0; i < this.selectedDies.length; i++) {
-          const die = this.dies.find(d => d.id === this.selectedDies[i])
-          die.fill = '#3D5AFE'
-          die.text = '#FFF9C4'
+          const die = this.dies.find((d) => d.id === this.selectedDies[i]);
+          die.fill = '#3D5AFE';
+          die.text = '#FFF9C4';
         }
       }
 
       if (newVal === 'dirty') {
-        this.avbSelectedDies.forEach(avb => {
-          const die = this.dies.find(d => d.id === avb)
+        this.avbSelectedDies.forEach((avb) => {
+          const die = this.dies.find((d) => d.id === avb);
           die.fill = this.viewMode === 'Мониторинг'
             ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
-            : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50'
-          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5
-          die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4'
-          die.isActive = true
-        })
+            : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50';
+          die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
+          die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
+          die.isActive = true;
+        });
       }
     },
 
-    selectedDies: function (selectedDies) {
+    selectedDies(selectedDies) {
       if (this.dies.length > 0) {
         if (this.avbSelectedDies.length > 0 && selectedDies.length > 0) {
-          this.dies.forEach(function (die) {
-            die.fill = '#A1887F'
-            die.text = '#303030'
-            die.fillOpacity = 1.0
-            die.isActive = false
-          })
+          this.dies.forEach((die) => {
+            die.fill = '#A1887F';
+            die.text = '#303030';
+            die.fillOpacity = 1.0;
+            die.isActive = false;
+          });
           if (this.mapMode === 'selected') {
             for (let i = 0; i < this.avbSelectedDies.length; i++) {
-              const die = this.dies.find(d => d.id === this.avbSelectedDies[i])
-              die.fill = '#8C9EFF'
-              die.text = '#303030'
-              die.isActive = true
+              const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
+              die.fill = '#8C9EFF';
+              die.text = '#303030';
+              die.isActive = true;
             }
 
             for (let i = 0; i < selectedDies.length; i++) {
-              const die = this.dies.find(d => d.id === selectedDies[i])
-              die.fill = '#3D5AFE'
-              die.text = '#FFF9C4'
+              const die = this.dies.find((d) => d.id === selectedDies[i]);
+              die.fill = '#3D5AFE';
+              die.text = '#FFF9C4';
             }
           }
           if (this.mapMode === 'dirty') {
-            this.avbSelectedDies.forEach(avb => {
-              const die = this.dies.find(d => d.id === avb)
+            this.avbSelectedDies.forEach((avb) => {
+              const die = this.dies.find((d) => d.id === avb);
               die.fill = this.viewMode === 'Мониторинг'
                 ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
-                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50'
-              die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5
-              die.text = selectedDies.includes(die.id) ? '#303030' : '#FFF9C4'
-              die.isActive = true
-            })
+                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50';
+              die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5;
+              die.text = selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
+              die.isActive = true;
+            });
           }
         }
       }
-    }
+    },
   },
 
   computed:
@@ -244,49 +245,49 @@ export default {
         avbSelectedDies: 'wafermeas/avbSelectedDies',
         selectedDies: 'wafermeas/selectedDies',
         wafer: 'wafermeas/wafer',
-        sizes: 'wafermeas/size'
+        sizes: 'wafermeas/size',
       }),
 
-      size () {
-        return this.sizes('big')
+      size() {
+        return this.sizes('big');
       },
 
-      cutting () {
+      cutting() {
         // ONLY IF HEIGHT === WIDTH
-        const bBorder = this.size.fieldHeight / 6
-        const tBorder = this.size.fieldHeight / 6 * 5
+        const bBorder = this.size.fieldHeight / 6;
+        const tBorder = this.size.fieldHeight / 6 * 5;
         if (this.initialOrientation === -1) {
-          return '0,0 0,0'
+          return '0,0 0,0';
         }
         switch (this.initialOrientation) {
           case 0:
-            return `${bBorder},${this.size.fieldHeight} ${tBorder},${this.size.fieldHeight}`
-            break
+            return `${bBorder},${this.size.fieldHeight} ${tBorder},${this.size.fieldHeight}`;
+            break;
           case 90:
-            return `0,${bBorder} 0,${tBorder}`
-            break
+            return `0,${bBorder} 0,${tBorder}`;
+            break;
           case 180:
-            return `${bBorder},0 ${tBorder},0`
-            break
+            return `${bBorder},0 ${tBorder},0`;
+            break;
           case 270:
-            return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`
-            break
+            return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`;
+            break;
           default:
-            return '0,0 0,0'
+            return '0,0 0,0';
         }
       },
 
-      fontSize () {
-        return this.dies[0].height > 15 ? 12 : 6
+      fontSize() {
+        return this.dies[0].height > 15 ? 12 : 6;
       },
 
-      svgRotation () {
+      svgRotation() {
         return {
-          transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`
-        }
-      }
-    }
-}
+          transform: `rotate(${this.currentOrientation - this.initialOrientation}deg)`,
+        };
+      },
+    },
+};
 </script>
 
 <style scoped>

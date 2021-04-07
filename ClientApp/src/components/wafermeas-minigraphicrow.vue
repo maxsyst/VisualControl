@@ -32,7 +32,7 @@
                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
                     ></v-progress-circular>
             </v-col>
-            <v-col lg="1" offset-lg="1" class="d-flex align-center"> 
+            <v-col lg="1" offset-lg="1" class="d-flex align-center">
                 <v-checkbox
                     v-model="isGraphicSelected"
                     :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
@@ -45,46 +45,47 @@
 
 <script>
 import { mapGetters } from 'vuex';
+
 export default {
 
-    props: ["keyGraphicState", "viewMode"],
+  props: ['keyGraphicState', 'viewMode'],
 
-    data() {
-        return {
+  data() {
+    return {
 
-        }
+    };
+  },
+
+  methods: {
+    changeGraphicSelection() {
+      if (this.isGraphicSelected) {
+        this.$store.dispatch('wafermeas/deleteSelectedGraphic', this.keyGraphicState);
+        this.$store.dispatch('wafermeas/deleteFromDirtyCells', { keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies });
+      } else {
+        this.$store.dispatch('wafermeas/addSelectedGraphic', this.keyGraphicState);
+        this.$store.dispatch('wafermeas/addToDirtyCells', { keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies });
+      }
+    },
+  },
+
+  computed: {
+
+    ...mapGetters({
+      avbSelectedDies: 'wafermeas/avbSelectedDies',
+    }),
+
+    isGraphicSelected() {
+      return this.$store.getters['wafermeas/selectedGraphics'].includes(this.keyGraphicState);
     },
 
-    methods: {
-        changeGraphicSelection() {
-            if(this.isGraphicSelected) {
-                this.$store.dispatch("wafermeas/deleteSelectedGraphic", this.keyGraphicState)
-                this.$store.dispatch("wafermeas/deleteFromDirtyCells", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
-            } else {
-                this.$store.dispatch("wafermeas/addSelectedGraphic", this.keyGraphicState)
-                this.$store.dispatch("wafermeas/addToDirtyCells", {keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies})
-            }
-        }
+    graphic() {
+      return this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState);
     },
 
-    computed: {
-        
-        ...mapGetters({
-            avbSelectedDies: 'wafermeas/avbSelectedDies'
-        }),
-
-        isGraphicSelected() {
-            return this.$store.getters['wafermeas/selectedGraphics'].includes(this.keyGraphicState)
-        },
-
-        graphic() {
-            return this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState)
-        },
-
-        dirtyCells() {
-            return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState, this.viewMode)
-        }
+    dirtyCells() {
+      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState, this.viewMode);
     },
+  },
 
-}
+};
 </script>

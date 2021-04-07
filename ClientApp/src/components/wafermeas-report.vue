@@ -265,58 +265,65 @@
 </template>
 
 <script>
-import SelectedDiesInfo from './SelectedDiesInfo.vue'
+import SelectedDiesInfo from './SelectedDiesInfo.vue';
+
 export default {
 
   props: ['waferId', 'selectedMeasurementId', 'viewMode'],
 
-  data () {
+  data() {
     return {
       modes: {
-        measurement: { edit: false, newName: '', deletePassword: '', delete: false },
+        measurement: {
+          edit: false, newName: '', deletePassword: '', delete: false,
+        },
         stage: { edit: false, avStages: [], selected: {} },
-        element: { edit: false, selectedElement: '', selectedDieType: '', dieTypes: [], avElements: [] }
+        element: {
+          edit: false, selectedElement: '', selectedDieType: '', dieTypes: [], avElements: [],
+        },
       },
-      fab: { measurement: false, element: false, stage: false, parcel: false },
+      fab: {
+        measurement: false, element: false, stage: false, parcel: false,
+      },
       measurement: { name: 'Не выбрано' },
       codeProduct: { name: 'Неизвестно' },
       element: { name: 'Неизвестно' },
       stage: { stageName: 'Неизвестно' },
-      parcel: { name: 'Неизвестно' }
-    }
+      parcel: { name: 'Неизвестно' },
+    };
   },
 
   components: {
-    selectedDiesInfo: SelectedDiesInfo
+    selectedDiesInfo: SelectedDiesInfo,
   },
 
   methods: {
-    editMeasurement: async function () {
-      const measurementViewModel = { id: this.selectedMeasurementId, name: this.modes.measurement.newName }
+    async editMeasurement() {
+      const measurementViewModel = { id: this.selectedMeasurementId, name: this.modes.measurement.newName };
       try {
-        await this.$http.post('/api/measurementrecording/edit/name', measurementViewModel)
-        this.$store.dispatch('wafermeas/updateMeasurementName', measurementViewModel)
-        this.showSnackBar('Название успешно изменено')
-        this.cancelMeasurementEdit()
+        await this.$http.post('/api/measurementrecording/edit/name', measurementViewModel);
+        this.$store.dispatch('wafermeas/updateMeasurementName', measurementViewModel);
+        this.showSnackBar('Название успешно изменено');
+        this.cancelMeasurementEdit();
       } catch (ex) {
-        this.showSnackBar('Ошибка при изменении названия')
+        this.showSnackBar('Ошибка при изменении названия');
       }
     },
 
-    editStage: async function () {
-      const measurementViewModel = { measurementRecordingId: this.selectedMeasurementId, stageId: this.modes.stage.selected }
+    async editStage() {
+      const measurementViewModel = { measurementRecordingId: this.selectedMeasurementId, stageId: this.modes.stage.selected };
       try {
-        await this.$http.post('/api/measurementrecording/update-stage', measurementViewModel)
-        this.$store.dispatch('wafermeas/updateMeasurementStage', measurementViewModel)
-        this.showSnackBar('Этап успешно изменен')
-        Object.assign(this.stage, this.modes.stage.avStages.find(x => x.stageId === this.modes.stage.selected))
-        this.cancelStageEdit()
+        await this.$http.post('/api/measurementrecording/update-stage', measurementViewModel);
+        this.$store.dispatch('wafermeas/updateMeasurementStage', measurementViewModel);
+        this.showSnackBar('Этап успешно изменен');
+        Object.assign(this.stage, this.modes.stage.avStages.find((x) => x.stageId === this.modes.stage.selected));
+        this.cancelStageEdit();
       } catch (ex) {
-        this.showSnackBar('Ошибка при изменении этапа')
+        this.showSnackBar('Ошибка при изменении этапа');
       }
     },
 
-    editElement: async function () {
+    async editElement() {
       const response = await this.$http({
         method: 'post',
         url: '/api/element/updateElementOnIdmr',
@@ -324,146 +331,144 @@ export default {
         config: {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       })
-        .then(response => {
-          Object.assign(this.element, response.data)
-          this.cancelElementEdit()
-          this.showSnackBar(`Элемент успешно изменен на ${this.element.name}`)
+        .then((response) => {
+          Object.assign(this.element, response.data);
+          this.cancelElementEdit();
+          this.showSnackBar(`Элемент успешно изменен на ${this.element.name}`);
         })
-        .catch(error => {
-          this.showSnackBar('Произошла ошибка при изменении элемента')
-        })
+        .catch((error) => {
+          this.showSnackBar('Произошла ошибка при изменении элемента');
+        });
     },
 
-    deleteMeasurement: async function () {
+    async deleteMeasurement() {
       await this.$http.delete(`/api/measurementrecording/delete/${this.selectedMeasurementId}?superuser=${this.modes.measurement.deletePassword}`)
-        .then(response => {
-          this.$store.dispatch('wafermeas/deleteMeasurement', this.selectedMeasurementId)
-          this.cancelMeasurementEdit()
-          this.showSnackBar('Операция успешно удалена')
+        .then((response) => {
+          this.$store.dispatch('wafermeas/deleteMeasurement', this.selectedMeasurementId);
+          this.cancelMeasurementEdit();
+          this.showSnackBar('Операция успешно удалена');
         })
-        .catch(error => {
-          error && error.response.status === 403 ? this.showSnackBar('Запрещено удаление') : this.showSnackBar('Ошибка при удалении')
-        })
+        .catch((error) => {
+          error && error.response.status === 403 ? this.showSnackBar('Запрещено удаление') : this.showSnackBar('Ошибка при удалении');
+        });
     },
 
-    cancelMeasurementEdit: function () {
-      this.modes.measurement.edit = false
-      this.modes.measurement.delete = false
-      this.modes.measurement.newName = ''
-      this.modes.measurement.deletePassword = ''
+    cancelMeasurementEdit() {
+      this.modes.measurement.edit = false;
+      this.modes.measurement.delete = false;
+      this.modes.measurement.newName = '';
+      this.modes.measurement.deletePassword = '';
     },
 
-    cancelStageEdit: function () {
-      this.modes.stage.edit = false
-      this.modes.stage.selected = Object.assign(this.modes.stage.selected, this.stage)
+    cancelStageEdit() {
+      this.modes.stage.edit = false;
+      this.modes.stage.selected = Object.assign(this.modes.stage.selected, this.stage);
     },
 
-    cancelElementEdit: function () {
-      this.modes.element.edit = false
+    cancelElementEdit() {
+      this.modes.element.edit = false;
     },
 
-    getCodeProduct: async function (waferId) {
-      const response = await this.$http.get(`/api/codeproduct/getbywaferid?waferId=${waferId}`)
+    async getCodeProduct(waferId) {
+      const response = await this.$http.get(`/api/codeproduct/getbywaferid?waferId=${waferId}`);
       if (response.status === 200) {
-        return response.data
+        return response.data;
       }
       if (response.status === 404) {
-        return { codeProductName: 'Неизвестно' }
-      } else {
-        this.showSnackBar(response.data)
+        return { codeProductName: 'Неизвестно' };
       }
+      this.showSnackBar(response.data);
     },
 
-    getParcel: async function (waferId) {
-      const response = await this.$http.get(`/api/parcel/waferId/${waferId}`)
+    async getParcel(waferId) {
+      const response = await this.$http.get(`/api/parcel/waferId/${waferId}`);
       if (response.status === 200) {
-        return response.data
-      } else {
-        this.showSnackBar(response.data)
+        return response.data;
       }
+      this.showSnackBar(response.data);
     },
 
-    getElement: async function (measurementRecordingId) {
+    async getElement(measurementRecordingId) {
       try {
-        const response = await this.$http.get(`/api/element/getbyidmr?idmr=${measurementRecordingId}`)
-        return response.data[0].elementId === 0 ? { name: 'Неизвестно' } : response.data[0]
+        const response = await this.$http.get(`/api/element/getbyidmr?idmr=${measurementRecordingId}`);
+        return response.data[0].elementId === 0 ? { name: 'Неизвестно' } : response.data[0];
       } catch (error) {
-        this.showSnackBar(error)
+        this.showSnackBar(error);
       }
     },
 
-    getStage: async function (stageId) {
+    async getStage(stageId) {
       if (stageId) {
         try {
-          const response = await this.$http.get(`/api/stage/id/${stageId}`)
-          return response.data.stageId === 0 ? { stageName: 'Неизвестно' } : response.data
+          const response = await this.$http.get(`/api/stage/id/${stageId}`);
+          return response.data.stageId === 0 ? { stageName: 'Неизвестно' } : response.data;
         } catch (error) {
-          this.showSnackBar(error)
+          this.showSnackBar(error);
         }
       } else {
-        return { stageName: 'Неизвестно' }
+        return { stageName: 'Неизвестно' };
       }
     },
 
-    showSnackBar (text) {
-      this.$store.dispatch('alert/success', text)
-    }
+    showSnackBar(text) {
+      this.$store.dispatch('alert/success', text);
+    },
   },
 
   watch: {
-    waferId: async function (waferId) {
-      this.codeProduct = await this.getCodeProduct(waferId)
-      this.modes.stage.avStages = (await this.$http.get(`/api/stage/wafer/${waferId}`)).data
-      this.modes.element.dieTypes = (await this.$http.get(`/api/dietype/wafer/${waferId}`)).data
-      this.parcel = await this.getParcel(waferId)
+    async waferId(waferId) {
+      this.codeProduct = await this.getCodeProduct(waferId);
+      this.modes.stage.avStages = (await this.$http.get(`/api/stage/wafer/${waferId}`)).data;
+      this.modes.element.dieTypes = (await this.$http.get(`/api/dietype/wafer/${waferId}`)).data;
+      this.parcel = await this.getParcel(waferId);
       if (this.modes.element.dieTypes.length > 0) {
-        this.modes.element.selectedDieType = this.modes.element.dieTypes[0].dieTypeId
+        this.modes.element.selectedDieType = this.modes.element.dieTypes[0].dieTypeId;
       }
     },
 
-    selectedMeasurementId: async function (newValue) {
-      this.measurement = this.$store.getters['wafermeas/measurements'].find(x => x.id === this.selectedMeasurementId)
-      this.element = await this.getElement(this.measurement.id)
-      this.stage = await this.getStage(this.measurement.stageId)
+    async selectedMeasurementId(newValue) {
+      this.measurement = this.$store.getters['wafermeas/measurements'].find((x) => x.id === this.selectedMeasurementId);
+      this.element = await this.getElement(this.measurement.id);
+      this.stage = await this.getStage(this.measurement.stageId);
 
-      Object.assign(this.modes.stage.selected, this.stage)
+      Object.assign(this.modes.stage.selected, this.stage);
     },
 
     'modes.element.selectedDieType': async function (newValue) {
       if (newValue !== 'undefined') {
-        const dieType = this.modes.element.dieTypes.find(x => x.name === newValue)
+        const dieType = this.modes.element.dieTypes.find((x) => x.name === newValue);
         if (dieType) {
-          this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/${dieType.id}`)).data
+          this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/${dieType.id}`)).data;
           if (this.modes.element.avElements.length > 0) {
-            this.modes.element.selectedElement = this.modes.element.avElements[0].elementId
+            this.modes.element.selectedElement = this.modes.element.avElements[0].elementId;
           }
         }
       }
-    }
+    },
   },
 
   computed: {
-    validationNewMeasurementName () {
+    validationNewMeasurementName() {
       if (this.modes.measurement.edit === false) {
-        return []
+        return [];
       }
       if (this.modes.measurement.newName.length === 0) {
-        return 'Введите название измерения'
+        return 'Введите название измерения';
       }
-      if (this.measurementRecordings.some(x => x.name === this.modes.measurement.newName)) {
-        return 'Измерение с таким названием уже существует'
+      if (this.measurementRecordings.some((x) => x.name === this.modes.measurement.newName)) {
+        return 'Измерение с таким названием уже существует';
       }
-      return []
+      return [];
     },
 
-    measurementRecordings () {
-      return this.$store.getters['wafermeas/measurements']
-    }
-  }
+    measurementRecordings() {
+      return this.$store.getters['wafermeas/measurements'];
+    },
+  },
 
-}
+};
 </script>

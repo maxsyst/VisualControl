@@ -84,74 +84,74 @@
 export default {
   props: ['processId', 'fileName'],
 
-  data () {
+  data() {
     return {
       graphics: [],
       variants: [],
       newGraphic: '',
-      selectedVariant: ''
-    }
+      selectedVariant: '',
+    };
   },
 
   computed: {
 
-    validateNewGraphic () {
-      const newGraphic = this.newGraphic
+    validateNewGraphic() {
+      const { newGraphic } = this;
       if (!newGraphic) {
-        return 'Введите имя графика'
+        return 'Введите имя графика';
       }
-      if (this.graphics.some(x => x.name === newGraphic)) {
-        return 'Такой график уже существует'
+      if (this.graphics.some((x) => x.name === newGraphic)) {
+        return 'Такой график уже существует';
       }
-      return []
-    }
+      return [];
+    },
   },
 
   watch: {
     'fileName.id': {
       immediate: true,
-      async handler (newVal, oldVal) {
+      async handler(newVal, oldVal) {
         await this.$http
           .get(`/api/filegraphicuploader/graphics/${newVal}`)
-          .then(response => {
-            this.graphics = response.data.map(x => ({ id: x.id, name: x.name, variant: 'Вариант ' + x.variant }))
-            this.variants = _.uniq(response.data.map(x => 'Вариант ' + x.variant))
-            this.selectedVariant = this.variants[0]
+          .then((response) => {
+            this.graphics = response.data.map((x) => ({ id: x.id, name: x.name, variant: `Вариант ${x.variant}` }));
+            this.variants = _.uniq(response.data.map((x) => `Вариант ${x.variant}`));
+            this.selectedVariant = this.variants[0];
           })
-          .catch(error => {
+          .catch((error) => {
             if (error.response.status === 404) {
-              this.$emit('show-snackbar', 'Графики не найдены', 'pink')
+              this.$emit('show-snackbar', 'Графики не найдены', 'pink');
             }
-          })
-      }
-    }
+          });
+      },
+    },
   },
 
   methods: {
-    async deleteFileName (fileName, processId) {
+    async deleteFileName(fileName, processId) {
       await this.$http({
         method: 'delete',
         url: '/api/filegraphicuploader/filename',
-        data: { id: fileName.id, processId: processId },
+        data: { id: fileName.id, processId },
         config: {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       })
-        .then(response => {
-          this.$emit('show-snackbar', `Файл ${fileName.name} успешно удален`, 'success')
-          this.$emit('file-deleted', fileName.id)
+        .then((response) => {
+          this.$emit('show-snackbar', `Файл ${fileName.name} успешно удален`, 'success');
+          this.$emit('file-deleted', fileName.id);
         })
-        .catch(error => this.$emit('show-snackbar', error.response.data[0].message, 'pink'))
+        .catch((error) => this.$emit('show-snackbar', error.response.data[0].message, 'pink'));
     },
 
-    async createGraphic (newGraphic, selectedVariant, fileNameId) {
+    async createGraphic(newGraphic, selectedVariant, fileNameId) {
       const graphic = {
         variant: selectedVariant,
-        name: newGraphic
-      }
+        name: newGraphic,
+      };
       await this.$http({
         method: 'put',
         url: `/api/filegraphicuploader/graphicname/create/${fileNameId}`,
@@ -159,20 +159,20 @@ export default {
         config: {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       })
-        .then(response => {
-          this.$emit('show-snackbar', `График ${newGraphic} успешно создан`, 'success')
-          this.menu = false
-          this.newGraphic = ''
-          this.graphics.push({ ...response.data, variant: selectedVariant })
+        .then((response) => {
+          this.$emit('show-snackbar', `График ${newGraphic} успешно создан`, 'success');
+          this.menu = false;
+          this.newGraphic = '';
+          this.graphics.push({ ...response.data, variant: selectedVariant });
         })
-        .catch(error => this.$emit('show-snackbar', error.response.data[0].message, 'pink'))
+        .catch((error) => this.$emit('show-snackbar', error.response.data[0].message, 'pink'));
     },
 
-    async deleteGraphic (graphic, fileNameId) {
+    async deleteGraphic(graphic, fileNameId) {
       await this.$http({
         method: 'delete',
         url: `/api/filegraphicuploader/graphicname/delete/${fileNameId}`,
@@ -180,41 +180,41 @@ export default {
         config: {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       })
-        .then(response => {
-          this.$emit('show-snackbar', `График ${graphic.name} успешно удален`, 'success')
-          this.graphics = this.graphics.filter(g => g.id !== graphic.id)
+        .then((response) => {
+          this.$emit('show-snackbar', `График ${graphic.name} успешно удален`, 'success');
+          this.graphics = this.graphics.filter((g) => g.id !== graphic.id);
         })
-        .catch(error => this.$emit('show-snackbar', error.response.data[0].message, 'pink'))
+        .catch((error) => this.$emit('show-snackbar', error.response.data[0].message, 'pink'));
     },
 
-    createVariant () {
-      const variantsKeys = this.variants.map(v => +v.split(' ')[1]).sort()
-      const newVariant = 'Вариант ' + (_.last(variantsKeys) + 1)
-      this.variants.push(newVariant)
-      this.selectedVariant = newVariant
+    createVariant() {
+      const variantsKeys = this.variants.map((v) => +v.split(' ')[1]).sort();
+      const newVariant = `Вариант ${_.last(variantsKeys) + 1}`;
+      this.variants.push(newVariant);
+      this.selectedVariant = newVariant;
     },
     /// add api
-    deleteVariant (graphics, fileNameId) {
+    deleteVariant(graphics, fileNameId) {
       if (this.variants.length > 1) {
-        var graphicsVariant = graphics.filter(x => x.variant === this.selectedVariant)
-        graphicsVariant.forEach(g => {
-          this.deleteGraphic(g, fileNameId)
-        })
-        this.variants = this.variants.filter(x => x !== this.selectedVariant)
-        this.graphics = this.graphics.filter(x => x.variant !== this.selectedVariant)
+        const graphicsVariant = graphics.filter((x) => x.variant === this.selectedVariant);
+        graphicsVariant.forEach((g) => {
+          this.deleteGraphic(g, fileNameId);
+        });
+        this.variants = this.variants.filter((x) => x !== this.selectedVariant);
+        this.graphics = this.graphics.filter((x) => x.variant !== this.selectedVariant);
       }
-      this.selectedVariant = this.variants[0]
-    }
+      this.selectedVariant = this.variants[0];
+    },
   },
 
-  async mounted () {
+  async mounted() {
 
-  }
-}
+  },
+};
 </script>
 
 <style>

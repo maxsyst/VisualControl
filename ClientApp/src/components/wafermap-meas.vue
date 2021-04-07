@@ -272,16 +272,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import MiniReport from './wafermeas-report.vue'
-import AmChart from './chart-lnr.vue'
-import Loading from 'vue-loading-overlay'
-import WaferMap from './wafermap-svg.vue'
-import MiniGraphicRow from './wafermeas-minigraphicrow'
-import GraphicRowFullInfo from './GraphicRowFullInfo.vue'
+import { mapGetters } from 'vuex';
+import Loading from 'vue-loading-overlay';
+import MiniReport from './wafermeas-report.vue';
+import AmChart from './chart-lnr.vue';
+import WaferMap from './wafermap-svg.vue';
+import MiniGraphicRow from './wafermeas-minigraphicrow';
+import GraphicRowFullInfo from './GraphicRowFullInfo.vue';
 
 export default {
-  data () {
+  data() {
     return {
       viewMode: 'Мониторинг',
       toggle_exclusive: null,
@@ -298,8 +298,8 @@ export default {
       selectedMeasurementId: 0,
       statisticKf: 1.5,
       shortLinkSrv6: '',
-      generateShortLinkMode: 'srv3'
-    }
+      generateShortLinkMode: 'srv3',
+    };
   },
 
   components: {
@@ -308,16 +308,16 @@ export default {
     'micro-row': MiniGraphicRow,
     'wafermap-svg': WaferMap,
     amchart: AmChart,
-    Loading
+    Loading,
   },
 
-  async created () {
-    this.wafers = (await this.$http.get('/api/wafer/all')).data
-    this.dividers = (await this.$http.get('/api/divider/all')).data
+  async created() {
+    this.wafers = (await this.$http.get('/api/wafer/all')).data;
+    this.dividers = (await this.$http.get('/api/divider/all')).data;
   },
 
-  async mounted () {
-    await this.routeHandler(this.$route.name)
+  async mounted() {
+    await this.routeHandler(this.$route.name);
   },
 
   computed: {
@@ -329,178 +329,178 @@ export default {
       selectedGraphics: 'wafermeas/selectedGraphics',
       unSelectedGraphics: 'wafermeas/unSelectedGraphics',
       availiableGraphics: 'wafermeas/avbGraphics',
-      measurementRecordings: 'wafermeas/measurements'
+      measurementRecordings: 'wafermeas/measurements',
     }),
 
-    selectedGraphicsIcon () {
-      if (this.availiableGraphics.length === this.selectedGraphics.length) { return 'check_box' }
-      if (this.selectedGraphics.length > 0) return 'indeterminate_check_box'
-      return 'check_box_outline_blank'
-    }
+    selectedGraphicsIcon() {
+      if (this.availiableGraphics.length === this.selectedGraphics.length) { return 'check_box'; }
+      if (this.selectedGraphics.length > 0) return 'indeterminate_check_box';
+      return 'check_box_outline_blank';
+    },
   },
 
   methods: {
 
-    showSnackbar (text) {
-      this.$store.dispatch('alert/success', text)
+    showSnackbar(text) {
+      this.$store.dispatch('alert/success', text);
     },
 
-    onScroll (e) {
-      if (typeof window === 'undefined') return
-      const top = window.pageYOffset || e.target.scrollTop || 0
-      this.fabToTop = top > 20
+    onScroll(e) {
+      if (typeof window === 'undefined') return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fabToTop = top > 20;
     },
 
-    toTop () {
-      this.$vuetify.goTo(0)
+    toTop() {
+      this.$vuetify.goTo(0);
     },
 
-    copyShortLink: function () {
-      const copyText = document.querySelector('#shortLinkTextBox')
-      copyText.select()
-      document.execCommand('copy')
+    copyShortLink() {
+      const copyText = document.querySelector('#shortLinkTextBox');
+      copyText.select();
+      document.execCommand('copy');
     },
 
-    handleShortLinkSrv6: async function (shortLink) {
-      const shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data
+    async handleShortLinkSrv6(shortLink) {
+      const shortLinkVm = (await this.$http.get(`/api/shortlink/guid/${shortLink.split('=')[1].trim()}`)).data;
     },
 
-    generateShortLink: async function () {
+    async generateShortLink() {
       const generateShortLinkViewModel = {
         waferId: this.selectedWafer,
         measurementRecordingId: this.selectedMeasurementId,
         divider: this.selectedDivider,
         selectedDies: [...this.selectedDies],
-        selectedGraphics: this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicStates'](this.selectedGraphics)
-      }
+        selectedGraphics: this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicStates'](this.selectedGraphics),
+      };
       await this.$http.post(`/api/shortlink/generate/${this.generateShortLinkMode}`, generateShortLinkViewModel)
         .then((response) => {
-          this.shortLinkSrv6 = response.data.shortLink
-          this.showSnackbar('Ссылка успешно создана')
+          this.shortLinkSrv6 = response.data.shortLink;
+          this.showSnackbar('Ссылка успешно создана');
         })
         .catch((error) => {
-          this.showSnackbar('Ошибка при генерации ссылки')
-        })
+          this.showSnackbar('Ошибка при генерации ссылки');
+        });
     },
 
-    routeHandler: async function (routeName) {
+    async routeHandler(routeName) {
       if (routeName === 'wafermeasurement-onlywafer') {
-        this.selectedWafer = this.$route.params.waferId
+        this.selectedWafer = this.$route.params.waferId;
       }
       if (routeName === 'wafermeasurement-fullselected') {
-        this.selectedWafer = this.$route.params.waferId
+        this.selectedWafer = this.$route.params.waferId;
         await this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: this.$route.params.waferId }).then(async () => {
-          this.selectedMeasurementId = this.measurementRecordings.find(x => x.name === this.$route.params.measurementName).id
-          await this.measurementRecordingIdChanged(this.selectedMeasurementId)
-        })
+          this.selectedMeasurementId = this.measurementRecordings.find((x) => x.name === this.$route.params.measurementName).id;
+          await this.measurementRecordingIdChanged(this.selectedMeasurementId);
+        });
       }
       if (routeName === 'wafermeasurement-shortlink') {
-        await this.resolveShortLink(this.$route.params)
+        await this.resolveShortLink(this.$route.params);
       }
     },
 
-    resolveShortLink: async function (params) {
-      this.selectedWafer = params.waferId
-      this.loading = true
-      this.$store.dispatch('wafermeas/updateSelectedDies', [])
-      this.$store.dispatch('wafermeas/clearDieValues')
-      this.$store.dispatch('wafermeas/clearSelectedGraphics')
+    async resolveShortLink(params) {
+      this.selectedWafer = params.waferId;
+      this.loading = true;
+      this.$store.dispatch('wafermeas/updateSelectedDies', []);
+      this.$store.dispatch('wafermeas/clearDieValues');
+      this.$store.dispatch('wafermeas/clearSelectedGraphics');
       await this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: params.waferId }).then(async () => {
-        const selectedMeasurementId = this.measurementRecordings.find(x => x.name === params.measurementName).id
-        const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
-        this.$store.dispatch('wafermeas/updateDieValues', dieValues)
-        const keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
-        const diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
-        this.$store.dispatch('wafermeas/updateAvbSelectedDies', [...diesList])
-        this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
-        this.selectedDivider = params.shortLinkVm.divider.dividerK
-        this.$store.dispatch('wafermeas/updateSelectedDies', [...params.shortLinkVm.selectedDies])
-        this.$store.dispatch('wafermeas/updateSelectedGraphics', [...params.shortLinkVm.selectedGraphics.map(g => g.keyGraphicState)])
-        this.selectedMeasurementId = selectedMeasurementId
-        const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
-        this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics)
-        this.selectAllGraphics()
-        this.loading = false
-        this.activeTab = 'statistics'
-      })
+        const selectedMeasurementId = this.measurementRecordings.find((x) => x.name === params.measurementName).id;
+        const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
+        this.$store.dispatch('wafermeas/updateDieValues', dieValues);
+        const keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues));
+        const diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
+        this.$store.dispatch('wafermeas/updateAvbSelectedDies', [...diesList]);
+        this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
+        this.selectedDivider = params.shortLinkVm.divider.dividerK;
+        this.$store.dispatch('wafermeas/updateSelectedDies', [...params.shortLinkVm.selectedDies]);
+        this.$store.dispatch('wafermeas/updateSelectedGraphics', [...params.shortLinkVm.selectedGraphics.map((g) => g.keyGraphicState)]);
+        this.selectedMeasurementId = selectedMeasurementId;
+        const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
+        this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
+        this.selectAllGraphics();
+        this.loading = false;
+        this.activeTab = 'statistics';
+      });
     },
 
-    measurementRecordingIdChanged: async function (selectedMeasurementId) {
-      this.loading = true
-      this.$store.dispatch('wafermeas/updateSelectedDies', [])
-      this.$store.dispatch('wafermeas/clearDieValues')
-      this.$store.dispatch('wafermeas/clearSelectedGraphics')
-      const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
-      this.$store.dispatch('wafermeas/updateDieValues', dieValues)
-      const keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues))
-      const diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data
-      this.$store.dispatch('wafermeas/updateAvbSelectedDies', [...diesList])
-      this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data)
-      this.$store.dispatch('wafermeas/updateSelectedDies', diesList)
-      this.delDirtyCells(this.viewMode === 'Мониторинг' ? this.dirtyCells.statList : this.dirtyCells.fixedList, this.avbSelectedDies)
-      const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data
-      this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics)
-      this.selectAllGraphics()
-      this.loading = false
-      this.activeTab = 'statistics'
-      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find(x => x.id === selectedMeasurementId).name } })
+    async measurementRecordingIdChanged(selectedMeasurementId) {
+      this.loading = true;
+      this.$store.dispatch('wafermeas/updateSelectedDies', []);
+      this.$store.dispatch('wafermeas/clearDieValues');
+      this.$store.dispatch('wafermeas/clearSelectedGraphics');
+      const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
+      this.$store.dispatch('wafermeas/updateDieValues', dieValues);
+      const keyGraphicStateJSON = JSON.stringify(Object.keys(dieValues));
+      const diesList = (await this.$http.get(`/api/dievalue/GetSelectedDiesByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
+      this.$store.dispatch('wafermeas/updateAvbSelectedDies', [...diesList]);
+      this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
+      this.$store.dispatch('wafermeas/updateSelectedDies', diesList);
+      this.delDirtyCells(this.viewMode === 'Мониторинг' ? this.dirtyCells.statList : this.dirtyCells.fixedList, this.avbSelectedDies);
+      const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
+      this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
+      this.selectAllGraphics();
+      this.loading = false;
+      this.activeTab = 'statistics';
+      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find((x) => x.id === selectedMeasurementId).name } });
     },
 
-    delDirtyCells: function (dirtyCellsList, selectedDies) {
-      this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies.filter(die => !dirtyCellsList.includes(die)))
+    delDirtyCells(dirtyCellsList, selectedDies) {
+      this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies.filter((die) => !dirtyCellsList.includes(die)));
     },
 
-    selectAllDies: function (avbSelectedDies) {
-      this.$store.dispatch('wafermeas/updateSelectedDies', [...avbSelectedDies])
+    selectAllDies(avbSelectedDies) {
+      this.$store.dispatch('wafermeas/updateSelectedDies', [...avbSelectedDies]);
     },
 
-    selectAllGraphics: function () {
+    selectAllGraphics() {
       this.$nextTick(() => {
         if (this.selectedGraphics.length !== this.availiableGraphics.length) {
-          this.$store.dispatch('wafermeas/updateSelectedGraphics', [...this.availiableGraphics.map(g => g.keyGraphicState)])
+          this.$store.dispatch('wafermeas/updateSelectedGraphics', [...this.availiableGraphics.map((g) => g.keyGraphicState)]);
           if (this.unSelectedGraphics.length > 0) {
-            this.$store.dispatch('wafermeas/addToDirtyCells', { keyGraphicState: this.unSelectedGraphics.map(g => g.keyGraphicState), avbSelectedDies: this.avbSelectedDies })
+            this.$store.dispatch('wafermeas/addToDirtyCells', { keyGraphicState: this.unSelectedGraphics.map((g) => g.keyGraphicState), avbSelectedDies: this.avbSelectedDies });
           }
         }
-      })
-    }
+      });
+    },
   },
 
   watch: {
 
-    selectedWafer: async function (newValue) {
-      this.$store.dispatch('wafermeas/updateAvbGraphics', [])
-      this.$store.dispatch('wafermeas/updateDieColors', { ctx: this, waferId: newValue })
-      this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: newValue })
+    async selectedWafer(newValue) {
+      this.$store.dispatch('wafermeas/updateAvbGraphics', []);
+      this.$store.dispatch('wafermeas/updateDieColors', { ctx: this, waferId: newValue });
+      this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: newValue });
     },
 
-    statisticKf: async function (k) {
-      this.loading = true
-      this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data)
-      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies)
-      this.loading = false
+    async statisticKf(k) {
+      this.loading = true;
+      this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data);
+      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies);
+      this.loading = false;
     },
 
-    availiableGraphics: function () {
+    availiableGraphics() {
       if (this.availiableGraphics.length === 0) {
-        this.$store.dispatch('wafermeas/clearSelectedGraphics')
+        this.$store.dispatch('wafermeas/clearSelectedGraphics');
       }
     },
 
-    selectedDies: function (newValue) {
+    selectedDies(newValue) {
       if (newValue.length > 0) {
-        const { statList, fixedList } = this.dirtyCells
-        const statPercentageSelected = Math.ceil((1.0 - newValue.filter(value => statList.includes(value)).length / newValue.length) * 100)
-        const fixedPercentageSelected = Math.ceil((1.0 - newValue.filter(value => fixedList.includes(value)).length / newValue.length) * 100)
-        this.$store.dispatch('wafermeas/updateDirtyCellsPercentageSelected', { statPercentageSelected, fixedPercentageSelected })
+        const { statList, fixedList } = this.dirtyCells;
+        const statPercentageSelected = Math.ceil((1.0 - newValue.filter((value) => statList.includes(value)).length / newValue.length) * 100);
+        const fixedPercentageSelected = Math.ceil((1.0 - newValue.filter((value) => fixedList.includes(value)).length / newValue.length) * 100);
+        this.$store.dispatch('wafermeas/updateDirtyCellsPercentageSelected', { statPercentageSelected, fixedPercentageSelected });
       }
-    }
+    },
   },
 
-  beforeDestroy () {
-    this.$store.dispatch('wafermeas/reset')
-  }
-}
+  beforeDestroy() {
+    this.$store.dispatch('wafermeas/reset');
+  },
+};
 </script>
 
 <style scoped>
