@@ -132,7 +132,9 @@
     "globals": { "_": true },
     "rules": {
        "import/extensions": [0, { "<js>": "always" }],
-       "import/prefer-default-export": 0
+       "import/prefer-default-export": 0,
+       "max-len": ["error", { "code": 150 }]
+
     },
     "overrides": [
       {
