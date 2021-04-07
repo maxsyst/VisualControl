@@ -17,7 +17,7 @@ export default {
         vm.$router.push({
           name: 'wafermeasurement-shortlink',
           params: {
-            shortLinkVm, guid: shortLinkVm.generatedId, waferId: shortLinkVm.waferId, measurementName: shortLinkVm.measurementRecording.name.split('.')[1], guid: shortLinkVm.generatedId,
+            shortLinkVm, waferId: shortLinkVm.waferId, measurementName: shortLinkVm.measurementRecording.name.split('.')[1], guid: shortLinkVm.generatedId,
           },
         });
       } catch (err) {

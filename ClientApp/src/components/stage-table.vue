@@ -175,14 +175,14 @@ export default {
           this.stagesList.find((x) => x.id == response.data.id).stageName = response.data.stageName;
           this.wipeEditing();
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackbar('Ошибка при изменении названия');
         });
     },
 
     async deleteStage(stageId) {
       await this.$http.delete(`/api/stage/delete/${stageId}`)
-        .then((response) => {
+        .then(() => {
           this.showSnackbar('Успешно удалено');
           this.stagesList = this.stagesList.filter((x) => x.stageId !== stageId);
         })

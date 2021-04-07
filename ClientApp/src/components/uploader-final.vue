@@ -212,7 +212,7 @@ export default {
   },
 
   watch: {
-    async selectedMonitor(newVal, oldVal) {
+    async selectedMonitor(newVal) {
       this.showLoading('Получение списка измерений');
       this.$http.get(`/api/folder/simpleoperation/${this.codeProduct}/${this.wafer}/${newVal}`,
         {
@@ -224,7 +224,7 @@ export default {
           this.simpleOperations = response.data.map((d) => ({ ...d, uploadStatus: '', shortLink: '' }));
           this.checkUploadingStatus(this.simpleOperations);
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackBar('Ошибка при загрузке операций');
         });
     },
@@ -252,7 +252,7 @@ export default {
           this.monitors = response.data;
           this.selectedMonitor = this.monitors[0].id;
         })
-        .catch((err) => this.showSnackBar('Ошибка при загрузке списка мониторов'));
+        .catch(() => this.showSnackBar('Ошибка при загрузке списка мониторов'));
     },
 
     async getAllStages(waferId) {
@@ -261,7 +261,7 @@ export default {
         .then((response) => {
           this.stages = response.data;
         })
-        .catch((error) => {
+        .catch(() => {
 
         });
     },
@@ -272,7 +272,7 @@ export default {
         .then((response) => {
           this.originalCodeProduct = response.data;
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackBar('Ошибка при загрузке шаблона');
         });
     },
@@ -367,7 +367,7 @@ export default {
           });
           this.closeLoading();
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackBar('Ошибка соединения с БД');
           this.closeLoading();
         });

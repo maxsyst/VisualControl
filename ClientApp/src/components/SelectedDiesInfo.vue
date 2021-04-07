@@ -17,7 +17,12 @@
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn block :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
+            <v-btn block
+                   :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" 
+                   outlined
+                   @click="selectAllDies(avbSelectedDies)">
+                   Выбрать все кристаллы
+            </v-btn>
         </v-card-actions>
     </v-card>
 </template>
