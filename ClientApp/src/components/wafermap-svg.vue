@@ -1,10 +1,29 @@
 <template>
 <v-container>
-    <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
-      <polyline fill="none"  stroke="#fc0" stroke-width="4" stroke-dasharray="25" :points="cutting" />
+    <svg :style="svgRotation"
+         :height="size.fieldHeight"
+         :width="size.fieldWidth"
+         :viewBox="fieldViewBox">
+      <polyline fill="none"
+                stroke="#fc0"
+                stroke-width="4"
+                stroke-dasharray="25"
+                :points="cutting" />
       <g v-for="(die, key) in dies" :key="die.id">
-        <rect :dieIndex="key" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie" @contextmenu="showmenu" />
-        <text v-if="!die.code.includes('-')" :x="die.x" :y="die.y+die.height/1.5" font-family="Verdana" :font-size="fontSize" :fill="die.text">{{die.code}}</text>
+        <rect :dieIndex="key"
+              :x="die.x"
+              :y="die.y"
+              :width="die.width"
+              :height="die.height"
+              :fill="die.fill"
+              :fill-opacity="die.fillOpacity"
+              @click="selectDie"
+              @contextmenu="showmenu" />
+        <text v-if="!die.code.includes('-')"
+              :x="die.x" :y="die.y+die.height/1.5"
+              font-family="Verdana" :font-size="fontSize"
+              :fill="die.text">{{die.code}}
+        </text>
       </g>
     </svg>
     <v-menu v-model="menu"
@@ -43,10 +62,14 @@
 
   </v-bottom-navigation>
   <div class="d-flex flex-column">
-                  <v-btn :color="mapMode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='selected'">
+                  <v-btn :color="mapMode === 'selected' ? 'indigo' : 'grey darken-2'"
+                         class="mt-auto"
+                         fab small dark @click="mapMode='selected'">
                     Вбр
                   </v-btn>
-                  <v-btn :color="mapMode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab small dark @click="mapMode='dirty'">
+                  <v-btn :color="mapMode === 'dirty' ? 'indigo' : 'grey darken-2'"
+                         class="mt-auto"
+                         fab small dark @click="mapMode='dirty'">
                     Гдн
                   </v-btn>
   </div>
@@ -262,16 +285,12 @@ export default {
         switch (this.initialOrientation) {
           case 0:
             return `${bBorder},${this.size.fieldHeight} ${tBorder},${this.size.fieldHeight}`;
-            break;
           case 90:
             return `0,${bBorder} 0,${tBorder}`;
-            break;
           case 180:
             return `${bBorder},0 ${tBorder},0`;
-            break;
           case 270:
             return `${this.size.fieldHeight},${bBorder} ${this.size.fieldHeight},${tBorder}`;
-            break;
           default:
             return '0,0 0,0';
         }
