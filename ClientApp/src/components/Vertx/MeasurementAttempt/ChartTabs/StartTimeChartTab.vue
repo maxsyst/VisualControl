@@ -80,7 +80,8 @@ export default {
     };
   },
   async created() {
-    const { data } = await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/seconds/${this.seconds}`);
+    const { data } = await this.$http
+      .get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/seconds/${this.seconds}`);
     this.chartData = { ...data };
     this.chartSettings.characteristic = { ...this.characteristic };
     this.loaded = true;
