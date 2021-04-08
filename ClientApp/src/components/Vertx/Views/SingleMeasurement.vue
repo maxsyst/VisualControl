@@ -7,23 +7,24 @@
 </template>
 
 <script>
-import SingleMeasurementRow from '../SingleMeasurement/SingleCharacteristicRow'
+import SingleMeasurementRow from '../SingleMeasurement/SingleCharacteristicRow';
+
 export default {
   components: {
-    SingleMeasurementRow
+    SingleMeasurementRow,
   },
-  data () {
+  data() {
     return {
       measurementId: '',
-      characteristicList: []
-    }
+      characteristicList: [],
+    };
   },
-  async mounted () {
-    this.measurementId = this.$route.params.measurementId
-    const characteristicList = (await this.$http.get(`/api/vertx/measurement/id/${this.measurementId}/characteristics`)).data
-    this.characteristicList = [...characteristicList]
-  }
-}
+  async mounted() {
+    this.measurementId = this.$route.params.measurementId;
+    const characteristicList = (await this.$http.get(`/api/vertx/measurement/id/${this.measurementId}/characteristics`)).data;
+    this.characteristicList = [...characteristicList];
+  },
+};
 </script>
 
 <style scoped>

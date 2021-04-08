@@ -19,30 +19,30 @@
 </template>
 
 <script>
-import LastUpdates from '../MeasurementAttempt/LastUpdates'
+import LastUpdates from '../MeasurementAttempt/LastUpdates';
 
 export default {
   components: {
-    LastUpdates
+    LastUpdates,
   },
-  data () {
+  data() {
     return {
       loaded: false,
-      tableData: []
-    }
+      tableData: [],
+    };
   },
-  async mounted () {
-    const tableData = (await this.$http.get('/api/vertx/aggregation/lastupdates/all')).data
+  async mounted() {
+    const tableData = (await this.$http.get('/api/vertx/aggregation/lastupdates/all')).data;
     this.tableData = tableData.map((t) => ({
       lastUpdateDate: t.measurement.lastUpdate.date,
       measurementName: t.measurement.notes[t.measurement.notes.length - 1],
       measurementAttemptId: t.measurementAttempt.id,
       waferId: t.mdv.waferId,
-      code: t.mdv.code
-    }))
-    this.loaded = true
-  }
-}
+      code: t.mdv.code,
+    }));
+    this.loaded = true;
+  },
+};
 </script>
 
 <style scoped>
