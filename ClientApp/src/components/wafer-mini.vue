@@ -160,8 +160,8 @@ export default {
   watch: {
     fieldWidth: {
       immediate: true,
-      handler(newVal, oldVal) {
-        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
+      handler(newValue) {
+        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${newValue}`;
       },
     },
 

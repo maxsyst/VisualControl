@@ -261,7 +261,7 @@ export default {
         await this.$http.post('/api/measurementrecording/edit/name', measurementRecordingViewModel)
           .then((response) => {
             this.showSnackbar('Название изменено');
-            this.stagesArray[this.e1 - 1].measurementRecordingList.find((x) => x.id == response.data.id).name = response.data.name;
+            this.stagesArray[this.e1 - 1].measurementRecordingList.find((x) => x.id === response.data.id).name = response.data.name;
             this.wipeEditing();
           })
           .catch(() => {
@@ -307,7 +307,7 @@ export default {
           this.e1 = this.stagesArray.findIndex((x) => x.id === newStageId) + 1;
         }
 
-        const newOldStage = this.stagesArray.find((x) => x.id === oldStageId).measurementRecordingList.filter((x) => x.id != idmr);
+        const newOldStage = this.stagesArray.find((x) => x.id === oldStageId).measurementRecordingList.filter((x) => x.id !== idmr);
         if (newOldStage.length === 0) {
           this.stagesArray = this.stagesArray.filter((x) => x.id !== oldStageId);
         } else {

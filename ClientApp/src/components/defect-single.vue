@@ -112,7 +112,7 @@ export default {
   methods:
     {
       async savedefect() {
-        if (this.loadedFiles.length == 0) {
+        if (this.loadedFiles.length === 0) {
           this.$swal({
             type: 'error',
             text: 'Загрузите фото дефекта',

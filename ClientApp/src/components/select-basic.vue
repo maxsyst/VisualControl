@@ -660,8 +660,8 @@ export default {
     },
 
     livePointsRedraw(liveArray) {
-      for (let index = 0; index < liveArray.length; index++) {
-        this.selectedAtomics.find((x) => x.measurementId == liveArray[index].measurementId).live = liveArray[index].value;
+      for (let index = 0; index < liveArray.length; index += 1) {
+        this.selectedAtomics.find((x) => x.measurementId === liveArray[index].measurementId).live = liveArray[index].value;
       }
     },
 
@@ -864,7 +864,7 @@ export default {
 
           if (response.status === 201) {
             this.snackbarText = 'Успешно добавлено';
-            const route = `${this.measurementSets.filter((x) => x.measurementSetId == this.selectedMeasurementSet.id)[0].route}/${this.selectedFacility}`;
+            const route = `${this.measurementSets.filter((x) => x.measurementSetId === this.selectedMeasurementSet.id)[0].route}/${this.selectedFacility}`;
             this.$http.get(`/api/measurementset/getatomics/${route}`).then((response) => this.selectedAtomics = response.data);
           }
 
@@ -882,7 +882,7 @@ export default {
       this.currentChart = '';
       this.points = {};
       const queries = [];
-      for (let index = 0; index < this.selectedAtomics.length; index++) {
+      for (let index = 0; index < this.selectedAtomics.length; index += 1) {
         const query = this.$http.get(
           `/api/point/get/withoutspaces?measurementid=${
             this.selectedAtomics[index].measurementId
@@ -904,7 +904,7 @@ export default {
       const deviceId = this.selectedDevice;
       const port = this.selectedPort;
       const measurementId = this.selectedMeasurement;
-      if (event.currentTarget.id == 'newgraphicButton') {
+      if (event.currentTarget.id === 'newgraphicButton') {
         this.points = {};
         this.selectedGraphic = this.graphics.find(
           (x) => x.graphicId === graphicId,
@@ -941,7 +941,7 @@ export default {
       }
 
       for (const prop in this.points) {
-        if (this.points[prop].length == 0) {
+        if (this.points[prop].length === 0) {
           delete this.points[prop];
         }
       }
@@ -1039,7 +1039,7 @@ export default {
 
     'selectedMeasurementSet.id': async function () {
       this.selectedMeasurementSet.statistics = [];
-      const route = `${this.measurementSets.filter((x) => x.measurementSetId == this.selectedMeasurementSet.id)[0].route}/${this.selectedFacility}`;
+      const route = `${this.measurementSets.filter((x) => x.measurementSetId === this.selectedMeasurementSet.id)[0].route}/${this.selectedFacility}`;
       const response = await this.$http.get(
         `/api/measurementset/getatomics/${route}`,
       );
@@ -1057,7 +1057,7 @@ export default {
     try {
       const response = await this.$http.get('/api/facility/getall');
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         const { data } = response;
         this.facilities = data;
         this.selectedFacility = this.facilities[0].facilityId;

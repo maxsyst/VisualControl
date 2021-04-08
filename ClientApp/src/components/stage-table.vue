@@ -172,7 +172,7 @@ export default {
       await this.$http.post('/api/stage/update', stageViewModel)
         .then((response) => {
           this.showSnackbar('Название изменено');
-          this.stagesList.find((x) => x.id == response.data.id).stageName = response.data.stageName;
+          this.stagesList.find((x) => x.id === response.data.id).stageName = response.data.stageName;
           this.wipeEditing();
         })
         .catch(() => {

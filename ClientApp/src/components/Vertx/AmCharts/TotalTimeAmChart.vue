@@ -26,7 +26,8 @@ export default {
     if (this.settings.colors.chartColor === undefined) {
       const colorGradient = new Gradient();
       colorGradient.setMidpoint(Object.entries(this.data).length);
-      colorGradient.setGradient(this.settings.colors.chartColors.first, this.settings.colors.chartColors.middle, this.settings.colors.chartColors.last);
+      colorGradient
+        .setGradient(this.settings.colors.chartColors.first, this.settings.colors.chartColors.middle, this.settings.colors.chartColors.last);
       chart.colors.list = [...colorGradient.getArray().map((x) => am4core.color(x))];
     } else {
       chart.colors.list = [am4core.color(this.settings.colors.chartColor)];

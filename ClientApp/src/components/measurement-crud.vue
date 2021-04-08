@@ -98,7 +98,7 @@ export default {
         await this.$http
           .get('/api/measureddevice/all')
           .then((response) => {
-            if (response.status == 200) {
+            if (response.status === 200) {
               this.measuredDevices = response.data;
             }
           })
@@ -111,7 +111,7 @@ export default {
         await this.$http
           .get('/api/material/getall')
           .then((response) => {
-            if (response.status == 200) {
+            if (response.status === 200) {
               this.materials = response.data;
               this.newMeasurement.materialId = this.materials[0].materialId;
             }

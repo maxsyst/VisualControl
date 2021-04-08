@@ -445,7 +445,7 @@ export default {
         guid: this.guid,
         kp,
       });
-      this.step--;
+      this.step -= 1;
       this.forbiddenStandartParameters = this.forbiddenStandartParameters.filter(
         (x) => x.key !== kp.key,
       );
