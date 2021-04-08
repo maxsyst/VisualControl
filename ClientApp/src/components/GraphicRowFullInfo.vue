@@ -44,42 +44,42 @@
 </template>
 
 <script>
-import ChartLNR from './chart-lnr-cjs.vue'
-import ChartHSTG from './chart-bar-cjs.vue'
-import StatSingle from './stat-single.vue'
+import ChartLNR from './chart-lnr-cjs.vue';
+import ChartHSTG from './chart-bar-cjs.vue';
+import StatSingle from './stat-single.vue';
+
 export default {
   props: ['selectedMeasurementId', 'keyGraphicState', 'viewMode', 'selectedDivider', 'statisticKf', 'selectedDiesLength'],
-  data () {
+  data() {
     return {
 
-    }
+    };
   },
   components: {
     'stat-single': StatSingle,
     'chart-lnr': ChartLNR,
-    'chart-hstg': ChartHSTG
+    'chart-hstg': ChartHSTG,
   },
   computed: {
 
-    rowViewMode () {
-      return this.$store.getters['wafermeas/getKeyGraphicStateRowViewMode'](this.keyGraphicState)
+    rowViewMode() {
+      return this.$store.getters['wafermeas/getKeyGraphicStateRowViewMode'](this.keyGraphicState);
     },
 
-    rowViewOptions () {
+    rowViewOptions() {
       if (this.rowViewMode === 'miniChart') {
         return {
           statSingleFlexSize: 8,
-          chartFlexSize: 4
-        }
-      } else {
-        return {
-          statSingleFlexSize: 4,
-          chartFlexSize: 8
-        }
+          chartFlexSize: 4,
+        };
       }
-    }
-  }
-}
+      return {
+        statSingleFlexSize: 4,
+        chartFlexSize: 8,
+      };
+    },
+  },
+};
 </script>
 
 <style>

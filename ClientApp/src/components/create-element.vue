@@ -68,8 +68,7 @@ export default {
         .then((response) => {
           this.avElementTypes = response.data;
           this.newElement.typeId = this.avElementTypes[0].id;
-        })
-        .catch((err) => console.log(err));
+        });
     },
 
     createElement() {

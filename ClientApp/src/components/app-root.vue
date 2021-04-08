@@ -91,63 +91,60 @@
 </template>
 
 <script>
-  import { routes } from '../router/routesArray'
-  import Avatar from 'vue-avatar'
-    export default {
-    
-     data () {
-        return {
-          routes: [...routes]
-        }
-      },
+import Avatar from 'vue-avatar';
+import { routes } from '../router/routesArray';
 
-     components:
+export default {
+
+  data() {
+    return {
+      routes: [...routes],
+    };
+  },
+
+  components:
      {
-        Avatar
+       Avatar,
      },
 
-     methods: {
+  methods: {
 
-       changeDrawer(drawer) {
-          this.$store.dispatch("service/changeDrawer", drawer)
-       }
+    changeDrawer(drawer) {
+      this.$store.dispatch('service/changeDrawer', drawer);
+    },
 
-     },
+  },
 
-     computed: {
+  computed: {
 
-       drawer() {
-         return this.$store.getters['service/drawer']
-       },
+    drawer() {
+      return this.$store.getters['service/drawer'];
+    },
 
-       auth() {
-         if (this.$route.name === "login" || this.$route.name === "registration") {
-           return false
-         } else {
-           this.$store.dispatch("service/changeDrawer", true)
-           return true;
-         }
-       },
+    auth() {
+      if (this.$route.name === 'login' || this.$route.name === 'registration') {
+        return false;
+      }
+      this.$store.dispatch('service/changeDrawer', true);
+      return true;
+    },
 
-       username() {
-         if (this.$store.state.authentication.user !== null) {
-           return this.$store.state.authentication.user.firstName + " " + this.$store.state.authentication.user.surname
-         } else {
-           return ""
-         }
-           
-       }
-       
-     },
+    username() {
+      if (this.$store.state.authentication.user !== null) {
+        return `${this.$store.state.authentication.user.firstName} ${this.$store.state.authentication.user.surname}`;
+      }
+      return '';
+    },
 
-     watch: {
-       $route(to, from) {
-          
-       }
-     }
+  },
 
-     
-    }
+  watch: {
+    $route(to, from) {
+
+    },
+  },
+
+};
 </script>
 
 <style lang="scss">
