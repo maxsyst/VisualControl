@@ -3,7 +3,7 @@ using VueExample.Contexts;
 using System.Linq;
 using VueExample.Models.SRV6;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Threading.Tasks;
 using VueExample.Entities;

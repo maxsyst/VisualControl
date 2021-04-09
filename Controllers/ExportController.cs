@@ -169,67 +169,119 @@ namespace VueExample.Controllers
         public IActionResult GetPatternSKY()
         {
             var xlsList = new List<KurbatovXLSViewModel>();
-
             var row1 = new KurbatovXLSViewModel();
-            row1.ElementName = "TC14";
+            row1.ElementName = "TC3";
             row1.OperationNumber = "105.10.00";
             row1.StageName = "Этап1";
-            row1.parameters.Add(new KurbatovParameter{ParameterName = "Rm0", Upper = 3, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>M0</sub>"});
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "Risol", Lower = 1E9, DividerId = 1, RussianParameterName="Сопротивление межприборной изоляции, ГОм", ParameterNameStat="R<sub>IS(6V)</sub>"});
 
             var row2 = new KurbatovXLSViewModel();
-            row2.ElementName = "TC3";
-            row2.OperationNumber = "105.10.00";
-            row2.StageName = "Этап1";
-            row2.parameters.Add(new KurbatovParameter{ParameterName = "Risol", Lower = 1E9, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>IS(6V)</sub>"});
+            row2.ElementName = "TC14";
+            row2.OperationNumber = "180.55.00";
+            row2.StageName = "Этап2";
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "Rm0", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление линии металлизации нулевого уровня, Ом", ParameterNameStat="R<sub>M0</sub>"});
 
             var row3 = new KurbatovXLSViewModel();
             row3.ElementName = "TC15";
             row3.OperationNumber = "180.55.00";
             row3.StageName = "Этап2";
-            row3.parameters.Add(new KurbatovParameter{ParameterName = "Rm1", Upper = 3, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>M1</sub>"});
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "Rm1", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление линии металлизации первого уровня, Ом", ParameterNameStat="R<sub>M1</sub>"});
 
             var row4 = new KurbatovXLSViewModel();
-            row4.ElementName = "TC17";
+            row4.ElementName = "TC16";
             row4.OperationNumber = "180.55.00";
             row4.StageName = "Этап2";
-            row4.parameters.Add(new KurbatovParameter{ParameterName = "Rm0-m1", Upper = 3, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="Rm0-m1"});
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "Rm2", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление линии металлизации второго уровня, Ом", ParameterNameStat="R<sub>M2</sub>"});
 
             var row5 = new KurbatovXLSViewModel();
-            row5.ElementName = "TC6";
-            row5.OperationNumber = "280.50.00";
+            row5.ElementName = "TC4";
+            row5.OperationNumber = "260.50.00";
             row5.StageName = "Этап3";
-            row5.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="C<sub>MIM</sub>"});
+            row5.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr1", Lower = 42, Upper = 58, DividerId = 1, RussianParameterName="Удельное поверхностное сопротивление тонкопленочного резистора, Ом/кв", ParameterNameStat="RTFR1"});
 
             var row6 = new KurbatovXLSViewModel();
-            row6.ElementName = "TC7";
-            row6.OperationNumber = "280.50.00";
+            row6.ElementName = "TC5";
+            row6.OperationNumber = "260.50.00";
             row6.StageName = "Этап3";
-            row6.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="C<sub>MIM</sub>"});
+            row6.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr2", Lower = 485, Upper = 715, DividerId = 1, RussianParameterName="Удельное поверхностное сопротивление тонкопленочного резистора, Ом/кв", ParameterNameStat="RTFR2"});
 
             var row7 = new KurbatovXLSViewModel();
-            row7.ElementName = "TC13";
+            row7.ElementName = "TC6";
             row7.OperationNumber = "280.50.00";
             row7.StageName = "Этап3";
-            row7.parameters.Add(new KurbatovParameter{ParameterName = "Rlw", Upper = 3.6, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="Rl2"});
+            row7.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, П", ParameterNameStat="C<sub>MIM</sub>"});
+            row7.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 40.0, DividerId = 1, RussianParameterName="Напряжение пробоя сток-исток, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
             
             var row8 = new KurbatovXLSViewModel();
-            row8.ElementName = "TC12";
-            row8.OperationNumber = "560.00.00";
-            row8.StageName = "Этап4";
-            row8.parameters.Add(new KurbatovParameter{ParameterName = "Rl", Upper = 3.6, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="Rl1"});
-          
+            row8.ElementName = "TC7";
+            row8.OperationNumber = "280.50.00";
+            row8.StageName = "Этап3";
+            row8.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 140, Upper = 185, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row8.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 90.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, пФ/мм2, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+
             var row9 = new KurbatovXLSViewModel();
-            row9.ElementName = "TC20";
-            row9.OperationNumber = "560.00.00";
-            row9.StageName = "Этап4";
-            row9.parameters.Add(new KurbatovParameter{ParameterName = "Rvia", Upper = 5, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R<sub>VIA</sub>"});
+            row9.ElementName = "TC8";
+            row9.OperationNumber = "280.50.00";
+            row9.StageName = "Этап3";
+            row9.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 550, Upper = 690, DividerId = 1, RussianParameterName="Удельная емкость МДМДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row9.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 40.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, пФ/мм2, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
 
             var row10 = new KurbatovXLSViewModel();
-            row10.ElementName = "TC5";
+            row10.ElementName = "TC3";
             row10.OperationNumber = "560.00.00";
             row10.StageName = "Этап4";
-            row10.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr1", Lower = 42, Upper = 58, DividerId = 1, RussianParameterName="Емкость элемента, Ф", ParameterNameStat="R"});         
+            row10.parameters.Add(new KurbatovParameter{ParameterName = "Risol", Lower = 1E9, DividerId = 1, RussianParameterName="Сопротивление межприборной изоляции, ГОм", ParameterNameStat="R<sub>IS(6V)</sub>"});
           
+            var row11 = new KurbatovXLSViewModel();
+            row11.ElementName = "TC4";
+            row11.OperationNumber = "560.00.00";
+            row11.StageName = "Этап4";
+            row11.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr1", Lower = 42, Upper = 58, DividerId = 1, RussianParameterName="Удельное поверхностное сопротивление тонкопленочного резистора, Ом/кв", ParameterNameStat="RTFR1"});
+
+            var row12 = new KurbatovXLSViewModel();
+            row12.ElementName = "TC5";
+            row12.OperationNumber = "560.00.00";
+            row12.StageName = "Этап4";
+            row12.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr2", Lower = 485, Upper = 715, DividerId = 1, RussianParameterName="Удельное поверхностное сопротивление тонкопленочного резистора, Ом/кв", ParameterNameStat="RTFR2"});
+           
+            var row13 = new KurbatovXLSViewModel();
+            row13.ElementName = "TC6";
+            row13.OperationNumber = "560.00.00";
+            row13.StageName = "Этап4";
+            row13.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row13.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 40.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+            
+            var row14 = new KurbatovXLSViewModel();
+            row14.ElementName = "TC7";
+            row14.OperationNumber = "560.00.00";
+            row14.StageName = "Этап4";
+            row14.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 140, Upper = 185, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row14.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 90.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+
+            var row15 = new KurbatovXLSViewModel();
+            row15.ElementName = "TC8";
+            row15.OperationNumber = "560.00.00";
+            row15.StageName = "Этап4";
+            row15.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 550, Upper = 690, DividerId = 1, RussianParameterName="Удельная емкость МДМДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row15.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 40.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+
+            var row16 = new KurbatovXLSViewModel();
+            row16.ElementName = "TC12";
+            row16.OperationNumber = "560.00.00";
+            row16.StageName = "Этап4";
+            row16.parameters.Add(new KurbatovParameter{ParameterName = "Rl", Upper = 3.6, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности, Ом", ParameterNameStat="Rl"});
+
+            var row17 = new KurbatovXLSViewModel();
+            row17.ElementName = "TC13";
+            row17.OperationNumber = "560.00.00";
+            row17.StageName = "Этап4";
+            row17.parameters.Add(new KurbatovParameter{ParameterName = "Rlw", Upper = 3.6, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности сдвоенной, Ом", ParameterNameStat="Rlw"});
+
+            var row18 = new KurbatovXLSViewModel();
+            row18.ElementName = "TC20";
+            row18.OperationNumber = "560.00.00";
+            row18.StageName = "Этап4";
+            row18.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 2.7, DividerId = 1, RussianParameterName="Сопротивление металлизированного отверстия, Ом", ParameterNameStat="R<sub>VIA</sub>"});
            
             xlsList.Add(row1);
             xlsList.Add(row2);
@@ -241,6 +293,14 @@ namespace VueExample.Controllers
             xlsList.Add(row8);
             xlsList.Add(row9);
             xlsList.Add(row10);
+            xlsList.Add(row11);
+            xlsList.Add(row12);
+            xlsList.Add(row13);
+            xlsList.Add(row14);
+            xlsList.Add(row15);
+            xlsList.Add(row16);
+            xlsList.Add(row17);
+            xlsList.Add(row18);
             return Ok(xlsList);
         }
 
