@@ -26,7 +26,10 @@
                                     <div style="max-height: 300px" class="overflow-y-auto">
                                         <v-list-item v-for="cp in avCodeProducts" :key="cp.id" >
                                             <v-list-item-action>
-                                                <v-checkbox v-model= "selectedCodeProducts" :value="cp.id" color="primary" @change="codeProductsChange(cp.id)"></v-checkbox>
+                                                <v-checkbox v-model= "selectedCodeProducts"
+                                                            :value="cp.id" color="primary"
+                                                            @change="codeProductsChange(cp.id)">
+                                                </v-checkbox>
                                             </v-list-item-action>
                                             <v-list-item-content>
                                                 <v-list-item-title>{{cp.name}}</v-list-item-title>
@@ -51,10 +54,12 @@
                                         <v-list-item-subtitle>{{element.comment}}</v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
-                                        <update-element :edited-element="Object.assign({}, element)" :key="element.name" @update-element="updateElement"></update-element>
+                                        <update-element :edited-element="Object.assign({}, element)"
+                                                        :key="element.name" @update-element="updateElement"></update-element>
                                     </v-list-item-action>
                                     <v-list-item-action>
-                                        <v-icon v-if="element.isAvaliableToDelete" color="pink" @click="deleteElement(element)">delete_outline</v-icon>
+                                        <v-icon v-if="element.isAvaliableToDelete"
+                                                color="pink" @click="deleteElement(element)">delete_outline</v-icon>
                                         <v-tooltip bottom v-else>
                                             <template v-slot:activator="{ on }">
                                                 <v-icon v-on="on" color="grey">delete_forever</v-icon>
@@ -95,7 +100,8 @@
                     </v-card-text>
                     <v-card-actions class="d-flex justify-lg-space-between">
                     <v-btn color="indigo" @click="wipeEditing()">Закрыть</v-btn>
-                    <v-btn v-if="nameUpdating.newName && nameUpdating.newName!==dieType.name" color="success" @click="updateDieTypeName(dieType, nameUpdating.newName)">Обновить название</v-btn>
+                    <v-btn v-if="nameUpdating.newName && nameUpdating.newName!==dieType.name"
+                          color="success" @click="updateDieTypeName(dieType, nameUpdating.newName)">Обновить название</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -134,14 +140,14 @@ export default {
     async getProcesses() {
       await this.$http
         .get('/api/process/all')
-        .then((response) => this.processes = response.data)
+        .then((response) => { this.processes = response.data; })
         .catch((err) => this.showSnackBar(err));
     },
 
     async getDieTypes() {
       await this.$http
         .get('/api/dietype/all')
-        .then((response) => this.dieTypes = response.data)
+        .then((response) => { this.dieTypes = response.data; })
         .catch((err) => this.showSnackBar(err));
     },
 
@@ -153,7 +159,7 @@ export default {
           this.dieType.name = response.data.name;
           this.wipeEditing();
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackBar('Ошибка при изменении названия');
         });
     },
@@ -287,11 +293,11 @@ export default {
     async selectedProcess(newVal) {
       await this.$http
         .get(`/api/codeproduct/processid/${newVal}`)
-        .then((response) => this.avCodeProducts = response.data)
+        .then((response) => { this.avCodeProducts = response.data; })
         .catch((err) => this.showSnackBar(err));
     },
 
-    async dieType(newVal, oldVal) {
+    async dieType(newVal) {
       await this.$http
         .get(`/api/dietype/cp-el/${newVal.id}`)
         .then((response) => {
@@ -310,7 +316,7 @@ export default {
   },
 
   async mounted() {
-    await this.getProcesses().then(() => this.selectedProcess = 333);
+    await this.getProcesses().then(() => { this.selectedProcess = 333; });
     await this.getDieTypes();
   },
 };

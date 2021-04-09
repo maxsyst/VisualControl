@@ -43,7 +43,8 @@ export default {
             stage: { id: c.id, name: c.name },
           }))], []);
           const initialArray = [...this.initialArray];
-          this.digitMeasurementDictionary = [...new Set(initialArray.map((x) => x.key).filter((f) => Number.isInteger(+f.charAt(0))).sort((a, b) => +a - +b))]
+          this.digitMeasurementDictionary = [...new Set(initialArray.map((x) => x.key).filter((f) => Number.isInteger(+f.charAt(0)))
+            .sort((a, b) => +a - +b))]
             .map((digitName) => {
               const digitMeasurementArray = initialArray.filter((x) => x.key === digitName);
               return {

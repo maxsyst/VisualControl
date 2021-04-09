@@ -147,7 +147,6 @@ namespace VueExample.Controllers
             row17.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 270, Upper = 350, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)"});
             row17.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc", Lower = 20, DividerId = 1, RussianParameterName="Пробивное напряжение МДМ-конденсатора, В", ParameterNameStat="U<sub>BRC</sub> (пробивное напряжение МДМ-конденсатора)"});
           
-           
             xlsList.Add(row6);
             xlsList.Add(row7);
             xlsList.Add(row8);
@@ -159,12 +158,10 @@ namespace VueExample.Controllers
             xlsList.Add(row15);
             xlsList.Add(row16);
             xlsList.Add(row17);
-
             return Ok(xlsList);
         }
 
-
-         [HttpGet]
+        [HttpGet]
         [Route(("pattern/sky"))]
         public IActionResult GetPatternSKY()
         {
@@ -179,13 +176,13 @@ namespace VueExample.Controllers
             row2.ElementName = "TC14";
             row2.OperationNumber = "180.55.00";
             row2.StageName = "Этап2";
-            row2.parameters.Add(new KurbatovParameter{ParameterName = "Rm0", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление линии металлизации нулевого уровня, Ом", ParameterNameStat="R<sub>M0</sub>"});
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "Rm0", Upper = 20, DividerId = 1, RussianParameterName="Сопротивление линии металлизации нулевого уровня, Ом", ParameterNameStat="R<sub>M0</sub>"});
 
             var row3 = new KurbatovXLSViewModel();
             row3.ElementName = "TC15";
             row3.OperationNumber = "180.55.00";
             row3.StageName = "Этап2";
-            row3.parameters.Add(new KurbatovParameter{ParameterName = "Rm1", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление линии металлизации первого уровня, Ом", ParameterNameStat="R<sub>M1</sub>"});
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "Rm1", Upper = 20, DividerId = 1, RussianParameterName="Сопротивление линии металлизации первого уровня, Ом", ParameterNameStat="R<sub>M1</sub>"});
 
             var row4 = new KurbatovXLSViewModel();
             row4.ElementName = "TC16";
@@ -275,7 +272,7 @@ namespace VueExample.Controllers
             row17.ElementName = "TC13";
             row17.OperationNumber = "560.00.00";
             row17.StageName = "Этап4";
-            row17.parameters.Add(new KurbatovParameter{ParameterName = "Rlw", Upper = 3.6, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности сдвоенной, Ом", ParameterNameStat="Rlw"});
+            row17.parameters.Add(new KurbatovParameter{ParameterName = "Rlw", Upper = 6.8, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности сдвоенной, Ом", ParameterNameStat="Rlw"});
 
             var row18 = new KurbatovXLSViewModel();
             row18.ElementName = "TC20";
