@@ -24,7 +24,10 @@ namespace VueExample.Services.Vertx.Implementation
 
         public async Task<List<LivePoint>> GetNLastPoint(int n)
         {
-            return await _livePointContext.LivePoints.OrderBy(x => x.Id).TakeLast(n).ToListAsync();
+            var points = await _livePointContext.LivePoints.OrderByDescending(x => x.Id).Take(n).ToListAsync();
+            return points.GroupBy(m => new {m.MeasurementName, m.CharacteristicName})
+                         .Select(group => group.First())
+                         .ToList();
         }
     }
 }

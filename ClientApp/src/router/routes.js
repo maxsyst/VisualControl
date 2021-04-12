@@ -19,6 +19,7 @@ import Uploader from '../components/uploader-ng.vue';
 import ElementType from '../components/element-type.vue';
 import UploaderFg from '../components/uploader-filegraphic.vue';
 import UploaderFinal from '../components/uploader-final.vue';
+import LivePoint from '../components/Vertx/LivePoints/LivePointTable.vue';
 
 // Service components
 import LoginPage from '../components/login-page.vue';
@@ -154,6 +155,10 @@ export const routes = [
 
   {
     name: 'verificationsettings', path: '/vsettings', component: VerificationSettings, display: 'Редактирование параметров испытаний', nav: true,
+  },
+
+  {
+    name: 'livePoint', path: '/vertx/livePointScreen', component: LivePoint,
   },
 
   {

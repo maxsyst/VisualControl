@@ -20,7 +20,7 @@ import Uploader from '../components/uploader-ng.vue';
 import ElementType from '../components/element-type.vue';
 import UploaderFg from '../components/uploader-filegraphic.vue';
 import UploaderFinal from '../components/uploader-final.vue';
-
+import LivePoint from '../components/Vertx/LivePoints/LivePointTable.vue';
 // Service components
 import LoginPage from '../components/login-page.vue';
 import ShortLinkHandler from '../components/shortlink-handler.vue';
@@ -92,6 +92,7 @@ export const routes = [
   {
     name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true,
   },
+  
   {
     name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true,
   },
@@ -155,6 +156,10 @@ export const routes = [
 
   {
     name: 'verificationsettings', path: '/vsettings', component: VerificationSettings, display: 'Редактирование параметров испытаний', nav: true,
+  },
+
+  {
+    name: 'livePoint', path: '/vertx/livePointScreen', component: LivePoint,
   },
 
   {
