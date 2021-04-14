@@ -4,6 +4,9 @@
       color="#303030"
       class="elevation-8"
     >
+        <v-card-title>
+          <v-btn @click="$router.push({ name: 'livePoint' })">К измерениям в реальном времени</v-btn>
+        </v-card-title>
         <v-card-text>
             <LastUpdates
               v-if="loaded"
