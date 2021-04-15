@@ -2,7 +2,10 @@
     <v-container>
         <v-btn v-if="!_.isEmpty(measurements)" @click="goToAttemptTable">К таблице измерений</v-btn>
         <div>
-            <LivePointRow class="ma-4" v-for="measurement in measurements" :key="measurement.name" :singleCharacteristics="measurement"></LivePointRow>
+            <LivePointRow class="ma-4" v-for="measurement in measurements"
+                          :key="measurement.name"
+                          :singleCharacteristics="measurement">
+            </LivePointRow>
         </div>
     </v-container>
 </template>
