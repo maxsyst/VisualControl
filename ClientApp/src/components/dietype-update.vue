@@ -189,7 +189,7 @@ export default {
       await this.$http({
         method: 'post',
         url: '/api/dietype/codeproduct/update-fk',
-        data: { codeProductId: idcp, dieTypeId: this.dieType },
+        data: { codeProductId: idcp, dieTypeId: this.dieType.id },
         config: {
           headers: {
             Accept: 'application/json',
