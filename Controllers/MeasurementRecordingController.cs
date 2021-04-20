@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,6 +82,16 @@ namespace VueExample.Controllers
         public async Task<IActionResult> DeleteSpecificMeasurement([FromRoute] int measurementRecordingId, [FromRoute] int graphicId)
         {
             await _measurementRecordingService.DeleteSpecificMeasurement(measurementRecordingId, graphicId);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("deletespecificmultiply/{measurementRecordingId:int}/{graphicIdString}")]        
+        public async Task<IActionResult> DeleteSpecificMeasurement([FromRoute] int measurementRecordingId, [FromRoute] string graphicIdString)
+        {
+            var graphicIdArray = graphicIdString.Split('$').Select(x => Convert.ToInt32(x)).ToList();
+            await _measurementRecordingService.DeleteSpecificMultiplyMeasurement(measurementRecordingId, graphicIdArray);
             return NoContent();
         }
 

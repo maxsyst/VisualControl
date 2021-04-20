@@ -132,16 +132,41 @@ namespace VueExample.Providers.Srv6
 
         public async Task DeleteSpecificMeasurement(int measurementRecordingId, int graphicId)
         {
-            var graphicMeasurementRecording =   await _srv6Context.FkMrGraphics.FirstOrDefaultAsync(x => x.GraphicId == graphicId && x.MeasurementRecordingId == measurementRecordingId) 
-                                                ?? throw new RecordNotFoundException();                                              
-            var valueList = await _srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId && x.GraphicId == graphicId).ToListAsync();                                                
-            _srv6Context.DieGraphics.RemoveRange(valueList);
-            _srv6Context.FkMrGraphics.Remove(graphicMeasurementRecording);
-            await _srv6Context.SaveChangesAsync();
-            if(await _srv6Context.DieGraphics.AnyAsync(x => x.MeasurementRecordingId == measurementRecordingId)) 
+            var fkMrGraphicsCount = await _srv6Context.FkMrGraphics.CountAsync(x => x.MeasurementRecordingId == measurementRecordingId);
+            if(fkMrGraphicsCount == 1) 
             {
                 await Delete(measurementRecordingId);
             }                                 
+            else 
+            {
+                if(fkMrGraphicsCount == 0) 
+                {
+                    throw new RecordNotFoundException();
+                }
+                await DeleteSpecificGraphic(measurementRecordingId, graphicId);
+            }
+        }
+
+        public async Task DeleteSpecificMultiplyMeasurement(int measurementRecordingId, List<int> graphicIdList)
+        {
+            var fkMrGraphicsCount = await _srv6Context.FkMrGraphics.CountAsync(x => x.MeasurementRecordingId == measurementRecordingId);
+            if(fkMrGraphicsCount == 0) 
+            {
+                throw new RecordNotFoundException();
+            }
+      
+            if(fkMrGraphicsCount == graphicIdList.Count) 
+            {
+                await Delete(measurementRecordingId);
+            }
+            else 
+            {
+                foreach (var graphicId in graphicIdList)
+                {
+                    await DeleteSpecificGraphic(measurementRecordingId, graphicId);
+                }
+            }
+            
         }
 
         public async Task<FkMrGraphic> GetFkMrGraphics(int? measurementRecordingId, int graphicId)
@@ -168,5 +193,17 @@ namespace VueExample.Providers.Srv6
             await _srv6Context.SaveChangesAsync();
             return measurementRecording;
         }
+
+        private async Task DeleteSpecificGraphic(int measurementRecordingId, int graphicId)
+        {
+            var graphicMeasurementRecording =  await _srv6Context.FkMrGraphics.FirstOrDefaultAsync(x => x.GraphicId == graphicId && x.MeasurementRecordingId == measurementRecordingId) 
+                                                   ?? throw new RecordNotFoundException();                                              
+            var valueList = await _srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == measurementRecordingId && x.GraphicId == graphicId).ToListAsync();                                                
+            _srv6Context.DieGraphics.RemoveRange(valueList);
+            _srv6Context.FkMrGraphics.Remove(graphicMeasurementRecording);
+            await _srv6Context.SaveChangesAsync();      
+        } 
+
+        
     }
 }

@@ -43,7 +43,14 @@ namespace VueExample.Providers.Srv6
                         var fkMrGraphics = await _measurementRecordingService.GetFkMrGraphics(measurementRecording?.Id, graphic.Id);
                         fkMrGraphicsList.Add(fkMrGraphics);
                     }
-                    uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, UploadStatus = "already"});             
+                    if(fkMrGraphicsList.Count > 0) 
+                    {
+                        uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, UploadStatus = "already"});
+                    } 
+                    else 
+                    {
+                        uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, UploadStatus = "initial"});
+                    }
                 }
                 catch(Exception)
                 {

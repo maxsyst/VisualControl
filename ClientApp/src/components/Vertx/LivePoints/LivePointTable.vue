@@ -28,11 +28,10 @@ export default {
   },
 
   async created() {
-    this.showLoading('Получение данных от приборов');
+    this.showLoading('Получение данных от приборов...');
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl('/livepoint')
       .build();
-
     this.connection.start();
     this.connection.on('lastValues', (value) => this.livePointsRedraw(value));
     this.pollData();

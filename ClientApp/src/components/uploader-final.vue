@@ -19,10 +19,19 @@
                     <v-text-field v-model="originalCodeProduct.name" readonly label="Шаблон:"></v-text-field>
                 </v-row>
                  <v-row>
-                    <v-btn v-if="!readyToUploading" @mouseover="errorHighlight = true" @mouseleave="errorHighlight = false" block outlined color="pink">Загрузка невозможна</v-btn>
-                    <v-btn v-else-if="simpleOperations.every(x=> x.uploadStatus==='already' || x.uploadStatus === 'done')" block color="success">Измерения загружены</v-btn>
-                    <v-btn v-else-if="simpleOperations.filter(x => x.uploadStatus==='initial').length === 0" block color="indigo">Обновление статуса загрузки</v-btn>
-                    <v-btn v-else block color="teal" @click="upload">{{`Загрузить ${simpleOperations.filter(x => x.uploadStatus==='initial').length} измерений`}}</v-btn>
+                    <v-btn v-if="!readyToUploading" @mouseover="errorHighlight = true"
+                           @mouseleave="errorHighlight = false" block outlined color="pink">
+                      Загрузка невозможна
+                    </v-btn>
+                    <v-btn v-else-if="simpleOperations.every(x=> x.uploadStatus==='already' || x.uploadStatus === 'done')" block color="success">
+                      Измерения загружены
+                    </v-btn>
+                    <v-btn v-else-if="simpleOperations.filter(x => x.uploadStatus==='initial').length === 0" block color="indigo">
+                      Обновление статуса загрузки
+                    </v-btn>
+                    <v-btn v-else block color="teal" @click="upload">
+                      {{`Загрузить ${simpleOperations.filter(x => x.uploadStatus==='initial').length} измерений`}}
+                    </v-btn>
                 </v-row>
                 <v-row>
                     <v-col lg="12">
@@ -49,7 +58,11 @@
                                             <v-card>
                                                 <v-row>
                                                     <v-col lg="12" class="px-8">
-                                                            <v-text-field v-if="stageCreationMode" v-model="newStageName" :error-messages="newStageValidation" label="Название этапа:"></v-text-field>
+                                                            <v-text-field v-if="stageCreationMode"
+                                                                          v-model="newStageName"
+                                                                          :error-messages="newStageValidation"
+                                                                          label="Название этапа:">
+                                                            </v-text-field>
                                                             <v-select v-else
                                                                 :items="stages"
                                                                 @change="stageChanged(measurementRecording)"
@@ -63,7 +76,12 @@
                                                 </v-row>
                                                 <v-row>
                                                     <v-col lg="10" offset-lg="2" class="px-8">
-                                                        <v-btn v-if="stageCreationMode" v-show="!newStageValidation" block color="success" @click="createStage(measurementRecording)">Добавить этап в БД</v-btn>
+                                                        <v-btn v-if="stageCreationMode"
+                                                               v-show="!newStageValidation"
+                                                               block color="success"
+                                                               @click="createStage(measurementRecording)">
+                                                               Добавить этап в БД
+                                                        </v-btn>
                                                         <v-btn v-else block color="indigo" @click="stageCreationMode=true">Добавить новый этап</v-btn>
                                                     </v-col>
                                                 </v-row>
@@ -93,7 +111,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-bind:class="{ rotatingBorder: errorHighlight && !(operation.fileName.graphicNames && operation.element.elementId)}"  v-for="operation in simpleOperations" :key="operation.guid">
+                        <tr v-bind:class="{ rotatingBorder: errorHighlight && !(operation.fileName.graphicNames && operation.element.elementId)}"
+                            v-for="operation in simpleOperations" :key="operation.guid">
                             <td><v-chip label color="grey darken-2"> {{operation.name + '_' + operation.element.name}}</v-chip></td>
                             <td>
                                 <v-row>
@@ -117,13 +136,21 @@
                                             </v-tooltip>
                                         </v-col>
                                         <v-col lg="3" class="text-lg-left">
-                                            <create-element v-if="!operation.element.elementId" @show-snackbar="showSnackBar" @element-created="elementCreated" :name="operation.element.name" :dieTypeId="selectedMonitor"></create-element>
+                                            <create-element v-if="!operation.element.elementId"
+                                                            @show-snackbar="showSnackBar"
+                                                            @element-created="elementCreated"
+                                                            :name="operation.element.name"
+                                                            :dieTypeId="selectedMonitor">
+                                            </create-element>
                                         </v-col>
                                     </v-row>
                                 </td>
                                 <td>{{operation.fileName.name}}</td>
                                 <td v-if="operation.fileName.graphicNames">
-                                    <v-text-field v-if="operation.fileName.graphicNames.length === 1" class="mt-6" :value="operation.fileName.graphicNames[0]" readonly outlined></v-text-field>
+                                    <v-text-field v-if="operation.fileName.graphicNames.length === 1"
+                                                  class="mt-6" :value="operation.fileName.graphicNames[0]"
+                                                  readonly outlined>
+                                    </v-text-field>
                                     <v-select v-else class="mt-6"
                                         v-model="operation.fileName.selectedGraphicNames"
                                         :items="operation.fileName.graphicNames"
@@ -142,7 +169,8 @@
                                 <td><v-text-field class="mt-6" v-model="operation.mapType" outlined label="Тип карты:"></v-text-field></td>
                                 <td><v-text-field class="mt-6" v-model="operation.comment" outlined label="Комментарий:"></v-text-field></td>
                                 <td>
-                                    <v-chip v-if="operation.uploadStatus === 'done'" color="success" text-color="white" @click="copyShortLinkToClipboard(operation.shortLink)">
+                                    <v-chip v-if="operation.uploadStatus === 'done'"
+                                            color="success" text-color="white" @click="copyShortLinkToClipboard(operation.shortLink)">
                                         <v-avatar left>
                                             <v-icon>check_circle_outline</v-icon>
                                         </v-avatar>
@@ -160,13 +188,16 @@
                                         </v-avatar>
                                         Загрузка
                                     </v-chip>
-                                    <v-chip v-else-if="operation.uploadStatus === 'already'" color="teal" text-color="white" close close-icon="delete" @click:close="deleteSpecific(operation)">
+                                    <v-chip v-else-if="operation.uploadStatus === 'already'"
+                                            color="teal" text-color="white" close close-icon="delete" @click:close="deleteSpecific(operation)">
                                          <v-avatar left>
                                             <v-icon>check_circle_outline</v-icon>
                                         </v-avatar>
                                         Уже загружено
                                     </v-chip>
-                                    <v-chip v-else-if="operation.uploadStatus === 'initial'" color="cyan lighten-2" text-color="white" close close-icon="delete" @click:close="deleteRow(operation.guid)">
+                                    <v-chip v-else-if="operation.uploadStatus === 'initial'"
+                                            color="cyan lighten-2" text-color="white"
+                                            close close-icon="delete" @click:close="deleteRow(operation.guid)">
                                         <v-avatar left>
                                             <v-icon>schedule</v-icon>
                                         </v-avatar>
@@ -262,7 +293,7 @@ export default {
           this.stages = response.data;
         })
         .catch(() => {
-
+          this.showSnackBar('Ошибка при загрузке этапов');
         });
     },
 
@@ -374,21 +405,27 @@ export default {
     },
 
     async deleteSpecific(simpleOperation) {
-      simpleOperation.alreadyData.forEach(async (ad) => {
-        await this.$http.delete(`/api/measurementrecording/deletespecific/${ad.measurementRecordingId}/${ad.graphicId}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((response) => {
-            if (response.status === 204) {
-              this.showSnackBar('График успешно удален');
-            } else {
-              this.showSnackBar('Ошибка при удалении');
-            }
-          });
-      });
+      let requestString = '';
+      const ad = simpleOperation.alreadyData[0];
+      if (simpleOperation.alreadyData.length === 1) {
+        requestString = `/api/measurementrecording/deletespecific/${ad.measurementRecordingId}/${ad.graphicId}`;
+      } else {
+        requestString = `/api/measurementrecording/deletespecificmultiply/${ad.measurementRecordingId}/${simpleOperation.alreadyData.map((x) => x.graphicId).join('$')}`;
+      }
+
+      await this.$http.delete(requestString, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => {
+          if (response.status === 204) {
+            this.showSnackBar('График успешно удален');
+          } else {
+            this.showSnackBar('Ошибка при удалении');
+          }
+        });
       simpleOperation.uploadStatus = 'initial';
     },
 
