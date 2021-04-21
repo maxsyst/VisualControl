@@ -50,7 +50,7 @@
                                             <span v-else>Этап не выбран</span>
                                         </v-tooltip>
                                     </v-list-item-content>
-                                    <v-list-item-icon>
+                                    <v-list-item-icon v-if="!measurementRecording.sealed">
                                         <v-menu v-model="measurementRecording.stage.menu" :close-on-content-click="false" :nudge-width="300">
                                             <template v-slot:activator="{ on }">
                                                 <v-icon v-on="on" color="deep-purple lighten-5">edit</v-icon>
@@ -105,7 +105,7 @@
                             <th class="text-left">Имя файла</th>
                             <th class="text-left">Тип измерения</th>
                             <th class="text-center">Тип карты</th>
-                            <th class="text-center">Комментарий</th>
+                            <th class="text-center">Этап</th>
                             <th class="text-left">Статус загрузки</th>
 
                         </tr>
@@ -167,7 +167,10 @@
                                     </v-tooltip>
                                 </td>
                                 <td><v-text-field class="mt-6" v-model="operation.mapType" outlined label="Тип карты:"></v-text-field></td>
-                                <td><v-text-field class="mt-6" v-model="operation.comment" outlined label="Комментарий:"></v-text-field></td>
+                                <td>
+                                  <v-chip v-if="operation.stage.name" label color="indigo"> {{operation.stage.name}}</v-chip>
+                                  <v-chip v-else label color="pink">Не выбран</v-chip>
+                                </td>
                                 <td>
                                     <v-chip v-if="operation.uploadStatus === 'done'"
                                             color="success" text-color="white" @click="copyShortLinkToClipboard(operation.shortLink)">
@@ -251,9 +254,25 @@ export default {
             measurementRecordingsJSON: JSON.stringify(this.measurementRecordings),
           },
         })
-        .then((response) => {
+        .then(async (response) => {
           this.simpleOperations = response.data.map((d) => ({ ...d, uploadStatus: '', shortLink: '' }));
-          this.checkUploadingStatus(this.simpleOperations);
+          await this.checkUploadingStatus(this.simpleOperations);
+          this.measurementRecordingsWithStage.forEach((m) => {
+            const simpleOperation = this.simpleOperations.find((so) => so.name === m.id && so.uploadStatus === 'already');
+            if (simpleOperation) {
+              m.stage.id = simpleOperation.stage.id;
+              m.stage.name = simpleOperation.stage.name;
+              m.sealed = true;
+            }
+          });
+          const initialArray = this.simpleOperations.filter((so) => so.uploadStatus === 'initial');
+          initialArray.forEach((i) => {
+            const measurementRecordingWithStage = this.measurementRecordingsWithStage.find((mr) => mr.id === i.name);
+            if (measurementRecordingWithStage) {
+              i.stage.id = measurementRecordingWithStage.stage.id;
+              i.stage.name = measurementRecordingWithStage.stage.name;
+            }
+          });
         })
         .catch(() => {
           this.showSnackBar('Ошибка при загрузке операций');
@@ -342,7 +361,7 @@ export default {
             data: {
               operationName: `${so.name}_${so.element.name}`,
               bigMeasurementName: so.name,
-              stageId: so.stageId,
+              stageId: so.stage.id,
               elementId: so.element.elementId,
               codeProductId: this.originalCodeProduct.id,
               waferId: this.wafer,
@@ -394,6 +413,7 @@ export default {
           response.data.forEach((x) => {
             const simpleOperation = simpleOperations.find((so) => so.guid === x.guid);
             simpleOperation.uploadStatus = x.uploadStatus;
+            simpleOperation.stage = { ...x.stage };
             simpleOperation.alreadyData = x.alreadyData || [];
           });
           this.closeLoading();
@@ -438,7 +458,8 @@ export default {
       measurementRecording.stage.name = this.stages.find((s) => s.stageId === measurementRecording.stage.id).stageName;
       this.simpleOperations.forEach((so) => {
         if (so.name === measurementRecording.id) {
-          so.stageId = measurementRecording.stage.id;
+          so.stage.id = measurementRecording.stage.id;
+          so.stage.name = measurementRecording.stage.name;
         }
       });
     },
@@ -470,7 +491,7 @@ export default {
     await this.initMonitors();
     await this.getOriginalCodeProduct(this.wafer);
     await this.getAllStages(this.wafer);
-    this.measurementRecordingsWithStage = this.measurementRecordings.map((x) => ({ id: x, stage: { id: 0, name: '', menu: false } }));
+    this.measurementRecordingsWithStage = this.measurementRecordings.map((x) => ({ id: x, stage: { id: 0, name: '', menu: false }, sealed: false }));
   },
 };
 </script>

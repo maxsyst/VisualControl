@@ -141,6 +141,7 @@ namespace VueExample.Providers.Srv6
                     {
                         var simpleOperation = new SimpleOperationUploaderViewModel{Guid = Guid.NewGuid().ToString()};
                         simpleOperation.Name = $"{meas}";
+                        simpleOperation.Stage = new StageViewModel();
                         simpleOperation.Path = simpleOperationFileName;
                         var element = (await _elementService.GetByDieType(dieTypeId)).FirstOrDefault(x => x.Name == dirElementName);
                         simpleOperation.Element = new ElementUploading{Name = dirElementName, ElementId = element?.ElementId, Comment = element?.Comment};

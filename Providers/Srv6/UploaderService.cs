@@ -14,13 +14,15 @@ namespace VueExample.Providers.Srv6
     {
         private readonly IStandartWaferService _standartWaferService;
         private readonly IDieProvider _dieProvider;
+        private readonly IStageProvider _stageProvider;
         private readonly ISRV6GraphicService _graphicService;
         private readonly IDieValueService _dieValueService;
         private readonly IShortLinkProvider _shortLinkProvider;
         private readonly IMeasurementRecordingService _measurementRecordingService;
-        public UploaderService (IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider) 
+        public UploaderService (IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider) 
         {
             _standartWaferService = standartWaferService;
+            _stageProvider = stageProvider;
             _graphicService = graphicService;
             _measurementRecordingService = measurementRecordingService;
             _dieProvider = dieProvider;
@@ -45,16 +47,25 @@ namespace VueExample.Providers.Srv6
                     }
                     if(fkMrGraphicsList.Count > 0) 
                     {
-                        uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, UploadStatus = "already"});
+                        var stage = await _stageProvider.GetByMeasurementRecordingId(measurementRecording.Id);
+                        if(stage.IsNullObject) 
+                        {
+                            uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, Stage = new ViewModels.StageViewModel(), UploadStatus = "already"});
+                        }
+                        else
+                        {
+                            uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, Stage = new ViewModels.StageViewModel {Id = stage.StageId, Name = stage.StageName}, UploadStatus = "already"});
+                        }
+                        
                     } 
                     else 
                     {
-                        uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, UploadStatus = "initial"});
+                        uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, Stage = new ViewModels.StageViewModel(), UploadStatus = "initial"});
                     }
                 }
                 catch(Exception)
                 {
-                    uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, UploadStatus = "initial"});
+                    uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, Stage = new ViewModels.StageViewModel(), UploadStatus = "initial"});
                 }
             }
             return uploadingFileStatusList;
