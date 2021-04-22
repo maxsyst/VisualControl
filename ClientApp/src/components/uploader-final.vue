@@ -285,7 +285,9 @@ export default {
       return `${this.$store.state.authentication.user.firstName} ${this.$store.state.authentication.user.surname}`;
     },
     readyToUploading() {
-      return this.simpleOperations.length > 0 && this.simpleOperations.every((so) => so.fileName.graphicNames && so.element.elementId);
+      return this.simpleOperations.length > 0
+        && this.simpleOperations.every((so) => so.fileName.graphicNames && so.element.elementId)
+        && this.simpleOperations.every((so) => so.stage.id > 0);
     },
     newStageValidation() {
       if (!this.newStageName) return 'Введите название этапа';
@@ -351,6 +353,7 @@ export default {
     },
 
     async upload() {
+      this.measurementRecordingsWithStage.forEach((x) => { x.sealed = true; });
       for (let index = 0; index < this.simpleOperations.length; index++) {
         const so = this.simpleOperations[index];
         if (so.uploadStatus !== 'already') {
