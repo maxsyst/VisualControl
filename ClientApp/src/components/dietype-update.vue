@@ -54,7 +54,7 @@
                                         <v-list-item-subtitle>{{element.comment}}</v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
-                                        <update-element :edited-element="Object.assign({}, element)"
+                                        <update-element :edited-element="Object.assign({}, element)" :avElementTypes="avElementTypes"
                                                         :key="element.name" @update-element="updateElement"></update-element>
                                     </v-list-item-action>
                                     <v-list-item-action>
@@ -123,6 +123,7 @@ export default {
       processes: [],
       avCodeProducts: [],
       selectedCodeProducts: [],
+      avElementTypes: [],
     };
   },
 
@@ -135,6 +136,14 @@ export default {
     wipeEditing() {
       this.nameUpdating.dialog = false;
       this.nameUpdating.newName = '';
+    },
+
+    async initElementTypes() {
+      await this.$http
+        .get('/api/elementtype/all')
+        .then((response) => {
+          this.avElementTypes = response.data;
+        });
     },
 
     async getProcesses() {
@@ -318,6 +327,7 @@ export default {
   async mounted() {
     await this.getProcesses().then(() => { this.selectedProcess = 333; });
     await this.getDieTypes();
+    await this.initElementTypes();
   },
 };
 </script>

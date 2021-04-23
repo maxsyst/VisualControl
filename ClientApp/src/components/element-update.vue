@@ -53,24 +53,13 @@
 export default {
   data() {
     return {
-      avElementTypes: [],
       validationErrors: [],
       menu: false,
-      editedElement: this.editedElement,
     };
   },
-  props: ['editedElement'],
+  props: ['editedElement', 'avElementTypes'],
 
   methods: {
-
-    async initElementTypes() {
-      await this.$http
-        .get('/api/elementtype/all')
-        .then((response) => {
-          this.avElementTypes = response.data;
-          this.editedElement.typeId = this.avElementTypes[0].id;
-        });
-    },
 
     updateElement() {
       this.menu = false;
