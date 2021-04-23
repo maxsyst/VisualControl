@@ -1009,7 +1009,7 @@ namespace VueExample.StatisticsCore
         private List<Statistics> GetSingleStatistics(List<string> list, Graphic graphics, StatisticParameter statisticParameter)
         {
 
-            var listdouble = list.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var listdouble = list.Select(x => String.IsNullOrEmpty(x) ? Double.NaN : double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
             if (statisticParameter != null)
