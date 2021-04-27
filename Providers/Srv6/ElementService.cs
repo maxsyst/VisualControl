@@ -1,5 +1,3 @@
-using System;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +7,6 @@ using VueExample.Providers.Srv6.Interfaces;
 using System.Collections.Generic;
 using VueExample.ViewModels;
 using AutoMapper;
-using VueExample.Models;
 
 namespace VueExample.Providers.Srv6
 {
