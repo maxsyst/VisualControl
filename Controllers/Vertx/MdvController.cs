@@ -21,6 +21,14 @@ namespace VueExample.Controllers.Vertx
             _mapper = mapper;
             _mdvService = mdvService;
         }
+        
+        [HttpGet]
+        [Route("waferId/{waferId}")]
+        public async Task<IActionResult> GetByWaferId([FromRoute] string waferId) 
+        {
+            var mdvList = await _mdvService.GetByWafer(waferId);
+            return mdvList.Count == 0 ? (IActionResult)NotFound() : Ok(mdvList);
+        }
 
         [HttpGet]
         [Route("waferId/{waferId}/code/{code}")]

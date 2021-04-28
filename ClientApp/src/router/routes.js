@@ -20,6 +20,8 @@ import ElementType from '../components/element-type.vue';
 import UploaderFg from '../components/uploader-filegraphic.vue';
 import UploaderFinal from '../components/uploader-final.vue';
 import LivePoint from '../components/Vertx/LivePoints/LivePointTable.vue';
+import MDVCreation from '../components/Vertx/CreationForms/MdvCreation.vue';
+import MeasurementCreation from '../components/Vertx/CreationForms/MeasurementCreation.vue';
 
 // Service components
 import LoginPage from '../components/login-page.vue';
@@ -159,6 +161,14 @@ export const routes = [
 
   {
     name: 'livePoint', path: '/vertx/livePointScreen', component: LivePoint,
+  },
+
+  {
+    name: 'mdvCreation', path: '/vertx/mdvCreation', component: MDVCreation,
+  },
+
+  {
+    name: 'measurementCreation', path: '/vertx/measurementCreation', component: MeasurementCreation,
   },
 
   {

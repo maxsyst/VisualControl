@@ -54,12 +54,7 @@ export default {
     };
   },
   async created() {
-    const { data } = await this.$http.get(`/api/vertx/point
-                                                     /measurementAttemptId/${this.sourceId}
-                                                     /characteristicName/${this.characteristic.name}
-                                                     /sifted/${this.siftedK}
-                                                     /withoutbadpoints/${this.withoutBadPoints}
-                                                     /date`);
+    const { data } = await this.$http.get(`/api/vertx/point/measurementAttemptId/${this.sourceId}/characteristicName/${this.characteristic.name}/sifted/${this.siftedK}/withoutbadpoints/${this.withoutBadPoints}/date`);
     this.chartData = { ...data };
     this.chartSettings.characteristic = { ...this.characteristic };
     this.loaded = true;
