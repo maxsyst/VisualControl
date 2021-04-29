@@ -94,7 +94,6 @@ export const routes = [
   {
     name: 'kurbatov', path: '/export-kurb', component: Kurbatov, display: 'Экспорт', nav: true,
   },
-  
   {
     name: 'elementtype', path: '/element-type', component: ElementType, display: 'Et', nav: true,
   },

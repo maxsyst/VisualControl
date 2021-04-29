@@ -63,5 +63,10 @@ namespace VueExample.Services.Vertx.Implementation
             return await _mdvCollection.Find(Builders<Mdv>.Filter.Where(x => x.Code == code && x.WaferId == waferId))
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<List<Mdv>> GetAll()
+        {
+            return await _mdvCollection.Find(_ => true).ToListAsync();
+        }
     }
 }

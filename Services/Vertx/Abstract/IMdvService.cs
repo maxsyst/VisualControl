@@ -11,6 +11,8 @@ namespace VueExample.Services.Vertx.Abstract
 
         Task<bool> Delete(ObjectId id);
 
+        Task<List<Mdv>> GetAll();
+
         Task<List<Mdv>> GetByWafer(string waferId);
 
         Task<Mdv> GetById(ObjectId id);

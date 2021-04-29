@@ -6,8 +6,6 @@
           v-model="waferId"
           :items="wafers"
           no-data-text="Нет данных"
-          item-text="waferId"
-          item-value="waferId"
           outlined
           label="Номер пластины"
         >
@@ -15,14 +13,13 @@
         </v-col>
         <v-col>
            <v-select
-          v-model="code"
-          :items="mdvs"
-          no-data-text="Кристаллы не найдены"
-          item-text="code"
-          item-value="code"
-          outlined
-          label="Код кристалла"
-        >
+              v-model="code"
+              :items="mdvs"
+              no-data-text="Кристаллы не найдены"
+              item-text="code"
+              item-value="code"
+              outlined
+              label="Код кристалла">
         </v-select>
         </v-col>
       </v-row>
@@ -63,6 +60,13 @@
           <v-text-field v-model="matchingBoard" :error-messages="matchingBoardValidator" outlined label="Плата согласования"></v-text-field>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col>
+          <v-btn v-if="createButton" color="success" block @click="createMeasurement"
+          >Добавить новое измерение</v-btn
+          >
+        </v-col>
+      </v-row>
     </v-container>
 </template>
 
@@ -88,7 +92,7 @@ export default {
 
   async created() {
     this.showLoading('Загрузка списка пластин');
-    this.$http.get('/api/wafer/all').then((response) => {
+    this.$http.get('/api/vertx/mdv/wafers/all').then((response) => {
       this.wafers = response.data;
       this.closeLoading();
     });
@@ -105,7 +109,126 @@ export default {
     },
   },
 
+  computed: {
+    nameValidator() {
+      if (this.name.length === 0) {
+        return 'Введите название';
+      }
+      if (this.name.length > 30) {
+        return 'Макс. 30 символов';
+      }
+      return '';
+    },
+
+    measurementChannelValidator() {
+      if (this.measurementChannel.length === 0) {
+        return 'Введите номер канала';
+      }
+      if (this.measurementChannel % 1 === 0) {
+        if (+this.measurementChannel < 1 || +this.measurementChannel > 10) {
+          return 'Введите номер от 1 до 10';
+        }
+        return '';
+      }
+      return 'Введите корректный номер канала';
+    },
+
+    vgateValidator() {
+      if (this.vgate.length === 0) {
+        return 'Введите напряжение';
+      }
+      if (isNaN(this.vgate)) {
+        return 'Введите напряжение в корректном формате';
+      }
+      return '';
+    },
+
+    vpowerValidator() {
+      if (this.vpower.length === 0) {
+        return 'Введите напряжение';
+      }
+      if (isNaN(this.vpower)) {
+        return 'Введите напряжение в корректном формате';
+      }
+      return '';
+    },
+
+    goalValidator() {
+      if (this.goal.length > 50) {
+        return 'Макс. 50 символов';
+      }
+      return '';
+    },
+
+    noteValidator() {
+      if (this.note.length > 150) {
+        return 'Макс. 150 символов';
+      }
+      return '';
+    },
+
+    tempSensorValidator() {
+      if (this.tempSensor.length > 20) {
+        return 'Макс. 20 символов';
+      }
+      return '';
+    },
+
+    matchingValidator() {
+      if (this.matching.length > 20) {
+        return 'Макс. 20 символов';
+      }
+      return '';
+    },
+
+    matchingBoardValidator() {
+      if (this.matchingBoard.length > 20) {
+        return 'Макс. 20 символов';
+      }
+      return '';
+    },
+
+    createButton() {
+      return this.code && this.nameValidator === ''
+                       && this.measurementChannelValidator === ''
+                       && this.vgateValidator === ''
+                       && this.vpowerValidator === ''
+                       && this.goalValidator === ''
+                       && this.noteValidator === ''
+                       && this.tempSensor === ''
+                       && this.matching === ''
+                       && this.matchingBoard === '';
+    },
+  },
+
   methods: {
+    async createMeasurement() {
+      const measurementViewModel = {
+        waferId: this.waferId,
+        code: this.code,
+        measurementInputModel: {
+          name: this.name,
+          measurementChannel: this.measurementChannel,
+          vgate: this.vgate,
+          vpower: this.vpower,
+          goal: [this.goal],
+          comments: [],
+          notes: [this.note],
+          temperatureSensor: this.temperatureSensor,
+          matching: this.matching,
+          matchingBoard: this.matchingBoard,
+        },
+      };
+      await this.$http
+        .post('/api/vertx/measurement/create/withmdv', measurementViewModel)
+        .then(() => {
+          this.showSnackbar('Измерение добавлен в систему');
+          this.wipeEditing();
+        })
+        .catch(() => {
+          this.showSnackbar('Ошибка при создании измерения');
+        });
+    },
     showSnackbar(text) {
       this.$store.dispatch('alert/success', text);
     },
@@ -118,8 +241,16 @@ export default {
     },
     wipeEditing() {
       this.waferId = '';
-      this.description = '';
       this.code = '';
+      this.name = '';
+      this.measurementChannel = '';
+      this.vgate = '';
+      this.vpower = '';
+      this.goal = '';
+      this.note = '';
+      this.tempSensor = '';
+      this.matching = '';
+      this.matchingBoard = '';
     },
   },
 };

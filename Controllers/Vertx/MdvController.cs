@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,15 @@ namespace VueExample.Controllers.Vertx
         {
             _mapper = mapper;
             _mdvService = mdvService;
+        }
+
+        [HttpGet]
+        [Route("wafers/all")]
+        public async Task<IActionResult> GetAllWafers() 
+        {
+            var mdvList = await _mdvService.GetAll();
+            var wafersList = mdvList.Select(x => x.WaferId).Distinct().ToList();
+            return wafersList.Count == 0 ? (IActionResult)NotFound() : Ok(wafersList);
         }
         
         [HttpGet]

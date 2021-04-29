@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -58,6 +59,10 @@ namespace VueExample.Controllers.Vertx
             var measurementAttempt = await _measurementAttemptService.GetMasterByMdvId(mdv.Id.ToString());
             var measurementInputModel = measurementWithMdvInputModel.MeasurementInputModel;
             measurementInputModel.MeasurementAttemptId = measurementAttempt.Id.ToString();
+            if(measurementInputModel.CreationDate.Ticks == 0) 
+            {
+                measurementInputModel.CreationDate = DateTime.Now;
+            }
             var measurement = _mapper.Map<Measurement>(measurementInputModel);
             MeasurementResponseModel measurementResponseModel;
             try
