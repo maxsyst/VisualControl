@@ -78,6 +78,26 @@ namespace VueExample.Controllers.Vertx
         }
 
         [HttpGet]
+        [Route("generate/name/waferId/{waferId}/code/{code}")]
+        public async Task<IActionResult> GenerateNameByMdv([FromRoute] string waferId, [FromRoute] string code)
+        {
+            var mdv = await _mdvService.GetByWaferAndCode(waferId, code);
+            if(mdv == null) {
+                return (IActionResult)NotFound();
+            }
+            var measurementAttempts = await _measurementAttemptService.GetByMdvId(mdv.Id.ToString());
+            var measurementCounter = 0;
+            foreach (var measurementAttempt in measurementAttempts)
+            {
+                measurementCounter = measurementCounter + measurementAttempt.MeasurementsId.Count();
+            }
+            var measurementName = $"{waferId}&&{code}&&Test{measurementCounter + 1}";
+            return String.IsNullOrEmpty(measurementName)
+                ? (IActionResult)NotFound()
+                : Ok(measurementName);
+        }
+
+        [HttpGet]
         [Route("id/{measurementId}")]
         public async Task<IActionResult> GetById([FromRoute] string measurementId)
         {

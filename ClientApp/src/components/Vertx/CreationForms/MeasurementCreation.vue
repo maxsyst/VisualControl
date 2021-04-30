@@ -1,5 +1,12 @@
 <template>
     <v-container>
+    <v-row>
+      <v-col lg="6">
+        <v-chip class="elevation-8" label x-large color="#303030">
+          Добавление измерения
+        </v-chip>
+      </v-col>
+    </v-row>
       <v-row>
         <v-col>
           <v-select
@@ -25,7 +32,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-text-field v-model="name" :error-messages="nameValidator" outlined label="Название измерения"></v-text-field>
+          <v-text-field v-model="name" readonly outlined label="Название измерения"></v-text-field>
         </v-col>
         <v-col>
           <v-text-field v-model="measurementChannel" :error-messages="measurementChannelValidator" outlined label="Измерительный канал"></v-text-field>
@@ -104,6 +111,17 @@ export default {
         this.mdvs = response.data;
         if (this.mdvs.length === 0) {
           this.showSnackbar('Кристаллы не найдены');
+        } else {
+          this.code = this.mdvs[0].code;
+        }
+      });
+    },
+
+    async code(newValue) {
+      this.$http.get(`/api/vertx/measurement/generate/name/waferId/${this.waferId}/code/${newValue}`).then((response) => {
+        this.name = response.data;
+        if (this.name === '') {
+          this.showSnackbar('Не удалось сгенерировать название');
         }
       });
     },
@@ -189,8 +207,7 @@ export default {
     },
 
     createButton() {
-      return this.code && this.nameValidator === ''
-                       && this.measurementChannelValidator === ''
+      return this.code && this.measurementChannelValidator === ''
                        && this.vgateValidator === ''
                        && this.vpowerValidator === ''
                        && this.goalValidator === ''
