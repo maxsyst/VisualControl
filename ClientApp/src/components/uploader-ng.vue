@@ -15,7 +15,10 @@
               <v-checkbox v-model="selectedMeasurementRecordings" v-for="mr in measurementRecordings" :key="mr" :label="mr" :value="mr"></v-checkbox>
           </v-col>
           <v-col lg="2">
-              <v-btn v-show="selectedCodeProductFolder && selectedWaferFolder && selectedMeasurementRecordings.length > 0" color="success" block @click="goToUploading(selectedCodeProductFolder, selectedWaferFolder, selectedMeasurementRecordings)">Перейти к загрузке</v-btn>
+              <v-btn v-show="selectedCodeProductFolder && selectedWaferFolder && selectedMeasurementRecordings.length > 0" 
+                     color="success"
+                     block
+                     @click="goToUploading(selectedCodeProductFolder, selectedWaferFolder, selectedMeasurementRecordings)">Перейти к загрузке</v-btn>
           </v-col>
       </v-row>
   </v-container>
@@ -40,7 +43,6 @@ export default {
       await this.$http
         .get('/api/folder/folders-cp')
         .then((response) => this.codeProductFolders = response.data)
-        .catch((err) => console.log(err));
     },
 
     goToUploading(selectedCodeProductFolder, selectedWaferFolder, selectedMeasurementRecordings) {
@@ -79,7 +81,7 @@ export default {
         });
     },
 
-    async selectedWaferFolder(newVal, oldVal) {
+    async selectedWaferFolder(newVal) {
       const codeProductFolderName = this.selectedCodeProductFolder;
       if (newVal) {
         this.$router.push({ name: 'uploader-cpw', params: { selectedCodeProductFolder: codeProductFolderName, selectedWaferFolder: newVal } });
@@ -96,7 +98,7 @@ export default {
       }
     },
 
-    selectedMeasurementRecordings(newVal, oldVal) {
+    selectedMeasurementRecordings(newVal) {
       const mrArray = newVal.join('$');
       const waferFolderName = this.selectedWaferFolder;
       const codeProductFolderName = this.selectedCodeProductFolder;

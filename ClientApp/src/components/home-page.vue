@@ -23,34 +23,10 @@
                 min-height="150"
                 shaped
                 color="indigo"
-                @click="$router.push({ name: 'testing'})"
-                class="d-flex ma-1">
-                  <v-card-text class="headline font-weight-bold">
-                    Результаты испытаний
-                  </v-card-text>
-                <v-card-actions>
-                </v-card-actions>
-              </v-card>
-               <v-card
-                min-height="70"
-                shaped
-                color="indigo"
                 @click="$router.push({ name: 'MeasurementAttemptsLastView'})"
                 class="d-flex ma-1">
                   <v-card-text class="headline font-weight-bold">
-                    Vertx
-                  </v-card-text>
-                <v-card-actions>
-                </v-card-actions>
-              </v-card>
-              <v-card
-                min-height="150"
-                shaped
-                color="indigo"
-                @click="$router.push({ name: 'control-charts'})"
-                class="d-flex ma-1">
-                  <v-card-text class="headline font-weight-bold">
-                    Контрольные карты
+                    Результаты испытаний
                   </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
@@ -61,21 +37,21 @@
                 min-height="100"
                 shaped
                 color="indigo"
-                 @click="$router.push({ name: 'device'})"
+                 @click="$router.push({ name: 'mdvCreation'})"
                 class="d-flex ma-1">
                 <v-card-text class="headline font-weight-bold">
-                    Приборы
+                    Добавление образцов
                 </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
               </v-card>
               <v-card
                 min-height="100"
-                @click=""
+                @click="$router.push({ name: 'measurementCreation'})"
                 color="indigo"
                 class="d-flex ma-1">
                 <v-card-text class="headline font-weight-bold">
-                    Измеряемые устройства
+                    Добавление измерений
                 </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
@@ -84,10 +60,10 @@
                 min-height="100"
                 shaped
                 color="indigo"
-                @click=""
+                @click="$router.push({ name: 'livePoint'})"
                 class="d-flex ma-1">
                 <v-card-text class="headline font-weight-bold">
-                  Измерения
+                  Live
                 </v-card-text>
                 <v-card-actions>
                 </v-card-actions>

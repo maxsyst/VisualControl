@@ -16,8 +16,7 @@ namespace VueExample.Services.Vertx.Implementation
         private readonly IMeasurementService _measurementService;
         private readonly IMapper _mapper;
 
-        public AggregationService(IMapper mapper, IMdvService mdvService, IMeasurementAttemptService measurementAttemptService,
-            IMeasurementService measurementService)
+        public AggregationService(IMapper mapper, IMdvService mdvService, IMeasurementAttemptService measurementAttemptService, IMeasurementService measurementService)
         {
             _mapper = mapper;
             _mdvService = mdvService;

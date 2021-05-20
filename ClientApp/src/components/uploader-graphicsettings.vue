@@ -5,7 +5,11 @@
             <v-text-field v-model="fileName" :error-messages="validateNewFileName" label="Название файла"></v-text-field>
         </v-col>
          <v-col lg="5" offset-lg="1">
-            <v-btn v-show="validateNewFileName.length === 0 && graphics.length > 0" color="success" block @click="createFileName(fileName, processId, graphics)">Создать новый файл</v-btn>
+            <v-btn v-show="validateNewFileName.length === 0 && graphics.length > 0"
+                   color="success" block
+                   @click="createFileName(fileName, processId, graphics)">
+                   Создать новый файл
+            </v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -26,12 +30,17 @@
                                         <v-card>
                                             <v-row>
                                                 <v-col lg="11" class="px-8">
-                                                    <v-text-field v-model="newGraphic" :error-messages="validateNewGraphic" label="Название графика"></v-text-field>
+                                                    <v-text-field v-model="newGraphic"
+                                                                  :error-messages="validateNewGraphic"
+                                                                  label="Название графика">
+                                                    </v-text-field>
                                                 </v-col>
                                             </v-row>
                                             <v-row>
                                                 <v-col lg="6" offset-lg="5" class="pe-8">
-                                                    <v-btn color="indigo" v-show="validateNewGraphic.length === 0" block @click="createGraphic(newGraphic, selectedVariant)">Создать график</v-btn>
+                                                    <v-btn color="indigo" v-show="validateNewGraphic.length === 0"
+                                                           block @click="createGraphic(newGraphic, selectedVariant)">Создать график
+                                                    </v-btn>
                                                 </v-col>
                                             </v-row>
                                         </v-card>
