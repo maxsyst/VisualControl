@@ -129,12 +129,23 @@
       "parser": "babel-eslint",
       "ecmaVersion": 2020
     },
-    "globals": { "_": true },
+    "globals": {
+      "_": true
+    },
     "rules": {
-       "import/extensions": [0, { "<js>": "always" }],
-       "import/prefer-default-export": 0,
-       "max-len": ["error", { "code": 150 }]
-
+      "import/extensions": [
+        0,
+        {
+          "<js>": "always"
+        }
+      ],
+      "import/prefer-default-export": 0,
+      "max-len": [
+        "error",
+        {
+          "code": 150
+        }
+      ]
     },
     "overrides": [
       {

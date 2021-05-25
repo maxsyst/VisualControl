@@ -9,9 +9,9 @@
             shaped
             @click="$router.push({ name: 'pwafer'})"
             class="d-flex left-card ma-2">
-             <v-card-text class="headline font-weight-bold">
+              <v-card-text class="headline font-weight-bold">
                     Просмотр измерений
-                </v-card-text>
+              </v-card-text>
             <v-card-actions>
             </v-card-actions>
           </v-card>

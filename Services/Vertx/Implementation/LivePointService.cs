@@ -22,12 +22,20 @@ namespace VueExample.Services.Vertx.Implementation
             return livePoint;
         }
 
-        public async Task<List<LivePoint>> GetNLastPoint(int n)
+        public async Task<List<LivePointResponseModel>> GetNLastPoint(int n)
         {
+            var livePoints = new List<LivePointResponseModel>();
             var points = await _livePointContext.LivePoints.OrderByDescending(x => x.Id).Take(n).ToListAsync();
-            return points.GroupBy(m => new {m.MeasurementName, m.CharacteristicName})
+            var groupedPoints = points.GroupBy(m => new {m.MeasurementName, m.CharacteristicName})
                          .Select(group => group.First())
                          .ToList();
+            var characteristics = await _livePointContext.Graphic.ToListAsync();
+            foreach (var point in groupedPoints)
+            {
+                var unit = characteristics.FirstOrDefault(x => x.Specification == point.CharacteristicName)?.Unit;
+                livePoints.Add(new LivePointResponseModel(point, unit));
+            }
+            return livePoints;
         }
     }
 }

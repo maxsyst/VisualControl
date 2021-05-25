@@ -64,7 +64,7 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         this.connection.send('getLastValues');
-      }, 10000);
+      }, 2000);
     },
 
     livePointsRedraw(value) {
@@ -74,6 +74,7 @@ export default {
           name: v.measurementName,
           value: v.value,
           characteristic: v.characteristicName,
+          unit: v.characteristicUnit,
           date: this.moment(v.date).fromNow(),
         });
       });

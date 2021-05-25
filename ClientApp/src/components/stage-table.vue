@@ -78,7 +78,7 @@
                     <v-divider></v-divider>
                     <v-card-text style="height: 200px;">
                         <v-text-field class="mt-8" outlined label="Название процесса" readonly v-model="processesList.find(x => x.processId == processId).processName"></v-text-field>
-                        <v-text-field outlined label="Название этапа" v-model="creating.stage.name"></v-text-field>
+                        <v-text-field outlined label="Название этапа" v-model="creating.stage.name"></v-text-field>`
                     </v-card-text>
                     <v-card-actions class="d-flex justify-lg-space-between">
                         <v-btn color="indigo" @click="wipeCreating()">Закрыть</v-btn>
@@ -195,7 +195,7 @@ export default {
   watch: {
     processId: {
       immediate: true,
-      async handler(newVal, oldVal) {
+      async handler(newVal) {
         this.$router.push({ name: 'stagetable', params: { processId: newVal } });
         await this.getStagesByProcessId(newVal).then((data) => this.stagesList = data);
       },

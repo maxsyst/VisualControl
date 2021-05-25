@@ -32,8 +32,17 @@
         </v-col>
         <v-col lg="6">
             <v-card v-if="selectedFileName" class="mx-auto">
-                <file-creating v-if="selectedFileName === 'create'" @file-created="fileCreated" @show-snackbar="showSnackBar" :processId="selectedProcessId" :fileNames="fileNames"></file-creating>
-                <file-updating v-else @show-snackbar="showSnackBar" @file-deleted="fileDeleted" :processId="selectedProcessId" :fileName="fileNames.find(x => x.id === selectedFileName)"></file-updating>
+                <file-creating v-if="selectedFileName === 'create'"
+                               @file-created="fileCreated"
+                               @show-snackbar="showSnackBar"
+                               :processId="selectedProcessId" :fileNames="fileNames">
+                </file-creating>
+                <file-updating v-else
+                               @show-snackbar="showSnackBar"
+                               @file-deleted="fileDeleted"
+                               :processId="selectedProcessId"
+                               :fileName="fileNames.find(x => x.id === selectedFileName)">
+                </file-updating>
             </v-card>
         </v-col>
       </v-row>
@@ -62,7 +71,7 @@ export default {
   },
 
   watch: {
-    async selectedProcessId(newVal, oldVal) {
+    async selectedProcessId(newVal) {
       this.selectedFileName = '';
       this.fileNames = [];
       await this.$http
