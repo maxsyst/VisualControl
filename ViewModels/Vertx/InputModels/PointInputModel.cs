@@ -8,7 +8,7 @@ namespace VueExample.ViewModels.Vertx.InputModels
     {
         public string MeasurementName { get; set; }
         public Characteristic Characteristic { get; set; }
-        public double Value { get; set; }
+        public string Value { get; set; }
         public bool IsNewSet { get; set; }
         public DateTime? CreationDate { get; set; }
     }
@@ -16,7 +16,7 @@ namespace VueExample.ViewModels.Vertx.InputModels
     public class PointBatchInputModel
     {
         public string MeasurementName { get; set; }
-        public List<CharacteristicWithValue> CharacteristicWithValues { get; set; } = new List<CharacteristicWithValue>();
+        public List<CharacteristicWithValueInputModel> CharacteristicWithValues { get; set; } = new List<CharacteristicWithValueInputModel>();
         public bool IsNewSet { get; set; }
         public DateTime? CreationDate { get; set; }
 

@@ -35,7 +35,10 @@
           <v-text-field v-model="name" readonly outlined label="Название измерения"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="measurementChannel" :error-messages="measurementChannelValidator" outlined label="Измерительный канал"></v-text-field>
+          <v-text-field v-model="measurementChannel"
+                        :error-messages="measurementChannelValidator"
+                        outlined label="Измерительный канал">
+          </v-text-field>
         </v-col>
       </v-row>
       <v-row>

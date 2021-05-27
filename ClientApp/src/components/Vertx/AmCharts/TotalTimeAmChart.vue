@@ -52,6 +52,7 @@ export default {
       series.tensionY = 0.7;
       series.name = pointsData.name;
       series.data = pointsData.points.map((p) => ({ date: new Date(p.trueDate), value: p.value }));
+      series.connect = false;
     });
     am4core.useTheme(am4themes_myTheme);
     chart.legend = new am4charts.Legend();

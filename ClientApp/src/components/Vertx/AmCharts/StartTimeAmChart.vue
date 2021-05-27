@@ -101,6 +101,7 @@ export default {
       series.data = pointsData.points
         .map((p) => ({ duration: this.moment.duration(p.fromStartDate), value: p.value }));
       series.showOnInit = false;
+      series.connect = false;
     });
 
     am4core.useTheme(am4themes_myTheme);

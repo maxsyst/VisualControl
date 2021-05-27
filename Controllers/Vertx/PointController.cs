@@ -61,9 +61,13 @@ namespace Vertx.Controllers
         public async Task<IActionResult> CreatePoint([FromBody] PointInputModel pointInputModel)
         {
             var creationDate = pointInputModel.CreationDate == null ? DateTime.Now : Convert.ToDateTime(pointInputModel.CreationDate);
-            var point = await _pointService.Create(pointInputModel.Value, pointInputModel.Characteristic,
+            if (double.TryParse(pointInputModel.Value, out var parsedNumber))
+            {
+                var point = await _pointService.Create(parsedNumber, pointInputModel.Characteristic,
                 pointInputModel.MeasurementName, pointInputModel.IsNewSet, creationDate);
-            return CreatedAtAction("CreatePoint", _mapper.Map<PointResponseModel>(point));
+                return CreatedAtAction("CreatePoint", _mapper.Map<PointResponseModel>(point));
+            }
+            return BadRequest();
         }
 
         [HttpPost("create/batch")]
@@ -73,10 +77,13 @@ namespace Vertx.Controllers
             foreach (var characteristicWithValue in pointBatchInputModel.CharacteristicWithValues)
             {
                 var creationDate = pointBatchInputModel.CreationDate == null ? DateTime.Now : Convert.ToDateTime(pointBatchInputModel.CreationDate);
-                pointsList.Add(_mapper.Map<PointResponseModel>(await _pointService.Create(
-                    characteristicWithValue.Value,
+                if (double.TryParse(characteristicWithValue.Value, out var parsedNumber))
+                {
+                    pointsList.Add(_mapper.Map<PointResponseModel>(await _pointService.Create(
+                    parsedNumber,
                     new Characteristic(characteristicWithValue.Name, characteristicWithValue.Unit),
                     pointBatchInputModel.MeasurementName, pointBatchInputModel.IsNewSet, creationDate)));
+                }                
             }
             return CreatedAtAction("CreatePointBatch", pointsList);
         }
