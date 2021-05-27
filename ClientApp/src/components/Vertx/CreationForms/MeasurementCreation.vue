@@ -172,8 +172,8 @@ export default {
     },
 
     goalValidator() {
-      if (this.goal.length > 50) {
-        return 'Макс. 50 символов';
+      if (this.goal.length > 150) {
+        return 'Макс. 150 символов';
       }
       return '';
     },
@@ -186,6 +186,9 @@ export default {
     },
 
     tempSensorValidator() {
+      if (this.tempSensor.length === 0) {
+        return 'Введите наличие сенсора';
+      }
       if (this.tempSensor.length > 20) {
         return 'Макс. 20 символов';
       }
@@ -212,9 +215,9 @@ export default {
                        && this.vpowerValidator === ''
                        && this.goalValidator === ''
                        && this.noteValidator === ''
-                       && this.tempSensor === ''
-                       && this.matching === ''
-                       && this.matchingBoard === '';
+                       && this.tempSensorValidator === ''
+                       && this.matchingValidator === ''
+                       && this.matchingBoardValidator === '';
     },
   },
 
