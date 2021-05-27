@@ -286,8 +286,8 @@ export default {
     },
     readyToUploading() {
       return this.simpleOperations.length > 0
-        && this.simpleOperations.every((so) => so.fileName.graphicNames && so.element.elementId)
-        && this.simpleOperations.every((so) => so.stage.id > 0);
+        && this.simpleOperations.every((so) => so.fileName.graphicNames && so.element.elementId);
+        // && this.simpleOperations.every((so) => so.stage.id > 0);
     },
     newStageValidation() {
       if (!this.newStageName) return 'Введите название этапа';

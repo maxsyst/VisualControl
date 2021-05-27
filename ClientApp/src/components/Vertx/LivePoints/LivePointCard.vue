@@ -9,11 +9,11 @@
         </v-card-title>
          <v-card-text class="d-flex">
              <v-chip class="flex-grow-1" large label color="indigo">
-                <span>{{ singleCharacteristic.value + ' ' + singleCharacteristic.unit }}</span>
+                <span style="font-size: 20px;">{{ singleCharacteristic.value + ' ' + singleCharacteristic.unit }}</span>
             </v-chip>
          </v-card-text>
         <v-card-actions class="d-flex">
-           <v-chip class="flex-grow-1" label>
+           <v-chip outlined class="flex-grow-1" label :color="singleCharacteristic.dateColor">
                 <span>{{ singleCharacteristic.date }}</span>
             </v-chip>
         </v-card-actions>

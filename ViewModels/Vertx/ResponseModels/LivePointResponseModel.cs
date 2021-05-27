@@ -10,6 +10,11 @@ public class LivePointResponseModel
         public DateTime Date { get; set; }
         public string MeasurementName { get; set; }
 
+        public LivePointResponseModel()
+        {
+            
+        }
+
         public LivePointResponseModel(LivePoint livePoint, string unit)
         {
             this.Id = livePoint.Id;

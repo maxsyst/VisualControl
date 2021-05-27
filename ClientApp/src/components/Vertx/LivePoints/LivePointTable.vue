@@ -68,17 +68,27 @@ export default {
     },
 
     livePointsRedraw(value) {
-      const measurements = Object.fromEntries([...new Set(value.map((x) => x.measurementName))].map((x) => [x, []]));
+      let measurements = Object.fromEntries([...new Set(value.map((x) => x.measurementName))].map((x) => [x, []]));
+      const sortArray = ['Pout', 'Dr.Eff', 'Id', 'Ig'];
       value.forEach((v) => {
+        let color = 'success';
+        const diffMinutes = this.moment().diff(this.moment(v.date), 'minutes');
+        if (diffMinutes > 30) {
+          color = 'pink';
+        } else if (diffMinutes > 5) {
+          color = 'orange';
+        }
         measurements[v.measurementName].push({
           name: v.measurementName,
           value: v.value,
           characteristic: v.characteristicName,
           unit: v.characteristicUnit,
           date: this.moment(v.date).fromNow(),
+          dateColor: color,
         });
       });
-      this.measurements = Object.values(measurements);
+      measurements = Object.values(measurements);
+      this.measurements = measurements.map((m) => _.sortBy(m, (item) => sortArray.indexOf(item.characteristic)));
     },
   },
 };
