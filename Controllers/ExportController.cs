@@ -301,6 +301,80 @@ namespace VueExample.Controllers
             return Ok(xlsList);
         }
 
+         [HttpGet]
+        [Route(("pattern/skyVP"))]
+        public IActionResult GetPatternSKYVP()
+        {
+            var xlsList = new List<KurbatovXLSViewModel>();
+            var row10 = new KurbatovXLSViewModel();
+            row10.ElementName = "TC3";
+            row10.OperationNumber = "570.00.00";
+            row10.StageName = "ПриемкаВП";
+            row10.parameters.Add(new KurbatovParameter{ParameterName = "Risol", Lower = 1E9, DividerId = 1, RussianParameterName="Сопротивление межприборной изоляции, ГОм", ParameterNameStat="R<sub>IS(6V)</sub>"});
+          
+            var row11 = new KurbatovXLSViewModel();
+            row11.ElementName = "TC4";
+            row11.OperationNumber = "570.00.00";
+            row11.StageName = "ПриемкаВП";
+            row11.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr1", Lower = 40, Upper = 60, DividerId = 1, RussianParameterName="Удельное поверхностное сопротивление тонкопленочного резистора, Ом/кв", ParameterNameStat="RTFR1"});
+
+            var row12 = new KurbatovXLSViewModel();
+            row12.ElementName = "TC5";
+            row12.OperationNumber = "570.00.00";
+            row12.StageName = "ПриемкаВП";
+            row12.parameters.Add(new KurbatovParameter{ParameterName = "Rtfr2", Lower = 480, Upper = 720, DividerId = 1, RussianParameterName="Удельное поверхностное сопротивление тонкопленочного резистора, Ом/кв", ParameterNameStat="RTFR2"});
+           
+            var row13 = new KurbatovXLSViewModel();
+            row13.ElementName = "TC6";
+            row13.OperationNumber = "570.00.00";
+            row13.StageName = "ПриемкаВП";
+            row13.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 270, Upper = 350, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row13.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 30.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+            
+            var row14 = new KurbatovXLSViewModel();
+            row14.ElementName = "TC7";
+            row14.OperationNumber = "570.00.00";
+            row14.StageName = "ПриемкаВП";
+            row14.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 135, Upper = 175, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row14.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 70.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+
+            var row15 = new KurbatovXLSViewModel();
+            row15.ElementName = "TC8";
+            row15.OperationNumber = "570.00.00";
+            row15.StageName = "ПриемкаВП";
+            row15.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 540, Upper = 700, DividerId = 1, RussianParameterName="Удельная емкость МДМДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row15.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 30.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+
+            var row16 = new KurbatovXLSViewModel();
+            row16.ElementName = "TC12";
+            row16.OperationNumber = "570.00.00";
+            row16.StageName = "ПриемкаВП";
+            row16.parameters.Add(new KurbatovParameter{ParameterName = "Rl", Upper = 4.0, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности, Ом", ParameterNameStat="Rl"});
+
+            var row17 = new KurbatovXLSViewModel();
+            row17.ElementName = "TC13";
+            row17.OperationNumber = "570.00.00";
+            row17.StageName = "ПриемкаВП";
+            row17.parameters.Add(new KurbatovParameter{ParameterName = "Rlw", Upper = 7.0, DividerId = 1, RussianParameterName="Сопротивление катушки индуктивности сдвоенной, Ом", ParameterNameStat="Rlw"});
+
+            var row18 = new KurbatovXLSViewModel();
+            row18.ElementName = "TC20";
+            row18.OperationNumber = "570.00.00";
+            row18.StageName = "ПриемкаВП";
+            row18.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 3.0, DividerId = 1, RussianParameterName="Сопротивление металлизированного отверстия, Ом", ParameterNameStat="R<sub>VIA</sub>"});
+           
+            xlsList.Add(row10);
+            xlsList.Add(row11);
+            xlsList.Add(row12);
+            xlsList.Add(row13);
+            xlsList.Add(row14);
+            xlsList.Add(row15);
+            xlsList.Add(row16);
+            xlsList.Add(row17);
+            xlsList.Add(row18);
+            return Ok(xlsList);
+        }
+
         [HttpGet]
         [Route(("pattern/kurb"))]
         public IActionResult GetPatternKurb()

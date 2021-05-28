@@ -133,7 +133,7 @@
             min-width="500"
             shaped
             color="indigo"
-            @click="$router.push({ name: 'export'})"
+            @click="$router.push({ name: 'kurbatov'})"
             class="d-flex ma-2 left-card">
               <v-card-text class="headline font-weight-bold">
                Экспорт
