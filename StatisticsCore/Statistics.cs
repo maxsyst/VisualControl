@@ -1053,6 +1053,96 @@ namespace VueExample.StatisticsCore
             return returnList;
         }
 
+        private List<Statistics> GetCAPLEAKVA50N(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var vbrList = new List<double>();
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
+            {
+                var indexes = new List<int>();
+                for (int index = 0; index < yListdouble.Count; index++)
+                {
+                    double d = yListdouble[index];
+                    if (d >= 1E-7)
+                    {
+                        if (index < xListdouble.Count)
+                        {
+                            indexes.Add(index);
+                        }
+
+                    }
+                }
+                vbrList.Add(indexes.Count == 0
+                                ? xListdouble.Last()
+                                : indexes.Select(index => xListdouble[index]).ToList().Min());
+            }
+            var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+            var twentyList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble[twentyIndex]).ToList();
+
+            var returnList = new List<Statistics>
+                {
+
+                   GetFullStatisticsFromList(vbrList, "V<sub>brc</sub> (пробивное напряжение МДМ-конденсатора)", "В", 50),
+
+                };
+            return returnList;
+        }
+
+          private List<Statistics> GetS21VA50N_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+
+            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
+            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+
+
+            List<double> id10List = new List<double>();
+            List<double> id20List = new List<double>();
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            {
+
+                id20List.Add(yListdouble[twIndex]);
+                id10List.Add(yListdouble[tenIndex]);
+            }
+
+            var returnList = new List<Statistics>
+                {
+                   GetFullStatisticsFromList(id10List, "S21<sub>(5GHz)</sub>", "дБ"),
+                   GetFullStatisticsFromList(id20List, "S21<sub>(20GHz)</sub>", "дБ")
+
+                };
+            return returnList;
+        }
+
+        private List<Statistics> GetS11VA50N_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+
+            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
+            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+
+
+            List<double> id10List = new List<double>();
+            List<double> id20List = new List<double>();
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            {
+
+                id20List.Add(yListdouble[twIndex]);
+                id10List.Add(yListdouble[tenIndex]);
+            }
+
+            var returnList = new List<Statistics>
+                {
+                   GetFullStatisticsFromList(id10List, "S11<sub>(5GHz)</sub>", "дБ"),
+                   GetFullStatisticsFromList(id20List, "S11<sub>(20GHz)</sub>", "дБ")
+
+                };
+            return returnList;
+        }
+
         private List<Statistics> GetRDivided01_1DOT2(List<string> valueList, Graphic graphics)
         {
 

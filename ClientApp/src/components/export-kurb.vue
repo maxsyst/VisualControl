@@ -165,13 +165,13 @@ export default {
   data() {
     return {
       e1: 0,
-      waferId: 'Pas12',
+      waferId: 'PAS23_BIBLIO',
       mslNumber: '',
       menu: false,
       filename: '',
       currentDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
       elements: [],
-      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY'],
+      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N'],
       selectedPattern: 'Пустой',
       dividers: [],
       initialDialog: true,
@@ -253,7 +253,8 @@ export default {
         if (this.selectedPattern === 'PHEMT05_СМКК') path = 'kurb';
         if (this.selectedPattern === 'PHEMT05_ВП') path = 'vp';
         if (this.selectedPattern === 'CKBA_PASSIVE') path = 'ckba';
-        if (this.selectedPattern === 'SKY') path = 'sky';
+        if (this.selectedPattern === 'SKY') path = 'skyVP';
+        if (this.selectedPattern === 'VA50N') path = 'va50n';
         if (this.selectedPattern !== 'Пустой') {
           await this.$http
             .get(`/api/export/pattern/${path}`)
@@ -333,7 +334,7 @@ export default {
       createElement() {
         const element = {
           key: `f${(~~(Math.random() * 1e8)).toString(16)}`,
-          operation: { number: '', errorMessage: 'Введите номер операции' },
+          operation: { number: '', avStages: [], errorMessage: 'Введите номер операции' },
           element: { name: '', errorMessage: 'Введите название элемента' },
           parameters: [],
 
