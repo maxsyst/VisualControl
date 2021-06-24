@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Globalization;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -77,13 +78,13 @@ namespace Vertx.Controllers
             foreach (var characteristicWithValue in pointBatchInputModel.CharacteristicWithValues)
             {
                 var creationDate = pointBatchInputModel.CreationDate == null ? DateTime.Now : Convert.ToDateTime(pointBatchInputModel.CreationDate);
-                if (double.TryParse(characteristicWithValue.Value, out var parsedNumber))
-                {
+                // if (double.TryParse(characteristicWithValue.Value, out var parsedNumber)) CultureInfo.InvariantCulture
+                // {
                     pointsList.Add(_mapper.Map<PointResponseModel>(await _pointService.Create(
-                    parsedNumber,
+                    Convert.ToDouble(characteristicWithValue.Value, CultureInfo.InvariantCulture),
                     new Characteristic(characteristicWithValue.Name, characteristicWithValue.Unit),
                     pointBatchInputModel.MeasurementName, pointBatchInputModel.IsNewSet, creationDate)));
-                }                
+                // }                
             }
             return CreatedAtAction("CreatePointBatch", pointsList);
         }

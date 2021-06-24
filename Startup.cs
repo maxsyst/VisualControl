@@ -161,6 +161,7 @@ namespace VueExample
             services.AddTransient<IColorService, ColorService>();
             services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
+            services.AddTransient<INormalizeService, NormalizeService>();
             services.AddTransient<IParcelProvider, ParcelProvider>();
             services.AddTransient<IStatParameterService, StatParameterService>();
             services.AddTransient<IElementTypeProvider, ElementTypeProvider>();
