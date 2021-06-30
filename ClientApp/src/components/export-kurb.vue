@@ -171,7 +171,7 @@ export default {
       filename: '',
       currentDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
       elements: [],
-      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N'],
+      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N', 'ZION'],
       selectedPattern: 'Пустой',
       dividers: [],
       initialDialog: true,
@@ -255,6 +255,7 @@ export default {
         if (this.selectedPattern === 'CKBA_PASSIVE') path = 'ckba';
         if (this.selectedPattern === 'SKY') path = 'skyVP';
         if (this.selectedPattern === 'VA50N') path = 'va50n';
+        if (this.selectedPattern === 'ZION') path = 'zionpcm';
         if (this.selectedPattern !== 'Пустой') {
           await this.$http
             .get(`/api/export/pattern/${path}`)

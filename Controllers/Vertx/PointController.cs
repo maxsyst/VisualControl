@@ -78,13 +78,13 @@ namespace Vertx.Controllers
             foreach (var characteristicWithValue in pointBatchInputModel.CharacteristicWithValues)
             {
                 var creationDate = pointBatchInputModel.CreationDate == null ? DateTime.Now : Convert.ToDateTime(pointBatchInputModel.CreationDate);
-                // if (double.TryParse(characteristicWithValue.Value, out var parsedNumber)) CultureInfo.InvariantCulture
-                // {
+                if (double.TryParse(characteristicWithValue.Value, out var parsedNumber))
+                {
                     pointsList.Add(_mapper.Map<PointResponseModel>(await _pointService.Create(
                     Convert.ToDouble(characteristicWithValue.Value, CultureInfo.InvariantCulture),
                     new Characteristic(characteristicWithValue.Name, characteristicWithValue.Unit),
                     pointBatchInputModel.MeasurementName, pointBatchInputModel.IsNewSet, creationDate)));
-                // }                
+                }                
             }
             return CreatedAtAction("CreatePointBatch", pointsList);
         }
