@@ -6656,6 +6656,151 @@ namespace VueExample.StatisticsCore
             return returnList;
         }
 
+        private List<Statistics> GetS21ZIONTYPE1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
+            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
+            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7 - item)).FirstOrDefault());
+            var nineIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9 - item)).FirstOrDefault());
+            var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
+
+            List<double> id3List = new List<double>();
+            List<double> id5List = new List<double>();
+            List<double> id7List = new List<double>();
+            List<double> id9List = new List<double>();
+            List<double> id2List = new List<double>();
+
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            {
+
+                id3List.Add(yListdouble[threeIndex]);
+                id5List.Add(yListdouble[fiveIndex]);
+                id7List.Add(yListdouble[sevenIndex]);
+                id9List.Add(yListdouble[nineIndex]);
+                id2List.Add(yListdouble[twentyIndex]);
+            }
+
+            var returnList = new List<Statistics>
+                {
+                    GetFullStatisticsFromList(id2List, "S21<sub>(2GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id5List,  "S21<sub>(5GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id7List, "S21<sub>(7GHz)</sub>", "дБ"),
+                  
+                };
+            return returnList;
+        }
+        private List<Statistics> GetS21ZIONTYPE2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var fIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
+            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.5 - item)).FirstOrDefault());
+            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9.5 - item)).FirstOrDefault());
+            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.5 - item)).FirstOrDefault());
+     
+
+            List<double> id3List = new List<double>();
+            List<double> id5List = new List<double>();
+            List<double> id7List = new List<double>();
+            List<double> id9List = new List<double>();
+            List<double> id2List = new List<double>();
+
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            {
+                id2List.Add(yListdouble[fIndex]);
+                id3List.Add(yListdouble[threeIndex]);
+                id5List.Add(yListdouble[fiveIndex]);
+                id7List.Add(yListdouble[sevenIndex]);
+               
+            }
+
+            var returnList = new List<Statistics>
+                {
+                    GetFullStatisticsFromList(id2List, "S21<sub>(4GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id3List, "S21<sub>(5.5GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id5List,  "S21<sub>(9.5GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id7List, "S21<sub>(13.5GHz)</sub>", "дБ"),
+                 
+
+                };
+            return returnList;
+        }
+        private List<Statistics> GetS31ZIONTYPE1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
+            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
+            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7 - item)).FirstOrDefault());
+            var nineIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9 - item)).FirstOrDefault());
+            var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
+
+            List<double> id3List = new List<double>();
+            List<double> id5List = new List<double>();
+            List<double> id7List = new List<double>();
+            List<double> id9List = new List<double>();
+            List<double> id2List = new List<double>();
+
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            {
+
+                id3List.Add(yListdouble[threeIndex]);
+                id5List.Add(yListdouble[fiveIndex]);
+                id7List.Add(yListdouble[sevenIndex]);
+                id9List.Add(yListdouble[nineIndex]);
+                id2List.Add(yListdouble[twentyIndex]);
+            }
+
+            var returnList = new List<Statistics>
+                {
+                    GetFullStatisticsFromList(id2List, "S31<sub>(2GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id5List, "S31<sub>(5GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id7List, "S31<sub>(7GHz)</sub>", "дБ"),
+                    
+
+                };
+            return returnList;
+        }
+        private List<Statistics> GetS31ZIONTYPE2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        {
+
+           
+            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var fIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
+            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.5 - item)).FirstOrDefault());
+            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9.5 - item)).FirstOrDefault());
+            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.5 - item)).FirstOrDefault());
+     
+
+            List<double> id3List = new List<double>();
+            List<double> id5List = new List<double>();
+            List<double> id7List = new List<double>();
+            List<double> id9List = new List<double>();
+            List<double> id2List = new List<double>();
+
+            foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
+            {
+                id2List.Add(yListdouble[fIndex]);
+                id3List.Add(yListdouble[threeIndex]);
+                id5List.Add(yListdouble[fiveIndex]);
+                id7List.Add(yListdouble[sevenIndex]);
+               
+            }
+
+            var returnList = new List<Statistics>
+                {
+                    GetFullStatisticsFromList(id2List, "S31<sub>(4GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id3List, "S31<sub>(5.5GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id5List,  "S31<sub>(9.5GHz)</sub>", "дБ"),
+                    GetFullStatisticsFromList(id7List,  "S31<sub>(13.5GHz)</sub>", "дБ"),
+                 
+
+                };
+            return returnList;
+        }
+
         private List<Statistics> GetVbrdg_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();

@@ -81,7 +81,7 @@ namespace VueExample.StatisticsCore.Services
                             (
                                 new AtomicDieValue
                                 {
-                                    DieCode = Convert.ToInt32((await _dieProvider.GetById((long)die)).Code), 
+                                    DieCode = (await _dieProvider.GetById((long)die)).Code, 
                                     Value = value, 
                                     Status = GetStatus(kurbatovParameter.Lower, kurbatovParameter.Upper, value)
                                 }

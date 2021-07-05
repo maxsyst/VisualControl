@@ -12,6 +12,8 @@ using OfficeOpenXml.Style;
 using AutoMapper;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using VueExample.Providers.Srv6.Interfaces;
+using System.IO.Compression;
 
 namespace VueExample.Controllers
 {
@@ -20,11 +22,13 @@ namespace VueExample.Controllers
     public class ExportController : Controller
     {
         private readonly IExportProvider _exportProvider;
+        private readonly IMeasurementRecordingService _measurementRecordingService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IMapper _mapper;
-        public ExportController(IExportProvider exportProvider, IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public ExportController(IExportProvider exportProvider, IMeasurementRecordingService measurementRecordingService, IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _exportProvider = exportProvider;
+            _measurementRecordingService = measurementRecordingService;
             _hostingEnvironment = hostingEnvironment;
             _mapper = mapper;
         }
@@ -49,6 +53,22 @@ namespace VueExample.Controllers
             foreach (var xls in xlsList)
             {
                 await _exportProvider.PopulateKurbatovXLSByValues(xls);
+            }
+
+            foreach (var xls in xlsList)
+            {
+                if(xls.IsNeedToCopyS2P) {
+                    var mrName = (await _measurementRecordingService.GetById(xls.kpList[0].MeasurementRecordingId)).Name.Remove(0,3);
+                    var files = Directory.GetFiles(@"T:\\opts\\pnxe\\" + kurbatovXLSBody.WaferId + "_" + mrName).Where(x => !xls.DirtyCodesList.Contains(x.Split("\\").Last().Split('_').ElementAt(1))).ToList();
+                    var zipFile = @"T:\\opts\\protocols\\" + kurbatovXLSBody.WaferId + "_" + mrName.Remove(0, 5) + ".zip";
+                    using (var archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                    {
+                        foreach (var fPath in files)
+                        {
+                            archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                        }
+                    }
+                }
             }
 
             var XlsxContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -419,6 +439,123 @@ namespace VueExample.Controllers
             xlsList.Add(row18);
             return Ok(xlsList);
         }
+
+        [HttpGet]
+        [Route(("pattern/zion"))]
+        public IActionResult GetPatternZion()
+        {
+            var xlsList = new List<KurbatovXLSViewModel>();
+            var row1 = new KurbatovXLSViewModel();
+            row1.ElementName = "039_S21";
+            row1.OperationNumber = "570.00.00";
+            row1.StageName = "ПриемкаВП";
+            row1.IsNeedToCopyS2P = true;
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "S21(2GHz)", Lower = -2.3, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 2 ГГц, дБ", ParameterNameStat="S21<sub>(2GHz)</sub>"});
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "S21(5GHz)", Lower = -5.0, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "S21(7GHz)", Lower = -4.5, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 7 ГГц, дБ", ParameterNameStat="S21<sub>(7GHz)</sub>"});
+            xlsList.Add(row1);
+            var row11 = new KurbatovXLSViewModel();
+            row11.ElementName = "039_S31";
+            row11.OperationNumber = "570.00.00";
+            row11.StageName = "ПриемкаВП";
+            row11.IsNeedToCopyS2P = true;
+            row11.parameters.Add(new KurbatovParameter{ParameterName = "S31(2GHz)", Lower = -3.1, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 2 ГГц, дБ", ParameterNameStat="S31<sub>(2GHz)</sub>"});
+            row11.parameters.Add(new KurbatovParameter{ParameterName = "S31(5GHz)", Lower = -5.5, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 5 ГГц, дБ", ParameterNameStat="S31<sub>(5GHz)</sub>"});
+            row11.parameters.Add(new KurbatovParameter{ParameterName = "S31(7GHz)", Lower = -5.3, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 7 ГГц, дБ", ParameterNameStat="S31<sub>(7GHz)</sub>"});
+            xlsList.Add(row11);
+            var row2 = new KurbatovXLSViewModel();
+            row2.ElementName = "040_S21";
+            row2.OperationNumber = "570.00.00";
+            row2.StageName = "ПриемкаВП";
+            row2.IsNeedToCopyS2P = true;
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "S21(2GHz)", Lower = -5.8, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 2 ГГц, дБ", ParameterNameStat="S21<sub>(2GHz)</sub>"});
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "S21(5GHz)", Lower = -13.3, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
+            row2.parameters.Add(new KurbatovParameter{ParameterName = "S21(7GHz)", Lower = -11.5, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 7 ГГц, дБ", ParameterNameStat="S21<sub>(7GHz)</sub>"});
+            xlsList.Add(row2);
+            var row22 = new KurbatovXLSViewModel();
+            row22.ElementName = "040_S31";
+            row22.OperationNumber = "570.00.00";
+            row22.StageName = "ПриемкаВП";
+            row22.IsNeedToCopyS2P = true;
+            row22.parameters.Add(new KurbatovParameter{ParameterName = "S31(2GHz)", Lower = -5.8, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 2 ГГц, дБ", ParameterNameStat="S31<sub>(2GHz)</sub>"});
+            row22.parameters.Add(new KurbatovParameter{ParameterName = "S31(5GHz)", Lower = -12.6, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 5 ГГц, дБ", ParameterNameStat="S31<sub>(5GHz)</sub>"});
+            row22.parameters.Add(new KurbatovParameter{ParameterName = "S31(7GHz)", Lower = -15.0, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 7 ГГц, дБ", ParameterNameStat="S31<sub>(7GHz)</sub>"});
+            xlsList.Add(row22);
+            var row3 = new KurbatovXLSViewModel();
+            row3.ElementName = "041_S21";
+            row3.OperationNumber = "570.00.00";
+            row3.StageName = "ПриемкаВП";
+            row3.IsNeedToCopyS2P = true;
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "S21(2GHz)", Lower = -3.3, DividerId = 1, RussianParameterName="Коэффициент передачи S21  на частоте 2 ГГц, дБ", ParameterNameStat="S21<sub>(2GHz)</sub>"});
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "S21(5GHz)", Lower = -5.3, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
+            row3.parameters.Add(new KurbatovParameter{ParameterName = "S21(7GHz)", Lower = -4.5, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 7 ГГц, дБ", ParameterNameStat="S21<sub>(7GHz)</sub>"});
+            xlsList.Add(row3);
+            var row33 = new KurbatovXLSViewModel();
+            row33.ElementName = "041_S31";
+            row33.OperationNumber = "570.00.00";
+            row33.StageName = "ПриемкаВП";
+            row33.IsNeedToCopyS2P = true;
+            row33.parameters.Add(new KurbatovParameter{ParameterName = "S31(2GHz)", Lower = -3.3, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 2 ГГц, дБ", ParameterNameStat="S31<sub>(2GHz)</sub>"});
+            row33.parameters.Add(new KurbatovParameter{ParameterName = "S31(5GHz)", Lower = -5.3, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 5 ГГц, дБ", ParameterNameStat="S31<sub>(5GHz)</sub>"});
+            row33.parameters.Add(new KurbatovParameter{ParameterName = "S31(7GHz)", Lower = -4.5, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 7 ГГц, дБ", ParameterNameStat="S31<sub>(7GHz)</sub>"});
+            xlsList.Add(row33);
+            var row4 = new KurbatovXLSViewModel();
+            row4.ElementName = "042_S21";
+            row4.OperationNumber = "570.00.00";
+            row4.StageName = "ПриемкаВП";
+            row4.IsNeedToCopyS2P = true;
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "S21(4GHz)", Lower = -2.8, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 4 ГГц, дБ", ParameterNameStat="S21<sub>(4GHz)</sub>"});
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "S21(9.5GHz)", Lower = -3.8, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 9.5 ГГц, дБ", ParameterNameStat="S21<sub>(9.5GHz)</sub>"});
+            row4.parameters.Add(new KurbatovParameter{ParameterName = "S21(13.5GHz)", Lower = -3.8, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 13.5 ГГц, дБ", ParameterNameStat="S21<sub>(13.5GHz)</sub>"});
+            xlsList.Add(row4);
+            var row44 = new KurbatovXLSViewModel();
+            row44.ElementName = "042_S31";
+            row44.OperationNumber = "570.00.00";
+            row44.StageName = "ПриемкаВП";
+            row44.IsNeedToCopyS2P = true;
+            row44.parameters.Add(new KurbatovParameter{ParameterName = "S31(4GHz)", Lower = -3.8, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 4 ГГц, дБ", ParameterNameStat="S31<sub>(4GHz)</sub>"});
+            row44.parameters.Add(new KurbatovParameter{ParameterName = "S31(9.5GHz)", Lower = -4.1, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 9.5 ГГц, дБ", ParameterNameStat="S31<sub>(9.5GHz)</sub>"});
+            row44.parameters.Add(new KurbatovParameter{ParameterName = "S31(13.5GHz)", Lower = -4.2, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 13.5 ГГц, дБ", ParameterNameStat="S31<sub>(13.5GHz)</sub>"});
+            xlsList.Add(row44);
+            var row5 = new KurbatovXLSViewModel();
+            row5.ElementName = "043_S21";
+            row5.OperationNumber = "570.00.00";
+            row5.StageName = "ПриемкаВП";
+            row5.IsNeedToCopyS2P = true;
+            row5.parameters.Add(new KurbatovParameter{ParameterName = "S21(5.5GHz)", Lower = -2.8, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 5.5 ГГц, дБ", ParameterNameStat="S21<sub>(5.5GHz)</sub>"});
+            row5.parameters.Add(new KurbatovParameter{ParameterName = "S21(9.5GHz)", Lower = -12.5, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 9.5 ГГц, дБ", ParameterNameStat="S21<sub>(9.5GHz)</sub>"});
+            row5.parameters.Add(new KurbatovParameter{ParameterName = "S21(13.5GHz)", Lower = -3.5, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 13.5 ГГц, дБ", ParameterNameStat="S21<sub>(13.5GHz)</sub>"});
+            xlsList.Add(row5);
+            var row55 = new KurbatovXLSViewModel();
+            row55.ElementName = "043_S31";
+            row55.OperationNumber = "570.00.00";
+            row55.StageName = "ПриемкаВП";
+            row55.IsNeedToCopyS2P = true;
+            row55.parameters.Add(new KurbatovParameter{ParameterName = "S31(5.5GHz)", Lower = -2.8, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 5.5 ГГц, дБ", ParameterNameStat="S31<sub>(5.5GHz)</sub>"});
+            row55.parameters.Add(new KurbatovParameter{ParameterName = "S31(9.5GHz)", Lower = -10.5, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 9.5 ГГц, дБ", ParameterNameStat="S31<sub>(9.5GHz)</sub>"});
+            row55.parameters.Add(new KurbatovParameter{ParameterName = "S31(13.5GHz)", Lower = -4.1, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 13.5 ГГц, дБ", ParameterNameStat="S31<sub>(13.5GHz)</sub>"});
+            xlsList.Add(row55);
+            var row6 = new KurbatovXLSViewModel();
+            row6.ElementName = "044_S21";
+            row6.OperationNumber = "570.00.00";
+            row6.StageName = "ПриемкаВП";
+            row6.IsNeedToCopyS2P = true;
+            row6.parameters.Add(new KurbatovParameter{ParameterName = "S21(5.5GHz)", Lower = -3.0, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 5.5 ГГц, дБ", ParameterNameStat="S21<sub>(5.5GHz)</sub>"});
+            row6.parameters.Add(new KurbatovParameter{ParameterName = "S21(9.5GHz)", Lower = -14, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 9.5 ГГц, дБ", ParameterNameStat="S21<sub>(9.5GHz)</sub>"});
+            row6.parameters.Add(new KurbatovParameter{ParameterName = "S21(13.5GHz)", Lower = -3.2, DividerId = 1, RussianParameterName="Коэффициент передачи S21 на частоте 13.5 ГГц, дБ", ParameterNameStat="S21<sub>(13.5GHz)</sub>"});
+            xlsList.Add(row6);
+            var row66 = new KurbatovXLSViewModel();
+            row66.ElementName = "044_S31";
+            row66.OperationNumber = "570.00.00";
+            row66.StageName = "ПриемкаВП";
+            row66.IsNeedToCopyS2P = true;
+            row66.parameters.Add(new KurbatovParameter{ParameterName = "S31(5.5GHz)", Lower = -2.8, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 5.5 ГГц, дБ", ParameterNameStat="S31<sub>(5.5GHz)</sub>"});
+            row66.parameters.Add(new KurbatovParameter{ParameterName = "S31(9.5GHz)", Lower = -10.3, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 9.5 ГГц, дБ", ParameterNameStat="S31<sub>(9.5GHz)</sub>"});
+            row66.parameters.Add(new KurbatovParameter{ParameterName = "S31(13.5GHz)", Lower = -3.9, DividerId = 1, RussianParameterName="Коэффициент передачи S31 на частоте 13.5 ГГц, дБ", ParameterNameStat="S31<sub>(13.5GHz)</sub>"});
+            xlsList.Add(row66);
+            return Ok(xlsList);
+        }
+
 
 
         [HttpGet]
@@ -900,7 +1037,6 @@ namespace VueExample.Controllers
             var package = new ExcelPackage();
             package.Workbook.Properties.Title = "Report";
             package.Workbook.Properties.Author = "Roma Molchanov";
-
             var commonWorksheet = package.Workbook.Worksheets.Add("Сводная");
             commonWorksheet.Cells[1, 1].Value = "№ тестовой структуры";
             commonWorksheet.Cells[1, 2].Value = "Порядковый номер и наименование параметра, единица измерения";
@@ -1002,7 +1138,7 @@ namespace VueExample.Controllers
                     AtomicDieValue item = (AtomicDieValue)list[i];
                     worksheet.Cells[10 + i, 1].Value = item.DieCode;
                 
-                    if(kurbatovXLS.value.DirtyCodesList.Contains(i + 1))
+                    if(kurbatovXLS.value.DirtyCodesList.Contains(item.DieCode))
                     {
                         worksheet.Cells[10 + i, 2 + kurbatovXLS.value.kpList.Count].Value = "Брак";
                     }

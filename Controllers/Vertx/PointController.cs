@@ -9,6 +9,7 @@ using VueExample.Models.Vertx;
 using VueExample.Services.Vertx.Abstract;
 using VueExample.ViewModels.Vertx.InputModels;
 using VueExample.ViewModels.Vertx.ResponseModels;
+using System.Linq;
 
 namespace Vertx.Controllers
 {
@@ -78,7 +79,9 @@ namespace Vertx.Controllers
             foreach (var characteristicWithValue in pointBatchInputModel.CharacteristicWithValues)
             {
                 var creationDate = pointBatchInputModel.CreationDate == null ? DateTime.Now : Convert.ToDateTime(pointBatchInputModel.CreationDate);
-                if (double.TryParse(characteristicWithValue.Value, out var parsedNumber))
+                var corTest = characteristicWithValue.Value;
+                corTest = string.Concat(corTest.Where(x => x != '.' && x != ',' && x != 'E' &&  x != 'e').ToList());
+                if (corTest.Any(c => char.IsDigit(c)))
                 {
                     pointsList.Add(_mapper.Map<PointResponseModel>(await _pointService.Create(
                     Convert.ToDouble(characteristicWithValue.Value, CultureInfo.InvariantCulture),
