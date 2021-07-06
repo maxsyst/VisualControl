@@ -419,7 +419,6 @@ namespace VueExample.Controllers
             row13.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 270, Upper = 350, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)"});
             row13.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc", Lower = 20.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="U<sub>BRC</sub> (пробивное напряжение МДМ-конденсатора)"});
             
-
             var row16 = new KurbatovXLSViewModel();
             row16.ElementName = "TC21_L";
             row16.OperationNumber = "570.00.00";

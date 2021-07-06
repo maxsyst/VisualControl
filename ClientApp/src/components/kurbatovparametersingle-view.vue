@@ -290,7 +290,6 @@ export default {
     createKurbatovParameter: createKurbatovParameterFromService,
 
     updateMslName(mslName) {
-      console.log(mslName);
       this.$store.dispatch('smpstorage/updateMslNameSmp', {
         guid: this.guid,
         mslName,
