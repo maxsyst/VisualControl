@@ -50,7 +50,7 @@
                         <template v-slot:item.shortStatisticsName="{ item }">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
+                              <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
                             </template>
                             <span v-html="item.statisticsName"></span>
                           </v-tooltip>
