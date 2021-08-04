@@ -36,11 +36,12 @@ namespace VueExample.Controllers
            return Ok(await _waferProvider.GetPWafer());
         }
 
-        // [HttpGet]
-        // [Route("getallwithdefects")]
-        // public IActionResult GetAllWithDefects()
-        // {
-        //     return Ok(_defectProvider.GetAll().Select(x=>x.WaferId).Distinct());
-        // }
+        [HttpGet]
+        [Route("measurementrecordingid/{measurementRecordingId:int}")]
+        public async Task<IActionResult> GetByMeasurementRecording([FromRoute] int measurementRecordingId)
+        {
+           return Ok(await _waferProvider.GetByMeasurementRecordingId(measurementRecordingId));
+        }
+
     }
 }
