@@ -25,7 +25,7 @@ public class KurbatovParameterProvider : IKurbatovParameterProvider
 
         public async Task<List<KurbatovParameterEntity>> GetBySmp(int standartMeasurementPatternId)
         {
-            return await _srv6Context.KurbatovParameters.Where(x => x.SmpId == standartMeasurementPatternId).ToListAsync();
+            return await _srv6Context.KurbatovParameters.AsNoTracking().Include(x => x.KurbatovParameterBordersEntity).Include(x => x.StandartParameterEntity).Where(x => x.SmpId == standartMeasurementPatternId).ToListAsync();
         }
     }
 }

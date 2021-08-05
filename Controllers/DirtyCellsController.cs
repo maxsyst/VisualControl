@@ -17,7 +17,7 @@ namespace VueExample.Controllers
     {
         private readonly IAppCache _cache;
         private readonly IDieValueService _dieValueService;
-        private readonly IKurbatovParameterProvider _kurbatovParameterProvider;
+        private readonly IKurbatovParameterService _kurbatovParameterService;
         private readonly IWaferProvider _waferProvider;
         private readonly IStageProvider _stageProvider;
         private readonly IElementService _elementService;
@@ -25,10 +25,10 @@ namespace VueExample.Controllers
         private readonly IStandartPatternService _standartPatternService;
         private readonly IStatisticService _statisticService;
         private readonly IStandartMeasurementPatternService _standartMeasurementPatternService;
-        public DirtyCellsController(IAppCache cache, IStandartMeasurementPatternService standartMeasurementPatternService, IElementService elementService, IDieValueService dieValueService, IStageProvider stageProvider, IStandartPatternService standartPatternService, IDieTypeProvider dieTypeProvider, IKurbatovParameterProvider kurbatovParameterProvider, IWaferProvider waferProvider, IStatisticService statisticService)
+        public DirtyCellsController(IAppCache cache, IStandartMeasurementPatternService standartMeasurementPatternService, IElementService elementService, IDieValueService dieValueService, IStageProvider stageProvider, IStandartPatternService standartPatternService, IDieTypeProvider dieTypeProvider, IKurbatovParameterService kurbatovParameterService, IWaferProvider waferProvider, IStatisticService statisticService)
         {
             _cache = cache;
-            _kurbatovParameterProvider = kurbatovParameterProvider;
+            _kurbatovParameterService = kurbatovParameterService;
             _dieValueService = dieValueService;
             _stageProvider = stageProvider;
             _statisticService = statisticService;
@@ -50,13 +50,14 @@ namespace VueExample.Controllers
             var standartPattern = await _standartPatternService.GetByDieTypeId(dieType.DieTypeId);
             var element = await _elementService.GetByIdmr(measurementRecordingId);
             var smp = await _standartMeasurementPatternService.GetByStageAndElementAndPattern(stageId, element.FirstOrDefault().ElementId, standartPattern.FirstOrDefault().Id);
-            var kpList = await _kurbatovParameterProvider.GetBySmp(smp.Id);
+            var kpList = await _kurbatovParameterService.GetBySmp(smp.Id);
             var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var dieValuesDictionary = await _cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await _cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
+            var dirtyCells = _statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesList.Count);
             return Ok();
         }
     }
