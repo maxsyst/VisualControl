@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Linq;
+using VueExample.StatisticsCore.Abstract;
 
 namespace VueExample.StatisticsCore.Services
 {
-    public class StatisticService 
+    public class StatisticService : IStatisticService
     {
         private readonly ISRV6GraphicService _graphicService;
         private readonly IStatParameterService _statisticService;

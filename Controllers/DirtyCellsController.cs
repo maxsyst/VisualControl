@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using VueExample.Models.SRV6;
-using VueExample.StatisticsCore.Services;
 using VueExample.Providers.Abstract;
+using VueExample.StatisticsCore.Abstract;
 
 namespace VueExample.Controllers
 {
@@ -23,9 +23,9 @@ namespace VueExample.Controllers
         private readonly IElementService _elementService;
         private readonly IDieTypeProvider _dieTypeProvider;
         private readonly IStandartPatternService _standartPatternService;
-        private readonly StatisticService _statisticService;
+        private readonly IStatisticService _statisticService;
         private readonly IStandartMeasurementPatternService _standartMeasurementPatternService;
-        public DirtyCellsController(IAppCache cache, IStandartMeasurementPatternService standartMeasurementPatternService, IElementService elementService, IDieValueService dieValueService, IStageProvider stageProvider, IStandartPatternService standartPatternService, IDieTypeProvider dieTypeProvider, IKurbatovParameterProvider kurbatovParameterProvider, IWaferProvider waferProvider, StatisticService statisticService)
+        public DirtyCellsController(IAppCache cache, IStandartMeasurementPatternService standartMeasurementPatternService, IElementService elementService, IDieValueService dieValueService, IStageProvider stageProvider, IStandartPatternService standartPatternService, IDieTypeProvider dieTypeProvider, IKurbatovParameterProvider kurbatovParameterProvider, IWaferProvider waferProvider, IStatisticService statisticService)
         {
             _cache = cache;
             _kurbatovParameterProvider = kurbatovParameterProvider;
@@ -40,8 +40,8 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [Route("GetDirtyCellsByMeasurementRecordingStandart")]
-        public async Task<IActionResult> GetByMeasurementRecording ([FromQuery] int measurementRecordingId)
+        [Route("GetDirtyCellsByMeasurementRecordingStandart/{measurementRecordingId:int}")]
+        public async Task<IActionResult> GetByMeasurementRecording ([FromRoute] int measurementRecordingId)
         {
             var k = 1.5;
             var wafer = await _waferProvider.GetByMeasurementRecordingId(measurementRecordingId);

@@ -19,16 +19,16 @@ namespace VueExample.StatisticsCore.Services
         private readonly IDieValueService _dieValueService;
         private readonly IStatParameterService _statParameterService;
         private readonly IStageProvider _stageProvider;
-        private readonly StatisticService _statisticService;
+        private readonly IStatisticService _statisticService;
         private readonly IDieProvider _dieProvider;
-        public ExportService(IAppCache appCache, IStageProvider stageProvider, IDieValueService dieValueService, IDieProvider dieProvider, ISRV6GraphicService graphicService, IStatParameterService statParameterService)
+        public ExportService(IAppCache appCache, IStatisticService statisticService, IStageProvider stageProvider, IDieValueService dieValueService, IDieProvider dieProvider, ISRV6GraphicService graphicService, IStatParameterService statParameterService)
         {
             _dieValueService = dieValueService;
             _dieProvider = dieProvider;
             _statParameterService = statParameterService;
             _appCache = appCache;
             _stageProvider = stageProvider;
-            _statisticService = new StatisticService(graphicService, statParameterService);
+            _statisticService = statisticService;
         }
         public async Task PopulateKurbatovXLSByValues(KurbatovXLS kurbatovXLS)
         {
