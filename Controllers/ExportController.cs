@@ -187,6 +187,45 @@ namespace VueExample.Controllers
         {
             var xlsList = new List<KurbatovXLSViewModel>();
             var row1 = new KurbatovXLSViewModel();
+            row1.ElementName = "TC16";
+            row1.OperationNumber = "295.40.00";
+            row1.StageName = "Этап1";
+            row1.parameters.Add(new KurbatovParameter{ParameterName = "Rm2", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление линии металлизации второго уровня, Ом", ParameterNameStat="R<sub>M2</sub>"});
+            xlsList.Add(row1);
+
+            var row7 = new KurbatovXLSViewModel();
+            row7.ElementName = "Cap1";
+            row7.OperationNumber = "295.45.00";
+            row7.StageName = "Этап1";
+            row7.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 275, Upper = 345, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row7.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 35.0, DividerId = 1, RussianParameterName="Напряжение пробоя сток-исток, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+            xlsList.Add(row7);
+
+            var row8 = new KurbatovXLSViewModel();
+            row8.ElementName = "Cap2";
+            row8.OperationNumber = "295.55.00";
+            row8.StageName = "Этап1";
+            row8.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 125, Upper = 165, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row8.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 80.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, пФ/мм2, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+            xlsList.Add(row8);
+
+            var row9 = new KurbatovXLSViewModel();
+            row9.ElementName = "Cap3";
+            row9.OperationNumber = "295.65.00";
+            row9.StageName = "Этап1";
+            row9.parameters.Add(new KurbatovParameter{ParameterName = "Сmim", Lower = 525, Upper = 685, DividerId = 1, RussianParameterName="Удельная емкость МДМДМ-конденсатора, пФ/мм2", ParameterNameStat="C<sub>MIM</sub>"});
+            row9.parameters.Add(new KurbatovParameter{ParameterName = "Ubr", Lower = 35.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора, пФ/мм2, В", ParameterNameStat="V<sub>(br)</sub> (напряжение при Ig=100нА)"});
+            xlsList.Add(row9);
+            
+            return Ok(xlsList);
+       }
+
+        [HttpGet]
+        [Route(("pattern/sky_"))]
+        public IActionResult GetPatternSKY_()
+        {
+            var xlsList = new List<KurbatovXLSViewModel>();
+            var row1 = new KurbatovXLSViewModel();
             row1.ElementName = "TC3";
             row1.OperationNumber = "105.10.00";
             row1.StageName = "Этап1";

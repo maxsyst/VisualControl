@@ -28,7 +28,7 @@ namespace VueExample.Providers
             var waferId = await _srv6Context.Wafers.Join(_srv6Context.FkMrPs.Where(x => x.MeasurementRecordingId == measurementRecordingId), 
                                             c => c.WaferId,
                                             p => p.WaferId, 
-                                            (c,p) => p.WaferId).FirstOrDefaultAsync();
+                                            (c,p) => p.WaferId).AsNoTracking().FirstOrDefaultAsync();
             return await this.GetByWaferId(waferId);
         }
     }

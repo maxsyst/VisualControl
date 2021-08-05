@@ -119,7 +119,7 @@ namespace VueExample.Providers.Srv6
             return new Tuple<CodeProductViewModel, string>(_mapper.Map<CodeProduct, CodeProductViewModel>(codeProduct), codeProduct is null ? "ERROR" : action);
         }
 
-        public async Task<List<DieTypeViewModel>> GetByCodeProductId(int codeProductId)
+        public async Task<List<DieType>> GetByCodeProductId(int codeProductId)
         {
             var dieTypesList =  await _srv6Context.DieTypes
                                 .Join(_srv6Context.DieTypeCodeProducts.Where(x => x.CodeProductId == codeProductId),
@@ -128,7 +128,7 @@ namespace VueExample.Providers.Srv6
                                       (c,p) => p.DieType)
                                 .AsNoTracking()
                                 .ToListAsync();
-            return _mapper.Map<List<DieType>, List<DieTypeViewModel>>(dieTypesList);
+            return dieTypesList;
           
         }
         
@@ -136,6 +136,12 @@ namespace VueExample.Providers.Srv6
         {
             var dieType =  await _srv6Context.DieTypes.FirstOrDefaultAsync( x => x.Name == name);
             return dieType is null ? new DieType() : dieType;
+        }
+
+        public async Task<List<DieType>> GetByWaferId(string waferId)
+        {
+            var codeProductId = (Int32)(await _srv6Context.Wafers.Where(x => x.WaferId == waferId).FirstOrDefaultAsync()).CodeProductId;
+            return await this.GetByCodeProductId(codeProductId);
         }
     }
 }

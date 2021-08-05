@@ -253,7 +253,7 @@ export default {
         if (this.selectedPattern === 'PHEMT05_СМКК') path = 'kurb';
         if (this.selectedPattern === 'PHEMT05_ВП') path = 'vp';
         if (this.selectedPattern === 'CKBA_PASSIVE') path = 'ckba';
-        if (this.selectedPattern === 'SKY') path = 'skyVP';
+        if (this.selectedPattern === 'SKY') path = 'sky';
         if (this.selectedPattern === 'VA50N') path = 'va50n';
         if (this.selectedPattern === 'ZION') path = 'zionpcm';
         if (this.selectedPattern === 'ZIONVP') path = 'zion';
