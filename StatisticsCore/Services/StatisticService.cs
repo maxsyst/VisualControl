@@ -6,6 +6,7 @@ using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Linq;
 using VueExample.StatisticsCore.Abstract;
+using VueExample.StatisticsCore.DirtyCellsCore;
 
 namespace VueExample.StatisticsCore.Services
 {
@@ -18,7 +19,7 @@ namespace VueExample.StatisticsCore.Services
             _graphicService = graphicService;
             _statisticService = statisticService;
         }
-        
+
         public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
         {
             var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
@@ -42,6 +43,25 @@ namespace VueExample.StatisticsCore.Services
                 dieValuesDictionaryDieIdBased.TryAdd(dieValue.DieId, dieValue);
             });
             return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesDictionaryDieIdBased, divider, singleParameterStatisticsList);
+        }
+
+        public List<GraphicDirtyCells> GetGraphicDirtyCells (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, List<KurbatovParameterModel> kurbatovParameterList) 
+        {
+            var list = new List<GraphicDirtyCells>();
+            foreach (var item in singleParameterStatistics)
+            {
+                var graphicDirtyCells = new GraphicDirtyCells();
+                graphicDirtyCells.GraphicKey = item.Key;
+                foreach (var singleParameterStatistic in item.Value)
+                {
+                    var statParameterDirtyCells = new StatParameterDirtyCells(singleParameterStatistic.Name);
+                    statParameterDirtyCells.Math.Add(15, new Limitation{LowBorder = singleParameterStatistic.LowBorderStat, TopBorder = singleParameterStatistic.TopBorderStat, SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], singleParameterStatistic.LowBorderStat,  singleParameterStatistic.TopBorderStat)).ToList()});
+                    var kp = kurbatovParameterList.FirstOrDefault(x => x.StandartParameter.ParameterNameStat == singleParameterStatistic.Name);
+                    statParameterDirtyCells.Fixed.Add($"L{kp.KurbatovParameterBorders.Lower}_T{kp.KurbatovParameterBorders.Upper}", new Limitation{LowBorder = kp.KurbatovParameterBorders.Lower, TopBorder = kp.KurbatovParameterBorders.Upper, SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], kp.KurbatovParameterBorders.Lower, kp.KurbatovParameterBorders.Upper)).ToList()});
+                    graphicDirtyCells.statParameterDirtyCells.Add(statParameterDirtyCells);
+                }
+            }
+            return list;
         }
 
         public DirtyCells GetDirtyCellsBySPSDictionary(ConcurrentDictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, int diesCount) 

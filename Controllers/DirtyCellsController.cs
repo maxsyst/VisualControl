@@ -57,7 +57,7 @@ namespace VueExample.Controllers
             var dieValuesDictionary = await _cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await _cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
-            var dirtyCells = _statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesList.Count);
+            var dirtyCells = _statisticService.GetGraphicDirtyCells(statDictionary, kpList);
             return Ok();
         }
     }
