@@ -20,8 +20,8 @@ namespace VueExample.StatisticsCore.DirtyCellsCore
 
         private void Calculate(string lowBorder, string topBorder, double trueValue)
         {
-            var lowBorderCalculated = lowBorder is null ? -1E24 : double.Parse(lowBorder, CultureInfo.InvariantCulture);
-            var topBorderCalculated = topBorder is null ? 1E24 : double.Parse(topBorder, CultureInfo.InvariantCulture);
+            var lowBorderCalculated = String.IsNullOrEmpty(lowBorder) ? -1E24 : double.Parse(lowBorder, CultureInfo.InvariantCulture);
+            var topBorderCalculated = String.IsNullOrEmpty(topBorder) ? 1E24 : double.Parse(topBorder, CultureInfo.InvariantCulture);
             if(lowBorderCalculated > trueValue)
             {
                 this.Cause = Cause.Lower;
