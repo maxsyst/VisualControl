@@ -835,8 +835,8 @@ namespace VueExample.Controllers
             row36.ElementName = "SE36";
             row36.OperationNumber = "570.00.00";
             row36.StageName = "Измерение библиотеки";
-            row36.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление переходного отверстия, Ом", ParameterNameStat="Rhole"});
-            row36.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -1.5, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
+            row36.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 5, DividerId = 1, RussianParameterName="Сопротивление переходного отверстия, Ом", ParameterNameStat="Rhole"});
+            row36.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -2, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
 
             xlsList.Add(row1);
             xlsList.Add(row2);
