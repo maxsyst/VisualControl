@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using VueExample.ChartModels.ChartJs;
 using VueExample.Models.SRV6;
 using VueExample.Providers;
-using VueExample.Providers.Srv6.Interfaces;
 
 namespace VueExample.Controllers
 {

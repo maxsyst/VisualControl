@@ -77,7 +77,8 @@ namespace VueExample.Controllers
             var dieValuesDictionary = await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}");
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
-            return Ok(_statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesCount));
+            var dirtyCells = _statisticService.GetDirtyCellsBySPSDictionary(new ConcurrentDictionary<string, List<StatisticsCore.SingleParameterStatistic>>(statDictionary), diesCount);
+            return Ok(dirtyCells);
         }
 
         [HttpGet]

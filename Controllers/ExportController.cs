@@ -597,7 +597,7 @@ namespace VueExample.Controllers
 
 
         [HttpGet]
-        [Route(("pattern/va50n"))]
+        [Route(("pattern/va50n_NU"))]
         public IActionResult GetPatternVa50N()
         {
             var xlsList = new List<KurbatovXLSViewModel>();
@@ -681,28 +681,28 @@ namespace VueExample.Controllers
             row13.ElementName = "SE13";
             row13.OperationNumber = "570.00.00";
             row13.StageName = "Измерение библиотеки";
-            row13.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 165, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
+            row13.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 170, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
             row13.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc2", Lower = 70.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="V<sub>brc</sub> (пробивное напряжение МДМ-конденсатора)"});
 
             var row14 = new KurbatovXLSViewModel();
             row14.ElementName = "SE14";
             row14.OperationNumber = "570.00.00";
             row14.StageName = "Измерение библиотеки";
-            row14.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 165, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
+            row14.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 170, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
             row14.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc2", Lower = 70.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="V<sub>brc</sub> (пробивное напряжение МДМ-конденсатора)"});
 
             var row15 = new KurbatovXLSViewModel();
             row15.ElementName = "SE15";
             row15.OperationNumber = "570.00.00";
             row15.StageName = "Измерение библиотеки";
-            row15.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 165, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
+            row15.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 170, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
             row15.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc2", Lower = 70.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="V<sub>brc</sub> (пробивное напряжение МДМ-конденсатора)"});
 
             var row16 = new KurbatovXLSViewModel();
             row16.ElementName = "SE16";
             row16.OperationNumber = "570.00.00";
             row16.StageName = "Измерение библиотеки";
-            row16.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 165, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
+            row16.parameters.Add(new KurbatovParameter{ParameterName = "Сmim2", Lower = 120, Upper = 170, DividerId = 1, RussianParameterName="Удельная емкость МДМ-конденсатора, пФ/мм2", ParameterNameStat="CMIM2"});
             row16.parameters.Add(new KurbatovParameter{ParameterName = "Ubrc2", Lower = 70.0, DividerId = 1, RussianParameterName="Пробивное напряжение конденсатора,В", ParameterNameStat="V<sub>brc</sub> (пробивное напряжение МДМ-конденсатора)"});
 
             var row17 = new KurbatovXLSViewModel();
@@ -765,29 +765,29 @@ namespace VueExample.Controllers
             row25.ElementName = "SE25";
             row25.OperationNumber = "570.00.00";
             row25.StageName = "Измерение библиотеки";
-            row25.parameters.Add(new KurbatovParameter{ParameterName = "S11", Upper = -5, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
-            row25.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -1.7, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 20 ГГц, дБ", ParameterNameStat="S21<sub>(20GHz)</sub>"});
+            row25.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -14, Upper = -7, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
+            row25.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -1.7, Upper = -0.3, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 20 ГГц, дБ", ParameterNameStat="S21<sub>(20GHz)</sub>"});
 
             var row26 = new KurbatovXLSViewModel();
             row26.ElementName = "SE26";
             row26.OperationNumber = "570.00.00";
             row26.StageName = "Измерение библиотеки";
-            row26.parameters.Add(new KurbatovParameter{ParameterName = "S11", Upper = -2, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
-            row26.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -5, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 20 ГГц, дБ", ParameterNameStat="S21<sub>(20GHz)</sub>"});
+            row26.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -5, Upper = -2, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
+            row26.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -5, Upper = -2, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 20 ГГц, дБ", ParameterNameStat="S21<sub>(20GHz)</sub>"});
 
             var row27 = new KurbatovXLSViewModel();
             row27.ElementName = "SE27";
             row27.OperationNumber = "570.00.00";
             row27.StageName = "Измерение библиотеки";
-            row27.parameters.Add(new KurbatovParameter{ParameterName = "S11", Upper = -1, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 5 ГГц, дБ", ParameterNameStat="S11<sub>(5GHz)</sub>"});
-            row27.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -8, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
+            row27.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -3.5, Upper = -1, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 5 ГГц, дБ", ParameterNameStat="S11<sub>(5GHz)</sub>"});
+            row27.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -9, Upper = -4, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
 
             var row28 = new KurbatovXLSViewModel();
             row28.ElementName = "SE28";
             row28.OperationNumber = "570.00.00";
             row28.StageName = "Измерение библиотеки";
-            row28.parameters.Add(new KurbatovParameter{ParameterName = "S11", Upper = -0.5, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 5 ГГц, дБ", ParameterNameStat="S11<sub>(5GHz)</sub>"});
-            row28.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -20, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
+            row28.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -3, Upper = -0.5, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 5 ГГц, дБ", ParameterNameStat="S11<sub>(5GHz)</sub>"});
+            row28.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -20, Upper = -10, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 5 ГГц, дБ", ParameterNameStat="S21<sub>(5GHz)</sub>"});
 
             var row29 = new KurbatovXLSViewModel();
             row29.ElementName = "SE29";
@@ -811,7 +811,7 @@ namespace VueExample.Controllers
             row32.ElementName = "SE32";
             row32.OperationNumber = "570.00.00";
             row32.StageName = "Измерение библиотеки";
-            row32.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -2.0, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 20 ГГц, дБ", ParameterNameStat="S21<sub>(20GHz)</sub>"});
+            row32.parameters.Add(new KurbatovParameter{ParameterName = "S21", Lower = -2.5, DividerId = 1, RussianParameterName="Коэффициент передачи на частоте 20 ГГц, дБ", ParameterNameStat="S21<sub>(20GHz)</sub>"});
             
             var row33 = new KurbatovXLSViewModel();
             row33.ElementName = "SE33";
@@ -835,8 +835,8 @@ namespace VueExample.Controllers
             row36.ElementName = "SE36";
             row36.OperationNumber = "570.00.00";
             row36.StageName = "Измерение библиотеки";
-            row36.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 5, DividerId = 1, RussianParameterName="Сопротивление переходного отверстия, Ом", ParameterNameStat="Rhole"});
-            row36.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -2, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
+            row36.parameters.Add(new KurbatovParameter{ParameterName = "Rhole", Upper = 3, DividerId = 1, RussianParameterName="Сопротивление переходного отверстия, Ом", ParameterNameStat="Rhole"});
+            row36.parameters.Add(new KurbatovParameter{ParameterName = "S11", Lower = -1.5, DividerId = 1, RussianParameterName="Коэффициент отражения на частоте 20 ГГц, дБ", ParameterNameStat="S11<sub>(20GHz)</sub>"});
 
             xlsList.Add(row1);
             xlsList.Add(row2);
