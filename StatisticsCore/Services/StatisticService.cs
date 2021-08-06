@@ -55,7 +55,7 @@ namespace VueExample.StatisticsCore.Services
                 foreach (var singleParameterStatistic in item.Value)
                 {
                     var statParameterDirtyCells = new StatParameterDirtyCells(singleParameterStatistic.Name);
-                    statParameterDirtyCells.Math.Add(15, new Limitation{LowBorder = singleParameterStatistic.LowBorderStat.Replace(',', '.'), TopBorder = singleParameterStatistic.TopBorderStat.Replace(',', '.'), SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], singleParameterStatistic.LowBorderStat,  singleParameterStatistic.TopBorderStat)).Where(x => x.IsDirty).ToList()});
+                    statParameterDirtyCells.Math.Add(15, new Limitation{LowBorder = singleParameterStatistic.LowBorderStat.Replace(',', '.'), TopBorder = singleParameterStatistic.TopBorderStat.Replace(',', '.'), SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], singleParameterStatistic.LowBorderStat.Replace(',', '.'),  singleParameterStatistic.TopBorderStat.Replace(',', '.'))).Where(x => x.IsDirty).ToList()});
                     var kp = kurbatovParameterList.FirstOrDefault(x => x.StandartParameter.ParameterNameStat == singleParameterStatistic.Name);
                     if(kp != null) 
                     {
