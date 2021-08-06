@@ -14,10 +14,9 @@ namespace VueExample.Services.Vertx.Implementation
     {
         private readonly IMongoCollection<MeasurementAttempt> _measurementAttemptCollection;
 
-        public MeasurementAttemptService(IMongoDatabase mongoDatabase)
+        public MeasurementAttemptService(IMongoClient mongoClient)
         {
-            _measurementAttemptCollection = mongoDatabase
-                .GetCollection<MeasurementAttempt>("measurement_attempts");
+            _measurementAttemptCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<MeasurementAttempt>("measurement_attempts");
         }
 
         public async Task<MeasurementAttempt> CreateMeasurementAttempt(MeasurementAttempt measurementAttempt)

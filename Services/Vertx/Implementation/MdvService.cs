@@ -13,10 +13,10 @@ namespace VueExample.Services.Vertx.Implementation
         private readonly IMongoCollection<Mdv> _mdvCollection;
         private readonly IMongoCollection<MeasurementAttempt> _measurementAttemptCollection;
 
-        public MdvService(IMongoDatabase mongoDatabase)
+        public MdvService(IMongoClient mongoClient)
         {
-            _mdvCollection = mongoDatabase.GetCollection<Mdv>("mdv");
-            _measurementAttemptCollection = mongoDatabase.GetCollection<MeasurementAttempt>("measurement_attempts");
+            _mdvCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<Mdv>("mdv");
+            _measurementAttemptCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<MeasurementAttempt>("measurement_attempts");
         }
 
         public async Task<Mdv> CreateMdv(Mdv mdv)

@@ -16,10 +16,10 @@ namespace VueExample.Services.Vertx.Implementation
         private readonly IMongoCollection<MeasurementSet> _measurementSetsCollection;
         private readonly IMeasurementSetPlusUnitService _measurementSetPlusUnitService;
 
-        public MeasurementSetService(IMongoDatabase mongoDatabase, IMeasurementSetPlusUnitService measurementSetPlusUnitService)
+        public MeasurementSetService(IMongoClient mongoClient, IMeasurementSetPlusUnitService measurementSetPlusUnitService)
         {
-            _measurementSetsCollection = mongoDatabase.GetCollection<MeasurementSet>("measurement_sets");
-            _measurementCollection = mongoDatabase.GetCollection<Measurement>("measurements");
+            _measurementSetsCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<MeasurementSet>("measurement_sets");
+            _measurementCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<Measurement>("measurements");
             _measurementSetPlusUnitService = measurementSetPlusUnitService;
         }
 

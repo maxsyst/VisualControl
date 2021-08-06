@@ -128,9 +128,7 @@ namespace VueExample
             services.AddDbContext<LivePointContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LivePointContext")), ServiceLifetime.Transient);
 
            // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
-             services.AddScoped<IMongoDatabase>(s =>
-                new MongoClient(Configuration.GetConnectionString("Mongo")).GetDatabase("vertx_excel")
-            );
+            services.AddScoped<IMongoClient>(s => new MongoClient(Configuration.GetConnectionString("Mongo")));
 
             services.AddScoped<IUserProvider, UserProvider>();
             services.AddTransient<IMdvService, MdvService>();

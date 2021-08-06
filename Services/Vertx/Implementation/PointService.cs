@@ -22,7 +22,7 @@ namespace VueExample.Services.Vertx.Implementation
         private readonly IMeasurementSetService _measurementSetService;
 
 
-        public PointService(IMongoDatabase mongoDatabase,
+        public PointService(IMongoClient mongoClient,
                             ILivePointService livePointService,
                             IMeasurementAttemptService measurementAttemptService,
                             IMeasurementService measurementService,
@@ -34,7 +34,7 @@ namespace VueExample.Services.Vertx.Implementation
             _measurementService = measurementService;
             _measurementSetPlusUnitService = measurementSetPlusUnitService;
             _measurementSetService = measurementSetService;
-            _measurementSetCollection = mongoDatabase.GetCollection<MeasurementSet>("measurement_sets");
+            _measurementSetCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<MeasurementSet>("measurement_sets");
         }
 
         public async Task<Point> Create(double value, Characteristic characteristic, string measurementName, bool isNewSet, DateTime creationDate)
