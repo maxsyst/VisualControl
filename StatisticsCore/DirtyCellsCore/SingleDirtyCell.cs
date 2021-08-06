@@ -9,31 +9,31 @@ namespace VueExample.StatisticsCore.DirtyCellsCore
         public long DieId { get; set; }
         public bool IsDirty { get; set; } = false;
         public Cause Cause { get; set; } = Cause.Unknown;
-        public double Difference { get; set; } = 0.0;
-        public double TrueValue { get; set; } = 0.0;
+        public string Difference { get; set; } = "0.0";
+        public string TrueValue { get; set; } = "0.0";
 
         public SingleDirtyCell(long dieId, double trueValue, string lowBorder, string topBorder)
         {
             DieId = dieId;
-            TrueValue = trueValue;
+            TrueValue = Convert.ToString(trueValue, CultureInfo.InvariantCulture);
             Calculate(lowBorder, topBorder, trueValue);
         }
 
         private void Calculate(string lowBorder, string topBorder, double trueValue)
         {
-            var lowBorderCalculated = lowBorder is null ? -1E24 : double.Parse(lowBorder, CultureInfo.InvariantCulture);
-            var topBorderCalculated = topBorder is null ? 1E24 : double.Parse(topBorder, CultureInfo.InvariantCulture);
+            var lowBorderCalculated = lowBorder is null ? -1E24 : double.Parse(lowBorder);
+            var topBorderCalculated = topBorder is null ? 1E24 : double.Parse(topBorder);
             if(lowBorderCalculated > trueValue)
             {
                 this.Cause = Cause.Lower;
-                this.Difference = Math.Abs(lowBorderCalculated - trueValue);
+                this.Difference = Convert.ToString(Math.Abs(lowBorderCalculated - trueValue), CultureInfo.InvariantCulture);
                 IsDirty = true;
                 return;
             }
             if(topBorderCalculated < trueValue)
             {
                 this.Cause = Cause.Bigger;
-                this.Difference = Math.Abs(lowBorderCalculated - trueValue);
+                this.Difference =  Convert.ToString(Math.Abs(topBorderCalculated - trueValue), CultureInfo.InvariantCulture);
                 IsDirty = true;
                 return;
             }

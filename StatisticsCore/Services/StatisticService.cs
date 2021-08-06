@@ -55,11 +55,20 @@ namespace VueExample.StatisticsCore.Services
                 foreach (var singleParameterStatistic in item.Value)
                 {
                     var statParameterDirtyCells = new StatParameterDirtyCells(singleParameterStatistic.Name);
-                    statParameterDirtyCells.Math.Add(15, new Limitation{LowBorder = singleParameterStatistic.LowBorderStat, TopBorder = singleParameterStatistic.TopBorderStat, SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], singleParameterStatistic.LowBorderStat,  singleParameterStatistic.TopBorderStat)).ToList()});
+                    statParameterDirtyCells.Math.Add(15, new Limitation{LowBorder = singleParameterStatistic.LowBorderStat.Replace(',', '.'), TopBorder = singleParameterStatistic.TopBorderStat.Replace(',', '.'), SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], singleParameterStatistic.LowBorderStat,  singleParameterStatistic.TopBorderStat)).Where(x => x.IsDirty).ToList()});
                     var kp = kurbatovParameterList.FirstOrDefault(x => x.StandartParameter.ParameterNameStat == singleParameterStatistic.Name);
-                    statParameterDirtyCells.Fixed.Add($"L{kp.KurbatovParameterBorders.Lower}_T{kp.KurbatovParameterBorders.Upper}", new Limitation{LowBorder = kp.KurbatovParameterBorders.Lower, TopBorder = kp.KurbatovParameterBorders.Upper, SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], kp.KurbatovParameterBorders.Lower, kp.KurbatovParameterBorders.Upper)).ToList()});
+                    if(kp != null) 
+                    {
+                        var key = (!String.IsNullOrEmpty(kp.KurbatovParameterBorders.Lower) ? $"L{kp.KurbatovParameterBorders.Lower}" : String.Empty) 
+                                  + (!String.IsNullOrEmpty(kp.KurbatovParameterBorders.Upper) ? $"T{kp.KurbatovParameterBorders.Upper}" : String.Empty);
+                        if(!String.IsNullOrEmpty(key))
+                        {
+                            statParameterDirtyCells.Fixed.Add(key, new Limitation{LowBorder = kp.KurbatovParameterBorders.Lower, TopBorder = kp.KurbatovParameterBorders.Upper, SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], kp.KurbatovParameterBorders.Lower, kp.KurbatovParameterBorders.Upper)).Where(x => x.IsDirty).ToList()});
+                        } 
+                    }
                     graphicDirtyCells.statParameterDirtyCells.Add(statParameterDirtyCells);
                 }
+                list.Add(graphicDirtyCells);
             }
             return list;
         }
