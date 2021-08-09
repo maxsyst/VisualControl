@@ -105,8 +105,8 @@
                         </v-layout>
                         <v-layout row>
                             <v-flex lg10 offset-lg1>
-                                <v-text-field v-model="currentDate" readonly
-                                    label="Текущая дата"
+                                <v-text-field v-model="currentDate"
+                                 label="Текущая дата"
                                 ></v-text-field>
                             </v-flex>
                         </v-layout>
@@ -254,7 +254,8 @@ export default {
         if (this.selectedPattern === 'PHEMT05_ВП') path = 'vp';
         if (this.selectedPattern === 'CKBA_PASSIVE') path = 'ckba';
         if (this.selectedPattern === 'SKY') path = 'sky';
-        if (this.selectedPattern === 'VA50N') path = 'va50n';
+        if (this.selectedPattern === 'VA50N_NU') path = 'va50n_NU';
+        if (this.selectedPattern === 'VA50N_CLIMATE') path = 'va50n_CLIMATE';
         if (this.selectedPattern === 'ZION') path = 'zionpcm';
         if (this.selectedPattern === 'ZIONVP') path = 'zion';
         if (this.selectedPattern !== 'Пустой') {
