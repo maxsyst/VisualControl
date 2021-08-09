@@ -171,7 +171,7 @@ export default {
       filename: '',
       currentDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
       elements: [],
-      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N', 'ZION', 'ZIONVP'],
+      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N_NU', 'VA50N_CLIMATE', 'ZION', 'ZIONVP'],
       selectedPattern: 'Пустой',
       dividers: [],
       initialDialog: true,
