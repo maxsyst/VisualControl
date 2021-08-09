@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using VueExample.Models.SRV6;
-using VueExample.Providers.Abstract;
 using VueExample.StatisticsCore.Abstract;
 
 namespace VueExample.Controllers
