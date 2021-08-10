@@ -11,6 +11,11 @@ namespace VueExample.StatisticsCore.DirtyCellsCore
         public string Difference { get; set; } = "0.0";
         public string TrueValue { get; set; } = "0.0";
 
+        public SingleDirtyCell()
+        {
+            
+        }
+        
         public SingleDirtyCell(long dieId, double trueValue, string lowBorder, string topBorder)
         {
             DieId = dieId;

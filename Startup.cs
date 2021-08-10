@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using VueCliMiddleware;
+using VueExample.Cache.Redis;
 using VueExample.Color;
 using VueExample.Contexts;
 using VueExample.Exceptions;
@@ -75,8 +78,7 @@ namespace VueExample
 
             services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = "0.0.0.0:1799";
-                options.InstanceName = "srvredis";
+                options.Configuration = "192.168.11.8:6379,password=zxvitr78KK";
             });
 
             services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
@@ -129,7 +131,7 @@ namespace VueExample
 
            // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
             services.AddScoped<IMongoClient>(s => new MongoClient(Configuration.GetConnectionString("Mongo")));
-
+            services.AddScoped<ICacheProvider, CacheProvider>();
             services.AddScoped<IUserProvider, UserProvider>();
             services.AddTransient<IMdvService, MdvService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
