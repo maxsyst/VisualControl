@@ -57,8 +57,7 @@ namespace VueExample.Controllers
             var smp = await _standartMeasurementPatternService.GetByStageAndElementAndPattern(stageId, element.FirstOrDefault().ElementId, standartPattern.FirstOrDefault().Id);
             var kpList = await _kurbatovParameterService.GetBySmp(smp.Id);
             var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
-            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            var dieValuesDictionary = await _cache.GetOrAddAsync($"V_{measurementRecordingIdAsKey}", cachedService);
+            var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
             var statDictionary = await _cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
             var dirtyCells = _statisticService.GetGraphicDirtyCells(statDictionary, kpList);

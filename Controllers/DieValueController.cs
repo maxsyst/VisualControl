@@ -13,22 +13,18 @@ namespace VueExample.Controllers
     public class DieValueController : Controller
     {
 
-        private readonly IAppCache cache;
         private readonly IDieValueService _dieValueService;
 
-        public DieValueController(IDieValueService dieValueService, IAppCache cache)
+        public DieValueController(IDieValueService dieValueService)
         {
             _dieValueService = dieValueService;
-            this.cache = cache;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetByMeasurementRecordingId(int measurementRecordingId)
         {
-            string measurementRecordingIdAsKey = "V_" + Convert.ToString(measurementRecordingId);
-            Func<Task<Dictionary<string, List<DieValue>>>> cachedService = async () => await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            var dieValuesDictionary = await cache.GetOrAddAsync(measurementRecordingIdAsKey, cachedService);
-            return Ok(JsonConvert.SerializeObject(dieValuesDictionary));
+            var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
+            return Ok(dieValuesDictionary);
         }
 
         [HttpGet]

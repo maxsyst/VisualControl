@@ -49,7 +49,7 @@ namespace VueExample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddJsonOptions();
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -134,6 +134,8 @@ namespace VueExample
             services.AddScoped<IUserProvider, UserProvider>();
 
             services.AddTransient<WaferMapService>();
+            services.AddTransient<DieValueService>();
+
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
             services.AddTransient<IMdvService, MdvService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
@@ -159,7 +161,7 @@ namespace VueExample
             services.AddTransient<IPhotoProvider, PhotoProvider>();
             services.AddTransient<IFileGraphicUploaderService, FileGraphicUploaderService>();
             services.AddTransient<IChartJSProvider, ChartJSProvider>();
-            services.AddTransient<IDieValueService, DieValueService>();
+            services.AddTransient<IDieValueService, DieValueCachedService>();
             services.AddTransient<IColorService, ColorService>();
             services.AddTransient<IGradientService, GradientService>();
             services.AddTransient<IElementService, ElementService>();
