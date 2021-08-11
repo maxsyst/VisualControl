@@ -462,13 +462,13 @@ export const wafermeas = {
 
     updateFormedMap(state, payload) {
       if (payload.mode === 'mini') {
-        state.wafer.formedMapMini = { dies: [...JSON.parse(payload.map.waferMapFormed)], orientation: payload.map.orientation };
+        state.wafer.formedMapMini = { dies: [...payload.map.waferMapDies], orientation: payload.map.orientation };
       }
       if (payload.mode === 'gradient') {
-        state.wafer.formedMapGradient = { dies: [...JSON.parse(payload.map.waferMapFormed)], orientation: payload.map.orientation };
+        state.wafer.formedMapGradient = { dies: [...payload.map.waferMapDies], orientation: payload.map.orientation };
       }
       if (payload.mode === 'big') {
-        state.wafer.formedMapBig = { dies: [...JSON.parse(payload.map.waferMapFormed)], orientation: payload.map.orientation };
+        state.wafer.formedMapBig = { dies: [...payload.map.waferMapDies], orientation: payload.map.orientation };
       }
     },
 

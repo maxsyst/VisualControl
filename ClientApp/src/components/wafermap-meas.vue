@@ -296,8 +296,8 @@ export default {
       loading: false,
       showUnSelectedGraphics: false,
       activeTab: 'wafer',
-      wafers: [],
       dividers: [],
+      wafers: [],
       selectedWafer: '',
       selectedDivider: '1.0',
       selectedMeasurementId: 0,
@@ -316,7 +316,6 @@ export default {
   },
 
   async created() {
-    this.wafers = (await this.$http.get('/api/wafer/all')).data;
     this.dividers = (await this.$http.get('/api/divider/all')).data;
   },
 
@@ -475,6 +474,7 @@ export default {
   watch: {
 
     async selectedWafer(newValue) {
+      this.wafers = [newValue];
       this.$store.dispatch('wafermeas/updateAvbGraphics', []);
       this.$store.dispatch('wafermeas/updateDieColors', { ctx: this, waferId: newValue });
       this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: newValue });

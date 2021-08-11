@@ -119,7 +119,7 @@ export default {
             .get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify(fieldObject)}`)
             .then((response) => {
               if (response.status === 200) {
-                this.dies = JSON.parse(response.data.waferMapFormed);
+                this.dies = [...response.data.waferMapFormed];
                 this.initialOrientation = +response.data.orientation;
                 this.currentOrientation = this.initialOrientation;
                 this.isloading = false;

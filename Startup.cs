@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +28,7 @@ using VueExample.Providers.Abstract;
 using VueExample.Providers.ChipVerification;
 using VueExample.Providers.ChipVerification.Abstract;
 using VueExample.Providers.Srv6;
+using VueExample.Providers.Srv6.CachedServices;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services;
 using VueExample.Services.Vertx.Abstract;
@@ -50,7 +49,7 @@ namespace VueExample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddNewtonsoftJson();
+            services.AddControllersWithViews().AddJsonOptions();
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -133,6 +132,9 @@ namespace VueExample
             services.AddScoped<IMongoClient>(s => new MongoClient(Configuration.GetConnectionString("Mongo")));
             services.AddScoped<ICacheProvider, CacheProvider>();
             services.AddScoped<IUserProvider, UserProvider>();
+
+            services.AddTransient<WaferMapService>();
+            services.AddTransient<IWaferMapService, WaferMapCachedService>();
             services.AddTransient<IMdvService, MdvService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMeasurementAttemptService, MeasurementAttemptService>();
