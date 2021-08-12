@@ -34,6 +34,7 @@ using VueExample.Services;
 using VueExample.Services.Vertx.Abstract;
 using VueExample.Services.Vertx.Implementation;
 using VueExample.StatisticsCore.Abstract;
+using VueExample.StatisticsCore.CachedService;
 using VueExample.StatisticsCore.Services;
 
 namespace VueExample
@@ -135,6 +136,8 @@ namespace VueExample
 
             services.AddTransient<WaferMapService>();
             services.AddTransient<DieValueService>();
+            services.AddTransient<StatisticService>();
+            
 
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
             services.AddTransient<IMdvService, MdvService>();
@@ -150,7 +153,8 @@ namespace VueExample
             services.AddTransient<IDieProvider, DieProvider>();
             services.AddTransient<IDividerService, DividerService>();
             services.AddTransient<IMeasurementProvider, SimpleMeasurementProvider>();
-            services.AddTransient<IGraphicProvider, BasicGraphicProvider>();
+            services.AddTransient<Providers.ChipVerification.Abstract.IGraphicProvider, BasicGraphicProvider>();
+            services.AddTransient<Providers.Srv6.Interfaces.IGraphicProvider, GraphicProvider>();
             services.AddTransient<ISRV6GraphicService, GraphicService>();
             services.AddTransient<IStandartWaferService, StandartWaferService>();
             services.AddTransient<IUploaderService, UploaderService>();
@@ -188,7 +192,7 @@ namespace VueExample
             services.AddTransient<IPointProvider, PointProvider>();
             services.AddTransient<IExportProvider, ExportService>();
             services.AddTransient<IShortLinkProvider, ShortLinkProvider>();
-            services.AddTransient<IStatisticService, StatisticService>();
+            services.AddTransient<IStatisticService, StatisticCachedService>();
             services.AddTransient<IStandartParameterProvider, StandartParameterProvider>();
             services.AddTransient<IStandartParameterService, StandartParameterService>();
             services.AddTransient<IStandartPatternProvider, StandartPatternProvider>();
