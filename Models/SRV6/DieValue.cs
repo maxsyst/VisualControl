@@ -5,8 +5,6 @@ namespace VueExample.Models.SRV6
 {
     public class DieValue
     {
-        [JsonProperty("key")]
-        public string Key { get; set;}
         [JsonProperty("d")]
         public long? DieId { get; set; }
         [JsonProperty("m")]
@@ -27,10 +25,5 @@ namespace VueExample.Models.SRV6
            
         }
 
-        public string KeyGenerate()
-        {
-            this.Key = this.GraphicId + "_" + this.State;
-            return this.Key;
-        }
     }
 }

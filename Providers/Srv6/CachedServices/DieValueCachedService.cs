@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using VueExample.Cache.Redis;
@@ -27,7 +28,8 @@ namespace VueExample.Providers.Srv6.CachedServices
         public async Task<Dictionary<string, List<DieValue>>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
         {
             var dieValueDictionary = await _cacheProvider.GetFromCache<Dictionary<string, List<DieValue>>>($"DIEVALUE:MEASUREMENTRECORDINGID:{measurementRecordingId}");
-            if(dieValueDictionary is null) {
+            if(dieValueDictionary is null) 
+            {
                 dieValueDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
                 await _cacheProvider.SetCache<Dictionary<string, List<DieValue>>>($"DIEVALUE:MEASUREMENTRECORDINGID:{measurementRecordingId}", dieValueDictionary, new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(30)));
@@ -35,9 +37,22 @@ namespace VueExample.Providers.Srv6.CachedServices
             return dieValueDictionary;
         }
 
+        public async Task<List<DieValue>> GetDieValuesByMeasurementRecordingAndKeyGraphicState(int measurementRecordingId, string keyGraphicState)
+        {
+            var dieValues = await _cacheProvider.GetFromCache<List<DieValue>>($"DIEVALUE:MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}");
+            if(dieValues is null) 
+            {
+                dieValues = await _dieValueService.GetDieValuesByMeasurementRecordingAndKeyGraphicState(measurementRecordingId, keyGraphicState);
+                await _cacheProvider.SetCache<List<DieValue>>($"DIEVALUE:MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}", dieValues, new DistributedCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromDays(30)));
+            }
+            return dieValues;
+        }
+
         public async Task<List<long?>> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
         {
             return await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
         }
+
     }
 }

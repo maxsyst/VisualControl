@@ -87,7 +87,7 @@ namespace VueExample.Controllers
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
-            var dieValueList = (await _dieValueService.GetDieValuesByMeasurementRecording(statisticSingleGraphicViewModel.MeasurementId))[keyGraphic];
+            var dieValueList = await _dieValueService.GetDieValuesByMeasurementRecordingAndKeyGraphicState(statisticSingleGraphicViewModel.MeasurementId, keyGraphic);
             var singleParameterStatisticList = 
                 (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{statisticSingleGraphicViewModel.K*10}"))[keyGraphic];
             var statisticDataList = await _statisticService
@@ -105,7 +105,7 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetStatisticSingleGraphicFullWafer ([FromQuery] int measurementRecordingId, [FromQuery] string keyGraphicState, [FromQuery] double k) 
         {
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
-            var dieValueList = (await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId))[keyGraphicState];
+            var dieValueList = await _dieValueService.GetDieValuesByMeasurementRecordingAndKeyGraphicState(measurementRecordingId, keyGraphicState);
             var dieList = dieValueList.Select(x => x.DieId).ToList();
             var singleParameterStatisticList = 
                 (await cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{k*10}"))[keyGraphicState];
