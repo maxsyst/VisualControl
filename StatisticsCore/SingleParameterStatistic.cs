@@ -9,15 +9,20 @@ namespace VueExample.StatisticsCore
     public class SingleParameterStatistic
     {
         public string Name { get; set; }
-        public List<long?> dieList {get; }
-        public List<double> valueList {get; }
+        public List<long?> dieList {get; set;} = new List<long?>();
+        public List<double> valueList {get; set;} = new List<double>();
         public string LowBorderStat { get; set; }
         public string TopBorderStat { get; set; }
         public string LowBorderFixed { get; set; }
         public string TopBorderFixed{ get; set; }
         public string AverageFixed { get; set; }
         public bool IsHasFixed { get; set; } = false;
-        public DirtyCells DirtyCells{get; set; } 
+        public DirtyCells DirtyCells{ get; set; } 
+
+        public SingleParameterStatistic()
+        {
+            
+        }
 
         public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, double k)
         {

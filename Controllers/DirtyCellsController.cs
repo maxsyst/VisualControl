@@ -58,8 +58,7 @@ namespace VueExample.Controllers
             var kpList = await _kurbatovParameterService.GetBySmp(smp.Id);
             var diesList = await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId);
             var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            Func<Task<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>> cachedStatisticService = async () => await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), stageId, 1.0, k);
-            var statDictionary = await _cache.GetOrAddAsync($"S_{measurementRecordingIdAsKey}_KF_{k*10}", cachedStatisticService);
+            var statDictionary = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), measurementRecordingId, stageId, 1.0, k);
             var dirtyCells = _statisticService.GetGraphicDirtyCells(statDictionary, kpList);
             await _cacheProvider.SetCache<List<StatisticsCore.DirtyCellsCore.GraphicDirtyCells>>($"DC{measurementRecordingIdAsKey}", dirtyCells, new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(1)));

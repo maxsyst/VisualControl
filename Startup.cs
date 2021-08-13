@@ -193,6 +193,7 @@ namespace VueExample
             services.AddTransient<IExportProvider, ExportService>();
             services.AddTransient<IShortLinkProvider, ShortLinkProvider>();
             services.AddTransient<IStatisticService, StatisticCachedService>();
+            services.AddTransient<IStatisticCacheService, StatisticCachedService>();
             services.AddTransient<IStandartParameterProvider, StandartParameterProvider>();
             services.AddTransient<IStandartParameterService, StandartParameterService>();
             services.AddTransient<IStandartPatternProvider, StandartPatternProvider>();

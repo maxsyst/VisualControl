@@ -11,5 +11,12 @@ namespace VueExample.ViewModels
         public double K { get; set; }
         public int StepsQuantity { get; set; }
         public List<long> SelectedDiesId { get; set; } = new List<long>();
+
+        public void Deconstruct(out int _MeasurementRecordingId, out string _KeyGraphicState, out double _K)
+        {
+            _MeasurementRecordingId = MeasurementRecordingId;
+            _KeyGraphicState = KeyGraphicState;
+            _K = K;     
+        }
     }
 }

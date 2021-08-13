@@ -32,7 +32,7 @@ namespace VueExample.Services
         {
             var dieGraphicsList = await _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync();
             var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId).ToDictionary(x => x.Key, x => x.ToList());
-            var typeList = (await Task.WhenAll(dgDictionary.Keys.Select(async x => await _graphicService.GetById(x)))).ToList();
+            var typeList = _srv6Context.Graphics.Where(x => dgDictionary.Keys.Contains(x.Id)).ToList();
             var mappedDictionary = (DieGraphicsMappingParallel(dgDictionary, typeList)).OrderBy(x =>  Convert.ToInt32(x.Key.Split('_')[0])).ToDictionary(entry => entry.Key, entry => entry.Value);
             return mappedDictionary;
         }

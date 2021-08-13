@@ -20,7 +20,7 @@ namespace VueExample.StatisticsCore.Services
             _statisticService = statisticService;
         }
 
-        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
+        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int measurementRecordingId, int? stageId, double divider, double k)
         {
             var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
             var statParameterStageList = await _statisticService.GetByStageId(stageId);
@@ -107,5 +107,6 @@ namespace VueExample.StatisticsCore.Services
 
        }
 
+       
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.StatisticsCore.Abstract;
 using VueExample.ViewModels;
 
 namespace VueExample.Controllers
@@ -15,11 +16,11 @@ namespace VueExample.Controllers
     public class GradientController : Controller
     {
         private readonly IGradientService _gradientService;
-        private readonly IAppCache _cache; 
-        public GradientController(IAppCache cache, IGradientService gradientService)
+        private readonly IStatisticCacheService _statisticService;
+        public GradientController(IStatisticCacheService statisticService, IGradientService gradientService)
         {
+            _statisticService = statisticService;
             _gradientService = gradientService;
-            _cache = cache;
         }
 
         [ProducesResponseType (typeof(Histogram), StatusCodes.Status200OK)]
@@ -28,9 +29,8 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetHistogram([FromQuery] string histogramViewModelJSON)
         {
             var histogramViewModel = JsonConvert.DeserializeObject<GradientStatViewModel>(histogramViewModelJSON);
-            string measurementRecordingIdAsKey = Convert.ToString(histogramViewModel.MeasurementRecordingId);
-            var singleParameterStatisticList = 
-                (await _cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{histogramViewModel.K*10}"))[histogramViewModel.KeyGraphicState];
+            var (measurementRecordingId, kgs, k) = histogramViewModel;
+            var singleParameterStatisticList = await _statisticService.GetSingleParameterStatisticByMeasurementRecordingIdAndKeyGraphicState(measurementRecordingId, k, kgs);
             var histogram = _gradientService.GetHistogram(singleParameterStatisticList, histogramViewModel.StepsQuantity, histogramViewModel.StatParameter, histogramViewModel.SelectedDiesId);
             return histogram.DataCount > 0 ? Ok(histogram) : (IActionResult)BadRequest(histogram);
         }
@@ -42,9 +42,8 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetGradientStatParameter([FromQuery] string gradientViewModelJSON)
         {
             var gradientViewModel = JsonConvert.DeserializeObject<GradientStatViewModel>(gradientViewModelJSON);
-            string measurementRecordingIdAsKey = Convert.ToString(gradientViewModel.MeasurementRecordingId);
-            var singleParameterStatisticList = 
-                (await _cache.GetAsync<Dictionary<string, List<VueExample.StatisticsCore.SingleParameterStatistic>>>($"S_{measurementRecordingIdAsKey}_KF_{gradientViewModel.K*10}"))[gradientViewModel.KeyGraphicState];
+            var (measurementRecordingId, kgs, k) = gradientViewModel;
+            var singleParameterStatisticList = await _statisticService.GetSingleParameterStatisticByMeasurementRecordingIdAndKeyGraphicState(measurementRecordingId, k, kgs);
             var gradient = _gradientService.GetGradient(singleParameterStatisticList, gradientViewModel.StepsQuantity, gradientViewModel.Divider, gradientViewModel.StatParameter, gradientViewModel.SelectedDiesId);
             return gradient.GradientSteps.Count > 0 ? Ok(gradient) : (IActionResult)BadRequest(gradient);
         }
