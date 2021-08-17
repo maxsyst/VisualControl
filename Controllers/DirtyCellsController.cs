@@ -48,7 +48,7 @@ namespace VueExample.Controllers
         {
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var k = 1.5;
-            var dc = await _cacheProvider.GetFromCache<List<StatisticsCore.DirtyCellsCore.GraphicDirtyCells>>($"DC{measurementRecordingIdAsKey}");
+            // var dc = await _cacheProvider.GetFromCache<List<StatisticsCore.DirtyCellsCore.GraphicDirtyCells>>($"DC{measurementRecordingIdAsKey}");
             var wafer = await _waferProvider.GetByMeasurementRecordingId(measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             var dieType = (await _dieTypeProvider.GetByWaferId(wafer.WaferId)).FirstOrDefault();
@@ -60,8 +60,8 @@ namespace VueExample.Controllers
             var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var statDictionary = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), measurementRecordingId, stageId, 1.0, k);
             var dirtyCells = _statisticService.GetGraphicDirtyCells(statDictionary, kpList);
-            await _cacheProvider.SetCache<List<StatisticsCore.DirtyCellsCore.GraphicDirtyCells>>($"DC{measurementRecordingIdAsKey}", dirtyCells, new DistributedCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromDays(1)));
+            // await _cacheProvider.SetCache<List<StatisticsCore.DirtyCellsCore.GraphicDirtyCells>>($"DC{measurementRecordingIdAsKey}", dirtyCells, new DistributedCacheEntryOptions()
+            //         .SetSlidingExpiration(TimeSpan.FromDays(1)));
             return Ok(dirtyCells);
         }
     }

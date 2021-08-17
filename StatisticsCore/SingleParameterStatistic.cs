@@ -9,8 +9,8 @@ namespace VueExample.StatisticsCore
     public class SingleParameterStatistic
     {
         public string Name { get; set; }
-        public List<long?> dieList {get; set;} = new List<long?>();
-        public List<double> valueList {get; set;} = new List<double>();
+        public List<long?> dieList { get; set; } = new List<long?>();
+        public List<double> valueList { get; set; } = new List<double>();
         public string LowBorderStat { get; set; }
         public string TopBorderStat { get; set; }
         public string LowBorderFixed { get; set; }
