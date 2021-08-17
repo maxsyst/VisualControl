@@ -103,7 +103,7 @@ namespace VueExample.StatisticsCore.Services
                 case 2:
                     return new SingleStatisticServices.SingleParameterServiceHSTG();
             }
-            return new SingleStatisticServices.SingleParameterServiceLNR();;
+            return new SingleStatisticServices.SingleParameterServiceLNR();
 
        }
 

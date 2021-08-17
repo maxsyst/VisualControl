@@ -33,9 +33,13 @@ using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services;
 using VueExample.Services.Vertx.Abstract;
 using VueExample.Services.Vertx.Implementation;
+using VueExample.StatisticsCore;
 using VueExample.StatisticsCore.Abstract;
 using VueExample.StatisticsCore.CachedService;
 using VueExample.StatisticsCore.Services;
+using VueExample.StatisticsCoreRework.Abstract;
+using VueExample.StatisticsCoreRework.CachedServices;
+using VueExample.StatisticsCoreRework.Services;
 
 namespace VueExample
 {
@@ -133,10 +137,15 @@ namespace VueExample
             services.AddScoped<IMongoClient>(s => new MongoClient(Configuration.GetConnectionString("Mongo")));
             services.AddScoped<ICacheProvider, CacheProvider>();
             services.AddScoped<IUserProvider, UserProvider>();
+            
 
+            services.AddTransient<Statistics>();
             services.AddTransient<WaferMapService>();
             services.AddTransient<DieValueService>();
-            services.AddTransient<StatisticService>();
+            services.AddTransient<StatisticsCore.Services.StatisticService>();
+            services.AddTransient<SingleParameterServiceHSTG>();
+            services.AddTransient<SingleParameterServiceLNR>();
+             
             
 
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
@@ -192,8 +201,8 @@ namespace VueExample
             services.AddTransient<IPointProvider, PointProvider>();
             services.AddTransient<IExportProvider, ExportService>();
             services.AddTransient<IShortLinkProvider, ShortLinkProvider>();
-            services.AddTransient<IStatisticService, StatisticCachedService>();
-            services.AddTransient<IStatisticCacheService, StatisticCachedService>();
+            services.AddTransient<StatisticsCore.Abstract.IStatisticService, StatisticsCore.CachedService.StatisticCachedService>();
+            services.AddTransient<IStatisticCacheService, StatisticsCore.CachedService.StatisticCachedService>();
             services.AddTransient<IStandartParameterProvider, StandartParameterProvider>();
             services.AddTransient<IStandartParameterService, StandartParameterService>();
             services.AddTransient<IStandartPatternProvider, StandartPatternProvider>();
@@ -204,6 +213,9 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterBordersService, KurbatovParameterBordersService>();
             services.AddTransient<IKurbatovParameterProvider, KurbatovParameterProvider>();
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
+            services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceLNR>();
+            services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceHSTG>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
