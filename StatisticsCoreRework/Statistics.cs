@@ -289,15 +289,9 @@ namespace VueExample.StatisticsCoreRework
         {
             var statisitics = new Statistics
                 {
-                    Maximum = CalculateMaximum(list),
-                    Minimum = CalculateMinimum(list),
-                    StandartDeviation = CalculateStandartDeviation(list),
                     StatisticsName = statisticsname,
-                    ExpectedValue = CalculateExpectedValue(list),
                     Unit = unit,
-                    Median = CalculateMedian(list),
                     FullList = list,
-                    ParameterID = parameterid
                 };
             return statisitics;
         }

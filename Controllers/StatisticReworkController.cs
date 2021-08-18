@@ -23,8 +23,7 @@ namespace VueExample.Controllers
         [Route("GetStatByMeasurementRecording")]
         public async Task<IActionResult> GetStatByMeasurementRecording ([FromQuery] int measurementRecordingId)
         {
-            var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            var s = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), measurementRecordingId);
+            var s = await _statisticService.GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId);
             return Ok(s);
         }
     }

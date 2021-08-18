@@ -20,13 +20,13 @@ namespace VueExample.StatisticsCoreRework.CachedServices
             _cacheProvider = cacheProvider;
             _singleParameterService = singleParameterService;
         }
-        public async Task<ConcurrentDictionary<string, SingleParameterStatisticValues>> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, string keyGraphicState, int measurementRecordingId)
+        public async Task<Dictionary<string, SingleParameterStatisticValues>> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, string keyGraphicState, int measurementRecordingId)
         {
-            var dict = await _cacheProvider.GetFromCache<ConcurrentDictionary<string, SingleParameterStatisticValues>>($"SPS:MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}");
+            var dict = await _cacheProvider.GetFromCache<Dictionary<string, SingleParameterStatisticValues>>($"SPS:MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}");
             if(dict is null) 
             {
                 dict = _singleParameterService.CreateSingleParameterStatisticsList(dieValues, graphic);
-                await _cacheProvider.SetCache<ConcurrentDictionary<string, SingleParameterStatisticValues>>($"SPS:MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}", dict, new DistributedCacheEntryOptions()
+                await _cacheProvider.SetCache<Dictionary<string, SingleParameterStatisticValues>>($"SPS:MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}", dict, new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(30)));
             }
             return dict;

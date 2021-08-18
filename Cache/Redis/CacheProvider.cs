@@ -22,7 +22,7 @@ namespace VueExample.Cache.Redis
         public async Task SetCache<T>(string key, T value, DistributedCacheEntryOptions options) where T : class
         {
             var response = JsonSerializer.Serialize(value);
-            await _cache.SetStringAsync(key, response , options);
+            await _cache.SetStringAsync(key, response, options);
         }
 
         public async Task ClearCache(string key)

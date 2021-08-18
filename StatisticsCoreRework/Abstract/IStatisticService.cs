@@ -8,6 +8,6 @@ namespace VueExample.StatisticsCoreRework.Abstract
 {
     public interface IStatisticService
     {
-        Task<Dictionary<string, Dictionary<string, SingleParameterStatisticValues>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int measurementRecordingId); 
+        Task<Dictionary<string, Dictionary<string, SingleParameterStatisticValues>>> GetSingleParameterStatisticByMeasurementRecording(int measurementRecordingId); 
     }
 }

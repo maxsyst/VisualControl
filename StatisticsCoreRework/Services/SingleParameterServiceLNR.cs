@@ -15,7 +15,7 @@ namespace VueExample.StatisticsCoreRework.Services
         {
             _statistics = statistics;
         }
-        public ConcurrentDictionary<string, SingleParameterStatisticValues> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic)
+        public Dictionary<string, SingleParameterStatisticValues> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic)
         {
             var dieCommonListDictionary = new ConcurrentDictionary<long?, List<string>>();
             var xList = dieValues.FirstOrDefault().XList;
@@ -29,7 +29,7 @@ namespace VueExample.StatisticsCoreRework.Services
             {
                 dict.TryAdd(stat.StatisticsName, new SingleParameterStatisticValues(stat.StatisticsName, stat.Unit, dieCommonListDictionary.Keys.ToList(), stat.FullList));
             });
-            return dict;
+            return dict.ToDictionary(x => x.Key, v => v.Value);
         }
     }
 }

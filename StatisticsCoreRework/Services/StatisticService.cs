@@ -12,7 +12,7 @@ using VueExample.StatisticsCoreRework.Models;
 
 namespace VueExample.StatisticsCoreRework.Services
 {
-    public class StatisticService : IStatisticService
+    public class StatisticService
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ISRV6GraphicService _graphicService;
