@@ -1,3 +1,5 @@
+using System.Globalization;
+using System;
 using System.Collections.Generic;
 
 namespace VueExample.StatisticsCoreRework.Models
@@ -6,7 +8,7 @@ namespace VueExample.StatisticsCoreRework.Models
     {
         public string StatisticName { get; set; }
         public string Unit { get; set; }
-        public Dictionary<long, double> DieStatDictionary { get; set; } = new Dictionary<long, double>();
+        public Dictionary<long, string> DieStatDictionary { get; set; } = new Dictionary<long, string>();
 
         public SingleParameterStatisticValues()
         {
@@ -19,8 +21,17 @@ namespace VueExample.StatisticsCoreRework.Models
             Unit = unit;
             for (int i = 0; i < dieList.Count; i++)
             {
-                DieStatDictionary.Add((long)dieList[i], valueList[i]);
-            }
-        }
+                if(Double.IsNaN(valueList[i])) 
+                {
+                     DieStatDictionary.Add((long)dieList[i], "NaN");
+            
+                }
+                else 
+                {
+                     DieStatDictionary.Add((long)dieList[i], Convert.ToString(valueList[i], CultureInfo.InvariantCulture));
+            
+                }
+           }
+        }       
     }
 }

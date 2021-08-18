@@ -139,10 +139,11 @@ namespace VueExample
             services.AddScoped<IUserProvider, UserProvider>();
             
 
-            services.AddTransient<Statistics>();
+            services.AddTransient<StatisticsCoreRework.Statistics>();
             services.AddTransient<WaferMapService>();
             services.AddTransient<DieValueService>();
             services.AddTransient<StatisticsCore.Services.StatisticService>();
+            services.AddTransient<StatisticsCoreRework.Services.StatisticService>();
             services.AddTransient<SingleParameterServiceHSTG>();
             services.AddTransient<SingleParameterServiceLNR>();
              
@@ -213,6 +214,8 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterBordersService, KurbatovParameterBordersService>();
             services.AddTransient<IKurbatovParameterProvider, KurbatovParameterProvider>();
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
+
+            services.AddTransient<StatisticsCoreRework.Abstract.IStatisticService, StatisticsCoreRework.CachedServices.StatisticCachedService>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceLNR>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceHSTG>();
 

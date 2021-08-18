@@ -18,6 +18,7 @@ namespace VueExample.StatisticsCoreRework.CachedServices
         public SingleParameterCachedServiceHSTG(ICacheProvider cacheProvider, SingleParameterServiceHSTG singleParameterService)
         {
             _cacheProvider = cacheProvider;
+            _singleParameterService = singleParameterService;
         }
         public async Task<ConcurrentDictionary<string, SingleParameterStatisticValues>> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, string keyGraphicState, int measurementRecordingId)
         {
