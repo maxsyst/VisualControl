@@ -1,7 +1,7 @@
 using System.Globalization;
 using System;
 using System.Collections.Generic;
-using ZeroFormatter;
+using System.Linq;
 
 namespace VueExample.StatisticsCoreRework.Models
 {
@@ -9,6 +9,7 @@ namespace VueExample.StatisticsCoreRework.Models
     {
         public string StatisticName { get; set; }
         public string Unit { get; set; }
+        public DividerProfile DividerProfile { get; set; } = DividerProfile.WithoutDivider;
         public Dictionary<long, string> DieStatDictionary { get; set; } = new Dictionary<long, string>();
 
         public SingleParameterStatisticValues()
@@ -16,10 +17,11 @@ namespace VueExample.StatisticsCoreRework.Models
             
         }
 
-        public SingleParameterStatisticValues(string name, string unit, List<long?> dieList, List<double> valueList)
+        public SingleParameterStatisticValues(string name, string unit, DividerProfile dividerProfile, List<long?> dieList, List<double> valueList)
         {
             StatisticName = name;
             Unit = unit;
+            DividerProfile = dividerProfile;
             for (int i = 0; i < dieList.Count; i++)
             {
                 if(Double.IsNaN(valueList[i])) 
@@ -34,5 +36,15 @@ namespace VueExample.StatisticsCoreRework.Models
                 }
            }
         }       
+
+        public void Deconstruct(out string _StatisticName, out string _Unit, out DividerProfile _DividerProfile, out Dictionary<long, string> _DieStatDictionary, out List<double> _Values) 
+        {
+            _StatisticName = StatisticName;
+            _Unit = Unit;
+            _DividerProfile = DividerProfile;
+            _DieStatDictionary = DieStatDictionary;
+            _Values = DieStatDictionary.Values.Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture)).ToList();
+
+        }
     }
 }

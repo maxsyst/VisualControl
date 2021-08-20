@@ -27,7 +27,7 @@ namespace VueExample.StatisticsCoreRework.Services
             var statisticList = _statistics.GetStatistics(dieCommonListDictionary.Values.ToList(), graphic);
             Parallel.ForEach(statisticList, stat => 
             {
-                dict.TryAdd(stat.StatisticsName, new SingleParameterStatisticValues(stat.StatisticsName, stat.Unit, dieCommonListDictionary.Keys.ToList(), stat.FullList));
+                dict.TryAdd(stat.StatisticsName, new SingleParameterStatisticValues(stat.StatisticsName, stat.Unit, stat.NeedDivider, dieCommonListDictionary.Keys.ToList(), stat.FullList));
             });
             return dict.ToDictionary(x => x.Key, v => v.Value);
           

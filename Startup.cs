@@ -218,6 +218,7 @@ namespace VueExample
             services.AddTransient<StatisticsCoreRework.Abstract.IStatisticService, StatisticsCoreRework.CachedServices.StatisticCachedService>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceLNR>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceHSTG>();
+            services.AddTransient<IStatisticCalculationService, StatisticCalculationService>();
 
         }
 

@@ -18,7 +18,8 @@ namespace VueExample.StatisticsCoreRework
         public string StatisticsName { get; set; }
         public string Unit { get; set; }
         public string Median { get; set; }
-        public int ParameterID { get; set; }
+        public int ParameterID { get; set; }       
+        public DividerProfile NeedDivider { get; set; }
         public List<double> FullList { get; set; }
 
       
@@ -129,11 +130,7 @@ namespace VueExample.StatisticsCoreRework
                 Median = GetSDFromFullStatistics(list, "Median")
             };
             return diffstat;
-        }
-
-      
-
-      
+        }      
 
         public List<Statistics> GetStatistics(List<string> list, Graphic graphics, StatisticParameter statisticParameter = null)
         {
@@ -285,12 +282,13 @@ namespace VueExample.StatisticsCoreRework
         }
 
 
-        private Statistics GetFullStatisticsFromList(List<double> list, string statisticsname, string unit, int parameterid = 0)
+        private Statistics GetFullStatisticsFromList(List<double> list, string statisticsname, string unit, int parameterId = 0, DividerProfile dividerProfile = DividerProfile.WithoutDivider)
         {
             var statisitics = new Statistics
                 {
                     StatisticsName = statisticsname,
                     Unit = unit,
+                    NeedDivider = dividerProfile,
                     FullList = list,
                 };
             return statisitics;
@@ -313,10 +311,6 @@ namespace VueExample.StatisticsCoreRework
             var ugsoffList = new List<double>();
             var ugsoffminList = new List<double>();
             var unit = "A";
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-            }
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 var isugsoff = false;
@@ -427,9 +421,9 @@ namespace VueExample.StatisticsCoreRework
 
                 var returnexList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
 
                 };
@@ -439,9 +433,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolation100List, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
 
@@ -461,10 +455,6 @@ namespace VueExample.StatisticsCoreRework
             var ugsoffList = new List<double>();
             var ugsoffminList = new List<double>();
             var unit = "A";
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-            }
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 var isugsoff = false;
@@ -574,9 +564,9 @@ namespace VueExample.StatisticsCoreRework
 
                 var returnexList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolationList.Select(x => x*(-1)).ToList(), "U<sub>GS(off)</sub> (напряжение отсечки при Idss/100) !Транзисторы не закрываются!", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffminList.Select(x => x*(-1)).ToList(), "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
 
                 };
@@ -586,9 +576,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolationList.Select(x => x*(-1)).ToList(), "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolation100List.Select(x => x*(-1)).ToList(), "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
                     GetFullStatisticsFromList(ugsoffminList.Select(x => x*(-1)).ToList(), "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
 
@@ -608,11 +598,6 @@ namespace VueExample.StatisticsCoreRework
             var ugsoffList = new List<double>();
             var ugsoffminList = new List<double>();
             var unit = "A";
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-            }
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
             {
 
@@ -729,9 +714,9 @@ namespace VueExample.StatisticsCoreRework
 
                 var returnexList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS(off)</sub> (напряжение отсечки при Idss/100) !Транзисторы не закрываются!", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
 
                 };
@@ -741,9 +726,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS(3V)</sub> (начальный ток стока)", unit, 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)", "В", 4),
-                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А"),
+                    GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolation100List, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
 
@@ -983,8 +968,8 @@ namespace VueExample.StatisticsCoreRework
                 var returnexList = new List<Statistics>
                 {
                    
-                    GetFullStatisticsFromList(ugsoffList, "Все транзисторы не закрываются! Расчет отсечки при Idss/10", "", 4),
-                    GetFullStatisticsFromList(iMinList, "I<sub>minimal</sub>", "A")
+                    GetFullStatisticsFromList(ugsoffList, "U<sub>gs(off)-10</sub>", "", 4),
+                    GetFullStatisticsFromList(iMinList, "I<sub>minimal</sub>", "A", 0, DividerProfile.WithDivider)
 
                 };
                 return returnexList;
@@ -994,7 +979,7 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                    GetFullStatisticsFromList(ugsoffList, "U<sub>gs(off)</sub>", "В", 4),
-                   GetFullStatisticsFromList(iMinList, "I<sub>minimal</sub>", "A")
+                   GetFullStatisticsFromList(iMinList, "I<sub>minimal</sub>", "A", 0, DividerProfile.WithDivider)
                 };
             return returnList;
         }
@@ -1220,7 +1205,7 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "I<sub>dss</sub> (ток при Uзи = 0В, Uси = 10В)", "А", 3),
+                    GetFullStatisticsFromList(idssList, "I<sub>dss</sub> (ток при Uзи = 0В, Uси = 10В)", "А", 3, DividerProfile.WithDivider),
                    
                 };
             return returnList;
@@ -1260,9 +1245,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(idssList, "Idss", "А", 3),
+                    GetFullStatisticsFromList(idssList, "Idss", "А", 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(vkneeList, "Vknee", "В"),
-                    GetFullStatisticsFromList(ronList, "Ron", "Ом", 12)
+                    GetFullStatisticsFromList(ronList, "Ron", "Ом", 12, DividerProfile.ROnFamily)
                    
                 };
             return returnList;
@@ -1344,7 +1329,7 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ronList, "r<sub>DS(on)</sub> (сопротивление открытого канала при Uси = 0.02В)", "Ом*мм", 12),
+                    GetFullStatisticsFromList(ronList, "r<sub>DS(on)</sub> (сопротивление открытого канала при Uси = 0.02В)", "Ом", 12, DividerProfile.ROnFamily),
                 };
             return returnList;
         }
@@ -1434,15 +1419,11 @@ namespace VueExample.StatisticsCoreRework
         {
             var xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var unit = "См";
-            if (Math.Abs(divider - 1.0) > 1E-6)
-            {
-                unit = "См/мм";
-            }
             var gmaxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var vpeakList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => xListdouble[yListdouble.IndexOf(yListdouble.Max())]).ToList();
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(gmaxList, "g<sub>max</sub> (максимум крутизны)", unit, 6),
+                    GetFullStatisticsFromList(gmaxList, "g<sub>max</sub> (максимум крутизны)", unit, 6, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(vpeakList, "V<sub>GMmpeak</sub> (напряжение при Gmax)", "В")
                 };
             return returnList;
@@ -1870,10 +1851,6 @@ namespace VueExample.StatisticsCoreRework
             var ig10List = new List<double>();
             var vbdgList = new List<double>();
             var unit = "A";
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-            }
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 ig3List.Add(yListdouble[threeIndex]);
@@ -1899,8 +1876,8 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ig3List, "I<sub>GSS(-3V)</sub> (ток утечки затвора при Uзи=-3В)", unit, 7),
-                    GetFullStatisticsFromList(ig10List, "I<sub>GSS(-10V)</sub> (ток утечки затвора при Uзи=-10В)", unit, 8)
+                    GetFullStatisticsFromList(ig3List, "I<sub>GSS(-3V)</sub> (ток утечки затвора при Uзи=-3В)", unit, 7, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(ig10List, "I<sub>GSS(-10V)</sub> (ток утечки затвора при Uзи=-10В)", unit, 8, DividerProfile.WithDivider)
                     
                 };
             return returnList;
@@ -1924,9 +1901,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ig5List, "I(V=-5В)", "А"),
-                    GetFullStatisticsFromList(ig10List, "I(V=-10В)", "А"),
-                    GetFullStatisticsFromList(igMaxList, "V(Ig_max)", "В")
+                    GetFullStatisticsFromList(ig5List, "I(V=-5В)", "А", 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(ig10List, "I(V=-10В)", "А", 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(igMaxList, "V(Ig_max)", "В", 0, DividerProfile.WithDivider)
                 };
             return returnList;
         }
@@ -1948,8 +1925,8 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ig10List, "V(I=1E-6В)", "В"),
-                    GetFullStatisticsFromList(ig2List, "I(V=2В)", "А")
+                    GetFullStatisticsFromList(ig10List, "V(I=1E-6В)", "В", 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(ig2List, "I(V=2В)", "А", 0, DividerProfile.WithDivider)
                 };
             return returnList;
         }
@@ -4172,10 +4149,10 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
-                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
-                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
+                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12, DividerProfile.ROnFamily),
                     GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(sfList,  "S<sub>f</sub> (критерий S-образности)", "мСм")
@@ -4221,10 +4198,10 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
-                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
-                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
+                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12, DividerProfile.ROnFamily),
                     GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(sfList,  "S<sub>f</sub> (критерий S-образности)", "мСм")
@@ -4269,10 +4246,10 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28),
-                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29),
-                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30),
-                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12),
+                    GetFullStatisticsFromList(id2List, "I<sub>dss(2V)</sub> (ток при Uси=2В)", "А", 28, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id3List, "I<sub>dss(3V)</sub> (ток при Uси=3В)", "А", 29, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id5List, "I<sub>dss(5V)</sub> (ток при Uси=5В)", "А", 30, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(ocList, "R<sub>ds(on)</sub> (сопротивление открытого канала)", "Ом", 12, DividerProfile.ROnFamily),
                     GetFullStatisticsFromList(s31List, "S<sub>3-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(s51List, "S<sub>5-1.5</sub> (критерий S-образности)", "%"),
                     GetFullStatisticsFromList(sfList, "S<sub>f</sub> (критерий S-образности)", "мСм")
@@ -6373,19 +6350,14 @@ namespace VueExample.StatisticsCoreRework
             var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
             var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.0 - item)).FirstOrDefault());
             var unit = "A";
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-            }
-
             var threeList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => threeIndex < 0 ? yListdouble[0] : yListdouble[threeIndex]).ToList();
             var fiveList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => fiveIndex < 0 ? yListdouble[0] : yListdouble[fiveIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
 
-                    GetFullStatisticsFromList(threeList, "I<sub>D(3V)</sub>", unit),
-                    GetFullStatisticsFromList(fiveList, "I<sub>D(5V)</sub>", unit),
+                    GetFullStatisticsFromList(threeList, "I<sub>D(3V)</sub>", unit, 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(fiveList, "I<sub>D(5V)</sub>", unit, 0, DividerProfile.WithDivider),
 
                 };
             return returnList;
@@ -6397,19 +6369,14 @@ namespace VueExample.StatisticsCoreRework
             var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-3.0 - item)).FirstOrDefault());
             var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-10.0 - item)).FirstOrDefault());
             var unit = "A";
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-            }
-
             var threeList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => threeIndex < 0 ? yListdouble[0] : yListdouble[threeIndex]).ToList();
             var tenList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => tenIndex < 0 ? yListdouble[0] : yListdouble[tenIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
 
-                    GetFullStatisticsFromList(threeList, "I<sub>GSS(-3V)</sub>", unit),
-                    GetFullStatisticsFromList(tenList, "I<sub>GSS(-10V)</sub>", unit),
+                    GetFullStatisticsFromList(threeList, "I<sub>GSS(-3V)</sub>", unit, 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(tenList, "I<sub>GSS(-10V)</sub>", unit, 0, DividerProfile.WithDivider),
 
                 };
             return returnList;
@@ -6425,11 +6392,6 @@ namespace VueExample.StatisticsCoreRework
             var ugsoffList = new List<double>();
             var unit = "A";
             var level = 50E-6;
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-                level = 1E-3;
-            }
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 var fiftyIndex = yListdouble.IndexOf(yListdouble.OrderBy(item => Math.Abs(level - item)).FirstOrDefault());
@@ -6443,8 +6405,8 @@ namespace VueExample.StatisticsCoreRework
 
 
                     GetFullStatisticsFromList(ugsoffList, "V<sub>GS(off)</sub>", "В"),
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS</sub>", unit),
-                    GetFullStatisticsFromList(id05List, "I<sub>D(max)</sub>", unit),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS</sub>", unit, 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id05List, "I<sub>D(max)</sub>", unit, 0, DividerProfile.WithDivider),
                  
                     
 
@@ -6462,11 +6424,6 @@ namespace VueExample.StatisticsCoreRework
             var ugsoffList = new List<double>();
             var unit = "A";
             var level = 50E-6;
-            if (Math.Abs(divider - 1) > 1E-6)
-            {
-                unit = "A/мм";
-                level = 1E-3;
-            }
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 var fiftyIndex = yListdouble.IndexOf(yListdouble.OrderBy(item => Math.Abs(level - item)).FirstOrDefault());
@@ -6479,8 +6436,8 @@ namespace VueExample.StatisticsCoreRework
             {
 
                     GetFullStatisticsFromList(ugsoffList, "V<sub>GS(th)</sub>", "В"),
-                    GetFullStatisticsFromList(idssList, "I<sub>DSS</sub>", unit),
-                    GetFullStatisticsFromList(id05List, "I<sub>D(max)</sub>", unit),
+                    GetFullStatisticsFromList(idssList, "I<sub>DSS</sub>", unit, 0, DividerProfile.WithDivider),
+                    GetFullStatisticsFromList(id05List, "I<sub>D(max)</sub>", unit, 0, DividerProfile.WithDivider),
 
 
 
@@ -6492,15 +6449,11 @@ namespace VueExample.StatisticsCoreRework
         {
             var xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var unit = "См";
-            if (Math.Abs(divider - 1.0) > 1E-6)
-            {
-                unit = "См/мм";
-            }
             var gmaxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var vpeakList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => xListdouble[yListdouble.IndexOf(yListdouble.Max())]).ToList();
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(gmaxList, "g<sub>m(max)</sub>", unit),
+                    GetFullStatisticsFromList(gmaxList, "g<sub>m(max)</sub>", unit, 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(vpeakList, "V<sub>gm-peak</sub>", "В")
                 };
             return returnList;
@@ -6532,7 +6485,7 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ronList, "r<sub>DS(on)</sub>", "Ом·мм"),
+                    GetFullStatisticsFromList(ronList, "r<sub>DS(on)</sub>", "Ом", 0, DividerProfile.ROnFamily),
                 };
             return returnList;
         }
@@ -6874,7 +6827,7 @@ namespace VueExample.StatisticsCoreRework
             }
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ig30List, "I<sub>C(leak)</sub>", "А"),
+                    GetFullStatisticsFromList(ig30List, "I<sub>C(leak)</sub>", "А", 0, DividerProfile.WithDivider),
                 };
             return returnList;
         }
@@ -6906,7 +6859,7 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                    GetFullStatisticsFromList(ig30List, "I<sub>C(leak)</sub>", "А"),
+                    GetFullStatisticsFromList(ig30List, "I<sub>C(leak)</sub>", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(vbrdgList, "V<sub>(br)</sub> (напряжение при Ig=100нА)", "В"),
                 };
             return returnList;
