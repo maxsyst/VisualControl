@@ -10,7 +10,7 @@ namespace VueExample.StatisticsCoreRework.Services
     {
         public DirtyCellsShort CalculateShort(string k, SingleParameterStatisticValues singleParameterStatisticValues)
         {
-            return new DirtyCellsShortStat(singleParameterStatisticValues.StatisticName, k).SetBadDies(CalculateBadDies(k, singleParameterStatisticValues));
+            return new DirtyCellsShortStat(singleParameterStatisticValues.StatisticName, k).SetBadDies(CalculateBadDies(k, singleParameterStatisticValues), singleParameterStatisticValues.DieStatDictionary.Keys.Count);
         }
 
         private List<long> CalculateBadDies(string k, SingleParameterStatisticValues singleParameterStatisticValues) 
@@ -21,7 +21,7 @@ namespace VueExample.StatisticsCoreRework.Services
             var quartile3Double = MathNet.Numerics.Statistics.Statistics.UpperQuartile(points);
             var iqr = MathNet.Numerics.Statistics.Statistics.InterquartileRange(points);
             return singleParameterStatisticValues.DieStatDictionary .ToDictionary(kv => kv.Key, kv => Convert.ToDouble(kv.Value, CultureInfo.InvariantCulture))
-                                                                    .Where(x => x.Value < quartile1Double - kDouble * iqr && x.Value > quartile3Double + kDouble * iqr || Double.IsNaN(x.Value))
+                                                                    .Where(x => x.Value < quartile1Double - kDouble * iqr || x.Value > quartile3Double + kDouble * iqr || Double.IsNaN(x.Value))
                                                                     .Select(kv => kv.Key)
                                                                     .ToList();
         }

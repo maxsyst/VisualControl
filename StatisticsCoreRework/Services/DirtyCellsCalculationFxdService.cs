@@ -12,7 +12,7 @@ namespace VueExample.StatisticsCoreRework.Services
         public DirtyCellsShort CalculateShort(string lowBorder, string topBorder, SingleParameterStatisticValues singleParameterStatisticValues)
         {
             return new DirtyCellsShortFxd(singleParameterStatisticValues.StatisticName, lowBorder, topBorder)
-                       .SetBadDies(CalculateBadDies(lowBorder, topBorder, singleParameterStatisticValues));
+                       .SetBadDies(CalculateBadDies(lowBorder, topBorder, singleParameterStatisticValues), singleParameterStatisticValues.DieStatDictionary.Keys.Count);
         }
 
         private List<long> CalculateBadDies(string lowBorder, string topBorder, SingleParameterStatisticValues singleParameterStatisticValues) 
