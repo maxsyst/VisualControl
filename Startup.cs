@@ -33,9 +33,7 @@ using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services;
 using VueExample.Services.Vertx.Abstract;
 using VueExample.Services.Vertx.Implementation;
-using VueExample.StatisticsCore;
 using VueExample.StatisticsCore.Abstract;
-using VueExample.StatisticsCore.CachedService;
 using VueExample.StatisticsCore.Services;
 using VueExample.StatisticsCoreRework.Abstract;
 using VueExample.StatisticsCoreRework.CachedServices;
@@ -146,6 +144,8 @@ namespace VueExample
             services.AddTransient<StatisticsCoreRework.Services.StatisticService>();
             services.AddTransient<SingleParameterServiceHSTG>();
             services.AddTransient<SingleParameterServiceLNR>();
+            services.AddTransient<DirtyCellsCalculationStatService>();
+            services.AddTransient<DirtyCellsCalculationFxdService>();
              
             
 
@@ -219,10 +219,13 @@ namespace VueExample
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceLNR>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceHSTG>();
             services.AddTransient<IStatisticCalculationService, StatisticCalculationService>();
+            services.AddTransient<IDirtyCellsService, DirtyCellsService>();
+            services.AddTransient<IDirtyCellsCalculationService, DirtyCellsCalculationService>();
+            services.AddTransient<IDirtyCellsCalculationFxdService, DirtyCellsCalculationFxdCachedService>();
+            services.AddTransient<IDirtyCellsCalculationStatService, DirtyCellsCalculationStatCachedService>();
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
