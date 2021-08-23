@@ -19,11 +19,9 @@
                         :rotate="360"
                         :size="60"
                         :width="2"
-                        :value="viewMode==='Мониторинг' ? dirtyCellsFullWafer.stat.percentage : dirtyCellsFullWafer.fixed.percentage"
-                        :color="viewMode==='Мониторинг'
-                          ? this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.stat.percentage / 100)
-                          : this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.fixed.percentage / 100)">
-                      {{ viewMode==='Мониторинг' ? dirtyCellsFullWafer.stat.percentage + '%' : dirtyCellsFullWafer.fixed.percentage + '%'}}
+                        :value="dirtyCellsFullWafer.stat.percentage"
+                        :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.stat.percentage / 100)">
+                      {{dirtyCellsFullWafer.stat.percentage}}%
                       </v-progress-circular>
                     </div>
                   </div>
@@ -36,11 +34,11 @@
                       :rotate="360"
                       :size="60"
                       :width="2"
-                      :value="viewMode === 'Мониторинг' ? dirtyCellsStatPercentage : dirtyCellsFixedPercentage"
-                      :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
-                      {{ viewMode === 'Мониторинг' ? dirtyCellsStatPercentage + '%' : dirtyCellsFixedPercentage + '%' }}
+                      :value="dirtyCellsStatPercentage"
+                      color='primary'>
+                      {{ dirtyCellsStatPercentage }}%
                     </v-progress-circular>
-                    <v-btn text icon :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" @click="delDirtyCells(dirtyCells)">
+                    <v-btn text icon color='primary' @click="delDirtyCells(dirtyCells)">
                       <v-icon>cached</v-icon>
                     </v-btn>
                 </div>
@@ -58,11 +56,9 @@
           </v-toolbar>
         </v-col>
         <v-col :lg="responsiveSettings.waferMiniFlexSize">
-          <wafer-mini v-if="(viewMode === 'Мониторинг' && dirtyCellsFullWafer.stat.percentage >= 0)
-             || (viewMode === 'Поставка' && dirtyCellsFullWafer.fixed.percentage >= 0)"
+          <wafer-mini v-if="(dirtyCellsFullWafer.stat.percentage >= 0)"
             :keyGraphicState="keyGraphicState"
             :rowViewMode="rowViewMode"
-            :viewMode="viewMode"
             :key="`wfm-${keyGraphicState}`">
           </wafer-mini>
         </v-col>
@@ -74,7 +70,7 @@ import WaferMap from './WaferMapMini.vue';
 
 export default {
   props: ['loading', 'graphicName', 'dirtyCellsFullWafer', 'dirtyCellsStatPercentage',
-    'dirtyCellsFixedPercentage', 'dirtyCells', 'viewMode', 'rowViewMode', 'keyGraphicState'],
+    'dirtyCellsFixedPercentage', 'dirtyCells', 'rowViewMode', 'keyGraphicState'],
   data() {
     return {
 

@@ -11,14 +11,14 @@
                     :size="60"
                     :width="3"
                     :value="(selectedDies.length / avbSelectedDies.length)*100"
-                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
+                    color='primary'>
                     {{ Math.ceil((selectedDies.length / avbSelectedDies.length)*100) + "%" }}</v-progress-circular>
                 </div>
             </div>
         </v-card-text>
         <v-card-actions>
             <v-btn block
-                   :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" 
+                   color='primary'
                    outlined
                    @click="selectAllDies(avbSelectedDies)">
                    Выбрать все кристаллы
@@ -31,7 +31,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  props: ['selectedMeasurementId', 'viewMode'],
+  props: ['selectedMeasurementId'],
   data() {
     return {
 

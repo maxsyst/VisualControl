@@ -7,7 +7,6 @@
                :dirtyCellsFixedPercentage="dirtyCellsFixedPercentage"
                :rowViewMode="rowViewMode"
                :dirtyCells="dirtyCells"
-               :viewMode="viewMode"
                :keyGraphicState="keyGraphicState">
       </toolbar>
       <v-row>
@@ -56,7 +55,7 @@
                           </v-tooltip>
                         </template>
                         <template v-slot:item.fwPercentage="{item}">
-                          <td v-if="viewMode==='Мониторинг'" class="text-xs-center">
+                          <td class="text-xs-center">
                             <v-progress-circular
                               :rotate="360"
                               :size="45"
@@ -65,15 +64,6 @@
                               :color="$store.getters['wafermeas/calculateColor'](item.fwPercentage.stat/100)"
                             >{{ item.fwPercentage.stat + '%'}}</v-progress-circular>
                           </td>
-                          <td v-else class="text-xs-center">
-                            <v-progress-circular
-                              :rotate="360"
-                              :size="45"
-                              :width="2"
-                              :value="item.fwPercentage.fixed"
-                              :color="$store.getters['wafermeas/calculateColor'](item.fwPercentage.fixed/100)"
-                            >{{ item.fwPercentage.fixed + '%'}}</v-progress-circular>
-                          </td>
                         </template>
                         <template v-slot:item.dirtyCells="{item}">
                         <td class="text-xs-center">
@@ -81,10 +71,11 @@
                             :rotate="360"
                             :size="45"
                             :width="2"
-                            :value = "viewMode === `Мониторинг` ? item.dirtyCells.statPercentageFullWafer : item.dirtyCells.fixedPercentageFullWafer"
-                            :color= "viewMode === `Мониторинг` ? 'primary' : '#80DEEA'"
-                          >{{ viewMode === `Мониторинг` ? item.dirtyCells.statPercentageFullWafer + '%' : item.dirtyCells.fixedPercentageFullWafer + '%' }}</v-progress-circular>
-                          <v-btn text icon :color="viewMode === `Мониторинг` ? 'primary' : '#80DEEA'" @click="delDirtyCells(item.dirtyCells)">
+                            :value="item.dirtyCells.statPercentageFullWafer"
+                            color='primary'>
+                            {{ item.dirtyCells.statPercentageFullWafer  }}%
+                          </v-progress-circular>
+                          <v-btn text icon color='primary' @click="delDirtyCells(item.dirtyCells)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </td>
@@ -114,7 +105,7 @@ import Toolbar from './GraphicRowFullInfoToolbar.vue';
 import GradientFull from '../Gradient/gradient-full.vue';
 
 export default {
-  props: ['keyGraphicState', 'measurementId', 'viewMode', 'divider', 'statisticKf', 'rowViewMode'],
+  props: ['keyGraphicState', 'measurementId', 'divider', 'statisticKf', 'rowViewMode'],
   components: {
     'gradient-full': GradientFull,
     toolbar: Toolbar,
@@ -133,7 +124,6 @@ export default {
       headersConfigArray: [
         /// MonitoringMini
         {
-          viewMode: 'Мониторинг',
           rowViewMode: 'miniChart',
           headers: [{
             text: 'Название',
@@ -197,7 +187,6 @@ export default {
 
         /// MonitoringBig
         {
-          viewMode: 'Мониторинг',
           rowViewMode: 'bigChart',
           headers: [{
             text: 'Название',
@@ -236,53 +225,6 @@ export default {
             width: '30%',
           }],
         },
-
-        /// SupplyMini
-        {
-          viewMode: 'Поставка',
-          rowViewMode: 'miniChart',
-          headers: [{
-            text: 'Название',
-            align: 'center',
-            sortable: false,
-            value: 'shortStatisticsName',
-            width: '30%',
-          },
-          {
-            text: 'Мин',
-            align: 'center',
-            sortable: false,
-            value: 'lowBorderFixed',
-            width: '20%',
-          },
-          {
-            text: 'Макс',
-            align: 'center',
-            sortable: false,
-            value: 'topBorderFixed',
-            width: '20%',
-          },
-          {
-            text: 'Годны по всей пластине, %',
-            align: 'start',
-            sortable: false,
-            value: 'fwPercentage',
-            width: '15%',
-          },
-          {
-            text: 'Годны из выбранных, %',
-            align: 'center',
-            sortable: false,
-            value: 'dirtyCells',
-            width: '15%',
-          },
-          ],
-        },
-        {
-          viewMode: 'Поставка',
-          rowViewMode: 'bigChart',
-          headers: [],
-        },
       ],
     };
   },
@@ -297,7 +239,7 @@ export default {
 
   methods: {
     delDirtyCells(dirtyCells) {
-      const deletedDies = this.viewMode === 'Мониторинг' ? dirtyCells.statList : dirtyCells.fixedList;
+      const deletedDies = dirtyCells.statList;
       const selectedDies = this.selectedDies.filter((el) => !deletedDies.includes(el));
       this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
     },
@@ -372,7 +314,7 @@ export default {
     }),
 
     headers() {
-      return this.headersConfigArray.find((x) => x.viewMode === this.viewMode && x.rowViewMode === this.rowViewMode).headers;
+      return this.headersConfigArray.find((x) => x.rowViewMode === this.rowViewMode).headers;
     },
 
     dirtyCells() {
@@ -389,12 +331,11 @@ export default {
     },
 
     dirtyCellsStatPercentage() {
-      const dirtyCellsList = this.viewMode === 'Мониторинг' ? this.dirtyCells.statList : this.dirtyCells.fixedList;
+      const dirtyCellsList = this.dirtyCells.statList;
       const percentage = Math.ceil((1.0 - dirtyCellsList.length / this.selectedDies.length) * 100);
       this.$store.dispatch('wafermeas/updateDirtyCellsSelectedNowSingleGraphic', {
         keyGraphicState: this.keyGraphicState,
         dirtyCells: { cellsId: [...dirtyCellsList], percentage },
-        viewMode: this.viewMode,
       });
       return isNaN(percentage) ? 0 : percentage;
     },

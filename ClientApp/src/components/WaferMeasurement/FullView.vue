@@ -62,12 +62,12 @@
     <v-row wrap>
       <v-col lg="6">
         <v-row justify-center column>
-          <mini-report :waferId="selectedWafer" :selectedMeasurementId="selectedMeasurementId" :viewMode="viewMode"></mini-report>
+          <mini-report :waferId="selectedWafer" :selectedMeasurementId="selectedMeasurementId"></mini-report>
         </v-row>
         <v-row justify-center column>
           <v-col>
             <v-tabs v-model="activeTab"
-                    :background-color="viewMode === 'Мониторинг' ? 'indigo' : '#00838F'" dark slider-color="primary" icons-and-text>
+                    background-color='indigo' dark slider-color="primary" icons-and-text>
               <v-tab href="#wafer">
                 Выбор измерения
                 <v-icon>table_chart</v-icon>
@@ -94,7 +94,7 @@
                         readonly
                         outlined
                         label="Номер пластины"
-                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                        color='primary'
                       ></v-autocomplete>
                       <v-select
                         v-if="measurementRecordings.length>0"
@@ -105,7 +105,7 @@
                         item-value="id"
                         filled
                         outlined
-                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                        color='primary'
                         @change="measurementRecordingIdChanged($event)"
                         label="Выберите измерение:">
                       </v-select>
@@ -135,14 +135,6 @@
                           label="Выберите приведение к мм"
                         ></v-select>
                       </v-col>
-                      <v-col>
-                        <v-select v-if="selectedMeasurementId>0" :items="['Мониторинг', 'Поставка']"
-                          outlined
-                          v-model="viewMode"
-                          :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
-                          label="Выберите режим">
-                       </v-select>
-                      </v-col>
                     </v-row>
                     <v-row justify-center column v-if="loading">
                       <v-col lg="6">
@@ -168,7 +160,7 @@
                                 </v-select>
                               </v-col>
                               <v-col lg="8">
-                                <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                                <v-btn color='primary'
                                        сlass="mt-4" block outlined @click="generateShortLink">Сгенерировать ссылку</v-btn>
                               </v-col>
                             </v-row>
@@ -197,12 +189,13 @@
                   <v-col lg="8">
                     <v-card dark>
                       <perfect-scrollbar>
-                        <micro-row class="mt-2" v-for="graphic in availiableGraphics" :key="`kgs-${graphic.keyGraphicState}`" :keyGraphicState="graphic.keyGraphicState" :viewMode="viewMode"></micro-row>
+                        <micro-row class="mt-2" v-for="graphic in availiableGraphics"
+                                  :key="`kgs-${graphic.keyGraphicState}`" :keyGraphicState="graphic.keyGraphicState"></micro-row>
                       </perfect-scrollbar>
                     </v-card>
                   </v-col>
                   <v-col lg="4">
-                  <v-btn :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined small @click="selectAllGraphics">
+                  <v-btn color='primary' outlined small @click="selectAllGraphics">
                     Выбрать все графики
                   </v-btn>
                   <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
@@ -212,9 +205,9 @@
                           :rotate="360"
                           :size="90"
                           :width="3"
-                          :value="viewMode === 'Мониторинг' ? dirtyCells.statPercentageFullWafer : dirtyCells.fixedPercentageFullWafer"
-                          :color="viewMode === 'Мониторинг' ? $store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100) : $store.getters['wafermeas/calculateColor'](dirtyCells.fixedPercentageFullWafer / 100)">
-                          {{ viewMode === 'Мониторинг' ? dirtyCells.statPercentageFullWafer : dirtyCells.fixedPercentageFullWafer }}%
+                          :value="dirtyCells.statPercentageFullWafer"
+                          :color="$store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100)">
+                                        {{ dirtyCells.statPercentageFullWafer }}%
                         </v-progress-circular>
                         <v-tooltip class="ml-8" v-model="showUnSelectedGraphics" v-if="unSelectedGraphics.length>0" top>
                           <template v-slot:activator="{ on, attrs }">
@@ -240,12 +233,12 @@
                             :rotate="360"
                             :size="90"
                             :width="3"
-                            :value="viewMode === 'Мониторинг' ? dirtyCells.statPercentageSelected : dirtyCells.fixedPercentageSelected"
-                            :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
-                            {{ viewMode === 'Мониторинг' ? dirtyCells.statPercentageSelected : dirtyCells.fixedPercentageSelected}}%
+                            :value="dirtyCells.statPercentageSelected"
+                            color='primary'>
+                            {{ dirtyCells.statPercentageSelected }}%
                           </v-progress-circular>
-                          <v-btn outlined :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
-                                 @click="delDirtyCells(viewMode === 'Мониторинг' ? dirtyCells.statList : dirtyCells.fixedList, selectedDies)">
+                          <v-btn outlined color='primary'
+                                 @click="delDirtyCells(dirtyCells.statList, selectedDies)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </v-card-text>
@@ -258,8 +251,7 @@
         </v-row>
       </v-col>
       <v-col lg="5" offset-lg="1">
-        <wafermap-svg
-          :viewMode="viewMode">
+        <wafermap-svg>
         </wafermap-svg>
       </v-col>
     </v-row>
@@ -269,7 +261,6 @@
                  :key="`kgs-${graphic.keyGraphicState}`"
                  :selectedMeasurementId="selectedMeasurementId"
                  :keyGraphicState="graphic.keyGraphicState"
-                 :viewMode="viewMode"
                  :selectedDivider="selectedDivider"
                  :statisticKf="statisticKf"
                  :selectedDiesLength="selectedDies.length">
@@ -288,7 +279,6 @@ import GraphicRowFullInfo from './GraphicRowFullInfo.vue';
 export default {
   data() {
     return {
-      viewMode: 'Мониторинг',
       toggle_exclusive: null,
       fabToTop: false,
       fabToNext: false,
@@ -441,7 +431,7 @@ export default {
       this.$store.dispatch('wafermeas/updateAvbSelectedDies', [...diesList]);
       this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
       this.$store.dispatch('wafermeas/updateSelectedDies', diesList);
-      this.delDirtyCells(this.viewMode === 'Мониторинг' ? this.dirtyCells.statList : this.dirtyCells.fixedList, this.avbSelectedDies);
+      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies);
       const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
       this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
       this.selectAllGraphics();

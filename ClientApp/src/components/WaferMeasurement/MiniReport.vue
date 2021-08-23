@@ -64,7 +64,7 @@
                 </v-row>
                 <v-row>
                     <v-col lg="12">
-                        <selectedDiesInfo :selectedMeasurementId="selectedMeasurementId" :viewMode="viewMode">
+                        <selectedDiesInfo :selectedMeasurementId="selectedMeasurementId">
                         </selectedDiesInfo>
                     </v-col>
                 </v-row>
@@ -293,7 +293,7 @@ import SelectedDiesInfo from './SelectedDiesInfo.vue';
 
 export default {
 
-  props: ['waferId', 'selectedMeasurementId', 'viewMode'],
+  props: ['waferId', 'selectedMeasurementId'],
 
   data() {
     return {

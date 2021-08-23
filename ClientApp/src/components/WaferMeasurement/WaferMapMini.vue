@@ -31,7 +31,7 @@ import Loading from 'vue-loading-overlay';
 import { mapGetters } from 'vuex';
 
 export default {
-  props: ['keyGraphicState', 'viewMode', 'rowViewMode'],
+  props: ['keyGraphicState', 'rowViewMode'],
   components: { Loading },
   data() {
     return {
@@ -165,10 +165,6 @@ export default {
       },
     },
 
-    viewMode() {
-      this.refresh(this.selectedDies);
-    },
-
     rowViewMode(rowViewMode) {
       if (rowViewMode === 'bigChart') {
         this.dies.forEach(function (die) {
@@ -207,7 +203,7 @@ export default {
     }),
 
     dirtyCells() {
-      return this.dirtyCellsGetter(this.keyGraphicState, this.viewMode);
+      return this.dirtyCellsGetter(this.keyGraphicState);
     },
 
     mode() {

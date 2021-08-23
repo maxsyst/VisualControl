@@ -6,7 +6,6 @@
           :keyGraphicState="keyGraphicState"
           :divider="selectedDivider"
           :rowViewMode="rowViewMode"
-          :viewMode="viewMode"
           :statisticKf="statisticKf"
         ></stat-single>
         <v-divider light></v-divider>
@@ -17,7 +16,6 @@
           :measurementId="selectedMeasurementId"
           :keyGraphicState="keyGraphicState"
           :rowViewMode="rowViewMode"
-          :viewMode="viewMode"
           :divider="selectedDivider"
         ></chart-lnr>
         <chart-hstg
@@ -25,7 +23,6 @@
           :measurementId="selectedMeasurementId"
           :keyGraphicState="keyGraphicState"
           :rowViewMode="rowViewMode"
-          :viewMode="viewMode"
           :divider="selectedDivider"
         ></chart-hstg>
         <v-divider light></v-divider>
@@ -49,7 +46,7 @@ import ChartHSTG from '../Charts/ChartHSTG.vue';
 import StatSingle from './StatSingle.vue';
 
 export default {
-  props: ['selectedMeasurementId', 'keyGraphicState', 'viewMode', 'selectedDivider', 'statisticKf', 'selectedDiesLength'],
+  props: ['selectedMeasurementId', 'keyGraphicState', 'selectedDivider', 'statisticKf', 'selectedDiesLength'],
   data() {
     return {
 

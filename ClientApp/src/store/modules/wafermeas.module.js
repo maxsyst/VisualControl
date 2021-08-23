@@ -155,8 +155,8 @@ export const wafermeas = {
       commit('deleteFromDirtyCellsFixed', { keyGraphicState, avbSelectedDies });
     },
 
-    updateDirtyCellsSelectedNowSingleGraphic({ commit }, { keyGraphicState, dirtyCells, viewMode }) {
-      commit('updateDirtyCellsSelectedNowSingleGraphic', { keyGraphicState, dirtyCells, viewMode });
+    updateDirtyCellsSelectedNowSingleGraphic({ commit }, { keyGraphicState, dirtyCells }) {
+      commit('updateDirtyCellsSelectedNowSingleGraphic', { keyGraphicState, dirtyCells });
     },
 
     updateDirtyCellsFullWaferSingleGraphic({ commit }, { keyGraphicState, dirtyCells }) {
@@ -239,11 +239,7 @@ export const wafermeas = {
     getKeyGraphicStateRowViewMode: (state) => (keyGraphicState) => state.keyGraphicStateModes.find((k) => k.keyGraphicState === keyGraphicState).rowViewMode,
     getDieValuesByKeyGraphicState: (state) => (keyGraphicState) => state.dieValues[keyGraphicState],
     getGraphicByGraphicState: (state) => (keyGraphicState) => state.avbGraphics.find((g) => g.keyGraphicState === keyGraphicState),
-    getDirtyCellsByGraphic: (state) => function (keyGraphicState, mode) {
-      return mode === 'Мониторинг'
-        ? state.dirtyCellsStatSingleGraphics.find((dc) => dc.keyGraphicState === keyGraphicState)
-        : state.dirtyCellsFixedSingleGraphics.find((dc) => dc.keyGraphicState === keyGraphicState);
-    },
+    getDirtyCellsByGraphic: (state) => (keyGraphicState) => state.dirtyCellsStatSingleGraphics.find((dc) => dc.keyGraphicState === keyGraphicState),
     selectedDies: (state) => state.selectedDies,
     avbSelectedDies: (state) => state.avbSelectedDies,
     unSelectedGraphics: (state) => state.unSelectedGraphics,
@@ -396,8 +392,8 @@ export const wafermeas = {
       state.dirtyCells.fixedPercentageSelected = fixedPercentageSelected;
     },
 
-    updateDirtyCellsSelectedNowSingleGraphic(state, { keyGraphicState, dirtyCells, viewMode }) {
-      const dirtyCellsSingleGraphics = viewMode === 'Мониторинг' ? state.dirtyCellsStatSingleGraphics : state.dirtyCellsFixedSingleGraphics;
+    updateDirtyCellsSelectedNowSingleGraphic(state, { keyGraphicState, dirtyCells }) {
+      const dirtyCellsSingleGraphics = state.dirtyCellsStatSingleGraphics;
       let graphic = dirtyCellsSingleGraphics.find((dc) => dc.keyGraphicState === keyGraphicState);
       if (graphic === undefined) {
         graphic = { keyGraphicState, selectedNow: { cells: [], percentage: 0 }, fullWafer: { cells: [], percentage: 0 } };

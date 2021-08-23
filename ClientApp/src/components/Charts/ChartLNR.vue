@@ -11,7 +11,6 @@
               :keyGraphicState="keyGraphicState"
               :chartdata="chartdata"
               :settings="settings"
-              :viewMode="viewMode"
               :options="options"/>
           </v-container>
         </v-card>
@@ -77,7 +76,7 @@ import Settings from './ChartSettings/ChartSettingsLNR';
 
 export default {
 
-  props: ['keyGraphicState', 'measurementId', 'divider', 'viewMode', 'rowViewMode'],
+  props: ['keyGraphicState', 'measurementId', 'divider', 'rowViewMode'],
   components: { LineChart, Settings },
   data: () => ({
     loaded: false,

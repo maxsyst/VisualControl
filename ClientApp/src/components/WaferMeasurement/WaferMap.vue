@@ -80,7 +80,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  props: ['viewMode'],
+  props: [],
   data() {
     return {
       dies: [],
@@ -153,44 +153,6 @@ export default {
       },
     },
 
-    viewMode(viewMode) {
-      if (this.dies.length > 0) {
-        if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
-          this.dies.forEach((die) => {
-            die.fill = '#A1887F';
-            die.text = '#303030';
-            die.fillOpacity = 1.0;
-            die.isActive = false;
-          });
-          if (this.mapMode === 'selected') {
-            for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
-              const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
-              die.fill = '#8C9EFF';
-              die.text = '#303030';
-              die.isActive = true;
-            }
-
-            for (let i = 0; i < this.selectedDies.length; i += 1) {
-              const die = this.dies.find((d) => d.id === this.selectedDies[i]);
-              die.fill = '#3D5AFE';
-              die.text = '#FFF9C4';
-            }
-          }
-          if (this.mapMode === 'dirty') {
-            this.avbSelectedDies.forEach((avb) => {
-              const die = this.dies.find((d) => d.id === avb);
-              die.fill = viewMode === 'Мониторинг'
-                ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
-                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50';
-              die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
-              die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
-              die.isActive = true;
-            });
-          }
-        }
-      }
-    },
-
     mapMode(newVal) {
       if (newVal === 'selected') {
         for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
@@ -211,9 +173,7 @@ export default {
       if (newVal === 'dirty') {
         this.avbSelectedDies.forEach((avb) => {
           const die = this.dies.find((d) => d.id === avb);
-          die.fill = this.viewMode === 'Мониторинг'
-            ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
-            : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50';
+          die.fill = this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50';
           die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
           die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
           die.isActive = true;
@@ -247,9 +207,7 @@ export default {
           if (this.mapMode === 'dirty') {
             this.avbSelectedDies.forEach((avb) => {
               const die = this.dies.find((d) => d.id === avb);
-              die.fill = this.viewMode === 'Мониторинг'
-                ? this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50'
-                : this.dirtyCells.fixedList.includes(die.id) ? '#E91E63' : '#4CAF50';
+              die.fill = this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50';
               die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5;
               die.text = selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
               die.isActive = true;

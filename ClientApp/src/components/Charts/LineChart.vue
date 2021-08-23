@@ -21,10 +21,6 @@ export default {
       type: String,
       default: '',
     },
-    viewMode: {
-      type: String,
-      default: '',
-    },
     settings: {
       type: Object,
       default: null,
@@ -170,7 +166,7 @@ export default {
     },
 
     dirtyCells() {
-      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState, this.viewMode);
+      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState);
     },
   },
 };

@@ -16,7 +16,7 @@
                     </v-progress-circular>
                     <v-progress-circular v-else
                         indeterminate
-                        :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                        color='primary'
                     ></v-progress-circular>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
@@ -25,18 +25,18 @@
                     :size="50"
                     :width="2"
                     :value="dirtyCells.selectedNow.percentage"
-                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'">
+                    color='primary'>
                     {{ dirtyCells.selectedNow.percentage + '%' }}
                   </v-progress-circular>
                    <v-progress-circular v-else
                         indeterminate
-                       :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                        color='primary'
                     ></v-progress-circular>
             </v-col>
             <v-col lg="1" offset-lg="1" class="d-flex align-center">
                 <v-checkbox
                     v-model="isGraphicSelected"
-                    :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'"
+                    color='primary'
                     @change="changeGraphicSelection"
                 ></v-checkbox>
             </v-col>
@@ -49,7 +49,7 @@ import { mapGetters } from 'vuex';
 
 export default {
 
-  props: ['keyGraphicState', 'viewMode'],
+  props: ['keyGraphicState'],
 
   data() {
     return {
@@ -84,7 +84,7 @@ export default {
     },
 
     dirtyCells() {
-      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState, this.viewMode);
+      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState);
     },
   },
 
