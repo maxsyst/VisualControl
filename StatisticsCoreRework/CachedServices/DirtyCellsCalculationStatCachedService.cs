@@ -21,12 +21,12 @@ namespace VueExample.StatisticsCoreRework.CachedServices
         public async Task<DirtyCellsShort> CalculateShort(int measurementRecordingId, string keyGraphicState, string k, SingleParameterStatisticValues singleParameterStatisticValues)
         {
             var dirtyCellsShort = await _cacheProvider.GetFromCache<DirtyCellsShort>($"MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}:STATNAME:{singleParameterStatisticValues.StatisticName}:DC:STAT:K:{k}");
-            if(dirtyCellsShort  is null) {
+            if(dirtyCellsShort is null) {
                 dirtyCellsShort = _dirtyCellsCalculationStatService.CalculateShort(k, singleParameterStatisticValues);
                 await _cacheProvider.SetCache<DirtyCellsShort>($"MEASUREMENTRECORDINGID:{measurementRecordingId}:KGS:{keyGraphicState}:STATNAME:{singleParameterStatisticValues.StatisticName}:DC:STAT:K:{k}", dirtyCellsShort, new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(30)));
             }
-            return dirtyCellsShort;   
+            return dirtyCellsShort;
         }
     }
 }
