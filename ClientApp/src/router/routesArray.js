@@ -6,7 +6,7 @@ import WaferMeas from '../components/wafermap-meas.vue';
 import DangerLevel from '../components/dangerlevel-crud.vue';
 import DefectType from '../components/defecttype-crud.vue';
 import Device from '../components/device-crud.vue';
-import WaferMap from '../components/wafermap-full.vue';
+import WaferMap from '../components/WaferMeasurement/FullView.vue';
 import SelectBasic from '../components/select-basic.vue';
 import Kurbatov from '../components/export-kurb.vue';
 import StageTable from '../components/stage-table.vue';
