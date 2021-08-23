@@ -27,12 +27,10 @@
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
 import { mapGetters } from 'vuex';
 
 export default {
   props: ['keyGraphicState', 'rowViewMode'],
-  components: { Loading },
   data() {
     return {
       dies: [],
@@ -43,7 +41,6 @@ export default {
       y: 0,
       initialOrientation: -1,
       currentOrientation: -1,
-      fieldViewBox: '',
     };
   },
 
@@ -158,12 +155,6 @@ export default {
   },
 
   watch: {
-    fieldWidth: {
-      immediate: true,
-      handler(newValue) {
-        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${newValue}`;
-      },
-    },
 
     rowViewMode(rowViewMode) {
       if (rowViewMode === 'bigChart') {
@@ -208,6 +199,10 @@ export default {
 
     mode() {
       return this.modeGetter(this.keyGraphicState);
+    },
+
+    fieldViewBox() {
+      return `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
     },
 
     size() {

@@ -91,7 +91,6 @@ export default {
       y: 0,
       initialOrientation: -1,
       currentOrientation: -1,
-      fieldViewBox: '',
       menuItems: [
         { title: 'Mocking' },
       ],
@@ -144,13 +143,6 @@ export default {
         die.fillOpacity = 1.0;
         die.isActive = false;
       });
-    },
-
-    fieldWidth: {
-      immediate: true,
-      handler(newVal, oldVal) {
-        this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
-      },
     },
 
     mapMode(newVal) {
@@ -230,6 +222,10 @@ export default {
 
       size() {
         return this.sizes('big');
+      },
+
+      fieldViewBox() {
+        return `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
       },
 
       cutting() {

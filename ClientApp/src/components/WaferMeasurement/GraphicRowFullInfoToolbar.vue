@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import WaferMap from './WaferMapMini.vue';
+import WaferMapMini from './WaferMapMini.vue';
 
 export default {
   props: ['loading', 'graphicName', 'dirtyCellsFullWafer', 'dirtyCellsStatPercentage',
@@ -77,7 +77,7 @@ export default {
     };
   },
   components: {
-    'wafer-mini': WaferMap,
+    'wafer-mini': WaferMapMini,
   },
 
   computed: {

@@ -26,7 +26,6 @@ export default {
       y: 0,
       initialOrientation: -1,
       currentOrientation: -1,
-      fieldViewBox: '',
     };
   },
 
@@ -65,7 +64,7 @@ export default {
       fieldWidth: {
         immediate: true,
         handler(newValue) {
-          this.fieldViewBox = `0 0 ${this.size.fieldHeight} ${newValue}`;
+          this.fieldViewBox;
         },
       },
 
@@ -86,6 +85,10 @@ export default {
         sizeGetter: 'wafermeas/size',
         avbSelectedDies: 'wafermeas/avbSelectedDies',
       }),
+
+      fieldViewBox() {
+        return `0 0 ${this.size.fieldHeight} ${this.size.fieldWidth}`;
+      },
 
       size() {
         return this.sizeGetter('gradient');
