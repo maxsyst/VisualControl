@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using VueExample.Extensions;
 
 namespace VueExample.ViewModels
 {
@@ -16,19 +17,6 @@ namespace VueExample.ViewModels
         public string Name { get; protected set; }
         public List<long> DieList { get; } = new List<long>();
         public abstract bool IsInStep(double value);
-
-        protected string GetFormat(double number)
-        {
-            if (Math.Abs(number) < 1E-22 || Math.Abs(number) > 1E22)
-            {
-                return String.Empty;
-            }
-            if ((Math.Abs(number) >= 10000 || Math.Abs(number) < 1E-2) && Math.Abs(number - 0) > 1E-20)
-            {
-                return number.ToString("0.000E0");
-            }
-            return number.ToString("0.0000");
-        }
     }
 
     public class ExtremeLowGradientStep : GradientStep
@@ -38,7 +26,7 @@ namespace VueExample.ViewModels
             Name = "Low";
             LowBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture);
             Color = "#4527A0";
-            BorderDescription = $"< {GetFormat(LowBorder)}";
+            BorderDescription = $"< {LowBorder.ToGoodFormat()}";
         }
 
         public double LowBorder { get; private set;}
@@ -56,7 +44,7 @@ namespace VueExample.ViewModels
             Name = "High";
             Color = "#E91E63";
             TopBorder = Convert.ToDouble(topBorder.Replace(',', '.'), CultureInfo.InvariantCulture);
-            BorderDescription = $"> {GetFormat(TopBorder)}";
+            BorderDescription = $"> {(TopBorder.ToGoodFormat())}";
         }
 
         public double TopBorder { get; private set;}
@@ -76,7 +64,7 @@ namespace VueExample.ViewModels
             LowBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture) + index * stepSize;
             TopBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture) + (index+1) * stepSize;
             Color = color;
-            BorderDescription = $"{GetFormat(LowBorder)}->{GetFormat(TopBorder)}";
+            BorderDescription = $"{LowBorder.ToGoodFormat()}->{TopBorder.ToGoodFormat()}";
         }
         public double LowBorder { get; private set;}
         public double TopBorder { get; private set;}

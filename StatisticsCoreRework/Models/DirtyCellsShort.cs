@@ -8,15 +8,19 @@ namespace VueExample.StatisticsCoreRework.Models
     {
         public string StatName { get; set; }
         public string Type { get; set; }
+        public string LowBorder { get; set; } = "0.0";
+        public string TopBorder { get; set; } = "0.0";
         public List<long> BadDirtyCells { get; set; } = new List<long>();
         public string GoodDiesPercentage { get; set; } = "0.0";
         public DirtyCellsShort()
         {
             
         }
-        public DirtyCellsShort(string statName)
+        public DirtyCellsShort(string statName, string lowBorder, string topBorder)
         {
             StatName = statName;
+            LowBorder = lowBorder;
+            TopBorder = topBorder;
         }
 
         public DirtyCellsShort SetBadDies(List<long> badDiesId, int diesCount)

@@ -4,7 +4,10 @@
         <v-col class="d-flex flex-column align-end">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
             <g v-for="(die, key) in dies" :key="die.id">
-              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @click="selectDie"/>
+              <rect :dieIndex="key" :id="die.id"
+                    :x="die.x" :y="die.y"
+                    :width="die.width" :height="die.height" 
+                    :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @click="selectDie"/>
             </g>
           </svg>
         </v-col>
@@ -48,18 +51,16 @@ export default {
     this.dies = _.cloneDeep(this.wafer.formedMapMini.dies);
     this.initialOrientation = +this.wafer.formedMapMini.orientation;
     this.currentOrientation = this.initialOrientation;
-    this.initialize(this.dies);
+    this.initialize();
     this.goToInitial(this.selectedDies);
   },
 
   methods: {
 
-    initialize(dies) {
-      dies.forEach((die) => {
-        die.fill = '#A1887F';
-        die.isActive = false;
-        die.fillOpacity = 1.0;
-      });
+    initialize() {
+      this.dies = this.dies.map((die) => ({
+        ...die, fill: '#A1887F', isActive: false, fillOpacity: 1.6,
+      }));
     },
 
     mouseOver(e) {
@@ -94,6 +95,7 @@ export default {
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'initial' });
       this.avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
+        // eslint-disable-next-line no-nested-ternary
         die.fill = this.dirtyCells.fullWafer.cells.includes(die.id)
           ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
           : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
@@ -106,6 +108,7 @@ export default {
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'dirty' });
       this.avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
+        // eslint-disable-next-line no-nested-ternary
         die.fill = this.dirtyCells.fullWafer.cells.includes(die.id)
           ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
           : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';

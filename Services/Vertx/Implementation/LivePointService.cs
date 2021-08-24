@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Models.Vertx;
 using VueExample.Services.Vertx.Abstract;
+using VueExample.Extensions;
 
 namespace VueExample.Services.Vertx.Implementation
 {
@@ -79,7 +80,7 @@ namespace VueExample.Services.Vertx.Implementation
                 }
                 livePoints.Add(new LivePointResponseModel(point, unit));
             }
-            livePoints.ForEach(x => x.Value = GetFormat(Convert.ToDouble(x.Value, CultureInfo.InvariantCulture)));
+            livePoints.ForEach(x => x.Value = Convert.ToDouble(x.Value, CultureInfo.InvariantCulture).ToGoodFormat());
             return livePoints;
         }
     }

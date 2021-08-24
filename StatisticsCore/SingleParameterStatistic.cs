@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using VueExample.Models.SRV6;
 using System.Globalization;
+using VueExample.Extensions;
 
 namespace VueExample.StatisticsCore
 {
@@ -54,8 +55,8 @@ namespace VueExample.StatisticsCore
                     this.DirtyCells.StatList.Add(dieList[i]);
                 }
             }
-            this.LowBorderStat = GetFormat(dds.Quartile1Double - dds.IQRDouble * k);
-            this.TopBorderStat = GetFormat(dds.Quartile3Double + k * dds.IQRDouble);
+            this.LowBorderStat = (dds.Quartile1Double - dds.IQRDouble * k).ToGoodFormat();
+            this.TopBorderStat = (dds.Quartile3Double + k * dds.IQRDouble).ToGoodFormat();
         }
 
         public SingleParameterStatistic CalculateDirtyCellsFixed(StatParameterForStage statParameterForStage)
@@ -83,19 +84,6 @@ namespace VueExample.StatisticsCore
                 }
             }
             IsHasFixed = true;
-        }
-
-        private string GetFormat(double number)
-        {
-            if (Math.Abs(number) < 1E-22 || Math.Abs(number) > 1E22)
-            {
-                return String.Empty;
-            }
-            if ((Math.Abs(number) >= 10000 || Math.Abs(number) < 1E-2) && Math.Abs(number - 0) > 1E-20)
-            {
-                return number.ToString("0.00E0");
-            }
-            return number.ToString("0.000");
         }
     }
 }

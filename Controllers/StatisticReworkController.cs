@@ -22,23 +22,23 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [Route("GetStatByMeasurementRecording")]
-        public async Task<IActionResult> GetStatByMeasurementRecording ([FromQuery] int measurementRecordingId)
+        [Route("stat/{measurementRecordingId:int}")]
+        public async Task<IActionResult> GetStatByMeasurementRecording ([FromRoute] int measurementRecordingId)
         {
             var s = await _statisticService.GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId);
             return Ok(s);
         }
 
         [HttpGet]
-        [Route("GetDirtyCellsSnapshot")]
-        public async Task<IActionResult> GetDirtyCellsSnapshot ([FromQuery] int measurementRecordingId)
+        [Route("dirtyCellsSnapshot/{measurementRecordingId:int}")]
+        public async Task<IActionResult> GetDirtyCellsSnapshot ([FromRoute] int measurementRecordingId)
         {
             var s = await _dirtyCellsService.GetDirtyCellsInitialSnapShotByMeasurementRecordingId(measurementRecordingId);
             return Ok(s);
         }
 
         [HttpGet]
-        [Route("GetStatisticSingleGraphic")]
+        [Route("statisticSingleGraphic")]
         public async Task<IActionResult> GetStatisticSingleGraphic([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);

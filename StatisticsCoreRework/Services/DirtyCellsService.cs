@@ -23,25 +23,34 @@ namespace VueExample.StatisticsCoreRework.Services
 
         public async Task<MeasurementRecordingDirtyCellsSnapshot> GetDirtyCellsInitialSnapShotByMeasurementRecordingId(int measurementRecordingId)
         {
-            var diesCount = (await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId)).Count();
+            var selectedDies = (await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId));
+            var diesCount = selectedDies.Count();
             var measurementRecordingDirtyCellsSnapshot = new MeasurementRecordingDirtyCellsSnapshot();
             measurementRecordingDirtyCellsSnapshot.MeasurementRecordingId = measurementRecordingId;
             var singleStatDictionary = await _statisticService.GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId);
             foreach (var kgs in singleStatDictionary)
             {
                 var kgsDict = singleStatDictionary[kgs.Key];
-                var profiles = kgsDict.Select(kv => new DirtyCellsProfile {StatName = kv.Value.StatisticName, Type = "STAT", K = "1.5"}).ToList();
+                var profiles = kgsDict.Select(kv => new DirtyCellsProfile { StatName = kv.Value.StatisticName, Type = "STAT", K = "1.5" }).ToList();
+                measurementRecordingDirtyCellsSnapshot.DirtyCellsProfiles.AddRange(profiles);
                 var dc = await GetDirtyCellsShortsByKeyGraphicStateFromSingleParameterStatistic(measurementRecordingId, kgs.Key, kgsDict, profiles);
+                SetProfilesBorders(profiles, dc);
                 var badDies = new HashSet<long>(dc.SelectMany(kv => kv.Value.BadDirtyCells)).ToList();
-                var singleGraphicDirtyCells = new SingleGraphicDirtyCells {KeyGraphicState = kgs.Key, 
-                                                                           BadDies = badDies, 
-                                                                           GoodDiesPercentage = Convert.ToString(Math.Ceiling((1.0 - badDies.Count / (diesCount + 0.0)) * 100), CultureInfo.InvariantCulture),
-                                                                           StatNameDirtyCellsDictionary = dc};
-                measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.Add(kgs.Key, singleGraphicDirtyCells); 
+                var singleGraphicDirtyCells = new SingleGraphicDirtyCells
+                {
+                    KeyGraphicState = kgs.Key,
+                    BadDies = badDies,
+                    GoodDiesPercentage = Convert.ToString(Math.Ceiling((1.0 - badDies.Count / (diesCount + 0.0)) * 100), CultureInfo.InvariantCulture),
+                    StatNameDirtyCellsDictionary = dc
+                };
+                measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.Add(kgs.Key, singleGraphicDirtyCells);
             }
+            measurementRecordingDirtyCellsSnapshot.SelectedDies = selectedDies.Select(x => (long)x).ToList();
             measurementRecordingDirtyCellsSnapshot.BadDies = measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.SelectMany(kv => kv.Value.BadDies).ToList();
             measurementRecordingDirtyCellsSnapshot.GoodDiesPercentage = Convert.ToString(Math.Ceiling((1.0 - measurementRecordingDirtyCellsSnapshot.BadDies.Count / (diesCount + 0.0)) * 100), CultureInfo.InvariantCulture);
             return measurementRecordingDirtyCellsSnapshot;
+
+            
         }
 
         public async Task<Dictionary<string, DirtyCellsShort>> GetDirtyCellsShortsByKeyGraphicState(int measurementRecordingId, string keyGraphicState, List<DirtyCellsProfile> dirtyCellsProfiles) 
@@ -58,6 +67,16 @@ namespace VueExample.StatisticsCoreRework.Services
                 dict.Add(dirtyCellsProfile.StatName, await _dirtyCellsCalculationService.CalculateShort(measurementRecordingId, keyGraphicState, dirtyCellsProfile, kgsDictionary[dirtyCellsProfile.StatName]));
             }
             return dict;
+        }
+
+        private void SetProfilesBorders(List<DirtyCellsProfile> profiles, Dictionary<string, DirtyCellsShort> dc)
+        {
+            foreach (var profile in profiles)
+            {
+                var dcStat = dc[profile.StatName];
+                profile.LowBorder = dcStat.LowBorder;
+                profile.TopBorder = dcStat.TopBorder;
+            }
         }
 
     }
