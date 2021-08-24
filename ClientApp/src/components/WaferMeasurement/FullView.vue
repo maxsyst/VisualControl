@@ -205,9 +205,9 @@
                           :rotate="360"
                           :size="90"
                           :width="3"
-                          :value="dirtyCells.statPercentageFullWafer"
-                          :color="$store.getters['wafermeas/calculateColor'](dirtyCells.statPercentageFullWafer / 100)">
-                                        {{ dirtyCells.statPercentageFullWafer }}%
+                          :value="dirtyCellsSnapshot.goodDiesPercentage"
+                          :color="$store.getters['wafermeas/calculateColor'](dirtyCellsSnapshot.goodDiesPercentage / 100)">
+                                        {{ dirtyCellsSnapshot.goodDiesPercentage }}%
                         </v-progress-circular>
                         <v-tooltip class="ml-8" v-model="showUnSelectedGraphics" v-if="unSelectedGraphics.length>0" top>
                           <template v-slot:activator="{ on, attrs }">
@@ -317,6 +317,7 @@ export default {
 
     ...mapGetters({
       dirtyCells: 'wafermeas/dirtyCells',
+      dirtyCellsSnapshot: 'wafermeas/dirtyCellsSnapshot',
       avbSelectedDies: 'wafermeas/avbSelectedDies',
       selectedDies: 'wafermeas/selectedDies',
       selectedGraphics: 'wafermeas/selectedGraphics',
@@ -402,9 +403,10 @@ export default {
         const selectedMeasurementId = this.measurementRecordings.find((x) => x.name === params.measurementName).id;
         const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
         this.$store.dispatch('wafermeas/updateDieValues', dieValues);
-        const dirtyCells = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
-        const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCells.singleGraphicDirtyCellsDictionary));
-        this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCells.selectedDies);
+        const dirtyCellsSnapshot = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
+        this.$store.dispatch('wafermeas/createDirtyCellsSnapshot', dirtyCellsSnapshot);
+        const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary));
+        this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
         this.$store.dispatch('wafermeas/updateDirtyCells',
           (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
         this.selectedDivider = params.shortLinkVm.divider.dividerK;
@@ -426,11 +428,12 @@ export default {
       this.$store.dispatch('wafermeas/clearSelectedGraphics');
       const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
       this.$store.dispatch('wafermeas/updateDieValues', dieValues);
-      const dirtyCells = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
-      const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCells.singleGraphicDirtyCellsDictionary));
-      this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCells.selectedDies);
+      const dirtyCellsSnapshot = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
+      this.$store.dispatch('wafermeas/createDirtyCellsSnapshot', dirtyCellsSnapshot);
+      const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary));
+      this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
-      this.$store.dispatch('wafermeas/updateSelectedDies', dirtyCells.selectedDies);
+      this.$store.dispatch('wafermeas/updateSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies);
       const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
       this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);

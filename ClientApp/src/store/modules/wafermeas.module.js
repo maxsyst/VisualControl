@@ -46,6 +46,7 @@ export const wafermeas = {
     divider: '',
     mapMode: 'selected',
     sizes: { big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 320, fieldWidth: 320 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 } },
+    dirtyCellsSnapshot: { goodDiesPercentage: 0 },
     dirtyCells: {
       fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0,
     },
@@ -69,6 +70,10 @@ export const wafermeas = {
 
     hoverWaferMini({ commit }, { dieId, keyGraphicState }) {
       commit('hoverWaferMini', { dieId, keyGraphicState });
+    },
+
+    createDirtyCellsSnapshot({ commit }, snapshot) {
+      commit('createDirtyCellsSnapshot', snapshot);
     },
 
     updateDieValues({ commit }, dieValues) {
@@ -221,6 +226,7 @@ export const wafermeas = {
       return 'indigo';
     },
     dirtyCells: (state) => state.dirtyCells,
+    dirtyCellsSnapshot: (state) => state.dirtyCellsSnapshot,
     mapMode: (state) => state.mapMode,
     hoveredDieId: (state) => state.hoveredDieId,
     getGraphicSettingsKeyGraphicStates: (state) => (keyGraphicStates) => keyGraphicStates.map((kgs) => {
@@ -314,6 +320,10 @@ export const wafermeas = {
       if (keyGraphicStateMode !== undefined) {
         keyGraphicStateMode.rowViewMode = rowViewMode;
       }
+    },
+
+    createDirtyCellsSnapshot(state, snapshot) {
+      state.dirtyCellsSnapshot = _.cloneDeep(snapshot);
     },
 
     addKeyGraphicStateMode(state, keyGraphicState) {

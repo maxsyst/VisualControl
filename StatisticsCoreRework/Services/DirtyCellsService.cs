@@ -46,7 +46,7 @@ namespace VueExample.StatisticsCoreRework.Services
                 measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.Add(kgs.Key, singleGraphicDirtyCells);
             }
             measurementRecordingDirtyCellsSnapshot.SelectedDies = selectedDies.Select(x => (long)x).ToList();
-            measurementRecordingDirtyCellsSnapshot.BadDies = measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.SelectMany(kv => kv.Value.BadDies).ToList();
+            measurementRecordingDirtyCellsSnapshot.BadDies =  new HashSet<long>(measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.SelectMany(kv => kv.Value.BadDies)).ToList();
             measurementRecordingDirtyCellsSnapshot.GoodDiesPercentage = Convert.ToString(Math.Ceiling((1.0 - measurementRecordingDirtyCellsSnapshot.BadDies.Count / (diesCount + 0.0)) * 100), CultureInfo.InvariantCulture);
             return measurementRecordingDirtyCellsSnapshot;
 
