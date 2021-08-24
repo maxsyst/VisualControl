@@ -400,6 +400,8 @@ export default {
       this.$store.dispatch('wafermeas/clearSelectedGraphics');
       await this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: params.waferId }).then(async () => {
         const selectedMeasurementId = this.measurementRecordings.find((x) => x.name === params.measurementName).id;
+        const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
+        this.$store.dispatch('wafermeas/updateDieValues', dieValues);
         const dirtyCells = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
         const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCells.singleGraphicDirtyCellsDictionary));
         this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCells.selectedDies);
@@ -422,6 +424,8 @@ export default {
       this.$store.dispatch('wafermeas/updateSelectedDies', []);
       this.$store.dispatch('wafermeas/clearDieValues');
       this.$store.dispatch('wafermeas/clearSelectedGraphics');
+      const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
+      this.$store.dispatch('wafermeas/updateDieValues', dieValues);
       const dirtyCells = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
       const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCells.singleGraphicDirtyCellsDictionary));
       this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCells.selectedDies);

@@ -20,22 +20,6 @@ namespace VueExample.Services.Vertx.Implementation
             _livePointContext = applicationContext;
             _measurementService = measurementService;
         }
-
-        protected string GetFormat(double number)
-        {
-            if(double.Equals(number, 0.0)) {
-                return "0";
-            }
-            if (Math.Abs(number) < 1E-22 || Math.Abs(number) > 1E22)
-            {
-                return String.Empty;
-            }
-            if ((Math.Abs(number) >= 10000 || Math.Abs(number) < 1E-2) && Math.Abs(number - 0) > 1E-20)
-            {
-                return number.ToString("0.00E0", CultureInfo.InvariantCulture);
-            }
-            return number.ToString("0.000", CultureInfo.InvariantCulture);
-        }
         public async Task<LivePoint> Create(LivePoint livePoint)
         {
             _livePointContext.Add(livePoint);
