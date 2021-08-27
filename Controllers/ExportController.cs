@@ -1361,7 +1361,14 @@ namespace VueExample.Controllers
             commonWorksheet.Cells[1, 3].Value = "Буквенное обозначение параметра";
             commonWorksheet.Cells[1, 4].Value = "Результат измерений";
             commonWorksheet.Cells[1, 5].Value = "Процент годных ТС";
-            commonWorksheet.Cells[1, 6].Value = $"Приложение 1 к МСЛ №{mslNumber}";
+            if(String.IsNullOrEmpty(mslNumber)) 
+            {
+                 commonWorksheet.Cells[1, 6].Value = $"Приложение 1";
+            }
+            else 
+            {
+                commonWorksheet.Cells[1, 6].Value = $"Приложение 1 к МСЛ № {mslNumber}";
+            }
             commonWorksheet.Cells[1, 6, 1, 8].Merge = true;
             commonWorksheet.Cells[2, 6].Value = $"Пластина {waferId}";
             commonWorksheet.Cells[2, 6, 2, 8].Merge = true;
@@ -1399,8 +1406,15 @@ namespace VueExample.Controllers
                 worksheet.Cells[1, 1].Style.Font.Bold = true;
                 worksheet.Cells[1, 3].Value = kurbatovXLS.value.OperationNumber;
                 worksheet.Cells[1, 1, 1, 2].Merge = true;
-
-                worksheet.Cells[1, 4].Value = $"Приложение {kurbatovXLS.i + 2} к МСЛ №{mslNumber}";
+                if(String.IsNullOrEmpty(mslNumber)) 
+                {
+                     worksheet.Cells[1, 4].Value = $"Приложение {kurbatovXLS.i + 2}";
+                }
+                else 
+                {
+                     worksheet.Cells[1, 4].Value = $"Приложение {kurbatovXLS.i + 2} к МСЛ №{mslNumber}";
+                }
+               
                 worksheet.Cells[1, 4, 1, 6].Merge = true;
                 worksheet.Cells[2, 4].Value = $"Пластина {waferId}";
                 worksheet.Cells[2, 4, 2, 6].Merge = true;

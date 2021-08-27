@@ -98,7 +98,7 @@
                         </v-layout>
                         <v-layout row>
                             <v-flex lg10 offset-lg1>
-                                <v-text-field v-model="mslNumber" :error-messages="mslNumber ? [] : 'Введите номер МСЛ'"
+                                <v-text-field v-model="mslNumber"
                                     label="Введите номер МСЛ"
                                 ></v-text-field>
                             </v-flex>
@@ -169,7 +169,7 @@ export default {
       mslNumber: '',
       menu: false,
       filename: '',
-      currentDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+      currentDate: new Date().toLocaleDateString('ru-RU'),
       elements: [],
       patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N_NU', 'VA50N_CLIMATE', 'ZION', 'ZIONVP'],
       selectedPattern: 'Пустой',

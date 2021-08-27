@@ -259,7 +259,7 @@ export default {
     },
 
     async getStatArray() {
-      if (this.measurementId != 0 && this.selectedDies.length > 0) {
+      if (this.measurementId !== 0 && this.selectedDies.length > 0) {
         this.loading = true;
         const singlestatModel = {};
         singlestatModel.k = this.statisticKf;
@@ -269,6 +269,8 @@ export default {
         singlestatModel.dieIdList = this.selectedDies;
         this.statArray = (await this.$http
           .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
+        const stat = (await this.$http
+          .get(`/api/statrwrk/StatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
         this.statArray = this.statArray.map((s) => ({ ...s, fwPercentage: { fixed: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.fixedPercentageFullWafer, stat: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer } }));
         this.loading = false;
       }

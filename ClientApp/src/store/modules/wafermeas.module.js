@@ -259,6 +259,7 @@ export const wafermeas = {
       if (bigormini === 'mini') return state.sizes.mini;
       if (bigormini === 'big') return state.sizes.big;
       if (bigormini === 'gradient') return state.sizes.gradient;
+      return state.sizes.big;
     },
   },
 
