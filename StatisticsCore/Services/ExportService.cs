@@ -83,7 +83,7 @@ namespace VueExample.StatisticsCore.Services
                                 }
                             );
 
-                           kurbatovParameter.advList = kurbatovParameter.advList.OrderBy(_ => _.DieCode).ToList();                           
+                           kurbatovParameter.advList = kurbatovParameter.advList.OrderBy(_ => Convert.ToInt32(_.DieCode)).ToList();                           
                         }
                     }
                     

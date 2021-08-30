@@ -182,8 +182,8 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [Route(("pattern/sky"))]
-        public IActionResult GetPatternSKY()
+        [Route(("pattern/sky_"))]
+        public IActionResult GetPatternSKY_()
         {
             var xlsList = new List<KurbatovXLSViewModel>();
             var row1 = new KurbatovXLSViewModel();
@@ -221,8 +221,8 @@ namespace VueExample.Controllers
        }
 
         [HttpGet]
-        [Route(("pattern/sky_"))]
-        public IActionResult GetPatternSKY_()
+        [Route(("pattern/sky"))]
+        public IActionResult GetPatternSKY()
         {
             var xlsList = new List<KurbatovXLSViewModel>();
             var row1 = new KurbatovXLSViewModel();
@@ -1402,10 +1402,7 @@ namespace VueExample.Controllers
                 worksheet.Cells["A1:C5"].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
                 worksheet.Cells["A1:C5"].Style.Border.Left.Style = ExcelBorderStyle.Thick;
 
-                worksheet.Cells[1, 1].Value = "Номер операции:";
-                worksheet.Cells[1, 1].Style.Font.Bold = true;
-                worksheet.Cells[1, 3].Value = kurbatovXLS.value.OperationNumber;
-                worksheet.Cells[1, 1, 1, 2].Merge = true;
+                
                 if(String.IsNullOrEmpty(mslNumber)) 
                 {
                      worksheet.Cells[1, 4].Value = $"Приложение {kurbatovXLS.i + 2}";
@@ -1414,8 +1411,15 @@ namespace VueExample.Controllers
                 {
                      worksheet.Cells[1, 4].Value = $"Приложение {kurbatovXLS.i + 2} к МСЛ №{mslNumber}";
                 }
-               
-                worksheet.Cells[1, 4, 1, 6].Merge = true;
+                if(!String.IsNullOrEmpty(mslNumber))
+                {
+                    worksheet.Cells[1, 1].Value = "Номер операции:";
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 3].Value = kurbatovXLS.value.OperationNumber;
+                    worksheet.Cells[1, 1, 1, 2].Merge = true;
+                    worksheet.Cells[1, 4, 1, 6].Merge = true;
+                }
+              
                 worksheet.Cells[2, 4].Value = $"Пластина {waferId}";
                 worksheet.Cells[2, 4, 2, 6].Merge = true;
                 worksheet.Cells[3, 4].Value = $"Дата: {date}";

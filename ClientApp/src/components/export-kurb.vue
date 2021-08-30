@@ -171,7 +171,7 @@ export default {
       filename: '',
       currentDate: new Date().toLocaleDateString('ru-RU'),
       elements: [],
-      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'VA50N_NU', 'VA50N_CLIMATE', 'ZION', 'ZIONVP'],
+      patterns: ['Пустой', 'PHEMT05_СМКК', 'PHEMT05_ВП', 'CKBA_PASSIVE', 'SKY', 'SKYVP', 'VA50N_NU', 'VA50N_CLIMATE', 'ZION', 'ZIONVP'],
       selectedPattern: 'Пустой',
       dividers: [],
       initialDialog: true,
@@ -254,6 +254,7 @@ export default {
         if (this.selectedPattern === 'PHEMT05_ВП') path = 'vp';
         if (this.selectedPattern === 'CKBA_PASSIVE') path = 'ckba';
         if (this.selectedPattern === 'SKY') path = 'sky';
+        if (this.selectedPattern === 'SKYVP') path = 'skyVP';
         if (this.selectedPattern === 'VA50N_NU') path = 'va50n_NU';
         if (this.selectedPattern === 'VA50N_CLIMATE') path = 'va50n_CLIMATE';
         if (this.selectedPattern === 'ZION') path = 'zionpcm';
