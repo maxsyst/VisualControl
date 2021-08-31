@@ -96,7 +96,7 @@ export default {
       this.avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCells.fullWafer.cells.includes(die.id)
+        die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id)
           ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
           : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
         die.fillOpacity = 1.0;
@@ -109,7 +109,7 @@ export default {
       this.avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCells.fullWafer.cells.includes(die.id)
+        die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id)
           ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
           : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
         die.fillOpacity = 1.0;
@@ -193,11 +193,10 @@ export default {
       sizeGetter: 'wafermeas/size',
       dieColors: 'wafermeas/dieColors',
       modeGetter: 'wafermeas/getKeyGraphicStateMode',
-      dirtyCellsGetter: 'wafermeas/getDirtyCellsByGraphic',
     }),
 
-    dirtyCells() {
-      return this.dirtyCellsGetter(this.keyGraphicState);
+    dirtyCellsSnapshot() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
     },
 
     mode() {

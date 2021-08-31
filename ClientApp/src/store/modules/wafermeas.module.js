@@ -227,6 +227,7 @@ export const wafermeas = {
     },
     dirtyCells: (state) => state.dirtyCells,
     dirtyCellsSnapshot: (state) => state.dirtyCellsSnapshot,
+    getDirtyCellsSnapshotByKeyGraphicState: (state) => (keyGraphicState) => state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary[keyGraphicState],
     mapMode: (state) => state.mapMode,
     hoveredDieId: (state) => state.hoveredDieId,
     getGraphicSettingsKeyGraphicStates: (state) => (keyGraphicStates) => keyGraphicStates.map((kgs) => {

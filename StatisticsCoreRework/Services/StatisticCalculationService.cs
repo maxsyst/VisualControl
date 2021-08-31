@@ -18,6 +18,7 @@ namespace VueExample.StatisticsCoreRework.Services
                 Median = CalculateMedian(values),
                 StandartDeviation = CalculateStandartDeviation(values),
                 StatisticsName = statName,
+                ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
                 Unit = unit
             };
         }
@@ -33,6 +34,7 @@ namespace VueExample.StatisticsCoreRework.Services
                                                         Median = CalculateMedian(values),
                                                         StandartDeviation = CalculateStandartDeviation(values),
                                                         StatisticsName = statName,
+                                                        ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
                                                         Unit = unit
                                                     };
             }
@@ -45,6 +47,7 @@ namespace VueExample.StatisticsCoreRework.Services
                                                         Median = CalculateMedian(values, divider),
                                                         StandartDeviation = CalculateStandartDeviation(values, divider),
                                                         StatisticsName = statName,
+                                                        ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
                                                         Unit = $"{unit}/мм" 
                                                     };
             }
@@ -57,6 +60,7 @@ namespace VueExample.StatisticsCoreRework.Services
                                                         Median = CalculateMedian(values, 1/divider),
                                                         StandartDeviation = CalculateStandartDeviation(values, 1/divider),
                                                         StatisticsName = statName,
+                                                        ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
                                                         Unit = $"{unit}*мм" 
                                                     };
             }

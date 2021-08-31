@@ -4,12 +4,12 @@
           <v-toolbar extended>
               <v-container>
                 <v-row>
-                  <v-col lg="6" class="d-flex align-center justify-start" v-if="!loading">
+                  <v-col lg="6" class="d-flex align-center justify-start">
                     <v-chip class="elevation-8" label x-large color="#303030">
                       {{graphicName}}
                     </v-chip>
                   </v-col>
-                  <v-col lg="6" class="d-flex align-center justify-space-around" v-if="!loading">
+                  <v-col lg="6" class="d-flex align-center justify-space-around">
                   <div class="d-flex flex-column" >
                     <v-chip class="elevation-8" color="#303030">
                       Годны по всей пластине
@@ -19,9 +19,9 @@
                         :rotate="360"
                         :size="60"
                         :width="2"
-                        :value="dirtyCellsFullWafer.stat.percentage"
-                        :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsFullWafer.stat.percentage / 100)">
-                      {{dirtyCellsFullWafer.stat.percentage}}%
+                        :value="dirtyCellsSnapshot.goodDiesPercentage"
+                        :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsSnapshot.goodDiesPercentage / 100)">
+                      {{dirtyCellsSnapshot.goodDiesPercentage}}%
                       </v-progress-circular>
                     </div>
                   </div>
@@ -34,29 +34,23 @@
                       :rotate="360"
                       :size="60"
                       :width="2"
-                      :value="dirtyCellsStatPercentage"
+                      :value="dirtyCellsPercentage"
                       color='primary'>
-                      {{ dirtyCellsStatPercentage }}%
+                      {{ dirtyCellsPercentage }}%
                     </v-progress-circular>
-                    <v-btn text icon color='primary' @click="delDirtyCells(dirtyCells)">
+                    <v-btn text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
                       <v-icon>cached</v-icon>
                     </v-btn>
                 </div>
                 </div>
                 <!-- <v-switch color="primary" v-model="switchMode" :label="mode"></v-switch> -->
                 </v-col>
-                <v-col v-else>
-                  <v-skeleton-loader
-                    class="mx-auto"
-                    type="date-picker-options">
-                  </v-skeleton-loader>
-                </v-col>
                 </v-row>
               </v-container>
           </v-toolbar>
         </v-col>
         <v-col :lg="responsiveSettings.waferMiniFlexSize">
-          <wafer-mini v-if="(dirtyCellsFullWafer.stat.percentage >= 0)"
+          <wafer-mini v-if="(dirtyCellsPercentage >= 0)"
             :keyGraphicState="keyGraphicState"
             :rowViewMode="rowViewMode"
             :key="`wfm-${keyGraphicState}`">
@@ -66,11 +60,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import WaferMapMini from './WaferMapMini.vue';
 
 export default {
-  props: ['loading', 'graphicName', 'dirtyCellsFullWafer', 'dirtyCellsStatPercentage',
-    'dirtyCellsFixedPercentage', 'dirtyCells', 'rowViewMode', 'keyGraphicState'],
+  props: ['loading', 'graphicName', 'rowViewMode', 'keyGraphicState'],
   data() {
     return {
 
@@ -81,6 +75,19 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      selectedDies: 'wafermeas/selectedDies',
+      avbSelectedDies: 'wafermeas/avbSelectedDies',
+    }),
+
+    dirtyCellsPercentage() {
+      return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
+    },
+
+    dirtyCellsSnapshot() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
+    },
+
     responsiveSettings() {
       if (this.rowViewMode === 'bigChart') {
         return {

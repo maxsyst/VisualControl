@@ -2,11 +2,7 @@
     <v-container fluid>
       <toolbar :loading="loading"
                :graphicName="graphicName"
-               :dirtyCellsFullWafer="dirtyCellsFullWafer"
-               :dirtyCellsStatPercentage="dirtyCellsStatPercentage"
-               :dirtyCellsFixedPercentage="dirtyCellsFixedPercentage"
                :rowViewMode="rowViewMode"
-               :dirtyCells="dirtyCells"
                :keyGraphicState="keyGraphicState">
       </toolbar>
       <v-row>
@@ -14,14 +10,14 @@
           <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
             <v-tab href="#commonTable">Сводная таблица</v-tab>
             <v-tab
-              v-for="stat in statArray"
+              v-for="stat in statArrayRWRK"
               :disabled="rowViewMode!=='miniChart'"
               :key="stat.shortStatisticsName"
               :href="'#' + stat.shortStatisticsName"
               v-html="stat.shortStatisticsName">
             </v-tab>
             <v-tab-item
-              v-for="stat in statArray"
+              v-for="stat in statArrayRWRK"
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
               <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState"
@@ -37,9 +33,9 @@
                 <v-card-text>
                   <v-row>
                     <v-col lg="12">
-                      <v-data-table v-if="statArray.length > 0"
+                      <v-data-table v-if="statArrayRWRK.length > 0"
                         :headers="headers"
-                        :items="statArray"
+                        :items="statArrayRWRK"
                         loading-text="Загрузка данных..."
                         no-data-text="Нет данных"
                         class="elevation-2 pa-0"
@@ -54,15 +50,15 @@
                             <span v-html="item.statisticsName"></span>
                           </v-tooltip>
                         </template>
-                        <template v-slot:item.fwPercentage="{item}">
+                        <template v-slot:item.goodDiesPercentage="{item}">
                           <td class="text-xs-center">
                             <v-progress-circular
                               :rotate="360"
                               :size="45"
                               :width="2"
-                              :value="item.fwPercentage.stat"
-                              :color="$store.getters['wafermeas/calculateColor'](item.fwPercentage.stat/100)"
-                            >{{ item.fwPercentage.stat + '%'}}</v-progress-circular>
+                              :value="item.goodDiesPercentage"
+                              :color="$store.getters['wafermeas/calculateColor'](item.goodDiesPercentage/100)"
+                            >{{ item.goodDiesPercentage + '%'}}</v-progress-circular>
                           </td>
                         </template>
                         <template v-slot:item.dirtyCells="{item}">
@@ -71,11 +67,11 @@
                             :rotate="360"
                             :size="45"
                             :width="2"
-                            :value="item.dirtyCells.statPercentageFullWafer"
+                            :value="item.dirtyCells.percentage"
                             color='primary'>
-                            {{ item.dirtyCells.statPercentageFullWafer  }}%
+                            {{ item.dirtyCells.percentage  }}%
                           </v-progress-circular>
-                          <v-btn text icon color='primary' @click="delDirtyCells(item.dirtyCells)">
+                          <v-btn text icon color='primary' @click="delDirtyCells(item.dirtyCells.array)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </td>
@@ -115,9 +111,8 @@ export default {
       showPopover: false,
       PopoverX: 0,
       PopoverY: 0,
-      statArray: [],
+      statArrayRWRK: [],
       fullWaferStatArray: [],
-      dirtyCellsFullWafer: { fixed: { cellsId: [], percentage: -1 }, stat: { cellsId: [], percentage: -1 } },
       graphicName: '',
       activeTab: 'commonTable',
       loading: true,
@@ -172,7 +167,7 @@ export default {
             text: 'Годны по всей пластине, %',
             align: 'start',
             sortable: false,
-            value: 'fwPercentage',
+            value: 'goodDiesPercentage',
             width: '15%',
           },
           {
@@ -214,7 +209,7 @@ export default {
             text: 'Годны по всей пластине, %',
             align: 'start',
             sortable: false,
-            value: 'fwPercentage',
+            value: 'goodDiesPercentage',
             width: '15%',
           },
           {
@@ -231,9 +226,9 @@ export default {
 
   async created() {
     this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName;
-    this.fullWaferStatArray = (await this.$http
-      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data;
-    this.calculateFullWaferDirtyCells(this.fullWaferStatArray);
+  //   this.fullWaferStatArray = (await this.$http
+  //     .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data;
+  //  this.calculateFullWaferDirtyCells(this.fullWaferStatArray);
     await this.getStatArray();
   },
 
@@ -267,11 +262,11 @@ export default {
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
-        this.statArray = (await this.$http
-          .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
-        const stat = (await this.$http
-          .get(`/api/statrwrk/StatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
-        this.statArray = this.statArray.map((s) => ({ ...s, fwPercentage: { fixed: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.fixedPercentageFullWafer, stat: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer } }));
+        // this.statArray = (await this.$http
+        //   .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
+        // this.statArray = this.statArray.map((s) => ({ ...s, fwPercentage: { fixed: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.fixedPercentageFullWafer, stat: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer } }));
+        this.statArrayRWRK = (await this.$http.get(`/api/statrwrk/StatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
+        this.statArrayRWRK = this.statArrayRWRK.map((s) => ({ ...s, goodDiesPercentage: this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].goodDiesPercentage, dirtyCells: { array: [...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells], percentage: Math.ceil((1.0 - (this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells])].length - this.selectedDies.length)) / this.selectedDies.length) * 100) } }));
         this.loading = false;
       }
     },
@@ -319,33 +314,10 @@ export default {
       return this.headersConfigArray.find((x) => x.rowViewMode === this.rowViewMode).headers;
     },
 
-    dirtyCells() {
-      let statArray = [];
-      let fixedArray = [];
-      this.statArray.forEach((s) => {
-        (statArray = statArray.concat(s.dirtyCells.statList)),
-        (fixedArray = fixedArray.concat(s.dirtyCells.fixedList));
-      });
-      return {
-        statList: [...new Set(statArray)],
-        fixedList: [...new Set(fixedArray)],
-      };
+    dirtyCellsSnapshot() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
     },
 
-    dirtyCellsStatPercentage() {
-      const dirtyCellsList = this.dirtyCells.statList;
-      const percentage = Math.ceil((1.0 - dirtyCellsList.length / this.selectedDies.length) * 100);
-      this.$store.dispatch('wafermeas/updateDirtyCellsSelectedNowSingleGraphic', {
-        keyGraphicState: this.keyGraphicState,
-        dirtyCells: { cellsId: [...dirtyCellsList], percentage },
-      });
-      return isNaN(percentage) ? 0 : percentage;
-    },
-
-    dirtyCellsFixedPercentage() {
-      const percentage = Math.ceil((1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) * 100);
-      return isNaN(percentage) ? 0 : percentage;
-    },
   },
 };
 </script>

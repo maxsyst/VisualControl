@@ -45,7 +45,7 @@ namespace VueExample.Controllers
             var (measurementRecordingId, keyGraphicState, _) = statisticSingleGraphicViewModel;
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
             var dict = await _statisticService.GetCalculatedStatisticByMeasurementRecordingGraphicStateAndDies(measurementRecordingId, keyGraphicState, double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), statisticSingleGraphicViewModel.dieIdList.Select(x => (long)x).ToList());
-            return Ok(dict);
+            return Ok(dict.Values.ToList());
         }
     }
 }

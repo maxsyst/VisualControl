@@ -4,7 +4,6 @@
         <bar-chart
           v-if="loaded"
           :keyGraphicState="keyGraphicState"
-          :class="rowViewMode"
           :chartdata="chartdata"
           :options="options"/>
         <v-progress-circular v-else
