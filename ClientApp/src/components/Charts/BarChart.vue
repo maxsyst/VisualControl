@@ -30,7 +30,7 @@ export default {
         const singleDataset = {
           dieId,
           backgroundColor: this.mode === 'dirty'
-            ? this.dirtyCells.fullWafer.cells.includes(dieId) ? '#ff1744' : '#00e676'
+            ? this.dirtyCellsSnapshot.badDies.includes(dieId) ? '#ff1744' : '#00e676'
             : this.mode === 'color' ? this.dieColors.find((dc) => dc.dieId === dieId).hexColor : '#3D5AFE',
           data: +this.dieValues.find((dv) => dv.d === dieId).y[0],
           label: this.wafer.formedMapMini.dies.find((d) => d.id === dieId).code,
@@ -54,7 +54,7 @@ export default {
   watch: {
     mode(newValue) {
       if (newValue === 'dirty') {
-        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = this.dirtyCells.fullWafer.cells.includes(d) ? '#ff1744' : '#00e676');
+        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = this.dirtyCellsSnapshot.badDies.includes(d) ? '#ff1744' : '#00e676');
       }
       if (newValue === 'color') {
         this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = this.dieColors.find((dc) => dc.dieId === d).hexColor);
@@ -79,7 +79,6 @@ export default {
       dieColors: 'wafermeas/dieColors',
       dieValuesGetter: 'wafermeas/getDieValuesByKeyGraphicState',
       modeGetter: 'wafermeas/getKeyGraphicStateMode',
-      dirtyCellsGetter: 'wafermeas/getDirtyCellsByGraphic',
     }),
 
     dieValues() {
@@ -90,8 +89,8 @@ export default {
       return this.modeGetter(this.keyGraphicState);
     },
 
-    dirtyCells() {
-      return this.dirtyCellsGetter(this.keyGraphicState);
+    dirtyCellsSnapshot() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
     },
   },
 };

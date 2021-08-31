@@ -43,7 +43,7 @@
             dark
             color="indigo"
             v-on="on"
-            @click="delDirtyCells(dirtyCells.statList, selectedDies)">
+            @click="delDirtyCells(dirtyCellsSnapshot.badDies, selectedDies)">
             <v-icon>cached</v-icon>
           </v-btn>
           </template>
@@ -233,12 +233,12 @@
                             :rotate="360"
                             :size="90"
                             :width="3"
-                            :value="dirtyCells.statPercentageSelected"
+                            :value="dirtyCellsPercentage"
                             color='primary'>
-                            {{ dirtyCells.statPercentageSelected }}%
+                            {{ dirtyCellsPercentage }}%
                           </v-progress-circular>
-                          <v-btn outlined color='primary'
-                                 @click="delDirtyCells(dirtyCells.statList, selectedDies)">
+                          <v-btn v-if="dirtyCellsPercentage != 100"  outlined color='primary'
+                                 @click="delDirtyCells(dirtyCellsSnapshot.badDies, selectedDies)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </v-card-text>
@@ -316,7 +316,6 @@ export default {
   computed: {
 
     ...mapGetters({
-      dirtyCells: 'wafermeas/dirtyCells',
       dirtyCellsSnapshot: 'wafermeas/dirtyCellsSnapshot',
       avbSelectedDies: 'wafermeas/avbSelectedDies',
       selectedDies: 'wafermeas/selectedDies',
@@ -325,6 +324,10 @@ export default {
       availiableGraphics: 'wafermeas/avbGraphics',
       measurementRecordings: 'wafermeas/measurements',
     }),
+
+    dirtyCellsPercentage() {
+      return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
+    },
 
     selectedGraphicsIcon() {
       if (this.availiableGraphics.length === this.selectedGraphics.length) { return 'check_box'; }
@@ -407,8 +410,6 @@ export default {
         this.$store.dispatch('wafermeas/createDirtyCellsSnapshot', dirtyCellsSnapshot);
         const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary));
         this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
-        this.$store.dispatch('wafermeas/updateDirtyCells',
-          (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
         this.selectedDivider = params.shortLinkVm.divider.dividerK;
         this.$store.dispatch('wafermeas/updateSelectedDies', params.shortLinkVm.selectedDies);
         this.$store.dispatch('wafermeas/updateSelectedGraphics', [...params.shortLinkVm.selectedGraphics.map((g) => g.keyGraphicState)]);
@@ -432,9 +433,8 @@ export default {
       this.$store.dispatch('wafermeas/createDirtyCellsSnapshot', dirtyCellsSnapshot);
       const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary));
       this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
-      this.$store.dispatch('wafermeas/updateDirtyCells', (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${this.statisticKf}`)).data);
       this.$store.dispatch('wafermeas/updateSelectedDies', dirtyCellsSnapshot.selectedDies);
-      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies);
+      this.delDirtyCells(this.dirtyCellsSnapshot.badDies, this.avbSelectedDies);
       const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
       this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
       this.selectAllGraphics();
@@ -473,26 +473,9 @@ export default {
       this.$store.dispatch('wafermeas/updateSelectedWaferId', { ctx: this, waferId: newValue });
     },
 
-    async statisticKf(k) {
-      this.loading = true;
-      this.$store.dispatch('wafermeas/updateDirtyCells',
-        (await this.$http.get(`/api/statistic/GetDirtyCellsByMeasurementRecording?measurementRecordingId=${this.selectedMeasurementId}&&diesCount=${this.avbSelectedDies.length}&&k=${k}`)).data);
-      this.delDirtyCells(this.dirtyCells.statList, this.avbSelectedDies);
-      this.loading = false;
-    },
-
     availiableGraphics() {
       if (this.availiableGraphics.length === 0) {
         this.$store.dispatch('wafermeas/clearSelectedGraphics');
-      }
-    },
-
-    selectedDies(newValue) {
-      if (newValue.length > 0) {
-        const { statList, fixedList } = this.dirtyCells;
-        const statPercentageSelected = Math.ceil((1.0 - newValue.filter((value) => statList.includes(value)).length / newValue.length) * 100);
-        const fixedPercentageSelected = Math.ceil((1.0 - newValue.filter((value) => fixedList.includes(value)).length / newValue.length) * 100);
-        this.$store.dispatch('wafermeas/updateDirtyCellsPercentageSelected', { statPercentageSelected, fixedPercentageSelected });
       }
     },
   },

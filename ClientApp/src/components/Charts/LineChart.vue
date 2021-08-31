@@ -37,7 +37,7 @@ export default {
       selectedDies.forEach((dieId) => {
         const singleDataset = {
           dieId,
-          borderColor: this.mode === 'dirty' ? this.dirtyCells.fullWafer.cells.includes(dieId) ? '#ff1744' : '#00e676'
+          borderColor: this.mode === 'dirty' ? this.dirtyCellsSnapshot.badDies.includes(dieId) ? '#ff1744' : '#00e676'
             : this.dieColors.find((dc) => dc.dieId === dieId).hexColor,
           data: [...this.dieValues.find((dv) => dv.d === dieId).y.map((x) => +x)],
           fill: false,
@@ -116,7 +116,7 @@ export default {
 
     mode(newValue) {
       if (newValue === 'dirty') {
-        this.chartdata.datasets.forEach((d) => d.borderColor = this.dirtyCells.fullWafer.cells.includes(d.dieId) ? '#ff1744' : '#00e676');
+        this.chartdata.datasets.forEach((d) => d.borderColor = this.dirtyCellsSnapshot.badDies.includes(d.dieId) ? '#ff1744' : '#00e676');
       } else {
         this.chartdata.datasets.forEach((d) => d.borderColor = this.dieColors.find((dc) => dc.dieId === d.dieId).hexColor);
       }
@@ -165,8 +165,8 @@ export default {
       return this.$store.getters['wafermeas/dieColors'];
     },
 
-    dirtyCells() {
-      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState);
+    dirtyCellsSnapshot() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
     },
   },
 };

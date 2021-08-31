@@ -6,13 +6,13 @@
                         @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
-                 <v-progress-circular v-if="dirtyCells && dirtyCells.fullWafer.percentage >= 0"
+                 <v-progress-circular v-if="dirtyCellsSnapshot"
                       :rotate="360"
                       :size="50"
                       :width="2"
-                      :value="dirtyCells.fullWafer.percentage"
-                      :color="this.$store.getters['wafermeas/calculateColor'](dirtyCells.fullWafer.percentage / 100)">
-                    {{ dirtyCells.fullWafer.percentage + '%'}}
+                      :value="dirtyCellsSnapshot.goodDiesPercentage"
+                      :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsSnapshot.goodDiesPercentage / 100)">
+                    {{ dirtyCellsSnapshot.goodDiesPercentage + '%'}}
                     </v-progress-circular>
                     <v-progress-circular v-else
                         indeterminate
@@ -20,13 +20,13 @@
                     ></v-progress-circular>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
-                <v-progress-circular v-if="dirtyCells && dirtyCells.selectedNow.percentage >= 0"
+                <v-progress-circular v-if="dirtyCellsSnapshot"
                     :rotate="360"
                     :size="50"
                     :width="2"
-                    :value="dirtyCells.selectedNow.percentage"
+                    :value="dirtyCellsPercentage"
                     color='primary'>
-                    {{ dirtyCells.selectedNow.percentage + '%' }}
+                    {{ dirtyCellsPercentage + '%' }}
                   </v-progress-circular>
                    <v-progress-circular v-else
                         indeterminate
@@ -72,8 +72,17 @@ export default {
   computed: {
 
     ...mapGetters({
+      selectedDies: 'wafermeas/selectedDies',
       avbSelectedDies: 'wafermeas/avbSelectedDies',
     }),
+
+    dirtyCellsSnapshot() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
+    },
+
+    dirtyCellsPercentage() {
+      return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
+    },
 
     isGraphicSelected() {
       return this.$store.getters['wafermeas/selectedGraphics'].includes(this.keyGraphicState);
@@ -81,10 +90,6 @@ export default {
 
     graphic() {
       return this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState);
-    },
-
-    dirtyCells() {
-      return this.$store.getters['wafermeas/getDirtyCellsByGraphic'](this.keyGraphicState);
     },
   },
 

@@ -33,7 +33,7 @@ namespace VueExample.StatisticsCoreRework.CachedServices
             var statParameterDict = (await GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId))[keyGraphicState];
             foreach (var stat in statParameterDict)
             {
-                var statDies = stat.Value.DieStatDictionary.Where(x => dieIdHashSet.Contains(x.Key));
+                stat.Value.DieStatDictionary = stat.Value.DieStatDictionary.Where(x => dieIdHashSet.Contains(x.Key)).ToDictionary(kv => kv.Key, kv => kv.Value);
                 dict.Add(stat.Key, _statisticCalculationService.Calculate(stat.Value, divider));
             }
             return dict;

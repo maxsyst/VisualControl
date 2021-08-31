@@ -71,7 +71,7 @@
                             color='primary'>
                             {{ item.dirtyCells.percentage  }}%
                           </v-progress-circular>
-                          <v-btn text icon color='primary' @click="delDirtyCells(item.dirtyCells.array)">
+                          <v-btn  v-if="item.dirtyCells.percentage != 100"  text icon color='primary' @click="delDirtyCells(item.dirtyCells.array)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </td>
@@ -115,7 +115,7 @@ export default {
       fullWaferStatArray: [],
       graphicName: '',
       activeTab: 'commonTable',
-      loading: true,
+      loading: false,
       headersConfigArray: [
         /// MonitoringMini
         {
@@ -226,16 +226,12 @@ export default {
 
   async created() {
     this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName;
-  //   this.fullWaferStatArray = (await this.$http
-  //     .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data;
-  //  this.calculateFullWaferDirtyCells(this.fullWaferStatArray);
     await this.getStatArray();
   },
 
   methods: {
     delDirtyCells(dirtyCells) {
-      const deletedDies = dirtyCells.statList;
-      const selectedDies = this.selectedDies.filter((el) => !deletedDies.includes(el));
+      const selectedDies = this.selectedDies.filter((el) => !dirtyCells.includes(el));
       this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
     },
 
@@ -255,46 +251,20 @@ export default {
 
     async getStatArray() {
       if (this.measurementId !== 0 && this.selectedDies.length > 0) {
-        this.loading = true;
         const singlestatModel = {};
         singlestatModel.k = this.statisticKf;
         singlestatModel.divider = this.divider;
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
-        // this.statArray = (await this.$http
-        //   .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
-        // this.statArray = this.statArray.map((s) => ({ ...s, fwPercentage: { fixed: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.fixedPercentageFullWafer, stat: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer } }));
         this.statArrayRWRK = (await this.$http.get(`/api/statrwrk/StatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
         this.statArrayRWRK = this.statArrayRWRK.map((s) => ({ ...s, goodDiesPercentage: this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].goodDiesPercentage, dirtyCells: { array: [...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells], percentage: Math.ceil((1.0 - (this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells])].length - this.selectedDies.length)) / this.selectedDies.length) * 100) } }));
-        this.loading = false;
       }
-    },
-
-    calculateFullWaferDirtyCells(fullWaferStatArray) {
-      this.dirtyCellsFullWafer.stat.cellsId = [...new Set(fullWaferStatArray.reduce((p, c) => [...p, ...c.dirtyCells.statList], []))];
-      this.dirtyCellsFullWafer.fixed.cellsId = [...new Set(fullWaferStatArray.reduce((p, c) => [...p, ...c.dirtyCells.fixedList], []))];
-      this.dirtyCellsFullWafer.stat.percentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.stat.cellsId.length / this.avbSelectedDies.length)) * 100);
-      this.dirtyCellsFullWafer.fixed.percentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.fixed.cellsId.length / this.avbSelectedDies.length)) * 100);
-      this.$store.dispatch('wafermeas/updateDirtyCellsFullWaferSingleGraphic', {
-        keyGraphicState: this.keyGraphicState,
-        dirtyCells: {
-          fixed: { cellsId: [...this.dirtyCellsFullWafer.fixed.cellsId], percentage: this.dirtyCellsFullWafer.fixed.percentage },
-          stat: { cellsId: [...this.dirtyCellsFullWafer.stat.cellsId], percentage: this.dirtyCellsFullWafer.stat.percentage },
-        },
-      });
     },
   },
 
   watch: {
     async divider() {
-      await this.getStatArray();
-    },
-
-    async statisticKf(newValue) {
-      this.fullWaferStatArray = (await this.$http
-        .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${newValue}`)).data;
-      this.calculateFullWaferDirtyCells(this.fullWaferStatArray);
       await this.getStatArray();
     },
 

@@ -21,6 +21,10 @@ const defaultState = () => ({
   dirtyCells: {
     fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0, singleGraphics: [],
   },
+  dirtyCellsSnapShot: {
+    badDies: [],
+    goodDiesPercentage: 0
+  },
 });
 
 export const wafermeas = {
@@ -46,7 +50,7 @@ export const wafermeas = {
     divider: '',
     mapMode: 'selected',
     sizes: { big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 320, fieldWidth: 320 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 } },
-    dirtyCellsSnapshot: { goodDiesPercentage: 0 },
+    dirtyCellsSnapshot: { badDies: [], goodDiesPercentage: 0 },
     dirtyCells: {
       fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0,
     },

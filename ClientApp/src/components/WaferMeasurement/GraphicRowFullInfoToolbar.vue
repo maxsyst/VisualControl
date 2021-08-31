@@ -38,7 +38,7 @@
                       color='primary'>
                       {{ dirtyCellsPercentage }}%
                     </v-progress-circular>
-                    <v-btn text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
+                    <v-btn v-if="dirtyCellsPercentage != 100" text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
                       <v-icon>cached</v-icon>
                     </v-btn>
                 </div>
@@ -72,6 +72,13 @@ export default {
   },
   components: {
     'wafer-mini': WaferMapMini,
+  },
+
+  methods: {
+    delDirtyCells(dirtyCells) {
+      const selectedDies = this.selectedDies.filter((el) => !dirtyCells.includes(el));
+      this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
+    },
   },
 
   computed: {

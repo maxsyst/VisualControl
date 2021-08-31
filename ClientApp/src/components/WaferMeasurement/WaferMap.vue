@@ -165,7 +165,7 @@ export default {
       if (newVal === 'dirty') {
         this.avbSelectedDies.forEach((avb) => {
           const die = this.dies.find((d) => d.id === avb);
-          die.fill = this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50';
+          die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id) ? '#E91E63' : '#4CAF50';
           die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
           die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
           die.isActive = true;
@@ -199,7 +199,7 @@ export default {
           if (this.mapMode === 'dirty') {
             this.avbSelectedDies.forEach((avb) => {
               const die = this.dies.find((d) => d.id === avb);
-              die.fill = this.dirtyCells.statList.includes(die.id) ? '#E91E63' : '#4CAF50';
+              die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id) ? '#E91E63' : '#4CAF50';
               die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5;
               die.text = selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
               die.isActive = true;
@@ -213,7 +213,7 @@ export default {
   computed:
     {
       ...mapGetters({
-        dirtyCells: 'wafermeas/dirtyCells',
+        dirtyCellsSnapshot: 'wafermeas/dirtyCellsSnapshot',
         avbSelectedDies: 'wafermeas/avbSelectedDies',
         selectedDies: 'wafermeas/selectedDies',
         wafer: 'wafermeas/wafer',
