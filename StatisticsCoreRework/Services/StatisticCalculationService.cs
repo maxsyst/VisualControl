@@ -11,16 +11,7 @@ namespace VueExample.StatisticsCoreRework.Services
         public SingleParameterStatisticCalculated Calculate(SingleParameterStatisticValues singleParameterStatisticValues, double divider)
         {
             var (statName, unit, dividerProfile, _, values) = singleParameterStatisticValues;
-            return new SingleParameterStatisticCalculated {
-                Minimum = CalculateMinimum(values),
-                Maximum = CalculateMaximum(values),
-                ExpectedValue = CalculateExpectedValue(values),
-                Median = CalculateMedian(values),
-                StandartDeviation = CalculateStandartDeviation(values),
-                StatisticsName = statName,
-                ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
-                Unit = unit
-            };
+            return SingleParameterStatisticCalculatedBuilder(singleParameterStatisticValues, divider);
         }
 
         private SingleParameterStatisticCalculated SingleParameterStatisticCalculatedBuilder(SingleParameterStatisticValues singleParameterStatisticValues, double divider) {

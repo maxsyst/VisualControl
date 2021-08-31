@@ -107,10 +107,8 @@ export default {
     deleteByColor(dieList) {
       this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies.filter((x) => !dieList.includes(x)));
     },
-  },
 
-  watch: {
-    async selectedDies(newValue) {
+    async refresh() {
       this.gradientData = (await this.$http
         .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({
           measurementRecordingId: this.measurementId,
@@ -119,8 +117,17 @@ export default {
           keyGraphicState: this.keyGraphicState,
           statParameter: this.statParameter.statisticsName,
           k: this.statisticKf,
-          selectedDiesId: [...newValue],
+          selectedDiesId: this.selectedDies,
         })}`)).data;
+    },
+  },
+
+  watch: {
+    async selectedDies() {
+      await this.refresh();
+    },
+    async divider() {
+      await this.refresh();
     },
   },
 

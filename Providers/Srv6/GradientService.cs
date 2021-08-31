@@ -5,6 +5,7 @@ using System.Linq;
 using VueExample.Color;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.StatisticsCore;
+using VueExample.StatisticsCoreRework;
 using VueExample.StatisticsCoreRework.Models;
 using VueExample.ViewModels;
 
@@ -27,8 +28,8 @@ namespace VueExample.Providers.Srv6
                 return new GradientViewModel();
             }
             var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleParameterStatisticValues.GetValues());
-            var lowBorder = dataDescriptiveStatistics.Quartile1Double - k * dataDescriptiveStatistics.IQRDouble;
-            var topBorder = dataDescriptiveStatistics.Quartile3Double + k * dataDescriptiveStatistics.IQRDouble;
+            var lowBorder = Divider(dataDescriptiveStatistics.Quartile1Double - k * dataDescriptiveStatistics.IQRDouble, singleParameterStatisticValues.DividerProfile, divider);
+            var topBorder = Divider(dataDescriptiveStatistics.Quartile3Double + k * dataDescriptiveStatistics.IQRDouble, singleParameterStatisticValues.DividerProfile, divider);
             var stepSize = Math.Abs(topBorder - lowBorder) / stepsQuantity;
             gradientViewModel.GradientSteps.Add(new ExtremeLowGradientStep(lowBorder));
             for (int i = 0; i < stepsQuantity; i++)
@@ -40,10 +41,23 @@ namespace VueExample.Providers.Srv6
 
             foreach (var dieStat in singleParameterStatisticValues.DieStatDictionary)
             {
-                var step = gradientViewModel.GradientSteps.FirstOrDefault(x => x.IsInStep(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture)));
+                var step = gradientViewModel.GradientSteps.FirstOrDefault(x => x.IsInStep(Divider(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture), singleParameterStatisticValues.DividerProfile, divider)));
                 step.DieList.Add(dieStat.Key);
             }
             return gradientViewModel;
+        }
+
+        private double Divider(double value, DividerProfile profile, string divider) 
+        { 
+            if(profile == DividerProfile.WithDivider)
+            {
+               return value / Convert.ToDouble(divider, CultureInfo.InvariantCulture);
+            }
+            if(profile == DividerProfile.ROnFamily)
+            {
+                return value / (1/Convert.ToDouble(divider, CultureInfo.InvariantCulture));
+            }
+            return value;
         }
     }
 
