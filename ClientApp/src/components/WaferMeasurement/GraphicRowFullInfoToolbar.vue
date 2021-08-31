@@ -88,7 +88,8 @@ export default {
     }),
 
     dirtyCellsPercentage() {
-      return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
+      return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length
+        - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
     },
 
     dirtyCellsSnapshot() {

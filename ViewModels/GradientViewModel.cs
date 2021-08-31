@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using VueExample.Extensions;
 
 namespace VueExample.ViewModels
@@ -21,10 +19,10 @@ namespace VueExample.ViewModels
 
     public class ExtremeLowGradientStep : GradientStep
     {
-        public ExtremeLowGradientStep(string lowBorder)
+        public ExtremeLowGradientStep(double lowBorder)
         {
             Name = "Low";
-            LowBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture);
+            LowBorder = lowBorder;
             Color = "#4527A0";
             BorderDescription = $"< {LowBorder.ToGoodFormat()}";
         }
@@ -39,11 +37,11 @@ namespace VueExample.ViewModels
 
     public class ExtremeHighGradientStep : GradientStep
     {
-        public ExtremeHighGradientStep(string topBorder)
+        public ExtremeHighGradientStep(double topBorder)
         {
             Name = "High";
             Color = "#E91E63";
-            TopBorder = Convert.ToDouble(topBorder.Replace(',', '.'), CultureInfo.InvariantCulture);
+            TopBorder = topBorder;
             BorderDescription = $"> {(TopBorder.ToGoodFormat())}";
         }
 
@@ -58,11 +56,11 @@ namespace VueExample.ViewModels
 
     public class ColorGradientStep : GradientStep
     {
-        public ColorGradientStep(int index, double stepSize, string lowBorder, string topBorder, string color)
+        public ColorGradientStep(int index, double stepSize, double lowBorder, double topBorder, string color)
         {
             Name = $"Step{index + 1}";
-            LowBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture) + index * stepSize;
-            TopBorder = Convert.ToDouble(lowBorder.Replace(',', '.'), CultureInfo.InvariantCulture) + (index+1) * stepSize;
+            LowBorder = lowBorder + index * stepSize;
+            TopBorder = lowBorder + (index+1) * stepSize;
             Color = color;
             BorderDescription = $"{LowBorder.ToGoodFormat()}->{TopBorder.ToGoodFormat()}";
         }

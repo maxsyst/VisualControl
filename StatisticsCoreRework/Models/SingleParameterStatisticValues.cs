@@ -37,13 +37,16 @@ namespace VueExample.StatisticsCoreRework.Models
            }
         }       
 
+        public List<double> GetValues() => DieStatDictionary.Values.Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture)).ToList();
+
+
         public void Deconstruct(out string _StatisticName, out string _Unit, out DividerProfile _DividerProfile, out Dictionary<long, string> _DieStatDictionary, out List<double> _Values) 
         {
             _StatisticName = StatisticName;
             _Unit = Unit;
             _DividerProfile = DividerProfile;
             _DieStatDictionary = DieStatDictionary;
-            _Values = DieStatDictionary.Values.Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture)).ToList();
+            _Values = GetValues();
 
         }
     }

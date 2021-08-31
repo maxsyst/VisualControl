@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using MathNet.Numerics.Statistics;
 using VueExample.Color;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.StatisticsCore;
+using VueExample.StatisticsCoreRework.Models;
 using VueExample.ViewModels;
 
 namespace VueExample.Providers.Srv6
@@ -17,56 +17,34 @@ namespace VueExample.Providers.Srv6
         {
             _colorService = colorService;
         }
-        public GradientViewModel GetGradient(List<SingleParameterStatistic> singleParameterStatisticList, int stepsQuantity, string divider, string statParameterName, List<long> selectedDies)
+
+        public GradientViewModel GetGradient(SingleParameterStatisticValues singleParameterStatisticValues, int stepsQuantity, double k, string divider, List<long> selectedDies)
         {
-            var singleStatistic = singleParameterStatisticList.FirstOrDefault(x => x.Name == statParameterName);
-            var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleStatistic.valueList);
             var gradientViewModel = new GradientViewModel();
             var colorList = stepsQuantity <= 32 ? _colorService.GetGradientColors().Select(x => x.Hex).ToList() : Enumerable.Repeat("#3F51B5", stepsQuantity).ToList();
-            if(singleStatistic == null) 
+            if(singleParameterStatisticValues is null) 
             {
                 return new GradientViewModel();
             }
-            var stepSize = Math.Abs(Convert.ToDouble(singleStatistic.TopBorderStat.Replace(',', '.'), CultureInfo.InvariantCulture) -
-                                    Convert.ToDouble(singleStatistic.LowBorderStat.Replace(',', '.'), CultureInfo.InvariantCulture)) / stepsQuantity;
-            var singleDieValues = new List<SingleDieValue>();
-            for (int i = 0; i < singleStatistic.dieList.Count; i++)
-            {
-                if(selectedDies.Contains((long)singleStatistic.dieList[i])) 
-                {
-                    singleDieValues.Add(new SingleDieValue{DieId = (long)singleStatistic.dieList[i], Value = singleStatistic.valueList[i]});
-                }               
-            }
-
-            gradientViewModel.GradientSteps.Add(new ExtremeLowGradientStep(singleStatistic.LowBorderStat));
-
+            var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleParameterStatisticValues.GetValues());
+            var lowBorder = dataDescriptiveStatistics.Quartile1Double - k * dataDescriptiveStatistics.IQRDouble;
+            var topBorder = dataDescriptiveStatistics.Quartile3Double + k * dataDescriptiveStatistics.IQRDouble;
+            var stepSize = Math.Abs(topBorder - lowBorder) / stepsQuantity;
+            gradientViewModel.GradientSteps.Add(new ExtremeLowGradientStep(lowBorder));
             for (int i = 0; i < stepsQuantity; i++)
             {
-                gradientViewModel.GradientSteps.Add(new ColorGradientStep(i, stepSize, singleStatistic.LowBorderStat, singleStatistic.TopBorderStat, colorList[i]));
+                gradientViewModel.GradientSteps.Add(new ColorGradientStep(i, stepSize, lowBorder, topBorder, colorList[i]));
             }
             
-            gradientViewModel.GradientSteps.Add(new ExtremeHighGradientStep(singleStatistic.TopBorderStat));
+            gradientViewModel.GradientSteps.Add(new ExtremeHighGradientStep(topBorder));
 
-            foreach (var singleDieValue in singleDieValues)
+            foreach (var dieStat in singleParameterStatisticValues.DieStatDictionary)
             {
-                var step = gradientViewModel.GradientSteps.FirstOrDefault(x => x.IsInStep(singleDieValue.Value));
-                step.DieList.Add(singleDieValue.DieId);
+                var step = gradientViewModel.GradientSteps.FirstOrDefault(x => x.IsInStep(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture)));
+                step.DieList.Add(dieStat.Key);
             }
             return gradientViewModel;
         }
-
-        public Histogram GetHistogram(List<SingleParameterStatistic> singleParameterStatisticList, int stepsQuantity, string statParameterName, List<long> selectedDies)
-        {
-            var singleStatistic = singleParameterStatisticList.FirstOrDefault(x => x.Name == statParameterName);
-            var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleStatistic.valueList);
-            return dataDescriptiveStatistics.GetHistogramFromList(singleStatistic.valueList, stepsQuantity);
-        }
     }
 
-    public class SingleDieValue 
-    {
-        public long DieId { get; set; }
-        public double Value { get; set; }
-        
-    }
 }
