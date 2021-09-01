@@ -115,6 +115,39 @@ export default {
         }
       },
 
+      rerender() {
+        if (this.dies.length > 0) {
+          if (this.avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
+            this.dies = this.dies.map((die) => ({
+              ...die, fill: '#A1887F', text: '#303030', fillOpacity: 1.0, isActive: false,
+            }));
+            if (this.mapMode === 'selected') {
+              for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
+                const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
+                die.fill = '#8C9EFF';
+                die.text = '#303030';
+                die.isActive = true;
+              }
+
+              for (let i = 0; i < this.selectedDies.length; i += 1) {
+                const die = this.dies.find((d) => d.id === this.selectedDies[i]);
+                die.fill = '#3D5AFE';
+                die.text = '#FFF9C4';
+              }
+            }
+            if (this.mapMode === 'dirty') {
+              this.avbSelectedDies.forEach((avb) => {
+                const die = this.dies.find((d) => d.id === avb);
+                die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id) ? '#E91E63' : '#4CAF50';
+                die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
+                die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
+                die.isActive = true;
+              });
+            }
+          }
+        }
+      },
+
       showmenu(e) {
         e.preventDefault();
         if (this.dies[+e.currentTarget.attributes.dieIndex.value].isActive) {
@@ -132,17 +165,14 @@ export default {
 
   watch: {
     // eslint-disable-next-line func-names
-    'wafer.id': function (newVal) {
+    'wafer.id': function () {
       this.dies = this.wafer.formedMapBig.dies;
       this.initialOrientation = +this.wafer.formedMapBig.orientation;
       this.currentOrientation = this.initialOrientation;
       this.showNav = false;
-      this.dies.forEach((die) => {
-        die.fill = '#A1887F';
-        die.text = '#303030';
-        die.fillOpacity = 1.0;
-        die.isActive = false;
-      });
+      this.dies = this.dies.map((die) => ({
+        ...die, fill: '#A1887F', text: '#303030', fillOpacity: 1.0, isActive: false,
+      }));
     },
 
     mapMode(newVal) {
@@ -165,7 +195,7 @@ export default {
       if (newVal === 'dirty') {
         this.avbSelectedDies.forEach((avb) => {
           const die = this.dies.find((d) => d.id === avb);
-          die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id) ? '#E91E63' : '#4CAF50';
+          die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id) ? '#E91E63' : '#4CAF50';
           die.fillOpacity = this.selectedDies.includes(die.id) ? 1.0 : 0.5;
           die.text = this.selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
           die.isActive = true;
@@ -173,47 +203,19 @@ export default {
       }
     },
 
-    selectedDies(selectedDies) {
-      if (this.dies.length > 0) {
-        if (this.avbSelectedDies.length > 0 && selectedDies.length > 0) {
-          this.dies.forEach((die) => {
-            die.fill = '#A1887F';
-            die.text = '#303030';
-            die.fillOpacity = 1.0;
-            die.isActive = false;
-          });
-          if (this.mapMode === 'selected') {
-            for (let i = 0; i < this.avbSelectedDies.length; i += 1) {
-              const die = this.dies.find((d) => d.id === this.avbSelectedDies[i]);
-              die.fill = '#8C9EFF';
-              die.text = '#303030';
-              die.isActive = true;
-            }
+    selectedDies() {
+      this.rerender();
+    },
 
-            for (let i = 0; i < selectedDies.length; i += 1) {
-              const die = this.dies.find((d) => d.id === selectedDies[i]);
-              die.fill = '#3D5AFE';
-              die.text = '#FFF9C4';
-            }
-          }
-          if (this.mapMode === 'dirty') {
-            this.avbSelectedDies.forEach((avb) => {
-              const die = this.dies.find((d) => d.id === avb);
-              die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id) ? '#E91E63' : '#4CAF50';
-              die.fillOpacity = selectedDies.includes(die.id) ? 1.0 : 0.5;
-              die.text = selectedDies.includes(die.id) ? '#303030' : '#FFF9C4';
-              die.isActive = true;
-            });
-          }
-        }
-      }
+    dirtyCellsSnapshotBadDies() {
+      this.rerender();
     },
   },
 
   computed:
     {
       ...mapGetters({
-        dirtyCellsSnapshot: 'wafermeas/dirtyCellsSnapshot',
+        dirtyCellsSnapshotBadDies: 'wafermeas/dirtyCellsSnapshotBadDies',
         avbSelectedDies: 'wafermeas/avbSelectedDies',
         selectedDies: 'wafermeas/selectedDies',
         wafer: 'wafermeas/wafer',

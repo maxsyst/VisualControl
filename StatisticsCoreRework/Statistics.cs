@@ -4277,9 +4277,6 @@ namespace VueExample.StatisticsCoreRework
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>

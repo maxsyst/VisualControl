@@ -34,7 +34,7 @@
             <v-subheader>Коэффициент отсеивания:</v-subheader>
             <v-slider
                 v-model="statisticKf"
-                :tick-labels="['0.5', '1', '1.5', '2']"
+                :tick-labels="['0.5', '0.75', '1', '1.25', '1.5', '1.75', '2']"
                 :min="0.5"
                 :max="2"
                 step="0.5"

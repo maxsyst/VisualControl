@@ -6,7 +6,7 @@
             <g v-for="(die, key) in dies" :key="die.id">
               <rect :dieIndex="key" :id="die.id"
                     :x="die.x" :y="die.y"
-                    :width="die.width" :height="die.height" 
+                    :width="die.width" :height="die.height"
                     :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @click="selectDie"/>
             </g>
           </svg>
@@ -96,7 +96,7 @@ export default {
       this.avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id)
+        die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id)
           ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
           : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
         die.fillOpacity = 1.0;
@@ -109,7 +109,7 @@ export default {
       this.avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCellsSnapshot.badDies.includes(die.id)
+        die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id)
           ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
           : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
         die.fillOpacity = 1.0;
@@ -159,23 +159,25 @@ export default {
 
   watch: {
 
+    dirtyCellsSnapshotBadDies() {
+      this.refresh(this.selectedDies);
+    },
+
     rowViewMode(rowViewMode) {
       if (rowViewMode === 'bigChart') {
-        this.dies.forEach(function (die) {
+        this.dies = this.dies.map(function f(die) {
           const gDie = this.wafer.formedMapGradient.find((d) => d.dieId === die.Id);
-          die.x = gDie.x;
-          die.y = gDie.y;
-          die.width = gDie.width;
-          die.height = gDie.height;
+          return ({
+            ...die, x: gDie.x, y: gDie.y, width: gDie.width, height: gDie.height,
+          });
         });
       }
       if (rowViewMode === 'miniChart') {
-        this.dies.forEach(function (die) {
-          const mDie = this.wafer.formedMapMini.find((d) => d.dieId === die.Id);
-          die.x = mDie.x;
-          die.y = mDie.y;
-          die.width = mDie.width;
-          die.height = mDie.height;
+        this.dies = this.dies.map(function f(die) {
+          const gDie = this.wafer.formedMapGradient.find((d) => d.dieId === die.Id);
+          return ({
+            ...die, x: gDie.x, y: gDie.y, width: gDie.width, height: gDie.height,
+          });
         });
       }
     },
@@ -195,8 +197,8 @@ export default {
       modeGetter: 'wafermeas/getKeyGraphicStateMode',
     }),
 
-    dirtyCellsSnapshot() {
-      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
+    dirtyCellsSnapshotBadDies() {
+      return this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
     },
 
     mode() {
