@@ -32,7 +32,7 @@ namespace VueExample.StatisticsCoreRework.Services
             {
                 var kgsDict = singleStatDictionary[kgs.Key];
                 var profiles = kgsDict.Select(kv => new DirtyCellsProfile { StatName = kv.Value.StatisticName, Type = "STAT", K = "1.5" }).ToList();
-                measurementRecordingDirtyCellsSnapshot.DirtyCellsProfiles.AddRange(profiles);
+                measurementRecordingDirtyCellsSnapshot.DirtyCellsProfiles.Add(kgs.Key, profiles);
                 var dc = await GetDirtyCellsShortsByKeyGraphicStateFromSingleParameterStatistic(measurementRecordingId, kgs.Key, kgsDict, profiles);
                 SetProfilesBorders(profiles, dc);
                 var badDies = new HashSet<long>(dc.SelectMany(kv => kv.Value.BadDirtyCells)).ToList();
@@ -53,10 +53,21 @@ namespace VueExample.StatisticsCoreRework.Services
             
         }
 
-        public async Task<Dictionary<string, DirtyCellsShort>> GetDirtyCellsShortsByKeyGraphicState(int measurementRecordingId, string keyGraphicState, List<DirtyCellsProfile> dirtyCellsProfiles) 
+        public async Task<SingleGraphicDirtyCells> GetDirtyCellsShortsByKeyGraphicState(int measurementRecordingId, string keyGraphicState, List<DirtyCellsProfile> dirtyCellsProfiles) 
         {
+            var selectedDies = (await _dieValueService.GetSelectedDiesByMeasurementRecordingId(measurementRecordingId));
+            var diesCount = selectedDies.Count();
             var singleStatDictionary = await _statisticService.GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId);
-            return await GetDirtyCellsShortsByKeyGraphicStateFromSingleParameterStatistic(measurementRecordingId, keyGraphicState, singleStatDictionary[keyGraphicState], dirtyCellsProfiles);
+            var dc = await GetDirtyCellsShortsByKeyGraphicStateFromSingleParameterStatistic(measurementRecordingId, keyGraphicState, singleStatDictionary[keyGraphicState], dirtyCellsProfiles);
+            var badDies = new HashSet<long>(dc.SelectMany(kv => kv.Value.BadDirtyCells)).ToList();
+            var singleGraphicDirtyCells = new SingleGraphicDirtyCells
+            {
+                KeyGraphicState = keyGraphicState,
+                BadDies = badDies,
+                GoodDiesPercentage = Convert.ToString(Math.Ceiling((1.0 - badDies.Count / (diesCount + 0.0)) * 100), CultureInfo.InvariantCulture),
+                StatNameDirtyCellsDictionary = dc
+            };
+            return singleGraphicDirtyCells;
         }
 
         private async Task<Dictionary<string, DirtyCellsShort>> GetDirtyCellsShortsByKeyGraphicStateFromSingleParameterStatistic(int measurementRecordingId, string keyGraphicState, Dictionary<string, SingleParameterStatisticValues> kgsDictionary, List<DirtyCellsProfile> dirtyCellsProfiles) 

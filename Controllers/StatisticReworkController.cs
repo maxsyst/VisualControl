@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.StatisticsCoreRework.Abstract;
+using System.Collections.Generic;
+using VueExample.StatisticsCoreRework.Models;
 
 namespace VueExample.Controllers
 {
@@ -30,11 +32,21 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [Route("dirtyCellsSnapshot/{measurementRecordingId:int}")]
+        [Route("dirtyCellsSnapshot/{measurementRecordingId:int}/initial")]
         public async Task<IActionResult> GetDirtyCellsSnapshot ([FromRoute] int measurementRecordingId)
         {
             var s = await _dirtyCellsService.GetDirtyCellsInitialSnapShotByMeasurementRecordingId(measurementRecordingId);
             return Ok(s);
+        }
+
+        [HttpGet]
+        [Route("dirtyCellsSnapshot/{measurementRecordingId:int}/{keyGraphicState}/withprofile")]
+        public async Task<IActionResult> GetDirtyCellsSnapshotWithProfile ([FromRoute] int measurementRecordingId, [FromRoute] string keyGraphicState, [FromQuery] string dcProfilesJSON)
+        {
+            var dcProfiles = JsonConvert.DeserializeObject<List<DirtyCellsProfile>>(dcProfilesJSON);
+            var singleGraphicDirtyCells = await _dirtyCellsService.GetDirtyCellsShortsByKeyGraphicState(measurementRecordingId, keyGraphicState, dcProfiles);
+            var dcNewProfiles = singleGraphicDirtyCells.StatNameDirtyCellsDictionary.Select(s => new DirtyCellsProfile {StatName = s.Key, Type = s.Value.Type , LowBorder = s.Value.LowBorder, TopBorder = s.Value.TopBorder, K = dcProfiles.FirstOrDefault(d => d.StatName == s.Key).K}).ToList(); 
+            return Ok(new { singleGraphicDirtyCells = singleGraphicDirtyCells, dcProfiles = dcNewProfiles});
         }
 
         [HttpGet]

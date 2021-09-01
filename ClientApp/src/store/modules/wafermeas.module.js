@@ -21,10 +21,11 @@ const defaultState = () => ({
   dirtyCells: {
     fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0, singleGraphics: [],
   },
-  dirtyCellsSnapShot: {
+  dirtyCellsSnapshot: {
     badDies: [],
-    goodDiesPercentage: 0
+    goodDiesPercentage: 0,
   },
+  dcProfiles: {},
 });
 
 export const wafermeas = {
@@ -51,6 +52,7 @@ export const wafermeas = {
     mapMode: 'selected',
     sizes: { big: { streetSize: 3, fieldHeight: 420, fieldWidth: 420 }, gradient: { streetSize: 2, fieldHeight: 320, fieldWidth: 320 }, mini: { streetSize: 1, fieldHeight: 140, fieldWidth: 140 } },
     dirtyCellsSnapshot: { badDies: [], goodDiesPercentage: 0 },
+    dcProfiles: {},
     dirtyCells: {
       fixedList: [], statList: [], fixedPercentageFullWafer: 0, fixedPercentageSelected: 0, statPercentageFullWafer: 0, statPercentageSelected: 0,
     },
@@ -78,6 +80,18 @@ export const wafermeas = {
 
     createDirtyCellsSnapshot({ commit }, snapshot) {
       commit('createDirtyCellsSnapshot', snapshot);
+    },
+
+    updateDirtyCellsSnapshot({ commit }, { keyGraphicState, snapshotChunk }) {
+      commit('updateDirtyCellsSnapshot', { keyGraphicState, snapshotChunk });
+    },
+
+    updateDcProfiles({ commit }, { keyGraphicState, keyGraphicStateDcProfile }) {
+      commit('updateDcProfiles', { keyGraphicState, keyGraphicStateDcProfile });
+    },
+
+    createDcProfiles({ commit }, dcProfiles) {
+      commit('createDcProfiles', dcProfiles);
     },
 
     updateDieValues({ commit }, dieValues) {
@@ -232,6 +246,7 @@ export const wafermeas = {
     dirtyCells: (state) => state.dirtyCells,
     dirtyCellsSnapshot: (state) => state.dirtyCellsSnapshot,
     getDirtyCellsSnapshotByKeyGraphicState: (state) => (keyGraphicState) => state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary[keyGraphicState],
+    getDcProfilesByKeyGraphicState: (state) => (keyGraphicState) => state.dcProfiles[keyGraphicState],
     mapMode: (state) => state.mapMode,
     hoveredDieId: (state) => state.hoveredDieId,
     getGraphicSettingsKeyGraphicStates: (state) => (keyGraphicStates) => keyGraphicStates.map((kgs) => {
@@ -330,6 +345,20 @@ export const wafermeas = {
 
     createDirtyCellsSnapshot(state, snapshot) {
       state.dirtyCellsSnapshot = _.cloneDeep(snapshot);
+    },
+
+    updateDirtyCellsSnapshot(state, { keyGraphicState, snapshotChunk}) {
+      state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary[keyGraphicState] = _.cloneDeep(snapshotChunk);
+      state.dirtyCellsSnapshot.badDies = [...new Set(Object.keys(state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary).reduce((p, c) => [...p, ...state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary[c].badDies], []))];
+      state.dirtyCellsSnapshot.goodDiesPercentage = Math.ceil((1.0 - state.dirtyCellsSnapshot.badDies.length / state.avbSelectedDies.length) * 100);
+    },
+
+    updateDcProfiles(state, { keyGraphicState, keyGraphicStateDcProfile }) {
+      state.dcProfiles[keyGraphicState] = _.cloneDeep(keyGraphicStateDcProfile);
+    },
+
+    createDcProfiles(state, dcProfiles) {
+      state.dcProfiles = _.cloneDeep(dcProfiles);
     },
 
     addKeyGraphicStateMode(state, keyGraphicState) {

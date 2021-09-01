@@ -169,18 +169,6 @@
                             </v-row>
                       </v-col>
                     </v-row>
-                   <v-row v-if="loading">
-                      <v-subheader>Коэффициент отсеивания:</v-subheader>
-                      <v-slider
-                        v-model="statisticKf"
-                        :tick-labels="['0.5', '1', '1.5', '2']"
-                        :min="0.5"
-                        :max="2"
-                        step="0.5"
-                        ticks="always"
-                        tick-size="4">
-                      </v-slider>
-                    </v-row>
                   </v-card-text>
                 </v-card>
               </v-tab-item>
@@ -406,8 +394,9 @@ export default {
         const selectedMeasurementId = this.measurementRecordings.find((x) => x.name === params.measurementName).id;
         const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
         this.$store.dispatch('wafermeas/updateDieValues', dieValues);
-        const dirtyCellsSnapshot = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
+        const dirtyCellsSnapshot = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}/initial`)).data;
         this.$store.dispatch('wafermeas/createDirtyCellsSnapshot', dirtyCellsSnapshot);
+        this.$store.dispatch('wafermeas/createDcProfiles', dirtyCellsSnapshot.dirtyCellsProfiles);
         const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary));
         this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
         this.selectedDivider = params.shortLinkVm.divider.dividerK;
@@ -429,8 +418,9 @@ export default {
       this.$store.dispatch('wafermeas/clearSelectedGraphics');
       const dieValues = (await this.$http.get(`/api/dievalue/GetByMeasurementRecordingId?measurementRecordingId=${selectedMeasurementId}`)).data;
       this.$store.dispatch('wafermeas/updateDieValues', dieValues);
-      const dirtyCellsSnapshot = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}`)).data;
+      const dirtyCellsSnapshot = (await this.$http.get(`/api/statrwrk/dirtycellssnapshot/${selectedMeasurementId}/initial`)).data;
       this.$store.dispatch('wafermeas/createDirtyCellsSnapshot', dirtyCellsSnapshot);
+      this.$store.dispatch('wafermeas/createDcProfiles', dirtyCellsSnapshot.dirtyCellsProfiles);
       const keyGraphicStateJSON = JSON.stringify(Object.keys(dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary));
       this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.$store.dispatch('wafermeas/updateSelectedDies', dirtyCellsSnapshot.selectedDies);

@@ -7,34 +7,7 @@
         <v-row>
             <v-col lg="6">
                 <v-row>
-                <v-simple-table>
-                    <template v-slot:default>
-                    <thead>
-                        <tr>
-                            <th class="text-center">Название</th>
-                            <th class="text-center">μ</th>
-                            <th class="text-center">σ</th>
-                            <th class="text-center">Минимум</th>
-                            <th class="text-center">Максимум</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><v-chip color="indigo"
-                                        label
-                                        v-html="statParameter.unit.trim()
-                                            ? statParameter.shortStatisticsName + ', ' + statParameter.unit : statParameter.shortStatisticsName"
-                                            dark>
-                                </v-chip>
-                            </td>
-                            <td>{{ statParameter.expectedValue }}</td>
-                            <td>{{ statParameter.standartDeviation }}</td>
-                            <td>{{ statParameter.minimum }}</td>
-                            <td>{{ statParameter.maximum }}</td>
-                        </tr>
-                    </tbody>
-                    </template>
-                </v-simple-table>
+                  <StatParameterView :measurementId="measurementId" :keyGraphicState="keyGraphicState" :statParameter="statParameter"></StatParameterView>
                 </v-row>
                 <v-row>
                     <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
@@ -87,12 +60,14 @@
 <script>
 import GradientWafer from './gradient-wafer.vue';
 import GradientHstg from './gradient-histogram.vue';
+import StatParameterView from '../WaferMeasurement/StatParameterView.vue';
 
 export default {
   props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
   components: {
     'gradient-map': GradientWafer,
     'gradient-hstg': GradientHstg,
+    StatParameterView,
   },
   data() {
     return {

@@ -271,6 +271,10 @@ export default {
     async selectedDies() {
       await this.getStatArray();
     },
+
+    dirtyCellsSnapshot() {
+      this.statArrayRWRK = this.statArrayRWRK.map((s) => ({ ...s, goodDiesPercentage: this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].goodDiesPercentage, dirtyCells: { array: [...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells], percentage: Math.ceil((1.0 - (this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells])].length - this.selectedDies.length)) / this.selectedDies.length) * 100) } }));
+    },
   },
 
   computed: {

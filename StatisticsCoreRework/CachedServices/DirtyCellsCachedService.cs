@@ -30,9 +30,9 @@ namespace VueExample.StatisticsCoreRework.CachedServices
             return snapshot;
         }
 
-        public async Task<Dictionary<string, DirtyCellsShort>> GetDirtyCellsShortsByKeyGraphicState(int measurementRecordingId, string keyGraphicState, List<DirtyCellsProfile> dirtyCellsProfiles)
+        public async Task<SingleGraphicDirtyCells> GetDirtyCellsShortsByKeyGraphicState(int measurementRecordingId, string keyGraphicState, List<DirtyCellsProfile> dirtyCellsProfiles)
         {
-            return await _dirtyCellsService.GetDirtyCellsShortsByKeyGraphicState(measurementRecordingId, keyGraphicState, dirtyCellsProfiles);
+           return await _dirtyCellsService.GetDirtyCellsShortsByKeyGraphicState(measurementRecordingId, keyGraphicState, dirtyCellsProfiles);
         }
     }
 }
