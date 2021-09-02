@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-row>
-             <v-col lg="7">
+             <v-col lg="6">
                     <perfect-scrollbar>
                         <v-simple-table>
                             <template v-slot:default>
@@ -10,7 +10,7 @@
                                     <th class="text-center">Название</th>
                                     <th class="text-center">LB</th>
                                     <th class="text-center">TB</th>
-                                    <th class="text-center">Всего кристаллов</th>
+                                    <th class="text-center">К-во</th>
                                     <th class="text-center">Цвет</th>
                                 </tr>
                             </thead>
@@ -32,7 +32,7 @@
                         </v-simple-table>
                     </perfect-scrollbar>
             </v-col>
-            <v-col lg="5">
+            <v-col lg="6">
                 <v-row>
                     <v-tabs right v-model="activeTab" color="primary" dark slider-color="indigo">
                         <v-tab href="#gradientMapTab">Карта</v-tab>
@@ -46,7 +46,6 @@
                     </v-tabs>
                 </v-row>
             </v-col>
-           
         </v-row>
         <v-row>
 

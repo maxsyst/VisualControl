@@ -26,18 +26,21 @@ export default {
   methods: {
     getChartDataFromStore(selectedDies) {
       let datasets = [];
+      const dieValues = this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState);
+      const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
+      const dieColors = this.$store.getters['wafermeas/dieColors'];
       selectedDies.forEach((dieId) => {
         const singleDataset = {
           dieId,
           backgroundColor: this.mode === 'dirty'
-            ? this.dirtyCellsSnapshot.badDies.includes(dieId) ? '#ff1744' : '#00e676'
-            : this.mode === 'color' ? this.dieColors.find((dc) => dc.dieId === dieId).hexColor : '#3D5AFE',
-          data: +this.dieValues.find((dv) => dv.d === dieId).y[0],
+            ? badDies.includes(dieId) ? '#ff1744' : '#00e676'
+            : this.mode === 'color' ? dieColors.find((dc) => dc.dieId === dieId).hexColor : '#3D5AFE',
+          data: +dieValues.find((dv) => dv.d === dieId).y[0],
           label: this.wafer.formedMapMini.dies.find((d) => d.id === dieId).code,
         };
         datasets.push(singleDataset);
       });
-      datasets = [..._.sortBy(datasets, [function (o) { return +o.label.split('-')[0]; }])];
+      datasets = [..._.sortBy(datasets, [function f1(o) { return +o.label.split('-')[0]; }])];
       this.chartdata.labels = datasets.map((d) => d.label);
       this.chartdata.datasets[0] = {
         backgroundColor: [...datasets.map((x) => x.backgroundColor)],
@@ -54,10 +57,12 @@ export default {
   watch: {
     mode(newValue) {
       if (newValue === 'dirty') {
-        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = this.dirtyCellsSnapshot.badDies.includes(d) ? '#ff1744' : '#00e676');
+        const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
+        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = badDies.includes(d) ? '#ff1744' : '#00e676');
       }
       if (newValue === 'color') {
-        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = this.dieColors.find((dc) => dc.dieId === d).hexColor);
+        const dieColors = this.$store.getters['wafermeas/dieColors'];
+        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = dieColors.find((dc) => dc.dieId === d).hexColor);
       }
       if (newValue === 'selected' || newValue === 'initial') {
         this.chartdata.datasets[0].backgroundColor = this.chartdata.datasets[0].backgroundColor.map((x) => '#3D5AFE');
@@ -76,22 +81,13 @@ export default {
     ...mapGetters({
       wafer: 'wafermeas/wafer',
       selectedDies: 'wafermeas/selectedDies',
-      dieColors: 'wafermeas/dieColors',
-      dieValuesGetter: 'wafermeas/getDieValuesByKeyGraphicState',
       modeGetter: 'wafermeas/getKeyGraphicStateMode',
     }),
-
-    dieValues() {
-      return this.dieValuesGetter(this.keyGraphicState);
-    },
 
     mode() {
       return this.modeGetter(this.keyGraphicState);
     },
 
-    dirtyCellsSnapshot() {
-      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
-    },
   },
 };
 </script>

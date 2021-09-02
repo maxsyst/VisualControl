@@ -10,7 +10,7 @@
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
-      <v-col v-if="selectedDiesLength < 200" :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
+      <v-col :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
         <chart-lnr
           v-if="keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
@@ -26,16 +26,6 @@
           :divider="selectedDivider"
         ></chart-hstg>
         <v-divider light></v-divider>
-      </v-col>
-      <v-col v-else :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
-        <v-card>
-          <v-card-text>
-            <div>Графиков для отображения: {{selectedDiesLength}}</div>
-            <p>
-              Для повышения производительности графики не будут отображены. Выберите менее 200 графиков.
-            </p>
-          </v-card-text>
-        </v-card>
       </v-col>
     </v-row>
 </template>

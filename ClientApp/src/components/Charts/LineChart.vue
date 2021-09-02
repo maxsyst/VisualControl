@@ -34,12 +34,15 @@ export default {
   methods: {
     getChartDataFromStore(selectedDies) {
       const datasets = [];
+      const dieColors = this.$store.getters['wafermeas/dieColors'];
+      const dieValues = this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState);
+      const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
       selectedDies.forEach((dieId) => {
         const singleDataset = {
           dieId,
-          borderColor: this.mode === 'dirty' ? this.dirtyCellsSnapshot.badDies.includes(dieId) ? '#ff1744' : '#00e676'
-            : this.dieColors.find((dc) => dc.dieId === dieId).hexColor,
-          data: [...this.dieValues.find((dv) => dv.d === dieId).y.map((x) => +x)],
+          borderColor: this.mode === 'dirty' ? badDies.includes(dieId) ? '#ff1744' : '#00e676'
+            : dieColors.find((dc) => dc.dieId === dieId).hexColor,
+          data: [...dieValues.find((dv) => dv.d === dieId).y.map((x) => +x)],
           fill: false,
           borderWidth: 1,
           pointHoverRadius: 0,
@@ -116,9 +119,11 @@ export default {
 
     mode(newValue) {
       if (newValue === 'dirty') {
-        this.chartdata.datasets.forEach((d) => d.borderColor = this.dirtyCellsSnapshot.badDies.includes(d.dieId) ? '#ff1744' : '#00e676');
+        const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
+        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: badDies.includes(d.dieId) ? '#ff1744' : '#00e676' }));
       } else {
-        this.chartdata.datasets.forEach((d) => d.borderColor = this.dieColors.find((dc) => dc.dieId === d.dieId).hexColor);
+        const dieColors = this.$store.getters['wafermeas/dieColors'];
+        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: dieColors.find((dc) => dc.dieId === d.dieId).hexColor }));
       }
       this.renderChart(this.chartdata, this.options);
     },
@@ -145,10 +150,6 @@ export default {
       return this.$store.getters['wafermeas/selectedDies'];
     },
 
-    dieValues() {
-      return this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState);
-    },
-
     hovered() {
       return this.$store.getters['wafermeas/hoveredDieId'];
     },
@@ -159,14 +160,6 @@ export default {
 
     log() {
       return this.$store.getters['wafermeas/getKeyGraphicStateLog'](this.keyGraphicState);
-    },
-
-    dieColors() {
-      return this.$store.getters['wafermeas/dieColors'];
-    },
-
-    dirtyCellsSnapshot() {
-      return this.$store.getters['wafermeas/getDirtyCellsSnapshotByKeyGraphicState'](this.keyGraphicState);
     },
   },
 };

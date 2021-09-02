@@ -283,7 +283,6 @@ export default {
 
     ...mapGetters({
       selectedDies: 'wafermeas/selectedDies',
-      avbSelectedDies: 'wafermeas/avbSelectedDies',
     }),
 
     headers() {

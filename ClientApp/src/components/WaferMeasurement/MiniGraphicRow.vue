@@ -59,12 +59,13 @@ export default {
 
   methods: {
     changeGraphicSelection() {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       if (this.isGraphicSelected) {
         this.$store.dispatch('wafermeas/deleteSelectedGraphic', this.keyGraphicState);
-        this.$store.dispatch('wafermeas/deleteFromDirtyCells', { keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies });
+        this.$store.dispatch('wafermeas/deleteFromDirtyCells', { keyGraphicState: this.keyGraphicState, avbSelectedDies });
       } else {
         this.$store.dispatch('wafermeas/addSelectedGraphic', this.keyGraphicState);
-        this.$store.dispatch('wafermeas/addToDirtyCells', { keyGraphicState: this.keyGraphicState, avbSelectedDies: this.avbSelectedDies });
+        this.$store.dispatch('wafermeas/addToDirtyCells', { keyGraphicState: this.keyGraphicState, avbSelectedDies });
       }
     },
   },
@@ -73,7 +74,6 @@ export default {
 
     ...mapGetters({
       selectedDies: 'wafermeas/selectedDies',
-      avbSelectedDies: 'wafermeas/avbSelectedDies',
     }),
 
     dirtyCellsSnapshot() {

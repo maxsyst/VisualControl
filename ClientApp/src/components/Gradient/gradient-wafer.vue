@@ -31,8 +31,9 @@ export default {
   },
 
   mounted() {
-    this.dies = _.cloneDeep(this.wafer.formedMapGradient.dies);
-    this.initialOrientation = +this.wafer.formedMapGradient.orientation;
+    const wafer = this.$store.getters['wafermeas/wafer'];
+    this.dies = _.cloneDeep(wafer.formedMapGradient.dies);
+    this.initialOrientation = +wafer.formedMapGradient.orientation;
     this.currentOrientation = this.initialOrientation;
     this.initialize(this.dies);
     if (this.gradientSteps) this.goToInitial(this.selectedDies, this.gradientSteps);
@@ -47,7 +48,8 @@ export default {
     },
 
     goToInitial(selectedDies, gradientSteps) {
-      this.avbSelectedDies.forEach((avb) => {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
+      avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         const step = gradientSteps.find((g) => g.dieList.includes(die.id));
         const isSelected = selectedDies.includes(die.id);
@@ -75,9 +77,7 @@ export default {
     {
       ...mapGetters({
         selectedDies: 'wafermeas/selectedDies',
-        wafer: 'wafermeas/wafer',
         sizeGetter: 'wafermeas/size',
-        avbSelectedDies: 'wafermeas/avbSelectedDies',
       }),
 
       fieldViewBox() {

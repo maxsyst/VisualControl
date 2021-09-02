@@ -52,43 +52,53 @@
             <v-btn block @click="setStatisticKf">Применить</v-btn>
         </v-row>
         <v-row>
-            <v-chip color="indigo"
-                    label
-                    dark>
-                    <span>LowBorder</span>
-            </v-chip>
-           <v-text-field v-model="lowBorder" label="lowBorder"></v-text-field>
+           <v-text-field v-model="lowBorder" :readonly="mode=='STAT'" outlined label="lowBorder"></v-text-field>
         </v-row>
         <v-row>
-            <v-chip color="indigo"
-                                        label
-                                        dark>
-                                         <span>TopBorder</span>
-            </v-chip>
-            <v-text-field v-model="topBorder" label="topBorder"></v-text-field>
+            <v-text-field v-model="topBorder" :readonly="mode=='STAT'" outlined label="topBorder"></v-text-field>
+        </v-row>
+        <v-row>
+          <v-checkbox v-model="autoRefresh" label="Автоматическое отсеивание"></v-checkbox>
         </v-row>
     </v-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
   props: ['measurementId', 'keyGraphicState', 'statParameter'],
   data() {
     return {
-      statisticKf: '1.5',
+      statisticKf: '',
       lowBorder: '',
       topBorder: '',
       mode: 'STAT',
+      autoRefresh: true,
     };
   },
 
+  mounted() {
+    this.statisticKf = this.currentDcProfile.k;
+    this.mode = this.currentDcProfile.type;
+    this.topBorder = this.currentDcProfile.topBorder;
+    this.lowBorder = this.currentDcProfile.lowBorder;
+  },
+
   computed: {
+
+    ...mapGetters({
+      selectedDies: 'wafermeas/selectedDies',
+    }),
+
     dcProfiles() {
       return this.$store.getters['wafermeas/getDcProfilesByKeyGraphicState'](this.keyGraphicState);
     },
     currentDcProfile() {
       return this.dcProfiles.find((dc) => dc.statName === this.statParameter.statisticsName);
+    },
+    dirtyCellsSnapshotBadDies() {
+      return this.$store.getters['wafermeas/dirtyCellsSnapshotBadDies'];
     },
   },
 
@@ -108,6 +118,13 @@ export default {
       const s = (await this.$http.get(`${path}=${JSON.stringify(dcProfiles)}`)).data;
       this.$store.dispatch('wafermeas/updateDirtyCellsSnapshot', { keyGraphicState: this.keyGraphicState, snapshotChunk: s.singleGraphicDirtyCells });
       this.$store.dispatch('wafermeas/updateDcProfiles', { keyGraphicState: this.keyGraphicState, keyGraphicStateDcProfile: s.dcProfiles });
+      if (this.autoRefresh) this.refreshSelectedDies();
+    },
+
+    refreshSelectedDies() {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
+      const selectedDies = avbSelectedDies.filter((d) => !this.dirtyCellsSnapshotBadDies.includes(d));
+      this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
     },
   },
 };

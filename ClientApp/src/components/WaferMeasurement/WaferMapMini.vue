@@ -44,10 +44,12 @@ export default {
       y: 0,
       initialOrientation: -1,
       currentOrientation: -1,
+      wafer: {},
     };
   },
 
   mounted() {
+    this.wafer = this.$store.getters['wafermeas/wafer'];
     this.dies = _.cloneDeep(this.wafer.formedMapMini.dies);
     this.initialOrientation = +this.wafer.formedMapMini.orientation;
     this.currentOrientation = this.initialOrientation;
@@ -94,7 +96,8 @@ export default {
 
     goToInitial(selectedDies) {
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'initial' });
-      this.avbSelectedDies.forEach((avb) => {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
+      avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
         die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id)
@@ -107,7 +110,8 @@ export default {
 
     goToDirty(selectedDies) {
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'dirty' });
-      this.avbSelectedDies.forEach((avb) => {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
+      avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
         die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id)
@@ -120,7 +124,8 @@ export default {
 
     goToSelected(selectedDies) {
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'selected' });
-      this.avbSelectedDies.forEach((avb) => {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
+      avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         die.fillOpacity = 1.0;
         die.fill = selectedDies.includes(die.id) ? '#3D5AFE' : '#8C9EFF';
@@ -130,11 +135,13 @@ export default {
 
     goToColor(selectedDies) {
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'color' });
-      this.avbSelectedDies.forEach((avb) => {
+      const dieColors = this.$store.getters['wafermeas/dieColors'];
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
+      avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         const isSelected = selectedDies.includes(die.id);
         die.fillOpacity = 1.0;
-        die.fill = isSelected ? this.dieColors.find((d) => d.dieId === die.id).hexColor : '#424242';
+        die.fill = isSelected ? dieColors.find((d) => d.dieId === die.id).hexColor : '#424242';
         die.isActive = true;
       });
     },
@@ -190,11 +197,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      wafer: 'wafermeas/wafer',
       selectedDies: 'wafermeas/selectedDies',
-      avbSelectedDies: 'wafermeas/avbSelectedDies',
       sizeGetter: 'wafermeas/size',
-      dieColors: 'wafermeas/dieColors',
       modeGetter: 'wafermeas/getKeyGraphicStateMode',
     }),
 

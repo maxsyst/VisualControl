@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import WaferMapMini from './WaferMapMini.vue';
 
 export default {
@@ -76,20 +75,18 @@ export default {
 
   methods: {
     delDirtyCells(dirtyCells) {
-      const selectedDies = this.selectedDies.filter((el) => !dirtyCells.includes(el));
+      let selectedDies = this.$store.getters['wafermeas/selectedDies'];
+      selectedDies = selectedDies.filter((el) => !dirtyCells.includes(el));
       this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
     },
   },
 
   computed: {
-    ...mapGetters({
-      selectedDies: 'wafermeas/selectedDies',
-      avbSelectedDies: 'wafermeas/avbSelectedDies',
-    }),
 
     dirtyCellsPercentage() {
+      const selectedDies = this.$store.getters['wafermeas/selectedDies'];
       return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length
-        - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
+        - ([...new Set([...selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - selectedDies.length)) / selectedDies.length) * 100);
     },
 
     dirtyCellsSnapshot() {
