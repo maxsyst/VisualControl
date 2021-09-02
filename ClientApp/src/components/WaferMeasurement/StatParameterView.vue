@@ -37,7 +37,7 @@
                 :tick-labels="['0.5', '0.75', '1', '1.25', '1.5', '1.75', '2']"
                 :min="0.5"
                 :max="2"
-                step="0.5"
+                step="0.25"
                 ticks="always"
                 tick-size="4">
             </v-slider>
@@ -45,28 +45,24 @@
         </v-row>
         <v-row>
             <v-chip color="indigo"
-                                        label
-
-                                        dark>
-                                         <span>LowBorder</span>
+                    label
+                    dark>
+                    <span>LowBorder</span>
             </v-chip>
             <v-chip color="success"
-                                        label
-
-                                        dark>
-                                         <span>{{dcProfiles.find((dc) => (dc.statName === statParameter.statisticsName)).lowBorder }}</span>
+                    label
+                    dark>
+                    <span>{{dcProfiles.find((dc) => (dc.statName === statParameter.statisticsName)).lowBorder }}</span>
             </v-chip>
         </v-row>
         <v-row>
             <v-chip color="indigo"
                                         label
-
                                         dark>
                                          <span>TopBorder</span>
             </v-chip>
             <v-chip color="success"
                                         label
-
                                         dark>
                                          <span>{{dcProfiles.find((dc) => (dc.statName === statParameter.statisticsName)).topBorder }}</span>
             </v-chip>

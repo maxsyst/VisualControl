@@ -24,8 +24,7 @@
                              :measurementId="measurementId"
                              :keyGraphicState="keyGraphicState"
                              :statParameter="stat"
-                             :divider="divider"
-                             :statisticKf="statisticKf">
+                             :divider="divider">
               </gradient-full>
             </v-tab-item>
             <v-tab-item value="commonTable">

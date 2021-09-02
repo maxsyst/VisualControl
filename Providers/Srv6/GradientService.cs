@@ -19,7 +19,7 @@ namespace VueExample.Providers.Srv6
             _colorService = colorService;
         }
 
-        public GradientViewModel GetGradient(SingleParameterStatisticValues singleParameterStatisticValues, int stepsQuantity, double k, string divider, List<long> selectedDies)
+        public GradientViewModel GetGradient(SingleParameterStatisticValues singleParameterStatisticValues, int stepsQuantity, string lowBorder, string topBorder, string divider, List<long> selectedDies)
         {
             var gradientViewModel = new GradientViewModel();
             var colorList = stepsQuantity <= 32 ? _colorService.GetGradientColors().Select(x => x.Hex).ToList() : Enumerable.Repeat("#3F51B5", stepsQuantity).ToList();
@@ -27,17 +27,16 @@ namespace VueExample.Providers.Srv6
             {
                 return new GradientViewModel();
             }
-            var dataDescriptiveStatistics = new DataDescriptiveStatistics(singleParameterStatisticValues.GetValues());
-            var lowBorder = Divider(dataDescriptiveStatistics.Quartile1Double - k * dataDescriptiveStatistics.IQRDouble, singleParameterStatisticValues.DividerProfile, divider);
-            var topBorder = Divider(dataDescriptiveStatistics.Quartile3Double + k * dataDescriptiveStatistics.IQRDouble, singleParameterStatisticValues.DividerProfile, divider);
-            var stepSize = Math.Abs(topBorder - lowBorder) / stepsQuantity;
-            gradientViewModel.GradientSteps.Add(new ExtremeLowGradientStep(lowBorder));
+            var lowBorderDouble = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture);
+            var topBorderDouble = Convert.ToDouble(topBorder, CultureInfo.InvariantCulture);
+            var stepSize = Math.Abs(topBorderDouble - lowBorderDouble) / stepsQuantity;
+            gradientViewModel.GradientSteps.Add(new ExtremeLowGradientStep(lowBorderDouble));
             for (int i = 0; i < stepsQuantity; i++)
             {
-                gradientViewModel.GradientSteps.Add(new ColorGradientStep(i, stepSize, lowBorder, topBorder, colorList[i]));
+                gradientViewModel.GradientSteps.Add(new ColorGradientStep(i, stepSize, lowBorderDouble, topBorderDouble, colorList[i]));
             }
             
-            gradientViewModel.GradientSteps.Add(new ExtremeHighGradientStep(topBorder));
+            gradientViewModel.GradientSteps.Add(new ExtremeHighGradientStep(topBorderDouble));
 
             foreach (var dieStat in singleParameterStatisticValues.DieStatDictionary)
             {

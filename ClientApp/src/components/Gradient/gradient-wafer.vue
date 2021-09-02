@@ -4,7 +4,7 @@
         <v-col class="d-flex flex-column align-center">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
             <g v-for="(die, key) in dies" :key="die.id">
-              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill"/>
+              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :stroke="die.isBad" stroke-width="5"/>
             </g>
           </svg>
         </v-col>
@@ -40,11 +40,9 @@ export default {
   methods: {
 
     initialize(dies) {
-      dies.forEach((die) => {
-        die.fill = '#A1887F';
-        die.isActive = false;
-        die.fillOpacity = 1.0;
-      });
+      this.dies = dies.map((die) => ({
+        ...die, fill: '#A1887F', isActive: true, fillOpacity: 1.0, isBad: false,
+      }));
     },
 
     goToInitial(selectedDies, gradientSteps) {
@@ -55,18 +53,13 @@ export default {
         die.fill = isSelected ? step.color : '#303030';
         die.fillOpacity = 1.0;
         die.isActive = false;
+        die.isBad = step.name === 'Low' || step.name === 'High' ? '#E91E63' : '1E1E1E';
       });
     },
   },
 
   watch:
     {
-      fieldWidth: {
-        immediate: true,
-        handler(newValue) {
-          this.fieldViewBox;
-        },
-      },
 
       gradientSteps(newVal) {
         this.goToInitial(this.selectedDies, newVal);

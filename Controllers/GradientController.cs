@@ -29,9 +29,9 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetGradientStatParameter([FromQuery] string gradientViewModelJSON)
         {
             var gradientViewModel = JsonConvert.DeserializeObject<GradientStatViewModel>(gradientViewModelJSON);
-            var (measurementRecordingId, kgs, k) = gradientViewModel;
+            var (measurementRecordingId, kgs, lowBorder, topBorder) = gradientViewModel;
             var singleParameterStatistic = ((await _statisticService.GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId))[kgs])[gradientViewModel.StatParameter];
-            var gradient = _gradientService.GetGradient(singleParameterStatistic, gradientViewModel.StepsQuantity, k, gradientViewModel.Divider, gradientViewModel.SelectedDiesId);
+            var gradient = _gradientService.GetGradient(singleParameterStatistic, gradientViewModel.StepsQuantity, lowBorder, topBorder, gradientViewModel.Divider, gradientViewModel.SelectedDiesId);
             return gradient.GradientSteps.Count > 0 ? Ok(gradient) : (IActionResult)BadRequest(gradient);
         }
 

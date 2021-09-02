@@ -1,13 +1,10 @@
 <template>
-     <v-skeleton-loader v-if="loading"
-                          class="mx-auto"
-                          type="date-picker-days">
-    </v-skeleton-loader>
-    <v-container v-else>
+    <v-container>
         <v-row>
             <v-col lg="6">
                 <v-row>
-                  <StatParameterView :measurementId="measurementId" :keyGraphicState="keyGraphicState" :statParameter="statParameter"></StatParameterView>
+                  <StatParameterView :measurementId="measurementId"
+                                     :keyGraphicState="keyGraphicState" :statParameter="statParameter"></StatParameterView>
                 </v-row>
                 <v-row>
                     <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
@@ -63,7 +60,7 @@ import GradientHstg from './gradient-histogram.vue';
 import StatParameterView from '../WaferMeasurement/StatParameterView.vue';
 
 export default {
-  props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider', 'statisticKf'],
+  props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider'],
   components: {
     'gradient-map': GradientWafer,
     'gradient-hstg': GradientHstg,
@@ -71,7 +68,6 @@ export default {
   },
   data() {
     return {
-      loading: false,
       activeTab: 'gradientMapTab',
       gradientData: {},
       stepsQuantity: 32,
@@ -84,6 +80,7 @@ export default {
     },
 
     async refresh() {
+      const dcProfile = this.dcProfiles.find((dc) => dc.statName === this.statParameter.statisticsName);
       this.gradientData = (await this.$http
         .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({
           measurementRecordingId: this.measurementId,
@@ -91,7 +88,8 @@ export default {
           divider: this.divider,
           keyGraphicState: this.keyGraphicState,
           statParameter: this.statParameter.statisticsName,
-          k: this.statisticKf,
+          lowBorder: dcProfile.lowBorder,
+          topBorder: dcProfile.topBorder,
           selectedDiesId: this.selectedDies,
         })}`)).data;
     },
@@ -104,6 +102,9 @@ export default {
     async divider() {
       await this.refresh();
     },
+    async dcProfiles() {
+      await this.refresh();
+    },
   },
 
   computed:
@@ -111,21 +112,14 @@ export default {
       selectedDies() {
         return this.$store.getters['wafermeas/selectedDies'];
       },
+
+      dcProfiles() {
+        return this.$store.getters['wafermeas/getDcProfilesByKeyGraphicState'](this.keyGraphicState);
+      },
     },
 
   async mounted() {
-    this.loading = true;
-    this.gradientData = (await this.$http
-      .get(`/api/gradient/statparameter?gradientViewModelJSON=${JSON.stringify({
-        measurementRecordingId: this.measurementId,
-        stepsQuantity: this.stepsQuantity,
-        divider: this.divider,
-        keyGraphicState: this.keyGraphicState,
-        statParameter: this.statParameter.statisticsName,
-        k: this.statisticKf,
-        selectedDiesId: [...this.selectedDies],
-      })}`)).data;
-    this.loading = false;
+    await this.refresh();
   },
 };
 </script>

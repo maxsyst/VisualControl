@@ -40,7 +40,7 @@ namespace VueExample.ViewModels
         public ExtremeHighGradientStep(double topBorder)
         {
             Name = "High";
-            Color = "#E91E63";
+            Color = "#F48FB1";
             TopBorder = topBorder;
             BorderDescription = $"> {(TopBorder.ToGoodFormat())}";
         }
