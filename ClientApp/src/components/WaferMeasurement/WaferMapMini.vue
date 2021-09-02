@@ -81,6 +81,7 @@ export default {
       const dieId = die.id;
       if (die.isActive) {
         const position = this.selectedDies.indexOf(dieId);
+        // eslint-disable-next-line no-bitwise
         if (~position) {
           this.selectedDies.splice(position, 1);
           this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies);

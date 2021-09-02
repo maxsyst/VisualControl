@@ -31,6 +31,14 @@
                 </v-simple-table>
         </v-row>
         <v-row>
+           <v-select
+                                    :items="['STAT', 'FXD']"
+                                    v-model="mode"
+                                    no-data-text="Нет данных"
+                                    label="Режим отсеивания"
+                                ></v-select>
+        </v-row>
+        <v-row>
             <v-subheader>Коэффициент отсеивания:</v-subheader>
             <v-slider
                 v-model="statisticKf"
@@ -49,11 +57,7 @@
                     dark>
                     <span>LowBorder</span>
             </v-chip>
-            <v-chip color="success"
-                    label
-                    dark>
-                    <span>{{dcProfiles.find((dc) => (dc.statName === statParameter.statisticsName)).lowBorder }}</span>
-            </v-chip>
+           <v-text-field v-model="lowBorder" label="lowBorder"></v-text-field>
         </v-row>
         <v-row>
             <v-chip color="indigo"
@@ -61,11 +65,7 @@
                                         dark>
                                          <span>TopBorder</span>
             </v-chip>
-            <v-chip color="success"
-                                        label
-                                        dark>
-                                         <span>{{dcProfiles.find((dc) => (dc.statName === statParameter.statisticsName)).topBorder }}</span>
-            </v-chip>
+            <v-text-field v-model="topBorder" label="topBorder"></v-text-field>
         </v-row>
     </v-container>
 </template>
@@ -77,6 +77,9 @@ export default {
   data() {
     return {
       statisticKf: '1.5',
+      lowBorder: '',
+      topBorder: '',
+      mode: 'STAT',
     };
   },
 
@@ -84,12 +87,25 @@ export default {
     dcProfiles() {
       return this.$store.getters['wafermeas/getDcProfilesByKeyGraphicState'](this.keyGraphicState);
     },
+    currentDcProfile() {
+      return this.dcProfiles.find((dc) => dc.statName === this.statParameter.statisticsName);
+    },
+  },
+
+  watch: {
+    currentDcProfile(currentDcProfile) {
+      this.statisticKf = currentDcProfile.k;
+      this.mode = currentDcProfile.type;
+      this.topBorder = currentDcProfile.topBorder;
+      this.lowBorder = currentDcProfile.lowBorder;
+    },
   },
 
   methods: {
     async setStatisticKf() {
       const dcProfiles = this.dcProfiles.map((dc) => (dc.statName === this.statParameter.statisticsName ? { ...dc, k: this.statisticKf } : dc));
-      const s = (await this.$http.get(`/api/statrwrk/dirtyCellsSnapshot/${this.measurementId}/${this.keyGraphicState}/withprofile?dcProfilesJSON=${JSON.stringify(dcProfiles)}`)).data;
+      const path = `/api/statrwrk/dirtyCellsSnapshot/${this.measurementId}/${this.keyGraphicState}/withprofile?dcProfilesJSON`;
+      const s = (await this.$http.get(`${path}=${JSON.stringify(dcProfiles)}`)).data;
       this.$store.dispatch('wafermeas/updateDirtyCellsSnapshot', { keyGraphicState: this.keyGraphicState, snapshotChunk: s.singleGraphicDirtyCells });
       this.$store.dispatch('wafermeas/updateDcProfiles', { keyGraphicState: this.keyGraphicState, keyGraphicStateDcProfile: s.dcProfiles });
     },
@@ -97,6 +113,12 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .ps {
+    height: 475px;
+  }
 
+  .border {
+    font-size: x-small;
+  }
 </style>

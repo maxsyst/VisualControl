@@ -4,7 +4,8 @@
         <v-col class="d-flex flex-column align-center">
           <svg :style="svgRotation" :height="size.fieldHeight" :width="size.fieldWidth" :viewBox="fieldViewBox">
             <g v-for="(die, key) in dies" :key="die.id">
-              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width" :height="die.height" :fill="die.fill" :stroke="die.isBad" stroke-width="5"/>
+              <rect :dieIndex="key" :id="die.id" :x="die.x" :y="die.y" :width="die.width"
+                    :height="die.height" :fill="die.fill" :stroke="die.isBad" stroke-width="3"/>
             </g>
           </svg>
         </v-col>

@@ -1,32 +1,15 @@
 <template>
     <v-container>
         <v-row>
-            <v-col lg="6">
-                <v-row>
-                  <StatParameterView :measurementId="measurementId"
-                                     :keyGraphicState="keyGraphicState" :statParameter="statParameter"></StatParameterView>
-                </v-row>
-                <v-row>
-                    <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
-                        <v-tab href="#gradientMapTab">Карта градиента</v-tab>
-                        <v-tab href="#histogramTab">Гистограмма распределения</v-tab>
-                        <v-tab-item value="gradientMapTab">
-                            <gradient-map :gradientSteps="gradientData.gradientSteps"></gradient-map>
-                        </v-tab-item>
-                        <v-tab-item value="histogramTab">
-                            <gradient-hstg :gradientSteps="gradientData.gradientSteps"></gradient-hstg>
-                        </v-tab-item>
-                    </v-tabs>
-                </v-row>
-            </v-col>
-            <v-col lg="6">
+             <v-col lg="7">
                     <perfect-scrollbar>
                         <v-simple-table>
                             <template v-slot:default>
                             <thead>
                                 <tr>
                                     <th class="text-center">Название</th>
-                                    <th class="text-center">Интервал</th>
+                                    <th class="text-center">LB</th>
+                                    <th class="text-center">TB</th>
                                     <th class="text-center">Всего кристаллов</th>
                                     <th class="text-center">Цвет</th>
                                 </tr>
@@ -34,7 +17,8 @@
                             <tbody>
                                 <tr v-for="step in gradientData.gradientSteps" :key="step.name">
                                     <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
-                                    <td class="text-center border">{{ step.borderDescription }}</td>
+                                    <td class="text-center border">{{ step.name == 'Low' ? '<' + step.lowBorder : step.lowBorder }}</td>
+                                    <td class="text-center border">{{ step.name == 'High' ? '>' + step.topBorder : step.topBorder }}</td>
                                     <td class="text-center">{{ step.dieList.length }}</td>
                                     <td class="text-center"><v-chip :color="step.color" label dark></v-chip></td>
                                     <td class="text-center"> <v-icon v-if="step.dieList.length>0"
@@ -48,6 +32,21 @@
                         </v-simple-table>
                     </perfect-scrollbar>
             </v-col>
+            <v-col lg="5">
+                <v-row>
+                    <v-tabs right v-model="activeTab" color="primary" dark slider-color="indigo">
+                        <v-tab href="#gradientMapTab">Карта</v-tab>
+                        <v-tab href="#histogramTab">Гистограмма</v-tab>
+                        <v-tab-item value="gradientMapTab">
+                            <gradient-map :gradientSteps="gradientData.gradientSteps"></gradient-map>
+                        </v-tab-item>
+                        <v-tab-item value="histogramTab">
+                            <gradient-hstg :gradientSteps="gradientData.gradientSteps"></gradient-hstg>
+                        </v-tab-item>
+                    </v-tabs>
+                </v-row>
+            </v-col>
+           
         </v-row>
         <v-row>
 
@@ -57,14 +56,12 @@
 <script>
 import GradientWafer from './gradient-wafer.vue';
 import GradientHstg from './gradient-histogram.vue';
-import StatParameterView from '../WaferMeasurement/StatParameterView.vue';
 
 export default {
   props: ['measurementId', 'keyGraphicState', 'statParameter', 'divider'],
   components: {
     'gradient-map': GradientWafer,
     'gradient-hstg': GradientHstg,
-    StatParameterView,
   },
   data() {
     return {

@@ -11,7 +11,6 @@ namespace VueExample.ViewModels
     public abstract class GradientStep
     {
         public string Color { get; protected set;}
-        public string BorderDescription { get; protected set; }
         public string Name { get; protected set; }
         public List<long> DieList { get; } = new List<long>();
         public abstract bool IsInStep(double value);
@@ -22,16 +21,17 @@ namespace VueExample.ViewModels
         public ExtremeLowGradientStep(double lowBorder)
         {
             Name = "Low";
-            LowBorder = lowBorder;
+            _lowBorder = lowBorder;
+            LowBorder = lowBorder.ToGoodFormat();
             Color = "#4527A0";
-            BorderDescription = $"< {LowBorder.ToGoodFormat()}";
         }
 
-        public double LowBorder { get; private set;}
+        private double _lowBorder;
+        public string LowBorder { get; private set;}
 
         public override bool IsInStep(double value)
         {
-            return value < LowBorder;
+            return value < _lowBorder;
         }
     }
 
@@ -41,15 +41,16 @@ namespace VueExample.ViewModels
         {
             Name = "High";
             Color = "#F48FB1";
-            TopBorder = topBorder;
-            BorderDescription = $"> {(TopBorder.ToGoodFormat())}";
+            _topBorder = topBorder;
+            TopBorder = topBorder.ToGoodFormat();
         }
 
-        public double TopBorder { get; private set;}
+        private double _topBorder;
+        public string TopBorder { get; private set;}
 
         public override bool IsInStep(double value)
         {
-            return value > TopBorder;
+            return value >  _topBorder;
         }
     }
 
@@ -59,17 +60,21 @@ namespace VueExample.ViewModels
         public ColorGradientStep(int index, double stepSize, double lowBorder, double topBorder, string color)
         {
             Name = $"Step{index + 1}";
-            LowBorder = lowBorder + index * stepSize;
-            TopBorder = lowBorder + (index+1) * stepSize;
+            _lowBorder = lowBorder + index * stepSize;
+            _topBorder = lowBorder + (index+1) * stepSize;
+            LowBorder = _lowBorder.ToGoodFormat();
+            TopBorder = _topBorder.ToGoodFormat();
             Color = color;
-            BorderDescription = $"{LowBorder.ToGoodFormat()}->{TopBorder.ToGoodFormat()}";
+
         }
-        public double LowBorder { get; private set;}
-        public double TopBorder { get; private set;}
+        public double _lowBorder;
+        public string LowBorder { get; private set;}
+        public double _topBorder;
+        public string TopBorder { get; private set;}
 
         public override bool IsInStep(double value)
         {
-            return value >= LowBorder && value < TopBorder;
+            return value >= _lowBorder && value < _topBorder;
         }
     }
 }

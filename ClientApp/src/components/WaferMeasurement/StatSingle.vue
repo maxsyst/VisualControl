@@ -7,7 +7,7 @@
       </toolbar>
       <v-row>
         <v-col lg="12">
-          <v-tabs v-model="activeTab" color="primary" dark slider-color="indigo">
+          <v-tabs :vertical="rowViewMode=='miniChart'" v-model="activeTab" color="primary" dark slider-color="indigo">
             <v-tab href="#commonTable">Сводная таблица</v-tab>
             <v-tab
               v-for="stat in statArrayRWRK"
@@ -20,12 +20,11 @@
               v-for="stat in statArrayRWRK"
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
-              <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState"
-                             :measurementId="measurementId"
-                             :keyGraphicState="keyGraphicState"
-                             :statParameter="stat"
-                             :divider="divider">
-              </gradient-full>
+              <StatParameterInfo :measurementId="measurementId"
+                                 :keyGraphicState="keyGraphicState"
+                                 :statParameter="stat"
+                                 :divider="divider">
+              </StatParameterInfo>
             </v-tab-item>
             <v-tab-item value="commonTable">
               <v-card flat>
@@ -44,7 +43,10 @@
                         <template v-slot:item.shortStatisticsName="{ item }">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                              <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
+                              <v-chip color="indigo" v-on="on"
+                                      label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName"
+                                      dark>
+                              </v-chip>
                             </template>
                             <span v-html="item.statisticsName"></span>
                           </v-tooltip>
@@ -97,13 +99,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import Toolbar from './GraphicRowFullInfoToolbar.vue';
-import GradientFull from '../Gradient/gradient-full.vue';
+import StatParameterInfo from './StatParameterInfo.vue';
 
 export default {
   props: ['keyGraphicState', 'measurementId', 'divider', 'statisticKf', 'rowViewMode'],
   components: {
-    'gradient-full': GradientFull,
     toolbar: Toolbar,
+    StatParameterInfo,
   },
   data() {
     return {
@@ -256,7 +258,8 @@ export default {
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
-        this.statArrayRWRK = (await this.$http.get(`/api/statrwrk/StatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
+        const path = '/api/statrwrk/StatisticSingleGraphic?statisticSingleGraphicViewModelJSON';
+        this.statArrayRWRK = (await this.$http.get(`${path}=${JSON.stringify(singlestatModel)}`)).data;
         this.statArrayRWRK = this.statArrayRWRK.map((s) => ({ ...s, goodDiesPercentage: this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].goodDiesPercentage, dirtyCells: { array: [...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells], percentage: Math.ceil((1.0 - (this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells])].length - this.selectedDies.length)) / this.selectedDies.length) * 100) } }));
       }
     },

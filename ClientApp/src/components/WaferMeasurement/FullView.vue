@@ -430,7 +430,10 @@ export default {
       this.selectAllGraphics();
       this.loading = false;
       this.activeTab = 'statistics';
-      await this.$router.push({ name: 'wafermeasurement-fullselected', params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find((x) => x.id === selectedMeasurementId).name } });
+      await this.$router.push({
+        name: 'wafermeasurement-fullselected',
+        params: { waferId: this.selectedWafer, measurementName: this.measurementRecordings.find((x) => x.id === selectedMeasurementId).name },
+      });
     },
 
     delDirtyCells(dirtyCellsList, selectedDies) {
