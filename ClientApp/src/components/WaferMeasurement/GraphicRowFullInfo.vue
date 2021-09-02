@@ -6,7 +6,6 @@
           :keyGraphicState="keyGraphicState"
           :divider="selectedDivider"
           :rowViewMode="rowViewMode"
-          :statisticKf="statisticKf"
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
@@ -36,7 +35,7 @@ import ChartHSTG from '../Charts/ChartHSTG.vue';
 import StatSingle from './StatSingle.vue';
 
 export default {
-  props: ['selectedMeasurementId', 'keyGraphicState', 'selectedDivider', 'statisticKf', 'selectedDiesLength'],
+  props: ['selectedMeasurementId', 'keyGraphicState', 'selectedDivider', 'selectedDiesLength'],
   data() {
     return {
 

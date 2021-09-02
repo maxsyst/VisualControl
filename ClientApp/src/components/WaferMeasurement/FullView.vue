@@ -250,7 +250,6 @@
                  :selectedMeasurementId="selectedMeasurementId"
                  :keyGraphicState="graphic.keyGraphicState"
                  :selectedDivider="selectedDivider"
-                 :statisticKf="statisticKf"
                  :selectedDiesLength="selectedDies.length">
     </graphic-row>
   </v-container>
@@ -279,7 +278,6 @@ export default {
       selectedWafer: '',
       selectedDivider: '1.0',
       selectedMeasurementId: 0,
-      statisticKf: 1.5,
       shortLinkSrv6: '',
       generateShortLinkMode: 'srv3',
     };

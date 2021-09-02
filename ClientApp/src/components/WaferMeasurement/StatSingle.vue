@@ -102,7 +102,7 @@ import Toolbar from './GraphicRowFullInfoToolbar.vue';
 import StatParameterInfo from './StatParameterInfo.vue';
 
 export default {
-  props: ['keyGraphicState', 'measurementId', 'divider', 'statisticKf', 'rowViewMode'],
+  props: ['keyGraphicState', 'measurementId', 'divider', 'rowViewMode'],
   components: {
     toolbar: Toolbar,
     StatParameterInfo,
@@ -253,7 +253,6 @@ export default {
     async getStatArray() {
       if (this.measurementId !== 0 && this.selectedDies.length > 0) {
         const singlestatModel = {};
-        singlestatModel.k = this.statisticKf;
         singlestatModel.divider = this.divider;
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;

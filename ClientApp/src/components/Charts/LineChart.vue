@@ -31,6 +31,10 @@ export default {
     this.renderChart(this.chartdata, this.options);
   },
 
+  beforeDestroy() {
+    this.$data._chart.destroy();
+  },
+
   methods: {
     getChartDataFromStore(selectedDies) {
       const datasets = [];
@@ -162,5 +166,6 @@ export default {
       return this.$store.getters['wafermeas/getKeyGraphicStateLog'](this.keyGraphicState);
     },
   },
+
 };
 </script>
