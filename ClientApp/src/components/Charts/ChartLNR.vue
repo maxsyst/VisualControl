@@ -100,6 +100,12 @@ export default {
 
   },
 
+  beforeDestroy() {
+    this.chartdata = null;
+    this.settings = null;
+    this.options = null;
+  },
+
   watch: {
     async divider() {
       await this.getChartData(this.selectedDies);

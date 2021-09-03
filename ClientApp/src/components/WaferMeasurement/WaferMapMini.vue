@@ -57,6 +57,11 @@ export default {
     this.goToInitial(this.selectedDies);
   },
 
+  beforeDestroy() {
+    this.dies = null;
+    this.wafer = null;
+  },
+
   methods: {
 
     initialize() {

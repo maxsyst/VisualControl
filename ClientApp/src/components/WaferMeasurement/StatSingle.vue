@@ -113,7 +113,6 @@ export default {
       PopoverX: 0,
       PopoverY: 0,
       statArrayRWRK: [],
-      fullWaferStatArray: [],
       graphicName: '',
       activeTab: 'commonTable',
       loading: false,
@@ -228,6 +227,10 @@ export default {
   async created() {
     this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName;
     await this.getStatArray();
+  },
+
+  beforeDestroy() {
+    this.statArrayRWRK = null;
   },
 
   methods: {

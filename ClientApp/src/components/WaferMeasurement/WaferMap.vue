@@ -98,6 +98,10 @@ export default {
     };
   },
 
+  beforeDestroy() {
+    this.dies = null;
+  },
+
   methods:
     {
       selectDie(e) {
