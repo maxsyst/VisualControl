@@ -69,7 +69,6 @@
 </template>
 
 <script>
-import ChartJsDeffered from 'chartjs-plugin-deferred';
 import ChartJsZoom from 'chartjs-plugin-zoom';
 import LineChart from './LineChart.vue';
 import Settings from './ChartSettings/ChartSettingsLNR';
@@ -82,7 +81,6 @@ export default {
     loaded: false,
     showSettings: false,
     settings: {},
-    chartdata: {},
     options: {},
   }),
 
@@ -98,7 +96,6 @@ export default {
   },
 
   beforeDestroy() {
-    this.chartdata = null;
     this.settings = null;
     this.options = null;
   },
@@ -138,7 +135,6 @@ export default {
           //   if(index === 0)
           //     chart.chartData.labels = downsampled.map(x => x.y)
           // });
-          this.chartdata = chart.chartData;
           this.loaded = true;
         })
         .catch((error) => { console.log(error); });

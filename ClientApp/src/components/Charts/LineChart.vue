@@ -35,19 +35,20 @@ export default {
 
   beforeDestroy() {
     this.$data._chart.destroy();
+    this.chartdata = null;
   },
 
   methods: {
     getChartDataFromStore(selectedDies) {
       const datasets = [];
       const dieColors = this.$store.getters['wafermeas/dieColors'];
-      const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
+      const badDies = new Set([...this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState)]);
       this.chartdata = _.cloneDeep(this.$store.getters['wafermeas/getChartsDataByKeyGraphicState'](this.keyGraphicState));
       selectedDies.forEach((dieId) => {
         const singleDataset = {
           dieId,
-          borderColor: this.mode === 'dirty' ? badDies.includes(dieId) ? '#ff1744' : '#00e676'
-            : dieColors.find((dc) => dc.dieId === dieId).hexColor,
+          borderColor: this.mode === 'dirty' ? badDies.has(dieId) ? '#ff1744' : '#00e676'
+            : dieColors.get(dieId),
           data: this.chartdata.datasets[dieId].data,
           fill: false,
           borderWidth: 1,
@@ -125,11 +126,11 @@ export default {
 
     mode(newValue) {
       if (newValue === 'dirty') {
-        const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
-        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: badDies.includes(d.dieId) ? '#ff1744' : '#00e676' }));
+        const badDies = new Set([...this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState)]);
+        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: badDies.has(d.dieId) ? '#ff1744' : '#00e676' }));
       } else {
         const dieColors = this.$store.getters['wafermeas/dieColors'];
-        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: dieColors.find((dc) => dc.dieId === d.dieId).hexColor }));
+        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: dieColors.get(d.dieId) }));
       }
       this.renderChart(this.chartdata, this.options);
     },

@@ -23,7 +23,6 @@ export default {
   components: { BarChart },
   data: () => ({
     loaded: false,
-    chartdata: {},
     options: {},
   }),
 
@@ -51,7 +50,6 @@ export default {
         .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
         .then((response) => {
           const chart = response.data;
-          this.chartdata = chart.chartData;
           this.$store.dispatch('wafermeas/updateChartsData', { keyGraphicState: this.keyGraphicState, data: chart.chartData });
           this.calculateOptions(chart.options);
           this.loaded = true;

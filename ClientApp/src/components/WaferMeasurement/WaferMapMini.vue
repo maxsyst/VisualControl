@@ -100,53 +100,57 @@ export default {
     },
 
     goToInitial(selectedDies) {
+      const selectedDiesSet = new Set([...selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'initial' });
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id)
-          ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
-          : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
+        die.fill = this.dirtyCellsSnapshotBadDies.has(die.id)
+          ? selectedDiesSet.has(die.id) ? '#F50057' : '#580000'
+          : selectedDiesSet.has(die.id) ? '#00E676' : '#1B5E20';
         die.fillOpacity = 1.0;
         die.isActive = true;
       });
     },
 
     goToDirty(selectedDies) {
+      const selectedDiesSet = new Set([...selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'dirty' });
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCellsSnapshotBadDies.includes(die.id)
-          ? selectedDies.includes(die.id) ? '#F50057' : '#580000'
-          : selectedDies.includes(die.id) ? '#00E676' : '#1B5E20';
+        die.fill = this.dirtyCellsSnapshotBadDies.has(die.id)
+          ? selectedDiesSet.has(die.id) ? '#F50057' : '#580000'
+          : selectedDiesSet.has(die.id) ? '#00E676' : '#1B5E20';
         die.fillOpacity = 1.0;
         die.isActive = true;
       });
     },
 
     goToSelected(selectedDies) {
+      const selectedDiesSet = new Set([...selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'selected' });
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
         die.fillOpacity = 1.0;
-        die.fill = selectedDies.includes(die.id) ? '#3D5AFE' : '#8C9EFF';
+        die.fill = selectedDiesSet.has(die.id) ? '#3D5AFE' : '#8C9EFF';
         die.isActive = true;
       });
     },
 
     goToColor(selectedDies) {
+      const selectedDiesSet = new Set([...selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'color' });
       const dieColors = this.$store.getters['wafermeas/dieColors'];
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
-        const isSelected = selectedDies.includes(die.id);
+        const isSelected = selectedDiesSet.has(die.id);
         die.fillOpacity = 1.0;
-        die.fill = isSelected ? dieColors.find((d) => d.dieId === die.id).hexColor : '#424242';
+        die.fill = isSelected ? dieColors.get(die.id) : '#424242';
         die.isActive = true;
       });
     },
@@ -208,7 +212,7 @@ export default {
     }),
 
     dirtyCellsSnapshotBadDies() {
-      return this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
+      return new Set([...this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState)]);
     },
 
     mode() {

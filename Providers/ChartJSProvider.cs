@@ -42,6 +42,10 @@ namespace VueExample.Providers
                 }
                 datasets.TryAdd(dataset.DieId, dataset);
             });
+            if(divider - 1.0 > 1E6)
+            {
+                graphic.OrdinateUnit =  $"{graphic.OrdinateUnit}/мм"; 
+            }
             var labelsList = new List<string>();
             var chart = new LinearChart (labelsList, 
                                          datasets.ToDictionary(kv => kv.Key, kv => kv.Value), 
@@ -56,6 +60,10 @@ namespace VueExample.Providers
             var labelsList = new List<string>();
             var datasetList = new Dictionary<long, Dataset>();
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
+            if(divider - 1.0 > 1E6)
+            {
+                graphic.OrdinateUnit =  $"{graphic.OrdinateUnit}/мм"; 
+            }
             var chart = new BarChart(labelsList, 
                                      datasetList, 
                                      new ChartModels.ChartJs.Options.XAxis($"Номер кристалла", true), 

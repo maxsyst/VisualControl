@@ -374,7 +374,7 @@ export const wafermeas = {
     },
 
     updateDieColors(state, dieColors) {
-      state.dieColors = [...dieColors];
+      state.dieColors = new Map(dieColors.map((dc) => [dc.dieId, dc.hexColor]));
     },
 
     updateDirtyCells(state, dirtyCells) {
