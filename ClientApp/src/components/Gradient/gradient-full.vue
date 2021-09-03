@@ -15,7 +15,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="step in gradientData.gradientSteps" :key="step.name">
+                                <tr v-for="step in gradientTableData" :key="step.name">
                                     <td class="text-center"><v-chip color="indigo" label v-html="step.name" dark></v-chip></td>
                                     <td class="text-center border">{{ step.name == 'Low' ? '<' + step.lowBorder : step.lowBorder }}</td>
                                     <td class="text-center border">{{ step.name == 'High' ? '>' + step.topBorder : step.topBorder }}</td>
@@ -66,6 +66,7 @@ export default {
     return {
       activeTab: 'gradientMapTab',
       gradientData: {},
+      gradientTableData: [],
       stepsQuantity: 32,
     };
   },
@@ -86,14 +87,18 @@ export default {
           statParameter: this.statParameter.statisticsName,
           lowBorder: dcProfile.lowBorder,
           topBorder: dcProfile.topBorder,
-          selectedDiesId: this.selectedDies,
         })}`)).data;
+      this.rerenderTable(this.selectedDies);
+    },
+
+    rerenderTable(selectedDies) {
+      this.gradientTableData = this.gradientData.gradientSteps.map((g) => ({ ...g, dieList: g.dieList.filter((d) => selectedDies.includes(d)) }));
     },
   },
 
   watch: {
-    async selectedDies() {
-      await this.refresh();
+    selectedDies(selectedDies) {
+      this.rerenderTable(selectedDies);
     },
     async divider() {
       await this.refresh();

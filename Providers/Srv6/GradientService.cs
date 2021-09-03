@@ -19,7 +19,7 @@ namespace VueExample.Providers.Srv6
             _colorService = colorService;
         }
 
-        public GradientViewModel GetGradient(SingleParameterStatisticValues singleParameterStatisticValues, int stepsQuantity, string lowBorder, string topBorder, string divider, List<long> selectedDies)
+        public GradientViewModel GetGradient(SingleParameterStatisticValues singleParameterStatisticValues, int stepsQuantity, string lowBorder, string topBorder, string divider)
         {
             var gradientViewModel = new GradientViewModel();
             var colorList = stepsQuantity <= 32 ? _colorService.GetGradientColors().Select(x => x.Hex).ToList() : Enumerable.Repeat("#3F51B5", stepsQuantity).ToList();

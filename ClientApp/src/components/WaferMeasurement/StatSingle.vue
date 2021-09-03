@@ -8,7 +8,7 @@
       <v-row>
         <v-col lg="12">
           <v-tabs :vertical="rowViewMode=='miniChart'" v-model="activeTab" color="primary" dark slider-color="indigo">
-            <v-tab href="#commonTable">Сводная таблица</v-tab>
+            <v-tab href="#commonTable">Сводная</v-tab>
             <v-tab
               v-for="stat in statArrayRWRK"
               :disabled="rowViewMode!=='miniChart'"
