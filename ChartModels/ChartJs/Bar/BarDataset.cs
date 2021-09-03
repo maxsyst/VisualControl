@@ -5,7 +5,7 @@ namespace VueExample.ChartModels.ChartJs.Bar
     public class BarDataset : Dataset
     {
         public List<string> BackgroundColor { get; set; } = new List<string>();
-        public List<long> DieIdList { get; set; } = new List<long>();
+        public Dictionary<long, double> Data { get; set; } = new Dictionary<long, double>();
     }
 
     public class SingleBarDataset

@@ -6,11 +6,12 @@ export default {
   data() {
     return {
       oldHovered: { color: '', dieId: 0 },
+      chartdata: {},
     };
   },
   props: {
-    chartdata: {
-      type: Object,
+    divider: {
+      type: String,
       default: null,
     },
     options: {
@@ -28,6 +29,7 @@ export default {
   },
 
   mounted() {
+    this.getChartDataFromStore(this.selectedDies);
     this.renderChart(this.chartdata, this.options);
   },
 
@@ -39,14 +41,14 @@ export default {
     getChartDataFromStore(selectedDies) {
       const datasets = [];
       const dieColors = this.$store.getters['wafermeas/dieColors'];
-      const dieValues = this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState);
       const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
+      this.chartdata = _.cloneDeep(this.$store.getters['wafermeas/getChartsDataByKeyGraphicState'](this.keyGraphicState));
       selectedDies.forEach((dieId) => {
         const singleDataset = {
           dieId,
           borderColor: this.mode === 'dirty' ? badDies.includes(dieId) ? '#ff1744' : '#00e676'
             : dieColors.find((dc) => dc.dieId === dieId).hexColor,
-          data: [...dieValues.find((dv) => dv.d === dieId).y.map((x) => +x)],
+          data: this.chartdata.datasets[dieId].data,
           fill: false,
           borderWidth: 1,
           pointHoverRadius: 0,

@@ -28,23 +28,23 @@ namespace VueExample.Providers
 
         public async Task<AbstractChart> GetLinearFromDieValues(Dictionary <long?, DieValue> dieValuesDictionary, List<long?> dieIdList, double divider, string keyGraphicState) 
         {
-            var datasetList = new ConcurrentBag<Dataset>();
+            var datasets = new ConcurrentDictionary<long, Dataset>();
             var currentDieValues = dieIdList.Select(dieId => dieValuesDictionary[dieId]).ToList();
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
             Parallel.ForEach (currentDieValues, (dieValue) => 
             {
                 var dataset = new LinearDataset();
                 dataset.BorderColor = _colorService.GetHexColorByDieId(dieValue.DieId);
-                dataset.DieId = dieValue.DieId;
+                dataset.DieId = (long)dieValue.DieId;
                 for (int i = 0; i < dieValue.YList.Count; i++)
                 {
                     dataset.Data.Add(double.Parse(dieValue.YList[i], CultureInfo.InvariantCulture) / divider);
                 }
-                datasetList.Add(dataset);
+                datasets.TryAdd(dataset.DieId, dataset);
             });
             var labelsList = new List<string>();
             var chart = new LinearChart (labelsList, 
-                                         datasetList, 
+                                         datasets.ToDictionary(kv => kv.Key, kv => kv.Value), 
                                          new ChartModels.ChartJs.Options.XAxis($"{graphic.Absciss}({graphic.AbscissUnit})", true), 
                                          new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
             labelsList.AddRange(currentDieValues.FirstOrDefault().XList);
@@ -54,7 +54,7 @@ namespace VueExample.Providers
         public async Task<AbstractChart> GetHistogramFromDieValues(List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState) 
         {
             var labelsList = new List<string>();
-            var datasetList = new List<Dataset>();
+            var datasetList = new Dictionary<long, Dataset>();
             Graphic graphic = await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState);
             var chart = new BarChart(labelsList, 
                                      datasetList, 
@@ -70,11 +70,10 @@ namespace VueExample.Providers
             foreach (var kv in dataDictionary.OrderBy(x => Convert.ToInt32(x.Key.Split('-')[0])))
             {
                 labelsList.Add(kv.Key);
-                dataset.DieIdList.Add(kv.Value.DieId);
+                dataset.Data.Add(kv.Value.DieId, kv.Value.Value);
                 dataset.BackgroundColor.Add(kv.Value.BackgroundColor);
-                dataset.Data.Add(kv.Value.Value);
             }
-            datasetList.Add(dataset);
+            datasetList.Add(1, dataset);
             return chart;
         }
     }

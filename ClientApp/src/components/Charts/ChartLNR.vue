@@ -9,7 +9,7 @@
               ref="linechart"
               :class="rowViewMode"
               :keyGraphicState="keyGraphicState"
-              :chartdata="chartdata"
+              :divider="divider"
               :settings="settings"
               :options="options"/>
           </v-container>
@@ -87,13 +87,10 @@ export default {
   }),
 
   async mounted() {
-    await this.getChartData(this.selectedDies);
+    await this.getChartData();
   },
 
   computed: {
-    selectedDies() {
-      return this.$store.getters['wafermeas/selectedDies'];
-    },
     log() {
       return this.$store.getters['wafermeas/getKeyGraphicStateLog'](this.keyGraphicState);
     },
@@ -108,19 +105,20 @@ export default {
 
   watch: {
     async divider() {
-      await this.getChartData(this.selectedDies);
+      await this.getChartData();
     },
   },
 
   methods: {
 
-    async getChartData(selectedDies) {
+    async getChartData() {
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       this.loaded = false;
       const singlestatModel = {};
-      singlestatModel.divider = this.divider;
       singlestatModel.keyGraphicState = this.keyGraphicState;
       singlestatModel.measurementId = this.measurementId;
-      singlestatModel.dieIdList = selectedDies;
+      singlestatModel.dieIdList = avbSelectedDies;
+      singlestatModel.divider = this.divider;
       await this.$http
         .get(`/api/chartjs/GetLinearForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
         .then((response) => {
@@ -131,6 +129,7 @@ export default {
             { min: 0, max: 0, maxTicksLimit: 11 });
           this.$store.dispatch('wafermeas/changeGraphicInitialSettings', { keyGraphicState: this.keyGraphicState, axisType: 'xAxis', settings: { min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length - 1], maxTicksLimit: 11 } });
           this.$store.dispatch('wafermeas/changeGraphicInitialSettings', { keyGraphicState: this.keyGraphicState, axisType: 'yAxis', settings: { min: 'Авто', max: 'Авто', maxTicksLimit: 11 } });
+          this.$store.dispatch('wafermeas/updateChartsData', { keyGraphicState: this.keyGraphicState, data: chart.chartData });
           // let ds = []
           // chart.chartData.datasets.forEach((dataset,index) => {
           //   let downsampled = this.downsample(dataset.data.map(function (d,index) { return {x: d, y: chart.chartData.labels[index]}}), 201)

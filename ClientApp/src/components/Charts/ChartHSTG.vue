@@ -4,7 +4,7 @@
         <bar-chart
           v-if="loaded"
           :keyGraphicState="keyGraphicState"
-          :chartdata="chartdata"
+          :divider="divider"
           :options="options"/>
         <v-progress-circular v-else
           :size="50"
@@ -28,35 +28,31 @@ export default {
   }),
 
   async mounted() {
-    await this.getChartData(this.selectedDies);
+    await this.getChartData();
   },
 
   computed: {
-    selectedDies() {
-      return this.$store.getters['wafermeas/selectedDies'];
-    },
 
   },
 
   watch: {
-    async divider() {
-      await this.getChartData(this.selectedDies);
-    },
   },
 
   methods: {
     async getChartData() {
       this.loaded = false;
+      const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       const singlestatModel = {};
-      singlestatModel.divider = this.divider;
       singlestatModel.keyGraphicState = this.keyGraphicState;
       singlestatModel.measurementId = this.measurementId;
-      singlestatModel.dieIdList = this.selectedDies;
+      singlestatModel.dieIdList = avbSelectedDies;
+      singlestatModel.divider = this.divider;
       await this.$http
         .get(`/api/chartjs/GetHistogramForMeasurement?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)
         .then((response) => {
           const chart = response.data;
           this.chartdata = chart.chartData;
+          this.$store.dispatch('wafermeas/updateChartsData', { keyGraphicState: this.keyGraphicState, data: chart.chartData });
           this.calculateOptions(chart.options);
           this.loaded = true;
         });

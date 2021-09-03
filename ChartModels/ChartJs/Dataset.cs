@@ -4,7 +4,7 @@ namespace VueExample.ChartModels.ChartJs
 {
     public class Dataset
     {
-        public List<double> Data { get; set; }
+     
         public bool Fill { get; set; } = false;       
         public int BorderWidth { get; set; } = 1;
         public int PointHoverRadius { get; set; } = 0;
@@ -12,7 +12,7 @@ namespace VueExample.ChartModels.ChartJs
 
         public Dataset()
         {
-            Data = new List<double>();
+            
         }
     }
 }

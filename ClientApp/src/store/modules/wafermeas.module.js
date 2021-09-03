@@ -1,5 +1,4 @@
 const defaultState = () => ({
-  dieValues: {},
   selectedDies: [],
   keyGraphicStateModes: [],
   avbSelectedDies: [],
@@ -26,12 +25,12 @@ const defaultState = () => ({
     goodDiesPercentage: 0,
   },
   dcProfiles: {},
+  chartsData: {},
 });
 
 export const wafermeas = {
   namespaced: true,
   state: {
-    dieValues: {},
     selectedDies: [],
     avbSelectedDies: [],
     keyGraphicStateModes: [],
@@ -58,6 +57,7 @@ export const wafermeas = {
     },
     dirtyCellsStatSingleGraphics: [],
     dirtyCellsFixedSingleGraphics: [],
+    chartsData: {},
   },
 
   actions: {
@@ -92,14 +92,6 @@ export const wafermeas = {
 
     createDcProfiles({ commit }, dcProfiles) {
       commit('createDcProfiles', dcProfiles);
-    },
-
-    updateDieValues({ commit }, dieValues) {
-      commit('updateDieValues', dieValues);
-    },
-
-    clearDieValues({ commit }) {
-      commit('clearDieValues');
     },
 
     updateMapMode({ commit }, newMode) {
@@ -160,6 +152,10 @@ export const wafermeas = {
 
     updateDirtyCells({ commit }, dirtyCells) {
       commit('updateDirtyCells', dirtyCells);
+    },
+
+    updateChartsData({ commit }, { keyGraphicState, data }) {
+      commit('updateChartsData', { keyGraphicState, data });
     },
 
     updateDirtyCellsPercentageSelected({ commit }, { statPercentageSelected, fixedPercentageSelected }) {
@@ -261,11 +257,11 @@ export const wafermeas = {
         rowViewMode: kgsModes.rowViewMode,
       };
     }),
+    getChartsDataByKeyGraphicState: (state) => (keyGraphicState) => state.chartsData[keyGraphicState],
     getGraphicSettingsKeyGraphicState: (state) => (keyGraphicState) => state.graphicSettings.find((k) => k.keyGraphicState === keyGraphicState).settings,
     getKeyGraphicStateMode: (state) => (keyGraphicState) => state.keyGraphicStateModes.find((k) => k.keyGraphicState === keyGraphicState).mode,
     getKeyGraphicStateLog: (state) => (keyGraphicState) => state.keyGraphicStateModes.find((k) => k.keyGraphicState === keyGraphicState).log,
     getKeyGraphicStateRowViewMode: (state) => (keyGraphicState) => state.keyGraphicStateModes.find((k) => k.keyGraphicState === keyGraphicState).rowViewMode,
-    getDieValuesByKeyGraphicState: (state) => (keyGraphicState) => state.dieValues[keyGraphicState],
     getGraphicByGraphicState: (state) => (keyGraphicState) => state.avbGraphics.find((g) => g.keyGraphicState === keyGraphicState),
     getDirtyCellsByGraphic: (state) => (keyGraphicState) => state.dirtyCellsStatSingleGraphics.find((dc) => dc.keyGraphicState === keyGraphicState),
     selectedDies: (state) => state.selectedDies,
@@ -306,12 +302,8 @@ export const wafermeas = {
       state.hoveredDieId = { dieId, keyGraphicState };
     },
 
-    updateDieValues(state, dieValues) {
-      state.dieValues = _.cloneDeep(dieValues);
-    },
-
-    clearDieValues(state) {
-      state.dieValues = {};
+    updateChartsData(state, { keyGraphicState, data }) {
+      state.chartsData = { ...state.chartsData, [keyGraphicState]: data };
     },
 
     updateKeyGraphicStateMode(state, selectedGraphics) {
@@ -349,7 +341,7 @@ export const wafermeas = {
       state.dirtyCellsSnapshot = _.cloneDeep(snapshot);
     },
 
-    updateDirtyCellsSnapshot(state, { keyGraphicState, snapshotChunk}) {
+    updateDirtyCellsSnapshot(state, { keyGraphicState, snapshotChunk }) {
       state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary[keyGraphicState] = _.cloneDeep(snapshotChunk);
       state.dirtyCellsSnapshot.badDies = [...new Set(Object.keys(state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary).reduce((p, c) => [...p, ...state.dirtyCellsSnapshot.singleGraphicDirtyCellsDictionary[c].badDies], []))];
       state.dirtyCellsSnapshot.goodDiesPercentage = Math.ceil((1.0 - state.dirtyCellsSnapshot.badDies.length / state.avbSelectedDies.length) * 100);

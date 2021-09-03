@@ -5,8 +5,8 @@ import { mapGetters } from 'vuex';
 export default {
   extends: Bar,
   props: {
-    chartdata: {
-      type: Object,
+    divider: {
+      type: String,
       default: null,
     },
     options: {
@@ -19,29 +19,37 @@ export default {
     },
   },
 
+  data() {
+    return {
+      chartdata: {},
+    };
+  },
+
   mounted() {
+    this.getChartDataFromStore(this.selectedDies);
     this.renderChart(this.chartdata, this.options);
   },
 
   methods: {
     getChartDataFromStore(selectedDies) {
       let datasets = [];
-      const dieValues = this.$store.getters['wafermeas/getDieValuesByKeyGraphicState'](this.keyGraphicState);
       const badDies = this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState);
       const dieColors = this.$store.getters['wafermeas/dieColors'];
+      this.chartdata = _.cloneDeep(this.$store.getters['wafermeas/getChartsDataByKeyGraphicState'](this.keyGraphicState));
       selectedDies.forEach((dieId) => {
         const singleDataset = {
           dieId,
           backgroundColor: this.mode === 'dirty'
             ? badDies.includes(dieId) ? '#ff1744' : '#00e676'
             : this.mode === 'color' ? dieColors.find((dc) => dc.dieId === dieId).hexColor : '#3D5AFE',
-          data: +dieValues.find((dv) => dv.d === dieId).y[0],
+          data: this.chartdata.datasets[1].data[dieId],
           label: this.wafer.formedMapMini.dies.find((d) => d.id === dieId).code,
         };
         datasets.push(singleDataset);
       });
       datasets = [..._.sortBy(datasets, [function f1(o) { return +o.label.split('-')[0]; }])];
       this.chartdata.labels = datasets.map((d) => d.label);
+      this.chartdata.datasets = [];
       this.chartdata.datasets[0] = {
         backgroundColor: [...datasets.map((x) => x.backgroundColor)],
         dieIdList: [...datasets.map((x) => x.dieId)],
