@@ -16,7 +16,7 @@ namespace VueExample.StatisticsCoreRework.Services
 
         private SingleParameterStatisticCalculated SingleParameterStatisticCalculatedBuilder(SingleParameterStatisticValues singleParameterStatisticValues, double divider) {
             var (statName, unit, dividerProfile, _, values) = singleParameterStatisticValues;
-            if(dividerProfile == DividerProfile.WithoutDivider) 
+            if(dividerProfile == DividerProfile.WithoutDivider || divider - 1.0 < 1E-6) 
             {
                 return new SingleParameterStatisticCalculated {
                                                         Minimum = CalculateMinimum(values),

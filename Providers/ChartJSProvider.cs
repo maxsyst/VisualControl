@@ -42,7 +42,7 @@ namespace VueExample.Providers
                 }
                 datasets.TryAdd(dataset.DieId, dataset);
             });
-            if(divider - 1.0 > 1E6)
+            if(divider - 1.0 > 1E-6)
             {
                 graphic.OrdinateUnit =  $"{graphic.OrdinateUnit}/мм"; 
             }
