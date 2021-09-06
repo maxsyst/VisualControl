@@ -30,17 +30,22 @@ namespace VueExample.Providers.Srv6
             var lowBorderDouble = Convert.ToDouble(lowBorder, CultureInfo.InvariantCulture);
             var topBorderDouble = Convert.ToDouble(topBorder, CultureInfo.InvariantCulture);
             var stepSize = Math.Abs(topBorderDouble - lowBorderDouble) / stepsQuantity;
-            gradientViewModel.GradientSteps.Add(new ExtremeLowGradientStep(lowBorderDouble));
+            var extremeLowGradientStep = new ExtremeLowGradientStep(lowBorderDouble);
+            gradientViewModel.GradientSteps.Add(extremeLowGradientStep);
             for (int i = 0; i < stepsQuantity; i++)
             {
                 gradientViewModel.GradientSteps.Add(new ColorGradientStep(i, stepSize, lowBorderDouble, topBorderDouble, colorList[i]));
             }
-            
-            gradientViewModel.GradientSteps.Add(new ExtremeHighGradientStep(topBorderDouble));
+            var extremeHighGradientStep = new ExtremeHighGradientStep(topBorderDouble);
+            gradientViewModel.GradientSteps.Add(extremeHighGradientStep);
 
             foreach (var dieStat in singleParameterStatisticValues.DieStatDictionary)
             {
-                var step = gradientViewModel.GradientSteps.FirstOrDefault(x => x.IsInStep(Divider(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture), singleParameterStatisticValues.DividerProfile, divider)));
+                var step = extremeLowGradientStep.LowBorder == extremeHighGradientStep.TopBorder 
+                           ? gradientViewModel.GradientSteps[(int)stepsQuantity / 2] 
+                           : gradientViewModel.GradientSteps
+                                              .FirstOrDefault(x => x.IsInStep(Divider(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture), 
+                                                              singleParameterStatisticValues.DividerProfile, divider)));
                 step.DieList.Add(dieStat.Key);
             }
             return gradientViewModel;
