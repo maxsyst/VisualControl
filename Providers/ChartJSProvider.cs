@@ -42,15 +42,16 @@ namespace VueExample.Providers
                 }
                 datasets.TryAdd(dataset.DieId, dataset);
             });
-            if(divider - 1.0 > 1E-6)
+            var ordinateUnit = graphic.OrdinateUnit;
+            if(Math.Abs(divider - 1.0) > 1E-6)
             {
-                graphic.OrdinateUnit =  $"{graphic.OrdinateUnit}/мм"; 
+                ordinateUnit = $"{ordinateUnit}/мм"; 
             }
             var labelsList = new List<string>();
             var chart = new LinearChart (labelsList, 
                                          datasets.ToDictionary(kv => kv.Key, kv => kv.Value), 
                                          new ChartModels.ChartJs.Options.XAxis($"{graphic.Absciss}({graphic.AbscissUnit})", true), 
-                                         new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({graphic.OrdinateUnit})", true));
+                                         new ChartModels.ChartJs.Options.YAxis($"{graphic.Ordinate}({ordinateUnit})", true));
             labelsList.AddRange(currentDieValues.FirstOrDefault().XList);
             return chart;
         }
