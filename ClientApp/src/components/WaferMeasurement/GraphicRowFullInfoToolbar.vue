@@ -44,7 +44,8 @@
                     <v-chip v-else>
                       <span>?</span>
                     </v-chip>
-                    <v-btn v-if="dirtyCellsPercentage != 100 && !isNaN(dirtyCellsPercentage)" text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
+                    <v-btn v-if="dirtyCellsPercentage != 100 && !isNaN(dirtyCellsPercentage)"
+                           text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
                       <v-icon>cached</v-icon>
                     </v-btn>
                 </div>
@@ -93,8 +94,9 @@ export default {
     }),
 
     dirtyCellsPercentage() {
+      const selectedDiesLength = this.selectedDies.length;
       return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length
-        - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
+        - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - selectedDiesLength)) / selectedDiesLength) * 100);
     },
 
     dirtyCellsSnapshot() {

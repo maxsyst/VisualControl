@@ -91,6 +91,7 @@ export default {
     },
 
     resetZoom() {
+      // eslint-disable-next-line no-underscore-dangle
       this.$data._chart.resetZoom();
     },
 
