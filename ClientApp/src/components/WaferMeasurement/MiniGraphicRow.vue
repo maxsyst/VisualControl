@@ -1,12 +1,12 @@
 <template>
     <v-card class="elevation-8" color="#303030">
         <v-row>
-            <v-col lg="4" offset-lg="1" class="d-flex align-center justify-start">
+            <v-col lg="3" offset-lg="1" class="d-flex align-center justify-start">
                 <v-chip :color="isGraphicSelected ? 'indigo' : 'pink'" label v-html="graphic.graphicName"
                         @click="$vuetify.goTo('#ss_' + keyGraphicState)" dark></v-chip>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
-                 <v-progress-circular v-if="dirtyCellsSnapshot"
+                 <v-progress-circular v-if="selectedDies.length > 0"
                       :rotate="360"
                       :size="50"
                       :width="2"
@@ -14,13 +14,12 @@
                       :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsSnapshot.goodDiesPercentage / 100)">
                     {{ dirtyCellsSnapshot.goodDiesPercentage + '%'}}
                     </v-progress-circular>
-                    <v-progress-circular v-else
-                        indeterminate
-                        color='primary'
-                    ></v-progress-circular>
+                  <v-chip v-else>
+                    <span>?</span>
+                  </v-chip>
             </v-col>
             <v-col lg="2" class="d-flex align-center justify-start">
-                <v-progress-circular v-if="dirtyCellsSnapshot"
+                <v-progress-circular v-if="selectedDies.length > 0"
                     :rotate="360"
                     :size="50"
                     :width="2"
@@ -28,10 +27,9 @@
                     color='primary'>
                     {{ dirtyCellsPercentage + '%' }}
                   </v-progress-circular>
-                   <v-progress-circular v-else
-                        indeterminate
-                        color='primary'
-                    ></v-progress-circular>
+                  <v-chip v-else>
+                    <span>?</span>
+                  </v-chip>
             </v-col>
             <v-col lg="1" offset-lg="1" class="d-flex align-center">
                 <v-checkbox

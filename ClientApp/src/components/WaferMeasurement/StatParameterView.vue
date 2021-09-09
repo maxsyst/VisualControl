@@ -1,6 +1,45 @@
 <template>
     <v-container>
+     <v-row>
+      <v-col lg="4">
+        <v-row class="mt-6">
+           <v-select
+                                    :items="['Статистика', 'Границы']"
+                                    outlined
+                                    v-model="russianModeName"
+                                    no-data-text="Нет данных"
+                                    label="Режим отсеивания"
+                                ></v-select>
+        </v-row>
         <v-row>
+          <v-card class="flex" v-if="mode==='STAT'">
+            <v-subheader>Коэффициент отсеивания:</v-subheader>
+            <v-slider
+                v-model="statisticKf"
+                :min="0.5"
+                :max="2"
+                step="0.25"
+                color="indigo"
+                ticks
+                thumb-label="always">
+            </v-slider>
+          </v-card>
+        </v-row>
+        <v-row>
+           <v-text-field v-model="lowBorder" :readonly="mode=='STAT'" outlined label="Нижняя граница"></v-text-field>
+        </v-row>
+        <v-row>
+            <v-text-field v-model="topBorder" :readonly="mode=='STAT'" outlined label="Верхняя граница"></v-text-field>
+        </v-row>
+        <v-row>
+          <v-checkbox v-model="autoRefresh" label="Автоматическое отсеивание"></v-checkbox>
+        </v-row>
+        <v-row>
+          <v-btn block @click="setStatisticKf">Применить</v-btn>
+        </v-row>
+      </v-col>
+      <v-col lg="8">
+         <v-row>
              <v-simple-table>
                     <template v-slot:default>
                     <thead>
@@ -23,64 +62,45 @@
                             </td>
                             <td>{{ statParameter.expectedValue }}</td>
                             <td>{{ statParameter.standartDeviation }}</td>
-                            <td>{{ statParameter.minimum }}</td>
-                            <td>{{ statParameter.maximum }}</td>
+                            <td class="text-center">{{ statParameter.minimum }}</td>
+                            <td class="text-center">{{ statParameter.maximum }}</td>
                         </tr>
                     </tbody>
                     </template>
                 </v-simple-table>
         </v-row>
         <v-row>
-           <v-select
-                                    :items="['STAT', 'FXD']"
-                                    v-model="mode"
-                                    no-data-text="Нет данных"
-                                    label="Режим отсеивания"
-                                ></v-select>
+          <StatParameterWafer :keyGraphicState="keyGraphicState" :statParameter="statParameter"></StatParameterWafer>
         </v-row>
-        <v-row>
-            <v-subheader>Коэффициент отсеивания:</v-subheader>
-            <v-slider
-                v-model="statisticKf"
-                :tick-labels="['0.5', '0.75', '1', '1.25', '1.5', '1.75', '2']"
-                :min="0.5"
-                :max="2"
-                step="0.25"
-                ticks="always"
-                tick-size="4">
-            </v-slider>
-            <v-btn block @click="setStatisticKf">Применить</v-btn>
-        </v-row>
-        <v-row>
-           <v-text-field v-model="lowBorder" :readonly="mode=='STAT'" outlined label="lowBorder"></v-text-field>
-        </v-row>
-        <v-row>
-            <v-text-field v-model="topBorder" :readonly="mode=='STAT'" outlined label="topBorder"></v-text-field>
-        </v-row>
-        <v-row>
-          <v-checkbox v-model="autoRefresh" label="Автоматическое отсеивание"></v-checkbox>
-        </v-row>
+      </v-col>
+      </v-row>
     </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import StatParameterWafer from './StatParameterWafer.vue';
 
 export default {
   props: ['measurementId', 'keyGraphicState', 'statParameter'],
+
+  components: {
+    StatParameterWafer,
+  },
+
   data() {
     return {
       statisticKf: '',
       lowBorder: '',
       topBorder: '',
-      mode: 'STAT',
+      russianModeName: 'Статистика',
       autoRefresh: true,
     };
   },
 
   mounted() {
     this.statisticKf = this.currentDcProfile.k;
-    this.mode = this.currentDcProfile.type;
+    this.russianModeName = this.currentDcProfile.type === 'FXD' ? 'Границы' : 'Статистика';
     this.topBorder = this.currentDcProfile.topBorder;
     this.lowBorder = this.currentDcProfile.lowBorder;
   },
@@ -100,12 +120,17 @@ export default {
     dirtyCellsSnapshotBadDies() {
       return this.$store.getters['wafermeas/dirtyCellsSnapshotBadDies'];
     },
+    mode() {
+      if (this.russianModeName === 'Статистика') return 'STAT';
+      if (this.russianModeName === 'Границы') return 'FXD';
+      return '';
+    },
   },
 
   watch: {
     currentDcProfile(currentDcProfile) {
       this.statisticKf = currentDcProfile.k;
-      this.mode = currentDcProfile.type;
+      this.russianModeName = currentDcProfile.type === 'FXD' ? 'Границы' : 'Статистика';
       this.topBorder = currentDcProfile.topBorder;
       this.lowBorder = currentDcProfile.lowBorder;
     },
@@ -113,12 +138,28 @@ export default {
 
   methods: {
     async setStatisticKf() {
-      const dcProfiles = this.dcProfiles.map((dc) => (dc.statName === this.statParameter.statisticsName ? { ...dc, k: this.statisticKf } : dc));
+      const dcProfiles = this.dcProfileVmBuilder(this.dcProfiles, this.mode);
       const path = `/api/statrwrk/dirtyCellsSnapshot/${this.measurementId}/${this.keyGraphicState}/withprofile?dcProfilesJSON`;
       const s = (await this.$http.get(`${path}=${JSON.stringify(dcProfiles)}`)).data;
       this.$store.dispatch('wafermeas/updateDirtyCellsSnapshot', { keyGraphicState: this.keyGraphicState, snapshotChunk: s.singleGraphicDirtyCells });
       this.$store.dispatch('wafermeas/updateDcProfiles', { keyGraphicState: this.keyGraphicState, keyGraphicStateDcProfile: s.dcProfiles });
       if (this.autoRefresh) this.refreshSelectedDies();
+    },
+
+    dcProfileVmBuilder(dcProfiles, mode) {
+      if (mode === 'FXD') {
+        return dcProfiles.map((dc) => (dc.statName === this.statParameter.statisticsName
+          ? {
+            ...dc, k: this.statisticKf, type: mode, lowBorder: this.lowBorder, topBorder: this.topBorder,
+          }
+          : dc));
+      }
+      if (mode === 'STAT') {
+        return dcProfiles.map((dc) => (dc.statName === this.statParameter.statisticsName
+          ? { ...dc, k: this.statisticKf, type: mode }
+          : dc));
+      }
+      return [];
     },
 
     refreshSelectedDies() {

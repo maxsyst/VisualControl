@@ -7,21 +7,21 @@
               <rect :dieIndex="key" :id="die.id"
                     :x="die.x" :y="die.y"
                     :width="die.width" :height="die.height"
-                    :fill="die.fill" :fill-opacity="die.fillOpacity" @mouseover="mouseOver" @click="selectDie"/>
+                    :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie"/>
             </g>
           </svg>
         </v-col>
         <v-col class="d-flex flex-column align-center">
-            <v-btn :color="mode === 'initial' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToInitial(selectedDies)">
+            <v-btn :color="mode === 'initial' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToInitial()">
               Стд
             </v-btn>
-            <v-btn :color="mode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToSelected(selectedDies)">
+            <v-btn :color="mode === 'selected' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToSelected()">
               Вбр
             </v-btn>
-            <v-btn :color="mode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToDirty(selectedDies)">
+            <v-btn :color="mode === 'dirty' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToDirty()">
               Гдн
             </v-btn>
-            <v-btn :color="mode === 'color' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToColor(selectedDies)">
+            <v-btn :color="mode === 'color' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToColor()">
               Цвт
             </v-btn>
         </v-col>
@@ -69,19 +69,6 @@ export default {
         ...die, fill: '#A1887F', isActive: false, fillOpacity: 1.6,
       }));
     },
-
-    mouseOver(e) {
-      if (this.selectedDies.includes(+e.target.id) && this.mode === 'color') {
-        this.$store.dispatch('wafermeas/hoverWaferMini', { dieId: +e.target.id, keyGraphicState: this.keyGraphicState });
-      }
-    },
-
-    mouseLeave() {
-      if (this.mode === 'color') {
-        this.$store.dispatch('wafermeas/unHoverWaferMini');
-      }
-    },
-
     selectDie(e) {
       e.preventDefault();
       const die = this.dies[+e.currentTarget.attributes.dieIndex.value];
@@ -99,8 +86,8 @@ export default {
       }
     },
 
-    goToInitial(selectedDies) {
-      const selectedDiesSet = new Set([...selectedDies]);
+    goToInitial() {
+      const selectedDiesSet = new Set([...this.selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'initial' });
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
@@ -114,8 +101,8 @@ export default {
       });
     },
 
-    goToDirty(selectedDies) {
-      const selectedDiesSet = new Set([...selectedDies]);
+    goToDirty() {
+      const selectedDiesSet = new Set([...this.selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'dirty' });
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
@@ -129,8 +116,8 @@ export default {
       });
     },
 
-    goToSelected(selectedDies) {
-      const selectedDiesSet = new Set([...selectedDies]);
+    goToSelected() {
+      const selectedDiesSet = new Set([...this.selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'selected' });
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
@@ -141,8 +128,8 @@ export default {
       });
     },
 
-    goToColor(selectedDies) {
-      const selectedDiesSet = new Set([...selectedDies]);
+    goToColor() {
+      const selectedDiesSet = new Set([...this.selectedDies]);
       this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'color' });
       const dieColors = this.$store.getters['wafermeas/dieColors'];
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
@@ -155,21 +142,21 @@ export default {
       });
     },
 
-    refresh(selectedDies) {
+    refresh() {
       if (this.mode === 'initial') {
-        this.goToInitial(selectedDies);
+        this.goToInitial();
       }
 
       if (this.mode === 'dirty') {
-        this.goToDirty(selectedDies);
+        this.goToDirty();
       }
 
       if (this.mode === 'selected') {
-        this.goToSelected(selectedDies);
+        this.goToSelected();
       }
 
       if (this.mode === 'color') {
-        this.goToColor(selectedDies);
+        this.goToColor();
       }
     },
   },
@@ -177,7 +164,7 @@ export default {
   watch: {
 
     dirtyCellsSnapshotBadDies() {
-      this.refresh(this.selectedDies);
+      this.refresh();
     },
 
     rowViewMode(rowViewMode) {
@@ -199,8 +186,8 @@ export default {
       }
     },
 
-    selectedDies(selectedDies) {
-      this.refresh(selectedDies);
+    selectedDies() {
+      this.refresh();
     },
   },
 

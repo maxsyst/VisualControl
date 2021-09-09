@@ -123,7 +123,7 @@ export default {
       rerender() {
         const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
         if (this.dies.length > 0) {
-          if (avbSelectedDies.length > 0 && this.selectedDies.length > 0) {
+          if (avbSelectedDies.length > 0) {
             this.dies = this.dies.map((die) => ({
               ...die, fill: '#A1887F', text: '#303030', fillOpacity: 1.0, isActive: false,
             }));

@@ -52,19 +52,22 @@
                           </v-tooltip>
                         </template>
                         <template v-slot:item.goodDiesPercentage="{item}">
-                          <td class="text-xs-center">
-                            <v-progress-circular
+                          <td class="text-center">
+                            <v-progress-circular v-if="selectedDies.length > 0"
                               :rotate="360"
                               :size="45"
                               :width="2"
                               :value="item.goodDiesPercentage"
                               :color="$store.getters['wafermeas/calculateColor'](item.goodDiesPercentage/100)"
                             >{{ item.goodDiesPercentage + '%'}}</v-progress-circular>
+                            <v-chip v-else>
+                              <span>?</span>
+                            </v-chip>
                           </td>
                         </template>
                         <template v-slot:item.dirtyCells="{item}">
-                        <td class="text-xs-center">
-                          <v-progress-circular
+                        <td class="text-center">
+                          <v-progress-circular v-if="selectedDies.length > 0"
                             :rotate="360"
                             :size="45"
                             :width="2"
@@ -72,7 +75,10 @@
                             color='primary'>
                             {{ item.dirtyCells.percentage  }}%
                           </v-progress-circular>
-                          <v-btn  v-if="item.dirtyCells.percentage != 100"  text icon color='primary' @click="delDirtyCells(item.dirtyCells.array)">
+                          <v-chip v-else>
+                            <span>?</span>
+                          </v-chip>
+                          <v-btn  v-if="item.dirtyCells.percentage != 100 && !isNaN(item.dirtyCells.percentage)"  text icon color='primary' @click="delDirtyCells(item.dirtyCells.array)">
                             <v-icon>cached</v-icon>
                           </v-btn>
                         </td>
@@ -254,7 +260,7 @@ export default {
     },
 
     async getStatArray() {
-      if (this.measurementId !== 0 && this.selectedDies.length > 0) {
+      if (this.measurementId !== 0) {
         const singlestatModel = {};
         singlestatModel.divider = this.divider;
         singlestatModel.keyGraphicState = this.keyGraphicState;
@@ -277,7 +283,14 @@ export default {
     },
 
     dirtyCellsSnapshot() {
-      this.statArrayRWRK = this.statArrayRWRK.map((s) => ({ ...s, goodDiesPercentage: this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].goodDiesPercentage, dirtyCells: { array: [...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells], percentage: Math.ceil((1.0 - (this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells])].length - this.selectedDies.length)) / this.selectedDies.length) * 100) } }));
+      this.statArrayRWRK = this.statArrayRWRK.map((s) => ({
+        ...s,
+        goodDiesPercentage: this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].goodDiesPercentage,
+        dirtyCells: {
+          array: [...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells],
+          percentage: Math.ceil((1.0 - (this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells.length - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.statNameDirtyCellsDictionary[s.statisticsName].badDirtyCells])].length - this.selectedDies.length)) / this.selectedDies.length) * 100),
+        },
+      }));
     },
   },
 

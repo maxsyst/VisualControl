@@ -189,7 +189,7 @@
                   <v-chip class="elevation-12 mt-4" color="#303030" dark>Годны по всей пластине</v-chip>
                   <v-card class="mr-2 mt-2 mb-4" color="#303030" dark>
                       <v-card-text>
-                        <v-progress-circular
+                        <v-progress-circular v-if="selectedDies.length > 0"
                           :rotate="360"
                           :size="90"
                           :width="3"
@@ -197,6 +197,9 @@
                           :color="$store.getters['wafermeas/calculateColor'](dirtyCellsSnapshot.goodDiesPercentage / 100)">
                                         {{ dirtyCellsSnapshot.goodDiesPercentage }}%
                         </v-progress-circular>
+                        <v-chip v-else>
+                            <span>?</span>
+                          </v-chip>
                         <v-tooltip class="ml-8" v-model="showUnSelectedGraphics" v-if="unSelectedGraphics.length>0" top>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn icon v-bind="attrs" v-on="on">
@@ -217,7 +220,7 @@
                       <v-chip class="elevation-12 mt-4 ms-2" color="#303030" dark>Годны из выбранных</v-chip>
                       <v-card class="mr-2 mt-2" color="#303030" dark>
                         <v-card-text>
-                          <v-progress-circular
+                          <v-progress-circular v-if="selectedDies.length > 0"
                             :rotate="360"
                             :size="90"
                             :width="3"
@@ -225,7 +228,10 @@
                             color='primary'>
                             {{ dirtyCellsPercentage }}%
                           </v-progress-circular>
-                          <v-btn v-if="dirtyCellsPercentage != 100"  outlined color='primary'
+                          <v-chip v-else>
+                            <span>?</span>
+                          </v-chip>
+                          <v-btn v-if="dirtyCellsPercentage != 100 && !isNaN(dirtyCellsPercentage)" text icon color='primary'
                                  @click="delDirtyCells(dirtyCellsSnapshot.badDies, selectedDies)">
                             <v-icon>cached</v-icon>
                           </v-btn>

@@ -15,7 +15,7 @@
                       Годны по всей пластине
                     </v-chip>
                     <div class="d-flex flex-row mt-4">
-                      <v-progress-circular
+                      <v-progress-circular v-if="selectedDies.length > 0"
                         :rotate="360"
                         :size="60"
                         :width="2"
@@ -23,6 +23,9 @@
                         :color="this.$store.getters['wafermeas/calculateColor'](dirtyCellsSnapshot.goodDiesPercentage / 100)">
                       {{dirtyCellsSnapshot.goodDiesPercentage}}%
                       </v-progress-circular>
+                      <v-chip v-else>
+                        <span>?</span>
+                      </v-chip>
                     </div>
                   </div>
                 <div class="d-flex flex-column align-self-center">
@@ -30,7 +33,7 @@
                     Годны из выбранных
                   </v-chip>
                   <div class="d-flex flex-row mt-4">
-                    <v-progress-circular
+                    <v-progress-circular v-if="selectedDies.length > 0"
                       :rotate="360"
                       :size="60"
                       :width="2"
@@ -38,7 +41,10 @@
                       color='primary'>
                       {{ dirtyCellsPercentage }}%
                     </v-progress-circular>
-                    <v-btn v-if="dirtyCellsPercentage != 100" text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
+                    <v-chip v-else>
+                      <span>?</span>
+                    </v-chip>
+                    <v-btn v-if="dirtyCellsPercentage != 100 && !isNaN(dirtyCellsPercentage)" text icon color='primary' @click="delDirtyCells(dirtyCellsSnapshot.badDies)">
                       <v-icon>cached</v-icon>
                     </v-btn>
                 </div>
@@ -50,7 +56,7 @@
           </v-toolbar>
         </v-col>
         <v-col :lg="responsiveSettings.waferMiniFlexSize">
-          <wafer-mini v-if="(dirtyCellsPercentage >= 0)"
+          <wafer-mini
             :keyGraphicState="keyGraphicState"
             :rowViewMode="rowViewMode"
             :key="`wfm-${keyGraphicState}`">
@@ -60,6 +66,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import WaferMapMini from './WaferMapMini.vue';
 
 export default {
@@ -75,18 +82,19 @@ export default {
 
   methods: {
     delDirtyCells(dirtyCells) {
-      let selectedDies = this.$store.getters['wafermeas/selectedDies'];
-      selectedDies = selectedDies.filter((el) => !dirtyCells.includes(el));
+      const selectedDies = this.selectedDies.filter((el) => !dirtyCells.includes(el));
       this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
     },
   },
 
   computed: {
+    ...mapGetters({
+      selectedDies: 'wafermeas/selectedDies',
+    }),
 
     dirtyCellsPercentage() {
-      const selectedDies = this.$store.getters['wafermeas/selectedDies'];
       return Math.ceil((1.0 - (this.dirtyCellsSnapshot.badDies.length
-        - ([...new Set([...selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - selectedDies.length)) / selectedDies.length) * 100);
+        - ([...new Set([...this.selectedDies, ...this.dirtyCellsSnapshot.badDies])].length - this.selectedDies.length)) / this.selectedDies.length) * 100);
     },
 
     dirtyCellsSnapshot() {

@@ -28,15 +28,8 @@ namespace VueExample.StatisticsCoreRework.CachedServices
 
         public async Task<Dictionary<string, SingleParameterStatisticCalculated>> GetCalculatedStatisticByMeasurementRecordingGraphicStateAndDies(int measurementRecordingId, string keyGraphicState, double divider, List<long> dieIdList)
         {
-            var dieIdHashSet = new HashSet<long>(dieIdList);
-            var dict = new Dictionary<string, SingleParameterStatisticCalculated>();
             var statParameterDict = (await GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId))[keyGraphicState];
-            foreach (var stat in statParameterDict)
-            {
-                stat.Value.DieStatDictionary = stat.Value.DieStatDictionary.Where(x => dieIdHashSet.Contains(x.Key)).ToDictionary(kv => kv.Key, kv => kv.Value);
-                dict.Add(stat.Key, _statisticCalculationService.Calculate(stat.Value, divider));
-            }
-            return dict;
+            return CreateSingleParameterStatisticCalculated(statParameterDict, divider, dieIdList);
         }
         
 
@@ -49,6 +42,32 @@ namespace VueExample.StatisticsCoreRework.CachedServices
                 dict = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValues), measurementRecordingId);
                 await _cacheProvider.SetCache<Dictionary<string, Dictionary<string, SingleParameterStatisticValues>>>($"SPS:MEASUREMENTRECORDINGID:{measurementRecordingId}", dict, new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(30)));
+            }
+            return dict;
+        }
+
+        private Dictionary<string, SingleParameterStatisticCalculated> CreateSingleParameterStatisticCalculated(Dictionary<string, SingleParameterStatisticValues> statParameterDict, double divider, List<long> dieIdList) 
+        {
+            if(dieIdList.Count == 0) 
+            {
+                return CreateDefaultSingleParameterStatisticCalculated(statParameterDict);
+            }
+            var dieIdHashSet = new HashSet<long>(dieIdList);
+            var dict = new Dictionary<string, SingleParameterStatisticCalculated>();
+            foreach (var stat in statParameterDict)
+            {
+                stat.Value.DieStatDictionary = stat.Value.DieStatDictionary.Where(x => dieIdHashSet.Contains(x.Key)).ToDictionary(kv => kv.Key, kv => kv.Value);
+                dict.Add(stat.Key, _statisticCalculationService.Calculate(stat.Value, divider));
+            }
+            return dict;
+        }
+
+        private Dictionary<string, SingleParameterStatisticCalculated> CreateDefaultSingleParameterStatisticCalculated(Dictionary<string, SingleParameterStatisticValues> statParameterDict) 
+        {
+            var dict = new Dictionary<string, SingleParameterStatisticCalculated>();
+            foreach (var stat in statParameterDict)
+            {
+                dict.Add(stat.Key, new SingleParameterStatisticCalculated {ShortStatisticsName = $"{stat.Value.StatisticName.Split(' ').FirstOrDefault()}", StatisticsName = stat.Value.StatisticName, Unit = stat.Value.Unit});
             }
             return dict;
         }

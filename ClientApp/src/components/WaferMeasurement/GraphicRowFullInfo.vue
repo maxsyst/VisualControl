@@ -9,7 +9,7 @@
         ></stat-single>
         <v-divider light></v-divider>
       </v-col>
-      <v-col :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
+      <v-col v-if="selectedDiesLength > 0" :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
         <chart-lnr
           v-if="keyGraphicState.includes(`LNR`)"
           :measurementId="selectedMeasurementId"
@@ -24,7 +24,16 @@
           :rowViewMode="rowViewMode"
           :divider="selectedDivider"
         ></chart-hstg>
-        <v-divider light></v-divider>
+          <v-divider light></v-divider>
+        </v-col>
+        <v-col v-else :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
+        <v-card>
+          <v-card-text>
+            <p>
+              Не выбраны кристаллы для отображения.
+            </p>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 </template>
