@@ -24,6 +24,7 @@ const defaultState = () => ({
     badDies: [],
     goodDiesPercentage: 0,
   },
+  gradientData: [],
   dcProfiles: {},
   chartsData: {},
 });
@@ -57,6 +58,7 @@ export const wafermeas = {
     },
     dirtyCellsStatSingleGraphics: [],
     dirtyCellsFixedSingleGraphics: [],
+    gradientData: [],
     chartsData: {},
   },
 
@@ -80,6 +82,10 @@ export const wafermeas = {
 
     createDirtyCellsSnapshot({ commit }, snapshot) {
       commit('createDirtyCellsSnapshot', snapshot);
+    },
+
+    updateGradientData({ commit }, { keyGraphicState, gradientData }) {
+      commit('updateGradientData', { keyGraphicState, gradientData });
     },
 
     updateDirtyCellsSnapshot({ commit }, { keyGraphicState, snapshotChunk }) {
@@ -257,6 +263,7 @@ export const wafermeas = {
         rowViewMode: kgsModes.rowViewMode,
       };
     }),
+    getGradientDataByKeyGraphicState: (state) => (keyGraphicState) => state.gradientData.find((k) => k.keyGraphicState === keyGraphicState).gradientData,
     getChartsDataByKeyGraphicState: (state) => (keyGraphicState) => state.chartsData[keyGraphicState],
     getGraphicSettingsKeyGraphicState: (state) => (keyGraphicState) => state.graphicSettings.find((k) => k.keyGraphicState === keyGraphicState).settings,
     getKeyGraphicStateMode: (state) => (keyGraphicState) => state.keyGraphicStateModes.find((k) => k.keyGraphicState === keyGraphicState).mode,
@@ -310,6 +317,15 @@ export const wafermeas = {
       state.keyGraphicStateModes = selectedGraphics.map((x) => ({
         keyGraphicState: x, mode: 'initial', log: false, rowViewMode: 'miniChart',
       }));
+    },
+
+    updateGradientData(state, { keyGraphicState, gradientData }) {
+      const gradientDataState = state.gradientData.find((x) => x.keyGraphicState === keyGraphicState);
+      if (gradientDataState === undefined) {
+        state.gradientData.push({ keyGraphicState, gradientData: _.cloneDeep(gradientData) });
+      } else {
+        gradientDataState.gradientData = _.cloneDeep(gradientData);
+      }
     },
 
     clearKeyGraphicStateMode(state) {

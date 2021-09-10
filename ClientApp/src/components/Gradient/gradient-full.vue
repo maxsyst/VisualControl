@@ -45,6 +45,9 @@
                         </v-tab-item>
                     </v-tabs>
                 </v-row>
+                <v-row>
+                  <v-btn block @click="goToGradientChart">Построить график с градиентом</v-btn>
+                </v-row>
             </v-col>
         </v-row>
         <v-row>
@@ -76,6 +79,10 @@ export default {
       this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies.filter((x) => !dieList.includes(x)));
     },
 
+    goToGradientChart() {
+      this.$store.dispatch('wafermeas/changeKeyGraphicStateMode', { keyGraphicState: this.keyGraphicState, mode: 'gradient' });
+    },
+
     async refresh() {
       const dcProfile = this.dcProfiles.find((dc) => dc.statName === this.statParameter.statisticsName);
       this.gradientData = (await this.$http
@@ -88,6 +95,7 @@ export default {
           lowBorder: dcProfile.lowBorder,
           topBorder: dcProfile.topBorder,
         })}`)).data;
+      this.$store.dispatch('wafermeas/updateGradientData', { keyGraphicState: this.keyGraphicState, gradientData: this.gradientData });
       this.rerenderTable(this.selectedDies);
     },
 

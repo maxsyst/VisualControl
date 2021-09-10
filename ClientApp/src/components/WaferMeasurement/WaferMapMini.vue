@@ -24,6 +24,9 @@
             <v-btn :color="mode === 'color' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToColor()">
               Цвт
             </v-btn>
+            <v-btn v-if="mode === 'gradient'" :color="mode === 'gradient' ? 'indigo' : 'grey darken-2'"  class="mt-auto" fab x-small dark>
+              Грд
+            </v-btn>
         </v-col>
       </v-row>
     </v-container>

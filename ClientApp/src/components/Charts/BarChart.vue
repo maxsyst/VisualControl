@@ -67,16 +67,20 @@ export default {
   },
 
   watch: {
-    mode(newValue) {
-      if (newValue === 'dirty') {
+    mode(mode) {
+      if (mode === 'dirty') {
         const badDies = new Set([...this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState)]);
         this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = badDies.has(d) ? '#ff1744' : '#00e676');
       }
-      if (newValue === 'color') {
+      if (mode === 'color') {
         const dieColors = this.$store.getters['wafermeas/dieColors'];
         this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = dieColors.get(d));
       }
-      if (newValue === 'selected' || newValue === 'initial') {
+      if (mode === 'gradient') {
+        const gradientData = this.$store.getters['wafermeas/getGradientDataByKeyGraphicState'](this.keyGraphicState);
+        this.chartdata.datasets[0].dieIdList.forEach((d, index) => this.chartdata.datasets[0].backgroundColor[index] = gradientData.gradientSteps.find((g) => g.dieList.includes(d)).color);
+      }
+      if (mode === 'selected' || mode === 'initial') {
         this.chartdata.datasets[0].backgroundColor = this.chartdata.datasets[0].backgroundColor.map((x) => '#3D5AFE');
       }
       this.renderChart(this.chartdata, this.options);

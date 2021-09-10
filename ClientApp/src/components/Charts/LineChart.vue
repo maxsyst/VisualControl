@@ -125,14 +125,18 @@ export default {
       }
     },
 
-    mode(newValue) {
-      if (newValue === 'dirty') {
+    mode(mode) {
+      if (mode === 'gradient') {
+        const gradientData = this.$store.getters['wafermeas/getGradientDataByKeyGraphicState'](this.keyGraphicState);
+        this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: gradientData.gradientSteps.find((g) => g.dieList.includes(d.dieId)).color }));
+      } else if (mode === 'dirty') {
         const badDies = new Set([...this.$store.getters['wafermeas/getDirtyCellsSnapshotBadDiesByKeyGraphicState'](this.keyGraphicState)]);
         this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: badDies.has(d.dieId) ? '#ff1744' : '#00e676' }));
       } else {
         const dieColors = this.$store.getters['wafermeas/dieColors'];
         this.chartdata.datasets = this.chartdata.datasets.map((d) => ({ ...d, borderColor: dieColors.get(d.dieId) }));
       }
+
       this.renderChart(this.chartdata, this.options);
     },
 
