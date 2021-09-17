@@ -34,6 +34,7 @@ export default {
   },
 
   beforeDestroy() {
+    // eslint-disable-next-line no-underscore-dangle
     this.$data._chart.destroy();
     this.chartdata = null;
   },

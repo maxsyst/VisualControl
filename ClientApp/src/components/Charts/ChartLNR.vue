@@ -51,7 +51,8 @@
           <v-col class="d-flex">
             <v-tooltip left>
               <template v-slot:activator="{ on }">
-              <v-btn :color="showSettings === true ? 'indigo' : 'grey darken-2'" v-on="on" fab x-small dark @click="showSettingsContainer(showSettings)">
+              <v-btn :color="showSettings === true ? 'indigo' : 'grey darken-2'" v-on="on" fab x-small dark
+                      @click="showSettingsContainer(showSettings)">
                 <v-icon>settings</v-icon>
               </v-btn>
               </template>
@@ -69,6 +70,7 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import ChartJsZoom from 'chartjs-plugin-zoom';
 import LineChart from './LineChart.vue';
 import Settings from './ChartSettings/ChartSettingsLNR';
@@ -124,8 +126,16 @@ export default {
           this.calculateOptions(chart.options,
             { min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length - 1], maxTicksLimit: 11 },
             { min: 0, max: 0, maxTicksLimit: 11 });
-          this.$store.dispatch('wafermeas/changeGraphicInitialSettings', { keyGraphicState: this.keyGraphicState, axisType: 'xAxis', settings: { min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length - 1], maxTicksLimit: 11 } });
-          this.$store.dispatch('wafermeas/changeGraphicInitialSettings', { keyGraphicState: this.keyGraphicState, axisType: 'yAxis', settings: { min: 'Авто', max: 'Авто', maxTicksLimit: 11 } });
+          this.$store.dispatch('wafermeas/changeGraphicInitialSettings', {
+            keyGraphicState: this.keyGraphicState,
+            axisType: 'xAxis',
+            settings: { min: chart.chartData.labels[0], max: chart.chartData.labels[chart.chartData.labels.length - 1], maxTicksLimit: 11 },
+          });
+          this.$store.dispatch('wafermeas/changeGraphicInitialSettings', {
+            keyGraphicState: this.keyGraphicState,
+            axisType: 'yAxis',
+            settings: { min: 'Авто', max: 'Авто', maxTicksLimit: 11 },
+          });
           this.$store.dispatch('wafermeas/updateChartsData', { keyGraphicState: this.keyGraphicState, data: chart.chartData });
           // let ds = []
           // chart.chartData.datasets.forEach((dataset,index) => {
@@ -136,8 +146,7 @@ export default {
           //     chart.chartData.labels = downsampled.map(x => x.y)
           // });
           this.loaded = true;
-        })
-        .catch((error) => { console.log(error); });
+        });
     },
 
     resetChart() {

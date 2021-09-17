@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Models.SRV6.Export;
-using VueExample.ViewModels;
 
 namespace VueExample.StatisticsCore.Abstract
 {
