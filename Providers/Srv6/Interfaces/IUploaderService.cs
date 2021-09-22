@@ -8,5 +8,6 @@ namespace VueExample.Providers.Srv6.Interfaces
     {
         Task<string> Uploading(UploadingFile uploadingFile, int type);
         Task<IList<UploadingFileStatus>> CheckStatus(IList<UploadingFile> uploadingFiles);
+        Task<string> CheckStatusGraphic4(string waferId, string measurementRecordingName);
     }
 }

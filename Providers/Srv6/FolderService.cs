@@ -36,6 +36,26 @@ namespace VueExample.Providers.Srv6
             return directoriesNameList;
         }
 
+        public bool IsWaferExistsInFolder(string directoryPath, string waferId)
+        {
+            var directoryNames = GetAllWaferInFolder(directoryPath);
+            return directoryNames.Contains(waferId);
+        }
+
+        public List<string> GetAllWaferInFolder(string directoryPath)
+        {
+            directoryPath = GetTruePath(directoryPath);
+            var directoriesNameList = new List<string>();
+            var directoriesArray = System.IO.Directory.GetDirectories($"{directoryPath}");
+            foreach (var directory in directoriesArray)
+            {
+                var dir = new DirectoryInfo(directory);
+                var dirName = dir.Name;
+                directoriesNameList.Add(dirName);
+            }           
+            return directoriesNameList;
+        }
+
         public List<string> GetAllWaferInCodeProductFolder(string directoryPath, string codeProductFolderName)
         {
             directoryPath = GetTruePath(directoryPath);

@@ -17,6 +17,7 @@ import IdmrVoc from '../components/idmr-voc.vue';
 import DefectMassiveUploader from '../components/massive-uploader.vue';
 import DieTypeSettings from '../components/dietype-settings.vue';
 import Uploader from '../components/uploader-ng.vue';
+import UploaderGraphic4 from '../components/Uploading/S2PGraphic4Uploading.vue';
 import ElementType from '../components/element-type.vue';
 import UploaderFg from '../components/uploader-filegraphic.vue';
 import UploaderFinal from '../components/uploader-final.vue';
@@ -65,7 +66,11 @@ export const routes = [
   },
   { name: 'shortlink-handler', path: '/sl/:guid', component: ShortLinkHandler },
   {
-    name: 'control-charts', path: '/controlCharts', display: 'Контрольные карты', component: () => import('../components/ControlCharts/FullView.vue'), nav: true,
+    name: 'control-charts',
+    path: '/controlCharts',
+    display: 'Контрольные карты',
+    component: () => import('../components/ControlCharts/FullView.vue'),
+    nav: true,
   },
   { name: 'wafer-path', path: '/waferpath/:waferId', component: () => import('../components/WaferPath/FullView.vue') },
   {
@@ -140,6 +145,9 @@ export const routes = [
     name: 'dietypesettings', path: '/dts', component: DieTypeSettings, display: 'Настройка элементов', nav: true, uploadingArea: true,
   },
   {
+    name: 'uploader-graphic4', path: '/ug4', component: UploaderGraphic4, display: 'Загрузка особенных графиков', nav: true, uploadingArea: true,
+  },
+  {
     name: 'uploader-fg', path: '/ufg', component: UploaderFg, display: 'Типы измерений', nav: true, uploadingArea: true,
   },
   {
@@ -149,10 +157,18 @@ export const routes = [
     name: 'uploader-cp', path: '/uu/:selectedCodeProductFolder', component: Uploader, display: 'Загрузка', props: true,
   },
   {
-    name: 'uploader-cpw', path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder', component: Uploader, display: 'Загрузка измерений', props: true,
+    name: 'uploader-cpw',
+    path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder',
+    component: Uploader,
+    display: 'Загрузка измерений',
+    props: true,
   },
   {
-    name: 'uploader-cpwi', path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder/:mrArray', component: Uploader, display: 'Загрузка измерений', props: true,
+    name: 'uploader-cpwi',
+    path: '/uu/:selectedCodeProductFolder/:selectedWaferFolder/:mrArray',
+    component: Uploader,
+    display: 'Загрузка измерений',
+    props: true,
   },
 
   {

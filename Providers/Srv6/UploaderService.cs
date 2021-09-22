@@ -19,7 +19,8 @@ namespace VueExample.Providers.Srv6
         private readonly IDieValueService _dieValueService;
         private readonly IShortLinkProvider _shortLinkProvider;
         private readonly IMeasurementRecordingService _measurementRecordingService;
-        public UploaderService (IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider) 
+        private readonly IFolderService _folderService;
+        public UploaderService (IFolderService folderService, IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider) 
         {
             _standartWaferService = standartWaferService;
             _stageProvider = stageProvider;
@@ -28,6 +29,7 @@ namespace VueExample.Providers.Srv6
             _dieProvider = dieProvider;
             _shortLinkProvider = shortLinkProvider;
             _dieValueService = dieValueService;
+            _folderService = folderService;
         }
 
         public async Task<IList<UploadingFileStatus>> CheckStatus(IList<UploadingFile> uploadingFiles)
@@ -69,6 +71,20 @@ namespace VueExample.Providers.Srv6
                 }
             }
             return uploadingFileStatusList;
+        }
+
+        public async Task<string> CheckStatusGraphic4(string waferId, string measurementRecordingName)
+        {
+            var directoryPath = $"{ExtraConfiguration.UploadingGraphic4Path}\\{waferId}";
+            var isExist = _folderService.IsWaferExistsInFolder(directoryPath,measurementRecordingName);
+            if(!isExist)
+                return "notExists";
+            var measurementRecording = await _measurementRecordingService.GetByNameAndWaferId(measurementRecordingName, waferId);
+            if(measurementRecording != null)
+            {
+                return "alreadyUploaded";
+            }
+            return "ready";
         }
 
         public async Task<string> Uploading (UploadingFile uploadingFile, int type) 
