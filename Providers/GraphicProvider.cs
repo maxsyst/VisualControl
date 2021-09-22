@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
+using VueExample.Entities;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 
@@ -14,6 +15,15 @@ namespace VueExample.Providers
         public GraphicProvider(Srv6Context srv6Context)
         {
             _srv6Context = srv6Context;
+        }
+
+        public async Task<Graphic> Create(Graphic graphic, int codeProductId)
+        {
+            _srv6Context.Graphics.Add(graphic);
+            await _srv6Context.SaveChangesAsync();
+            _srv6Context.CodeProductGraphic.Add(new CodeProductGraphic{CodeProductId = codeProductId, GraphicId = graphic.Id});
+            await _srv6Context.SaveChangesAsync();
+            return graphic;
         }
 
         public async Task<List<Graphic>> GetByCodeProduct(int codeProductId)

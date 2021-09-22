@@ -17,6 +17,17 @@ namespace VueExample.Providers.Srv6
             _graphicProvider = graphicProvider;
         }
 
+        public async Task<Graphic> Create(Graphic graphic, int codeProductId)
+        {
+            return await _graphicProvider.Create(graphic, codeProductId);
+        }
+
+        public async Task<Graphic> CreateS2P(int codeProductId, string type)
+        {
+            var graphic = new Graphic{ Absciss = "Freq", AbscissUnit = "ГГц", Ordinate = type, OrdinateUnit = "дБ", Name = $"{type}/Freq", Type = 1 };
+            return await _graphicProvider.Create(graphic, codeProductId);
+        }
+
         public async Task<List<Graphic>> GetByCodeProduct(int codeProductId)
         {
             return await _graphicProvider.GetByCodeProduct(codeProductId);
