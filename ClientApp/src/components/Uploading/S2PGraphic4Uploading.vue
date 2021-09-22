@@ -46,7 +46,7 @@
                 </v-chip>
             </v-col>
         </v-row>
-        <v-row>
+          <v-row>
             <v-col class="d-flex">
                  <v-select
                     v-if="isMeasurementReady"
@@ -59,6 +59,63 @@
                     label="Выберите тип загрузки:">
                   </v-select>
             </v-col>
+        </v-row>
+         <v-row>
+          <v-card v-if="uploadingType==='JUST_S2P'">
+                <v-card-title>
+                    <span class="headline">Выбор графиков</span>
+                </v-card-title>
+                <v-card-text>
+        <v-row>
+            <v-col class="d-flex">
+             <v-select
+                    v-model="currentGraphics.S21"
+                    :items="availableGraphics"
+                    no-data-text="Нет данных"
+                    item-value="id"
+                    item-text="name"
+                    outlined
+                    label="S21:">
+                  </v-select>
+            </v-col>
+            <v-col class="d-flex">
+              <v-select
+                    v-model="currentGraphics.S22"
+                    :items="availableGraphics"
+                    no-data-text="Нет данных"
+                     item-value="id"
+                    item-text="name"
+                    outlined
+                    label="S22:">
+                  </v-select>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col class="d-flex">
+              <v-select
+                    v-model="currentGraphics.S11"
+                    :items="availableGraphics"
+                    no-data-text="Нет данных"
+                    item-value="id"
+                    item-text="name"
+                    outlined
+                    label="S11:">
+                  </v-select>
+            </v-col>
+            <v-col class="d-flex">
+              <v-select
+                    v-model="currentGraphics.S12"
+                    :items="availableGraphics"
+                    no-data-text="Нет данных"
+                    item-value="id"
+                    item-text="name"
+                    outlined
+                    label="S12:">
+                  </v-select>
+            </v-col>
+        </v-row>
+                </v-card-text>
+            </v-card>
         </v-row>
         <v-row>
             <v-col class="d-flex">
@@ -81,6 +138,8 @@ export default {
       uploadingType: '',
       isWaferExistInDirectory: false,
       measurementRecordingStatus: 'unknown',
+      availableGraphics: [],
+      currentGraphics: {},
     };
   },
 
@@ -104,6 +163,21 @@ export default {
       this.isWaferExistInDirectory = (await this.$http.get(`/api/folder/iswaferexist/graphic4/${selectedWafer}`)).data;
       this.measurementRecordingName = '';
       this.measurementRecordingStatus = 'unknown';
+      this.availableGraphics = [];
+      this.currentGraphics = {};
+    },
+
+    async uploadingType(uploadingType) {
+      if (uploadingType === 'JUST_S2P') {
+        const { data } = await this.$http.get(`/api/uploadingtype/availiableGraphics/${this.selectedWafer}`);
+        this.availableGraphics = [{ id: '0', name: 'Не загружать' }, ...data.availableGraphics];
+        this.currentGraphics = data.currentGraphics;
+        Object.keys(this.currentGraphics).forEach((key) => {
+          if (this.currentGraphics[key] == null) {
+            this.currentGraphics[key] = { id: '0', name: 'Не загружать' };
+          }
+        });
+      }
     },
   },
 

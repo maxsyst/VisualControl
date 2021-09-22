@@ -16,6 +16,14 @@ namespace VueExample.Providers
             _srv6Context = srv6Context;
         }
 
+        public async Task<List<Graphic>> GetByCodeProduct(int codeProductId)
+        {
+              return await (from f in _srv6Context.CodeProductGraphic
+                    join g in _srv6Context.Graphics on f.GraphicId equals g.Id
+                    where f.CodeProductId == codeProductId
+                    select g).ToListAsync();
+        }
+
         public async Task<Graphic> GetByCodeProductAndName(int codeProductId, string name)
         {
               return await (from f in _srv6Context.CodeProductGraphic

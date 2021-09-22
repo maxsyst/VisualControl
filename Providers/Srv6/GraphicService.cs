@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using LazyCache;
 using VueExample.Models.SRV6;
@@ -14,8 +15,13 @@ namespace VueExample.Providers.Srv6
         {
             _appCache = appCache;
             _graphicProvider = graphicProvider;
-        }        
-        
+        }
+
+        public async Task<List<Graphic>> GetByCodeProduct(int codeProductId)
+        {
+            return await _graphicProvider.GetByCodeProduct(codeProductId);
+        }
+
         public async Task<Graphic> GetByCodeProductAndName(int codeProductId, string name) 
         {
             return await _graphicProvider.GetByCodeProductAndName(codeProductId, name);
