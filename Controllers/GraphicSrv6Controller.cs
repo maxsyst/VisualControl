@@ -20,9 +20,8 @@ namespace VueExample.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateS2P([FromBody] JObject graphics2pJObject)
+        public async Task<IActionResult> CreateS2P([Bind("CodeProductId", "GraphicS2PType")] GraphicS2PViewModel s2pGraphic)
         {
-            var s2pGraphic = graphics2pJObject.ToObject<GraphicS2PViewModel>();
             var createdGraphic = await _graphicService.CreateS2P(s2pGraphic.CodeProductId, s2pGraphic.GraphicS2PType);           
             return Created("", createdGraphic);
         }
