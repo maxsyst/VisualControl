@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Threading.Tasks;
 using VueExample.ViewModels;
-using Newtonsoft.Json.Linq;
 
 namespace VueExample.Controllers
 {

@@ -119,7 +119,7 @@
         </v-row>
         <v-row>
             <v-col class="d-flex">
-                 <v-btn v-if="isMeasurementReady" color="indigo" block>
+                 <v-btn v-if="isMeasurementReady && isGraphicsSelected" color="indigo" block>
                     Загрузить измерения
                 </v-btn>
             </v-col>
@@ -156,6 +156,9 @@ export default {
     isMeasurementNotExists() {
       return this.measurementRecordingStatus === 'notExists';
     },
+    isGraphicsSelected() {
+      return !Object.keys(this.currentGraphics).every((k) => this.currentGraphics[k] === '0');
+    },
   },
 
   watch: {
@@ -174,7 +177,7 @@ export default {
         this.currentGraphics = data.currentGraphics;
         Object.keys(this.currentGraphics).forEach((key) => {
           if (this.currentGraphics[key] == null) {
-            this.currentGraphics[key] = { id: '0', name: 'Не загружать' };
+            this.currentGraphics[key] = '0';
           }
         });
       }
