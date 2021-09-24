@@ -6,6 +6,7 @@ using VueExample.ViewModels;
 using System.Threading.Tasks;
 using System;
 using VueExample.Models.SRV6.Uploader;
+using VueExample.Parsing.Concrete;
 
 namespace VueExample.Providers.Srv6
 {
@@ -15,12 +16,40 @@ namespace VueExample.Providers.Srv6
         private readonly IFileGraphicUploaderService _fileGraphicUploaderService;
         private readonly IProcessProvider _processProvider;
         private readonly ICodeProductProvider _codeProductProvider;
-        public FolderService(IElementService elementService, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
+        private readonly IDieProvider _dieProvider;
+        public FolderService(IElementService elementService, IDieProvider dieProvider, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
         {
+            _dieProvider = dieProvider;
             _elementService = elementService;
             _processProvider = processProvider;
             _codeProductProvider = codeProductProvider;
             _fileGraphicUploaderService = fileGraphicUploaderService;
+        }
+
+        public async Task GetGraphic4(UploadingFileGraphic4 uploadingFile)
+        {
+            var directoryPath = $"{ExtraConfiguration.UploadingGraphic4Path}\\{uploadingFile.WaferId}\\{uploadingFile.MeasurementRecordingName}";
+            var dieList = await _dieProvider.GetDiesByWaferId(uploadingFile.WaferId);
+            directoryPath = GetTruePath(directoryPath);
+            var directoriesArray = System.IO.Directory.GetDirectories(directoryPath);
+            var dieWithCodeList = (from directory in directoriesArray
+                               let dieCode = new DirectoryInfo(directory).Name
+                               let die = dieList.FirstOrDefault(d => d.Code == dieCode)
+                               where die != null
+                               select new DieWithCode { DieCode = dieCode, DieId = die.DieId }).ToList();
+            var parsingContext = new UploadingTypeParsingContext(uploadingFile.UploadingType);
+            foreach (var dieWithCode in dieWithCodeList)
+            {
+                var simpleStateFileArray = Directory.EnumerateFiles($"{directoryPath}\\{dieWithCode}",
+                                                                    "*.*",
+                                                                    SearchOption.TopDirectoryOnly)
+                                                    .Where(s => s.EndsWith(".s2p"));         
+                foreach (var simpleStateFile in simpleStateFileArray)
+                {
+                    parsingContext.Parse(simpleStateFile);
+                }
+            }
+                               
         }
         public List<string> GetAllCodeProductInUploaderDirectory(string directoryPath)
         {
@@ -204,6 +233,7 @@ namespace VueExample.Providers.Srv6
             path = path.Replace(@"T:\\", _path);
             return path;
         }
-        
+
+       
     }
 }

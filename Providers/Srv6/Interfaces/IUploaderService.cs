@@ -7,6 +7,7 @@ namespace VueExample.Providers.Srv6.Interfaces
     public interface IUploaderService
     {
         Task<string> Uploading(UploadingFile uploadingFile, int type);
+        Task<string> UploadingGraphic4(UploadingFileGraphic4 uploadingFile);
         Task<IList<UploadingFileStatus>> CheckStatus(IList<UploadingFile> uploadingFiles);
         Task<string> CheckStatusGraphic4(string waferId, string measurementRecordingName);
     }

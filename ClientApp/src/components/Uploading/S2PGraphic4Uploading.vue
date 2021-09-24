@@ -93,14 +93,14 @@
         <v-row>
             <v-col class="d-flex">
               <v-select
-                    v-model="currentGraphics.S11"
-                    :items="availableGraphics"
-                    no-data-text="Нет данных"
-                    item-value="id"
-                    item-text="name"
-                    outlined
-                    label="S11:">
-                  </v-select>
+                v-model="currentGraphics.S11"
+                :items="availableGraphics"
+                no-data-text="Нет данных"
+                item-value="id"
+                item-text="name"
+                outlined
+                label="S11:">
+              </v-select>
             </v-col>
             <v-col class="d-flex">
               <v-select

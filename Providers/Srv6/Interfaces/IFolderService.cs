@@ -14,6 +14,7 @@ namespace VueExample.Providers.Srv6.Interfaces
         List<string> GetAllMeasurementRecordingFolder(string directoryPath, string codeProductFolderName, string waferFolderName);
         Dictionary<string, UploadingFileData> GetDataFromLNRFile(string path);
         Dictionary<string, UploadingFileData> GetDataFromHSTGFile(string path);
+        Task GetGraphic4(UploadingFileGraphic4 uploadingFile);
         Task<List<SimpleOperationUploaderViewModel>> GetSimpleOperations(string directoryPath, string codeProductName, string waferName, int dieTypeId, List<string> measurementRecordings);
     }
 }
