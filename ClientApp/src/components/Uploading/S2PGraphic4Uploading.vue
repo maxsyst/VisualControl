@@ -115,6 +115,14 @@
             </v-col>
         </v-row>
                 </v-card-text>
+                <v-card-actions>
+                    <v-select
+                      :items="['DB', 'RI']"
+                      outlined
+                      v-model="s2pParserMode"
+                      label="Выберите тип s2p-файла">
+                    </v-select>
+                </v-card-actions>
             </v-card>
         </v-row>
         <v-row>
@@ -140,6 +148,7 @@ export default {
       measurementRecordingStatus: 'unknown',
       availableGraphics: [],
       currentGraphics: {},
+      s2pParserMode: 'DB',
     };
   },
 
