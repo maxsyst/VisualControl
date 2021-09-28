@@ -127,7 +127,7 @@
         </v-row>
         <v-row>
             <v-col class="d-flex">
-                 <v-btn v-if="isMeasurementReady && isGraphicsSelected" color="indigo" block>
+                 <v-btn v-if="isMeasurementReady && isGraphicsSelected" color="indigo" block @click="upload">
                     Загрузить измерения
                 </v-btn>
             </v-col>
@@ -212,6 +212,26 @@ export default {
     async checkMeasurementRecording() {
       const response = await this.$http.get(`/api/uploading/graphic4/checkStatus/${this.selectedWafer}/${this.measurementRecordingName}`);
       this.measurementRecordingStatus = response.data;
+    },
+
+    showSnackBar(text) {
+      this.$store.dispatch('alert/success', text);
+    },
+
+    async upload() {
+      const uploadingFileViewModel = {
+        measurementRecordingName: this.measurementRecordingName,
+        waferId: this.selectedWafer,
+        uploadingType: this.uploadingType,
+        s2pParserMode: this.s2pParserMode,
+      };
+      await this.$http.post('/api/uploading/graphic4', uploadingFileViewModel)
+        .then((response) => {
+          this.showSnackbar('Файл успешно загружен');
+        })
+        .catch(() => {
+          this.showSnackbar('Ошибка при загрузке файла');
+        });
     },
   },
 };

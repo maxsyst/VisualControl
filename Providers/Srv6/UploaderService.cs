@@ -73,9 +73,10 @@ namespace VueExample.Providers.Srv6
             return uploadingFileStatusList;
         }
 
-        public Task<string> UploadingGraphic4(UploadingFileGraphic4 uploadingFile)
+        public async Task<string> UploadingGraphic4(UploadingFileGraphic4 uploadingFile)
         {
-            throw new NotImplementedException();
+            await _folderService.GetGraphic4(uploadingFile);
+            return String.Empty;
         }
 
         public async Task<string> CheckStatusGraphic4(string waferId, string measurementRecordingName)

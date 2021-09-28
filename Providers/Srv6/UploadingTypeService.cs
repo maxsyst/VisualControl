@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using VueExample.Models.SRV6;
 using VueExample.Models.SRV6.Uploader;
+using VueExample.Models.SRV6.Uploader.Models;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 
@@ -24,6 +25,11 @@ namespace VueExample.Providers.Srv6
         public async Task<List<UploadingType>> GetAll()
         {
             return await _uploadingTypeCollection.Find(_ => true).ToListAsync();
+        }
+
+        public async Task<List<Graphic4Type>> GetGraphicsByType(string type)
+        {
+            return (await _uploadingTypeCollection.Find(x => x.Type == type).FirstOrDefaultAsync()).Graphics.ToList();
         }
 
         public async Task<AvailableS2PGraphicsViewModel> GetAvailableS2PGraphics(string waferId)

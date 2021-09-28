@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System;
 using VueExample.Models.SRV6.Uploader;
 using VueExample.Parsing.Concrete;
+using VueExample.Parsing.Models;
 
 namespace VueExample.Providers.Srv6
 {
@@ -26,7 +27,7 @@ namespace VueExample.Providers.Srv6
             _fileGraphicUploaderService = fileGraphicUploaderService;
         }
 
-        public async Task GetGraphic4(UploadingFileGraphic4 uploadingFile)
+        public async Task<List<DieWithCode>> GetGraphic4(UploadingFileGraphic4 uploadingFile)
         {
             var directoryPath = $"{ExtraConfiguration.UploadingGraphic4Path}\\{uploadingFile.WaferId}\\{uploadingFile.MeasurementRecordingName}";
             var dieList = await _dieProvider.GetDiesByWaferId(uploadingFile.WaferId);
@@ -37,19 +38,22 @@ namespace VueExample.Providers.Srv6
                                let die = dieList.FirstOrDefault(d => d.Code == dieCode)
                                where die != null
                                select new DieWithCode { DieCode = dieCode, DieId = die.DieId }).ToList();
-            var parsingContext = new UploadingTypeParsingContext(uploadingFile.UploadingType);
+            var parsingContext = new UploadingTypeParsingContext(uploadingFile.UploadingType, uploadingFile.S2PParserMode);
             foreach (var dieWithCode in dieWithCodeList)
             {
-                var simpleStateFileArray = Directory.EnumerateFiles($"{directoryPath}\\{dieWithCode}",
+                var simpleStateFileArray = Directory.EnumerateFiles($"{directoryPath}\\{dieWithCode.DieCode}",
                                                                     "*.*",
                                                                     SearchOption.TopDirectoryOnly)
-                                                    .Where(s => s.EndsWith(".s2p"));         
+                                                    .Where(s => s.EndsWith(".s2p"));      
+                var stateDictionary = new Dictionary<string, Dictionary<string, SingleLine>>();   
                 foreach (var simpleStateFile in simpleStateFileArray)
                 {
-                    parsingContext.Parse(simpleStateFile);
+                    var dict = parsingContext.Parse(simpleStateFile);
+                    stateDictionary.Add(Guid.NewGuid().ToString("N"), dict);
                 }
+                dieWithCode.stateDictionary = parsingContext.DeltaCalculation(stateDictionary);
             }
-                               
+            return dieWithCodeList;     
         }
         public List<string> GetAllCodeProductInUploaderDirectory(string directoryPath)
         {

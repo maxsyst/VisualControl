@@ -9,7 +9,7 @@ namespace VueExample.Parsing.Concrete
         private readonly ICsvParsingS2PStrategy _csvParsingStrategy;
         public CsvParserContext(string graphicType)
         {
-            if(graphicType == "S21")
+            if(graphicType == "SParameters")
             {
                 _csvParsingStrategy = new CsvParserS2PSParameters();
             }
@@ -18,9 +18,9 @@ namespace VueExample.Parsing.Concrete
                 _csvParsingStrategy = new CsvParserS2PPhase();
             }
         }
-        SingleLine Parse(string path, string ordinateName) 
+        public SingleLine Parse(string path, string ordinateName, string S2PType) 
         {
-            return _csvParsingStrategy.Parse(path, ordinateName);
+            return _csvParsingStrategy.Parse(path, ordinateName, S2PType);
         }
     }
 }

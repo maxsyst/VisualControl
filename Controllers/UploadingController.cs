@@ -64,6 +64,13 @@ namespace VueExample.Controllers
             return Ok(link);
         }
 
+        [HttpPost]
+        [Route("graphic4")]
+        public async Task<IActionResult> UploadGraphic4([FromBody] UploadingFileGraphic4 uploadingFile)
+        {
+            return Ok(await _uploaderService.UploadingGraphic4(uploadingFile));
+        }
+
         [HttpGet]
         [Route("graphic4/checkStatus/{waferId}/{measurementRecordingName}")]
         public async Task<IActionResult> CheckUploadingStatusGraphic4([FromRoute] string waferId, [FromRoute] string measurementRecordingName)

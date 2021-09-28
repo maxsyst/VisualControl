@@ -1,7 +1,11 @@
+using System.Collections.Generic;
+using VueExample.Parsing.Models;
+
 namespace VueExample.Parsing.StrategyInterface
 {
     public interface IUploadingTypeParsingStrategy
     {
-        void Parse(string path);
+        Dictionary<string, SingleLine> Parse(string path);
+        Dictionary<string, Dictionary<string, SingleLine>> DeltaCalculation(Dictionary<string, Dictionary<string, SingleLine>> stateDictionary);
     }
 }
