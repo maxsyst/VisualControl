@@ -7,7 +7,7 @@ namespace VueExample.Parsing.Concrete
 {
     public class UploadingTypeParsingContext
     {
-        private IUploadingTypeParsingStrategy _uploadingTypeParsingStrategy;
+        private readonly IUploadingTypeParsingStrategy _uploadingTypeParsingStrategy;
         public UploadingTypeParsingContext(string uploadingType, string s2pType)
         {
             if(uploadingType == "ATT")

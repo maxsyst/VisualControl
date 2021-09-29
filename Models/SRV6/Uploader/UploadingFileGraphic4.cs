@@ -12,6 +12,5 @@ namespace VueExample.Models.SRV6.Uploader
         public string UploadingType { get; set; }
         [BindingBehavior(BindingBehavior.Required)]
         public string S2PParserMode{ get; set; }
-        public UploadingFileData UploadingFileData { get; set; }
     }
 }

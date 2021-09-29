@@ -8,6 +8,7 @@ using System;
 using VueExample.Models.SRV6.Uploader;
 using VueExample.Parsing.Concrete;
 using VueExample.Parsing.Models;
+using VueExample.Parsing.SchemeConverter;
 
 namespace VueExample.Providers.Srv6
 {
@@ -18,8 +19,10 @@ namespace VueExample.Providers.Srv6
         private readonly IProcessProvider _processProvider;
         private readonly ICodeProductProvider _codeProductProvider;
         private readonly IDieProvider _dieProvider;
-        public FolderService(IElementService elementService, IDieProvider dieProvider, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
+        private readonly IUploadingTypeService _uploadingTypeService;
+        public FolderService(IUploadingTypeService uploadingTypeService, IElementService elementService, IDieProvider dieProvider, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
         {
+            _uploadingTypeService = uploadingTypeService;
             _dieProvider = dieProvider;
             _elementService = elementService;
             _processProvider = processProvider;
@@ -27,8 +30,9 @@ namespace VueExample.Providers.Srv6
             _fileGraphicUploaderService = fileGraphicUploaderService;
         }
 
-        public async Task<List<DieWithCode>> GetGraphic4(UploadingFileGraphic4 uploadingFile)
+        public async Task<List<Graphic4ParseResult>> GetGraphic4(UploadingFileGraphic4 uploadingFile)
         {
+            var graphic4ParseResultList = new List<Graphic4ParseResult>();
             var directoryPath = $"{ExtraConfiguration.UploadingGraphic4Path}\\{uploadingFile.WaferId}\\{uploadingFile.MeasurementRecordingName}";
             var dieList = await _dieProvider.GetDiesByWaferId(uploadingFile.WaferId);
             directoryPath = GetTruePath(directoryPath);
@@ -37,8 +41,10 @@ namespace VueExample.Providers.Srv6
                                let dieCode = new DirectoryInfo(directory).Name
                                let die = dieList.FirstOrDefault(d => d.Code == dieCode)
                                where die != null
-                               select new DieWithCode { DieCode = dieCode, DieId = die.DieId }).ToList();
+                               select new DieWithCode(die.DieId, dieCode)).ToList();
             var parsingContext = new UploadingTypeParsingContext(uploadingFile.UploadingType, uploadingFile.S2PParserMode);
+            var schemeConverter = new DieToGraphicSchemeConverter();
+            var dieWithCodeDictionaryList = new List<Dictionary<string, DieWithCode>>();
             foreach (var dieWithCode in dieWithCodeList)
             {
                 var simpleStateFileArray = Directory.EnumerateFiles($"{directoryPath}\\{dieWithCode.DieCode}",
@@ -49,11 +55,15 @@ namespace VueExample.Providers.Srv6
                 foreach (var simpleStateFile in simpleStateFileArray)
                 {
                     var dict = parsingContext.Parse(simpleStateFile);
-                    stateDictionary.Add(Guid.NewGuid().ToString("N"), dict);
+                    stateDictionary.Add($"A{simpleStateFile.Split("\\").Last().Split("_").Last().Split(".")[0]}", dict);
                 }
-                dieWithCode.stateDictionary = parsingContext.DeltaCalculation(stateDictionary);
+                stateDictionary = parsingContext.DeltaCalculation(stateDictionary);
+                dieWithCodeDictionaryList.Add(schemeConverter.ConvertDieWithCode(dieWithCode, stateDictionary));
             }
-            return dieWithCodeList;     
+            var graphics = await _uploadingTypeService.GetGraphicsByType(uploadingFile.UploadingType);
+            graphic4ParseResultList.AddRange(from graphic in graphics
+                                             select schemeConverter.ConvertToScheme(dieWithCodeDictionaryList, graphic));
+            return graphic4ParseResultList;     
         }
         public List<string> GetAllCodeProductInUploaderDirectory(string directoryPath)
         {
