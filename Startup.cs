@@ -31,6 +31,7 @@ using VueExample.Providers.Srv6;
 using VueExample.Providers.Srv6.CachedServices;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services;
+using VueExample.Services.Abstract;
 using VueExample.Services.Vertx.Abstract;
 using VueExample.Services.Vertx.Implementation;
 using VueExample.StatisticsCore.Abstract;
@@ -149,7 +150,7 @@ namespace VueExample
             services.AddTransient<DirtyCellsCalculationFxdService>();
              
             
-
+            services.AddTransient<IGraphic4Service, Graphic4Service>();
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
             services.AddTransient<IMdvService, MdvService>();
             services.AddTransient<IMeasurementService, MeasurementService>();

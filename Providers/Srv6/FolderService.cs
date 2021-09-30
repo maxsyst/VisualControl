@@ -19,10 +19,8 @@ namespace VueExample.Providers.Srv6
         private readonly IProcessProvider _processProvider;
         private readonly ICodeProductProvider _codeProductProvider;
         private readonly IDieProvider _dieProvider;
-        private readonly IUploadingTypeService _uploadingTypeService;
-        public FolderService(IUploadingTypeService uploadingTypeService, IElementService elementService, IDieProvider dieProvider, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
+        public FolderService(IElementService elementService, IDieProvider dieProvider, ICodeProductProvider codeProductProvider, IProcessProvider processProvider, IFileGraphicUploaderService fileGraphicUploaderService)
         {
-            _uploadingTypeService = uploadingTypeService;
             _dieProvider = dieProvider;
             _elementService = elementService;
             _processProvider = processProvider;
@@ -42,7 +40,7 @@ namespace VueExample.Providers.Srv6
                                let die = dieList.FirstOrDefault(d => d.Code == dieCode)
                                where die != null
                                select new DieWithCode(die.DieId, dieCode)).ToList();
-            var parsingContext = new UploadingTypeParsingContext(uploadingFile.UploadingType, uploadingFile.S2PParserMode);
+            var parsingContext = new UploadingTypeParsingContext(uploadingFile.UploadingType.Type, uploadingFile.S2PParserMode);
             var schemeConverter = new DieToGraphicSchemeConverter();
             var dieWithCodeDictionaryList = new List<Dictionary<string, DieWithCode>>();
             foreach (var dieWithCode in dieWithCodeList)
@@ -60,8 +58,8 @@ namespace VueExample.Providers.Srv6
                 stateDictionary = parsingContext.DeltaCalculation(stateDictionary);
                 dieWithCodeDictionaryList.Add(schemeConverter.ConvertDieWithCode(dieWithCode, stateDictionary));
             }
-            var graphics = await _uploadingTypeService.GetGraphicsByType(uploadingFile.UploadingType);
-            graphic4ParseResultList.AddRange(from graphic in graphics
+          
+            graphic4ParseResultList.AddRange(from graphic in uploadingFile.UploadingType.Graphics
                                              select schemeConverter.ConvertToScheme(dieWithCodeDictionaryList, graphic));
             return graphic4ParseResultList;     
         }

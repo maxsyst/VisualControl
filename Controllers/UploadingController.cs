@@ -66,8 +66,9 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [Route("graphic4")]
-        public async Task<IActionResult> UploadGraphic4([FromBody] UploadingFileGraphic4 uploadingFile)
+        public async Task<IActionResult> UploadGraphic4([FromBody] JObject uploadingFileJObject)
         {
+            var uploadingFile = uploadingFileJObject.ToObject<UploadingFileGraphic4>();
             return Ok(await _uploaderService.UploadingGraphic4(uploadingFile));
         }
 
