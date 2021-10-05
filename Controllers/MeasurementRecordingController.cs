@@ -135,6 +135,15 @@ namespace VueExample.Controllers
             return Ok(measurementRecording);  
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
+        [Route("merge/src/{srcMeasurementRecordingId:int}/dest/{destMeasurementRecordingId:int}")]
+        public async Task<IActionResult> Merge([FromRoute] int srcMeasurementRecordingId, [FromRoute] int destMeasurementRecordingId)
+        {
+            await _measurementRecordingService.Merge(srcMeasurementRecordingId, destMeasurementRecordingId);
+            return Ok(destMeasurementRecordingId);  
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

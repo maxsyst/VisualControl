@@ -202,8 +202,22 @@ namespace VueExample.Providers.Srv6
             _srv6Context.DieGraphics.RemoveRange(valueList);
             _srv6Context.FkMrGraphics.Remove(graphicMeasurementRecording);
             await _srv6Context.SaveChangesAsync();      
-        } 
+        }
 
-        
+        public async Task Merge(int srcMeasurementRecordingId, int destMeasurementRecordingId)
+        {
+            var fkMrGraphicList = await _srv6Context.FkMrGraphics.Where(x => x.MeasurementRecordingId == srcMeasurementRecordingId).ToListAsync();
+            foreach (var fkMr in fkMrGraphicList)
+            {
+                fkMr.MeasurementRecordingId = destMeasurementRecordingId;
+            }
+            var dieGraphicList = await _srv6Context.DieGraphics.Where(x => x.MeasurementRecordingId == srcMeasurementRecordingId).ToListAsync();
+            foreach (var dieGraphics in dieGraphicList)
+            {
+                dieGraphics.MeasurementRecordingId = destMeasurementRecordingId;
+            }
+            await _srv6Context.SaveChangesAsync();
+            await this.Delete(srcMeasurementRecordingId);
+        }
     }
 }
