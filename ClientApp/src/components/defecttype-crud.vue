@@ -3,7 +3,7 @@
   <v-layout row>
     <v-flex lg6 offset-lg2>
       <v-card>
-       
+
         <v-toolbar color="indigo" dark>
           <v-btn absolute
                  dark
@@ -17,7 +17,6 @@
 
           <v-toolbar-title>Типы дефектов</v-toolbar-title>
 
-         
         </v-toolbar>
         <v-list>
           <v-divider></v-divider>
@@ -25,7 +24,6 @@
           <v-list-item v-for="defect in defecttypes"
                        :key="defect.defectId"
                        >
-          
 
             <v-list-item-content>
               <v-list-item-title v-text="defect.description"></v-list-item-title>
@@ -51,7 +49,7 @@
   </v-layout>
   <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="600px">
-      
+
       <v-card>
         <v-card-title>
           <span class="headline">Добавление нового типа дефекта</span>
@@ -81,7 +79,7 @@
           <v-btn color="grey" text @click="dialog = false">Отмена</v-btn>
           <v-btn color="green" text @click="addDefect">Сохранить</v-btn>
         </v-card-actions>
-      
+
       </v-card>
     </v-dialog>
   </v-layout>
@@ -118,153 +116,127 @@
 </v-container>
 </template>
 
-
 <script>
-  import Verte from 'verte';
-  import 'verte/dist/verte.css';
-  import Avatar from 'vue-avatar'
-  import { required, minLength } from 'vuelidate/lib/validators'
-  export default {
+import Verte from 'verte';
+import 'verte/dist/verte.css';
+import Avatar from 'vue-avatar';
+import { required, minLength } from 'vuelidate/lib/validators';
 
-    data() {
-      return {
-        defecttypes: [],
-        dialog: false,
-        deleteDialog: false,
-        deletingDefectType: "",
-        colorAdd: "",
-        newDefectType: "",
-        snackbarVisibility: false,
-        snackbarText: "",
-        snackbarColor: "success"
-      }
+export default {
+
+  data() {
+    return {
+      defecttypes: [],
+      dialog: false,
+      deleteDialog: false,
+      deletingDefectType: '',
+      colorAdd: '',
+      newDefectType: '',
+      snackbarVisibility: false,
+      snackbarText: '',
+      snackbarColor: 'success',
+    };
+  },
+
+  components:
+    {
+      Verte, Avatar,
     },
 
-    components:
-    {
-       Verte, Avatar
-    },
+  mounted() {
+    this.$http.get('/api/defecttype/getall').then((response) => {
+      this.defecttypes = response.data;
+    });
+  },
 
-    mounted()
+  methods:
     {
-     
-      this.$http.get(`/api/defecttype/getall`).then((response) => {
-        this.defecttypes = response.data;
-      });
-
-     
-    },
-
-    methods:
-    {
-      openAddDialog()
-      {
+      openAddDialog() {
         this.dialog = true;
-        this.colorAdd = "#" + ('00000' + (Math.random() * (1 << 24) | 0).toString(16)).slice(-6);
-        
+        this.colorAdd = `#${(`00000${(Math.random() * (1 << 24) | 0).toString(16)}`).slice(-6)}`;
       },
 
       openDeleteDialog(defectType) {
-      
         this.deleteDialog = true;
         this.deletingDefectType = defectType;
-
       },
 
-      deleteDefectType()
-      {
-        let defecttype = this.deletingDefectType;
-        this.$http.post(`/api/defecttype/deletedefecttype`, defecttype)
+      deleteDefectType() {
+        const defecttype = this.deletingDefectType;
+        this.$http.post('/api/defecttype/deletedefecttype', defecttype)
           .then((response) => {
-            let responseObj = response.data;
+            const responseObj = response.data;
             if (response.status === 200) {
               this.snackbarText = `Тип дефекта <<${responseObj.description}>> успешно удален`;
-              this.snackbarColor = "teal darken-4";
+              this.snackbarColor = 'teal darken-4';
               this.snackbarVisibility = true;
-              this.defecttypes = this.defecttypes.filter(x => x.defectTypeId != defecttype.defectTypeId);
-              this.deletingDefectType = "";
+              this.defecttypes = this.defecttypes.filter((x) => x.defectTypeId != defecttype.defectTypeId);
+              this.deletingDefectType = '';
             }
-
-
-
           })
           .catch((error) => {
-
             if (error.response.status === 400) {
               this.snackbarText = error.response.data[0].message;
-              this.snackbarColor = "pink darken-4";
+              this.snackbarColor = 'pink darken-4';
               this.snackbarVisibility = true;
-              this.deletingDefectType = "";
+              this.deletingDefectType = '';
             }
           });
-          this.deleteDialog = false;
+        this.deleteDialog = false;
       },
 
-      addDefect()
-      {
+      addDefect() {
         this.$v.$touch();
-        if (this.$v.newDefectType.$error)
-        {
+        if (this.$v.newDefectType.$error) {
           this.dialog = true;
-        }
-        else
-        {
+        } else {
           this.dialog = false;
-          var defecttype = {
+          const defecttype = {
             description: this.newDefectType,
-            color: this.colorAdd
+            color: this.colorAdd,
           };
 
-          this.$http.post(`/api/defecttype/addnewdefecttype`, defecttype)
+          this.$http.post('/api/defecttype/addnewdefecttype', defecttype)
             .then((response) => {
-              let responseObj = response.data;
-              if (response.status === 200)
-              {
+              const responseObj = response.data;
+              if (response.status === 200) {
                 this.snackbarText = `Тип дефекта <<${responseObj.description}>> успешно добавлен`;
-                this.snackbarColor = "teal darken-4";
-                this.snackbarVisibility = true; 
+                this.snackbarColor = 'teal darken-4';
+                this.snackbarVisibility = true;
                 this.defecttypes.push(responseObj);
-                this.newDefectType = "";
+                this.newDefectType = '';
               }
-
-             
-               
             })
             .catch((error) => {
-              
               if (error.response.status === 400) {
                 this.snackbarText = error.response.data[0].message;
-                this.snackbarColor = "pink darken-4";
+                this.snackbarColor = 'pink darken-4';
                 this.snackbarVisibility = true;
               }
             });
         }
-       
-       
-      }
+      },
     },
 
-    computed:
+  computed:
     {
 
-
-      defectTypeErrors()
-      {
-        const errors = []
-        if (!this.$v.newDefectType.$error) return errors
-        !this.$v.newDefectType.required && errors.push('Введите тип дефекта')
-        !this.$v.newDefectType.minLength && errors.push('Описание дефекта должно быть более 4 символов')
-        return errors
-      }
+      defectTypeErrors() {
+        const errors = [];
+        if (!this.$v.newDefectType.$error) return errors;
+        !this.$v.newDefectType.required && errors.push('Введите тип дефекта');
+        !this.$v.newDefectType.minLength && errors.push('Описание дефекта должно быть более 4 символов');
+        return errors;
+      },
     },
 
-    validations: {
-      newDefectType: {
-        required,
-        minLength: minLength(4)
-      }
-    }
- }
+  validations: {
+    newDefectType: {
+      required,
+      minLength: minLength(4),
+    },
+  },
+};
 
 </script>
 

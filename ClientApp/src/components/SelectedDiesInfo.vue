@@ -1,5 +1,5 @@
 <template>
-    <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">      
+    <v-card color="#303030" dark v-if="avbSelectedDies.length > 0">
         <v-card-text>
             <div class="d-flex justify-space-between">
                 <div>
@@ -17,34 +17,40 @@
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn block :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" outlined @click="selectAllDies(avbSelectedDies)">Выбрать все кристаллы</v-btn>
+            <v-btn block
+                   :color="viewMode === 'Мониторинг' ? 'primary' : '#80DEEA'" 
+                   outlined
+                   @click="selectAllDies(avbSelectedDies)">
+                   Выбрать все кристаллы
+            </v-btn>
         </v-card-actions>
     </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+
 export default {
-    props: ["selectedMeasurementId", "viewMode"],
-    data() {
-        return {
+  props: ['selectedMeasurementId', 'viewMode'],
+  data() {
+    return {
 
-        }
+    };
+  },
+
+  computed: {
+    ...mapGetters({
+      selectedDies: 'wafermeas/selectedDies',
+      avbSelectedDies: 'wafermeas/avbSelectedDies',
+    }),
+  },
+
+  methods: {
+    selectAllDies(avbSelectedDies) {
+      this.$store.dispatch('wafermeas/updateSelectedDies', [...avbSelectedDies]);
     },
-
-    computed:{
-        ...mapGetters({
-            selectedDies: 'wafermeas/selectedDies',
-            avbSelectedDies: 'wafermeas/avbSelectedDies'
-        }),
-    },
-
-    methods: {
-        selectAllDies: function(avbSelectedDies) {
-            this.$store.dispatch("wafermeas/updateSelectedDies", [...avbSelectedDies])
-        }
-    }
-}
+  },
+};
 </script>
 
 <style>

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Options;
 using VueExample.Helpers;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.Services.Abstract;
 using VueExample.StatisticsCore.Abstract;
 using VueExample.ViewModels;
 
@@ -22,11 +24,13 @@ namespace VueExample.Controllers
         private readonly IStageProvider _stageProvider;
         private readonly IElementService _elementService;
         private readonly IExportProvider _exportProvider;
+        private readonly IGraphic4Service _graphic4Service;
         private readonly IMapper _mapper;   
        
-        public MeasurementRecordingController(IOptions<AppSettings> appSettings, IElementService elementService, IMapper mapper, IExportProvider exportProvider, IStageProvider stageProvider, IMeasurementRecordingService measurementRecordingService)
+        public MeasurementRecordingController(IOptions<AppSettings> appSettings, IGraphic4Service graphic4Service, IElementService elementService, IMapper mapper, IExportProvider exportProvider, IStageProvider stageProvider, IMeasurementRecordingService measurementRecordingService)
         {
             _appSettings = appSettings.Value;
+            _graphic4Service = graphic4Service;
             _elementService = elementService;
             _stageProvider = stageProvider;
             _measurementRecordingService = measurementRecordingService;
@@ -68,6 +72,14 @@ namespace VueExample.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("delete/graphic4/{measurementRecordingId:int}")]        
+        public async Task<IActionResult> Delete4([FromRoute] int measurementRecordingId)
+        {
+            return await _graphic4Service.DeleteGraphic4(measurementRecordingId) ? (IActionResult)NoContent() : (IActionResult)NotFound();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("delete/list")]        
         public async Task<IActionResult> DeleteList([FromBody] List<int> measurementIdList)
         {
@@ -81,6 +93,16 @@ namespace VueExample.Controllers
         public async Task<IActionResult> DeleteSpecificMeasurement([FromRoute] int measurementRecordingId, [FromRoute] int graphicId)
         {
             await _measurementRecordingService.DeleteSpecificMeasurement(measurementRecordingId, graphicId);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("deletespecificmultiply/{measurementRecordingId:int}/{graphicIdString}")]        
+        public async Task<IActionResult> DeleteSpecificMeasurement([FromRoute] int measurementRecordingId, [FromRoute] string graphicIdString)
+        {
+            var graphicIdArray = graphicIdString.Split('$').Select(x => Convert.ToInt32(x)).ToList();
+            await _measurementRecordingService.DeleteSpecificMultiplyMeasurement(measurementRecordingId, graphicIdArray);
             return NoContent();
         }
 
@@ -111,6 +133,15 @@ namespace VueExample.Controllers
         {
             var measurementRecording = await _measurementRecordingService.UpdateName(measurementRecordingViewModel.Id, measurementRecordingViewModel.Name);
             return Ok(measurementRecording);  
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
+        [Route("merge/src/{srcMeasurementRecordingId:int}/dest/{destMeasurementRecordingId:int}")]
+        public async Task<IActionResult> Merge([FromRoute] int srcMeasurementRecordingId, [FromRoute] int destMeasurementRecordingId)
+        {
+            await _measurementRecordingService.Merge(srcMeasurementRecordingId, destMeasurementRecordingId);
+            return Ok(destMeasurementRecordingId);  
         }
 
         [HttpGet]

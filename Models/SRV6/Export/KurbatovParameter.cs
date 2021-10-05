@@ -22,7 +22,7 @@ namespace VueExample.Models.SRV6.Export
         [JsonProperty(Order = -1)]
         public List<AtomicDieValue> advList = new List<AtomicDieValue>();          
 
-        public void FindGoodAverage(HashSet<int> dirtyCodesList)
+        public void FindGoodAverage(HashSet<string> dirtyCodesList)
         {
             var averageGood = 0.0;
             foreach (var adv in advList)

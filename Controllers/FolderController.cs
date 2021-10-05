@@ -71,6 +71,15 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
+        [Route("iswaferexist/graphic4/{waferId}")]
+        public IActionResult IsExistWaferInFolder([FromRoute] string waferId)
+        {
+           var directoryPath = ExtraConfiguration.UploadingGraphic4Path;
+           var isExist = _folderService.IsWaferExistsInFolder(directoryPath, waferId);
+           return Ok(isExist);
+        }
+
+        [HttpGet]
         [Route("filedata/hstg")]
         public IActionResult GetFileHSTGData([FromQuery] string path)
         {

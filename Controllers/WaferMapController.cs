@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Providers;
-using VueExample.Services;
+using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 
 namespace VueExample.Controllers
@@ -11,12 +11,12 @@ namespace VueExample.Controllers
     public class WaferMapController : Controller
     {
         private readonly IDieProvider _dieProvider;
-        private readonly IWaferMapProvider _waferMapProvider;
+        private readonly IWaferMapService _waferMapService;
 
-        public WaferMapController(IDieProvider dieProvider, IWaferMapProvider waferMapProvider)
+        public WaferMapController(IDieProvider dieProvider, IWaferMapService waferMapService)
         {
             _dieProvider = dieProvider;
-            _waferMapProvider = waferMapProvider;
+           _waferMapService = waferMapService;
         }
 
         [HttpGet]
@@ -24,15 +24,8 @@ namespace VueExample.Controllers
         public async Task<IActionResult> GetFormedWaferMap([FromQuery] string waferMapFieldViewModelJSON)
         {
             var waferMapFieldViewModel = JsonConvert.DeserializeObject<WaferMapFieldViewModel>(waferMapFieldViewModelJSON);
-            var diesList = await _dieProvider.GetDiesByWaferId(waferMapFieldViewModel.WaferId);
-            if (diesList.Count == 0)
-            {
-                return BadRequest();
-            }
-            var orientation = (await _waferMapProvider.GetByWaferId(waferMapFieldViewModel.WaferId)).Orientation;
-            var waferMapFormed = new WaferMapFormationService(waferMapFieldViewModel.FieldHeight,
-                waferMapFieldViewModel.FieldWidth, waferMapFieldViewModel.StreetSize, diesList).GetFormedWaferMap();
-            return Ok(new {waferMapFormed, orientation});
+            var formedMap = await _waferMapService.GetFormedMap(waferMapFieldViewModel);
+            return Ok(formedMap);
         }
     }
 }

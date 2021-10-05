@@ -9,14 +9,14 @@
           <v-card>
             <v-row>
               <v-col lg="5" class="pl-8">
-                <v-text-field                  
+                <v-text-field
                   v-model="newElement.name"
                   :error-messages="validationErrors"
                   label="Название элемента"
                 ></v-text-field>
               </v-col>
               <v-col lg="7" class="px-8">
-                <v-select                  
+                <v-select
                   :items="avElementTypes"
                   v-model="newElement.typeId"
                   no-data-text="Нет данных"
@@ -35,7 +35,7 @@
               <v-col lg="12" class="px-8">
                 <v-text-field v-model="newElement.comment" label="Описание элемента"></v-text-field>
               </v-col>
-            </v-row>           
+            </v-row>
             <v-row>
               <v-col lg="6" offset-lg="6" class="pr-8">
                 <v-btn v-if="validationErrors.length === 0" block color="success" @click="createElement()">Создать</v-btn>
@@ -53,51 +53,50 @@ export default {
   props: ['mode'],
   data() {
     return {
-      newElement: {name: "", comment: "", docName: "", typeId: 0, isAvaliableToDelete: true},
+      newElement: {
+        name: '', comment: '', docName: '', typeId: 0, isAvaliableToDelete: true,
+      },
       avElementTypes: [],
-      menu: false
-    }
+      menu: false,
+    };
   },
 
-  methods: {    
+  methods: {
     async initElementTypes() {
-         await this.$http
-            .get(`/api/elementtype/all`)
-            .then(response => { this.avElementTypes = response.data
-                                this.newElement.typeId = this.avElementTypes[0].id})
-            .catch(err => console.log(err))
+      await this.$http
+        .get('/api/elementtype/all')
+        .then((response) => {
+          this.avElementTypes = response.data;
+          this.newElement.typeId = this.avElementTypes[0].id;
+        });
     },
 
     createElement() {
-        if(this.mode === "created")
-        {
-          this.$store.commit("elements/addtoElements", this.newElement)
-        }
-        if(this.mode === "update")
-        {
-           this.$emit('create-element', this.newElement)
-        }       
-        this.menu = false
-    }
+      if (this.mode === 'created') {
+        this.$store.commit('elements/addtoElements', this.newElement);
+      }
+      if (this.mode === 'update') {
+        this.$emit('create-element', this.newElement);
+      }
+      this.menu = false;
+    },
   },
 
   computed: {
-     validationErrors() {
-        if(!this.newElement.name) {
-           return 'Введите название элемента'
-        }
-        if(this.$store.state.elements.elements.filter(x => x.name === this.newElement.name).length > 0)
-        {
-           return 'Элемент с таким названием уже существует'
-        }
-        return []
-     }
+    validationErrors() {
+      if (!this.newElement.name) {
+        return 'Введите название элемента';
+      }
+      if (this.$store.state.elements.elements.filter((x) => x.name === this.newElement.name).length > 0) {
+        return 'Элемент с таким названием уже существует';
+      }
+      return [];
+    },
   },
 
   async mounted() {
-    this.initElementTypes()
-  }
+    this.initElementTypes();
+  },
 
-}
+};
 </script>
-

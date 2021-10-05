@@ -4,7 +4,8 @@
         <v-card-title>{{title}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text style="height:300px;">
-            <v-checkbox v-for="item in initialArray" :key="item[id]" v-model="selected" :label="item[labelProp]" :value="item[valueProp]"></v-checkbox>
+            <v-checkbox v-for="item in initialArray" :key="item[id]" v-model="selected" :label="item[labelProp]" :value="item[valueProp]">
+            </v-checkbox>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="d-flex justify-lg-space-between">
@@ -18,54 +19,54 @@
 <script>
 
 export default {
-    props: {
-        initialArray: Array,
-        title: String,
-        confirmText: String,
-        state: {
-            type: Boolean,
-            default: false
-        },
-        width: {
-            type: String,
-            default: "450"
-        },
-        keyProp: {
-            type: String,
-            default: `id`
-        },
-        valueProp: {
-            type: String,
-            default: `id`
-        },
-        labelProp: {
-            type: String,
-            default: `name`
-        }
+  props: {
+    initialArray: Array,
+    title: String,
+    confirmText: String,
+    state: {
+      type: Boolean,
+      default: false,
     },
-    
-    data() {
-        return {
-            selected: []
-        }
+    width: {
+      type: String,
+      default: '450',
+    },
+    keyProp: {
+      type: String,
+      default: 'id',
+    },
+    valueProp: {
+      type: String,
+      default: 'id',
+    },
+    labelProp: {
+      type: String,
+      default: 'name',
+    },
+  },
+
+  data() {
+    return {
+      selected: [],
+    };
+  },
+
+  methods: {
+    confirm(selected) {
+      this.$emit('confirm', [...selected]);
+      this.clearSelected();
     },
 
-    methods: {
-        confirm(selected) {           
-            this.$emit('confirm', [...selected])
-            this.clearSelected()
-        },
+    close() {
+      this.$emit('cancel');
+      this.clearSelected();
+    },
 
-        close(selected) {
-            this.$emit('cancel')
-            this.clearSelected()
-        },
-
-        clearSelected() {
-            this.selected = []
-        }
-    }
-}
+    clearSelected() {
+      this.selected = [];
+    },
+  },
+};
 </script>
 
 <style>

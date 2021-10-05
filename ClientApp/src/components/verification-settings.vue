@@ -65,31 +65,32 @@
 <script>
 import DevicesSettings from './device-crud.vue';
 import MeasuredDevicesSettings from './measureddevice-crud.vue';
-import MeasurementCreating from './measurement-crud.vue'
+import MeasurementCreating from './measurement-crud.vue';
+
 export default {
-    
-    data() {
-        return {
-           activeSettings: 0
-        }
-    },
 
-    components:
+  data() {
+    return {
+      activeSettings: 0,
+    };
+  },
+
+  components:
     {
-        "device-crud": DevicesSettings,
-        "measureddevice-crud": MeasuredDevicesSettings,
-        "measurement-crud": MeasurementCreating 
+      'device-crud': DevicesSettings,
+      'measureddevice-crud': MeasuredDevicesSettings,
+      'measurement-crud': MeasurementCreating,
     },
 
-    methods: {
+  methods: {
 
-    },
+  },
 
-    async created() {
+  async created() {
 
-    }
+  },
 
-}
+};
 </script>
 
 <style>

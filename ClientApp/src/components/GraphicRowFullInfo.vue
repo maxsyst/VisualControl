@@ -29,7 +29,7 @@
           :divider="selectedDivider"
         ></chart-hstg>
         <v-divider light></v-divider>
-      </v-col>     
+      </v-col>
       <v-col v-else :lg="rowViewOptions.chartFlexSize" class="d-flex align-self-center">
         <v-card>
           <v-card-text>
@@ -44,43 +44,42 @@
 </template>
 
 <script>
-import ChartLNR from "./chart-lnr-cjs.vue";
-import ChartHSTG from "./chart-bar-cjs.vue";
-import StatSingle from "./stat-single.vue";
+import ChartLNR from './chart-lnr-cjs.vue';
+import ChartHSTG from './chart-bar-cjs.vue';
+import StatSingle from './stat-single.vue';
+
 export default {
-    props: ["selectedMeasurementId", "keyGraphicState", "viewMode", "selectedDivider", "statisticKf", "selectedDiesLength"],
-    data() {
+  props: ['selectedMeasurementId', 'keyGraphicState', 'viewMode', 'selectedDivider', 'statisticKf', 'selectedDiesLength'],
+  data() {
+    return {
+
+    };
+  },
+  components: {
+    'stat-single': StatSingle,
+    'chart-lnr': ChartLNR,
+    'chart-hstg': ChartHSTG,
+  },
+  computed: {
+
+    rowViewMode() {
+      return this.$store.getters['wafermeas/getKeyGraphicStateRowViewMode'](this.keyGraphicState);
+    },
+
+    rowViewOptions() {
+      if (this.rowViewMode === 'miniChart') {
         return {
-          
-        }
+          statSingleFlexSize: 8,
+          chartFlexSize: 4,
+        };
+      }
+      return {
+        statSingleFlexSize: 4,
+        chartFlexSize: 8,
+      };
     },
-    components: {
-        "stat-single": StatSingle,
-        "chart-lnr": ChartLNR,
-        "chart-hstg": ChartHSTG,
-    },
-    computed: {
-
-        rowViewMode() {
-          return this.$store.getters['wafermeas/getKeyGraphicStateRowViewMode'](this.keyGraphicState) 
-        },
-
-        rowViewOptions() {
-            if(this.rowViewMode === 'miniChart') {
-                return {
-                    statSingleFlexSize: 8,
-                    chartFlexSize: 4
-                }
-            }
-            else {
-                return {
-                    statSingleFlexSize: 4,
-                    chartFlexSize: 8
-                }
-            }
-        }
-    }
-}
+  },
+};
 </script>
 
 <style>

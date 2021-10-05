@@ -1,15 +1,17 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VueExample.Contexts;
 using VueExample.Models;
-using VueExample.Repository;
+using VueExample.Providers.Abstract;
 
 namespace VueExample.Providers
 {
-    public class DangerLevelProvider : Repository<DangerLevel>
+    public class DangerLevelProvider : IDangerLevelProvider
     {
+        private readonly VisualControlContext _visualControlContext;
+        public DangerLevelProvider(VisualControlContext visualControlContext)
+        {
+            _visualControlContext = visualControlContext;    
+        }
         public List<DangerLevel> GetDangerLevelFromDefectList(List<Defect> defectList)
         {
             var dangerLevelList = new List<DangerLevel>();

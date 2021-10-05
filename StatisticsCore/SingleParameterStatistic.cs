@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using System;
 using VueExample.Models.SRV6;
 using System.Globalization;
+using VueExample.Extensions;
 
 namespace VueExample.StatisticsCore
 {
     public class SingleParameterStatistic
     {
         public string Name { get; set; }
-        public List<long?> dieList {get; }
-        public List<double> valueList {get; }
+        public List<long?> dieList { get; set; } = new List<long?>();
+        public List<double> valueList { get; set; } = new List<double>();
         public string LowBorderStat { get; set; }
         public string TopBorderStat { get; set; }
         public string LowBorderFixed { get; set; }
         public string TopBorderFixed{ get; set; }
         public string AverageFixed { get; set; }
         public bool IsHasFixed { get; set; } = false;
-        public DirtyCells DirtyCells{get; set; } 
+        public DirtyCells DirtyCells{ get; set; } 
+
+        public SingleParameterStatistic()
+        {
+            
+        }
 
         public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, double k)
         {
@@ -49,8 +55,8 @@ namespace VueExample.StatisticsCore
                     this.DirtyCells.StatList.Add(dieList[i]);
                 }
             }
-            this.LowBorderStat = GetFormat(dds.Quartile1Double - dds.IQRDouble * k);
-            this.TopBorderStat = GetFormat(dds.Quartile3Double + k * dds.IQRDouble);
+            this.LowBorderStat = (dds.Quartile1Double - dds.IQRDouble * k).ToGoodFormat();
+            this.TopBorderStat = (dds.Quartile3Double + k * dds.IQRDouble).ToGoodFormat();
         }
 
         public SingleParameterStatistic CalculateDirtyCellsFixed(StatParameterForStage statParameterForStage)
@@ -78,19 +84,6 @@ namespace VueExample.StatisticsCore
                 }
             }
             IsHasFixed = true;
-        }
-
-        private string GetFormat(double number)
-        {
-            if (Math.Abs(number) < 1E-22 || Math.Abs(number) > 1E22)
-            {
-                return String.Empty;
-            }
-            if ((Math.Abs(number) >= 10000 || Math.Abs(number) < 1E-2) && Math.Abs(number - 0) > 1E-20)
-            {
-                return number.ToString("0.00E0");
-            }
-            return number.ToString("0.000");
         }
     }
 }

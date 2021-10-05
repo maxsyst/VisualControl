@@ -32,14 +32,36 @@ namespace VueExample.Services
         {
             var dieGraphicsList = await _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync();
             var dgDictionary = dieGraphicsList.GroupBy(x => x.GraphicId).ToDictionary(x => x.Key, x => x.ToList());
-            var typeList = (await Task.WhenAll(dgDictionary.Keys.Select(async x => await _graphicService.GetById(x)))).ToList();
-            var mappedDictionary = (DieGraphicsMappingParallel(dgDictionary, typeList)).OrderBy(x => Convert.ToInt32(x.Key.Split('_')[0])).ToDictionary(entry => entry.Key, entry => entry.Value);
+            var typeList = _srv6Context.Graphics.Where(x => dgDictionary.Keys.Contains(x.Id)).ToList();
+            var mappedDictionary = (DieGraphicsMappingParallel(dgDictionary, typeList)).OrderBy(x =>  Convert.ToInt32(x.Key.Split('_')[0])).ToDictionary(entry => entry.Key, entry => entry.Value);
             return mappedDictionary;
+        }
+
+        public async Task<List<DieValue>> GetDieValuesByMeasurementRecordingAndKeyGraphicState(int measurementRecordingId, string keyGraphicState)
+        {
+            var graphicId = Convert.ToInt32(keyGraphicState.Split('_')[0]);
+            var graphicType = keyGraphicState.Split('_')[1];
+            var dieGraphicsList = await _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId && x.GraphicId == graphicId).ToListAsync();
+            var dieValues = dieGraphicsList.Select(dieGraphic => (SelectGraphicSrv6ParsingStrategy(GetTypeFromGraphicState(graphicType))).ParseStringGraphic(dieGraphic)).ToList();
+            return dieValues;
         }
 
         public async Task<List<long?>> GetSelectedDiesByMeasurementRecordingId(int measurementRecordingId)
         {
             return await _srv6Context.DiesParameterOld.Where(x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToListAsync();
+        }
+
+        private short GetTypeFromGraphicState(string keyGraphicState) 
+        {
+            if(keyGraphicState == "LNR") 
+            {
+                return 1;
+            }
+            if(keyGraphicState == "HSTG") 
+            {
+                return 2;
+            }
+            return 1;
         }
        
         private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary, List<Graphic> graphicsList)
@@ -47,18 +69,20 @@ namespace VueExample.Services
             var dieValueDictionary = new ConcurrentDictionary<string, List<DieValue>>();
             Parallel.ForEach(dieGraphicsDictionary, dieGraphicList => 
             {
+                var dieValueList = new List<DieValue>();
                 foreach(var dieGraphic in dieGraphicList.Value)
                 {
                     var type = graphicsList.FirstOrDefault(x => x.Id == dieGraphic.GraphicId).Type;
-                    var afterParseDictionary = (SelectGraphicSrv6ParsingStrategy(type)).ParseStringGraphic(dieGraphic);
-                    foreach (var item in afterParseDictionary)
-                    {
-                        dieValueDictionary.TryAdd(item.Key, new List<DieValue>());
-                        dieValueDictionary[item.Key].Add(item.Value);                            
-                    }
+                    var afterParseDieValue = (SelectGraphicSrv6ParsingStrategy(type)).ParseStringGraphic(dieGraphic);
+                    dieValueList.Add(afterParseDieValue);
                 }   
+                if(dieValueList.Count > 0) 
+                {
+                    dieValueDictionary.TryAdd($"{dieGraphicList.Key}_{dieValueList.FirstOrDefault().State}", dieValueList);
+                }
+               
             });
-           return dieValueDictionary;
+            return dieValueDictionary;
         }               
         
         private IStringGraphicSRV6ParsingStrategy SelectGraphicSrv6ParsingStrategy(int type)

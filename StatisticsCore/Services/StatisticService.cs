@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Linq;
+using VueExample.StatisticsCore.Abstract;
+using VueExample.StatisticsCore.DirtyCellsCore;
 
 namespace VueExample.StatisticsCore.Services
 {
-    public class StatisticService 
+    public class StatisticService : IStatisticService
     {
         private readonly ISRV6GraphicService _graphicService;
         private readonly IStatParameterService _statisticService;
@@ -17,8 +19,8 @@ namespace VueExample.StatisticsCore.Services
             _graphicService = graphicService;
             _statisticService = statisticService;
         }
-        
-        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int? stageId, double divider, double k)
+
+        public async Task<Dictionary<string, List<SingleParameterStatistic>>> GetSingleParameterStatisticByDieValues(ConcurrentDictionary<string, List<DieValue>> dieValues, int measurementRecordingId, int? stageId, double divider, double k)
         {
             var statisticsDictionary = new Dictionary<string, List<SingleParameterStatistic>>();
             var statParameterStageList = await _statisticService.GetByStageId(stageId);
@@ -41,6 +43,34 @@ namespace VueExample.StatisticsCore.Services
                 dieValuesDictionaryDieIdBased.TryAdd(dieValue.DieId, dieValue);
             });
             return SingleStatisticsServiceCreator(graphic).CreateSingleStatisticData(dieList, graphic, dieValuesDictionaryDieIdBased, divider, singleParameterStatisticsList);
+        }
+
+        public List<GraphicDirtyCells> GetGraphicDirtyCells (Dictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, List<KurbatovParameterModel> kurbatovParameterList) 
+        {
+            var list = new List<GraphicDirtyCells>();
+            foreach (var item in singleParameterStatistics)
+            {
+                var graphicDirtyCells = new GraphicDirtyCells();
+                graphicDirtyCells.GraphicKey = item.Key;
+                foreach (var singleParameterStatistic in item.Value)
+                {
+                    var statParameterDirtyCells = new StatParameterDirtyCells(singleParameterStatistic.Name);
+                    statParameterDirtyCells.Math.Add("15", new Limitation{LowBorder = singleParameterStatistic.LowBorderStat.Replace(',', '.'), TopBorder = singleParameterStatistic.TopBorderStat.Replace(',', '.'), SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], singleParameterStatistic.LowBorderStat.Replace(',', '.'),  singleParameterStatistic.TopBorderStat.Replace(',', '.'))).Where(x => x.IsDirty).ToList()});
+                    var kp = kurbatovParameterList.FirstOrDefault(x => x.StandartParameter.ParameterNameStat == singleParameterStatistic.Name);
+                    if(kp != null) 
+                    {
+                        var key = (!String.IsNullOrEmpty(kp.KurbatovParameterBorders.Lower) ? $"L{kp.KurbatovParameterBorders.Lower}" : String.Empty) 
+                                  + (!String.IsNullOrEmpty(kp.KurbatovParameterBorders.Upper) ? $"T{kp.KurbatovParameterBorders.Upper}" : String.Empty);
+                        if(!String.IsNullOrEmpty(key))
+                        {
+                            statParameterDirtyCells.Fixed.Add(key, new Limitation{LowBorder = kp.KurbatovParameterBorders.Lower, TopBorder = kp.KurbatovParameterBorders.Upper, SingleDirtyCellsList = singleParameterStatistic.dieList.Select((x,i) => new SingleDirtyCell((long)x, singleParameterStatistic.valueList[i], kp.KurbatovParameterBorders.Lower, kp.KurbatovParameterBorders.Upper)).Where(x => x.IsDirty).ToList()});
+                        } 
+                    }
+                    graphicDirtyCells.statParameterDirtyCells.Add(statParameterDirtyCells);
+                }
+                list.Add(graphicDirtyCells);
+            }
+            return list;
         }
 
         public DirtyCells GetDirtyCellsBySPSDictionary(ConcurrentDictionary<string, List<SingleParameterStatistic>> singleParameterStatistics, int diesCount) 
@@ -73,9 +103,10 @@ namespace VueExample.StatisticsCore.Services
                 case 2:
                     return new SingleStatisticServices.SingleParameterServiceHSTG();
             }
-            return new SingleStatisticServices.SingleParameterServiceLNR();;
+            return new SingleStatisticServices.SingleParameterServiceLNR();
 
        }
 
+       
     }
 }

@@ -3,11 +3,11 @@
       <toolbar :loading="loading"
                :graphicName="graphicName"
                :dirtyCellsFullWafer="dirtyCellsFullWafer"
-               :dirtyCellsStatPercentage="dirtyCellsStatPercentage" 
+               :dirtyCellsStatPercentage="dirtyCellsStatPercentage"
                :dirtyCellsFixedPercentage="dirtyCellsFixedPercentage"
                :rowViewMode="rowViewMode"
-               :dirtyCells="dirtyCells" 
-               :viewMode="viewMode" 
+               :dirtyCells="dirtyCells"
+               :viewMode="viewMode"
                :keyGraphicState="keyGraphicState">
       </toolbar>
       <v-row>
@@ -21,15 +21,15 @@
               :href="'#' + stat.shortStatisticsName"
               v-html="stat.shortStatisticsName">
             </v-tab>
-            <v-tab-item 
+            <v-tab-item
               v-for="stat in statArray"
               :key="stat.shortStatisticsName"
               :value="stat.shortStatisticsName">
-              <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState" 
-                             :measurementId="measurementId" 
-                             :keyGraphicState="keyGraphicState" 
-                             :statParameter="stat" 
-                             :divider="divider" 
+              <gradient-full :key="'GRF_' + stat.shortStatisticsName + keyGraphicState"
+                             :measurementId="measurementId"
+                             :keyGraphicState="keyGraphicState"
+                             :statParameter="stat"
+                             :divider="divider"
                              :statisticKf="statisticKf">
               </gradient-full>
             </v-tab-item>
@@ -43,17 +43,17 @@
                         :items="statArray"
                         loading-text="Загрузка данных..."
                         no-data-text="Нет данных"
-                        class="elevation-2 pa-0"  
+                        class="elevation-2 pa-0"
                         :loading="loading"
                         hide-default-footer
                         dark>
                         <template v-slot:item.shortStatisticsName="{ item }">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
+                              <v-chip color="indigo" v-on="on" label v-html="item.unit.trim() ? item.shortStatisticsName + ', ' + item.unit : item.shortStatisticsName" dark></v-chip>
                             </template>
                             <span v-html="item.statisticsName"></span>
-                          </v-tooltip>                       
+                          </v-tooltip>
                         </template>
                         <template v-slot:item.fwPercentage="{item}">
                           <td v-if="viewMode==='Мониторинг'" class="text-xs-center">
@@ -110,13 +110,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Toolbar from "./GraphicRowFullInfoToolbar.vue";
-import GradientFull from './Gradient/gradient-full.vue' 
+import Toolbar from './GraphicRowFullInfoToolbar.vue';
+import GradientFull from './Gradient/gradient-full.vue';
+
 export default {
-  props: ["keyGraphicState", "measurementId", "viewMode", "divider", "statisticKf", "rowViewMode"],
+  props: ['keyGraphicState', 'measurementId', 'viewMode', 'divider', 'statisticKf', 'rowViewMode'],
   components: {
-    "gradient-full": GradientFull,
-    "toolbar": Toolbar
+    'gradient-full': GradientFull,
+    toolbar: Toolbar,
   },
   data() {
     return {
@@ -125,184 +126,184 @@ export default {
       PopoverY: 0,
       statArray: [],
       fullWaferStatArray: [],
-      dirtyCellsFullWafer: {fixed: {cellsId: [], percentage: -1}, stat: {cellsId: [], percentage: -1}},
-      graphicName: "",
-      activeTab: "commonTable",
+      dirtyCellsFullWafer: { fixed: { cellsId: [], percentage: -1 }, stat: { cellsId: [], percentage: -1 } },
+      graphicName: '',
+      activeTab: 'commonTable',
       loading: true,
       headersConfigArray: [
-        ///MonitoringMini
+        /// MonitoringMini
         {
-          viewMode: "Мониторинг",
-          rowViewMode: "miniChart",
+          viewMode: 'Мониторинг',
+          rowViewMode: 'miniChart',
           headers: [{
-            text: "Название",
-            align: "center",
+            text: 'Название',
+            align: 'center',
             sortable: false,
-            value: "shortStatisticsName",
-            width: '20%'
+            value: 'shortStatisticsName',
+            width: '20%',
           },
           {
-            text: "μ",
-            align: "center",
+            text: 'μ',
+            align: 'center',
             sortable: false,
-            value: "expectedValue",
-            width: '10%'
+            value: 'expectedValue',
+            width: '10%',
           },
           {
-            text: "σ",
-            align: "center",
+            text: 'σ',
+            align: 'center',
             sortable: false,
-            value: "standartDeviation",
-            width: '10%'
+            value: 'standartDeviation',
+            width: '10%',
           },
           {
-            text: "Мин",
-            align: "center",
+            text: 'Мин',
+            align: 'center',
             sortable: false,
-            value: "minimum",
-            width: '10%'
+            value: 'minimum',
+            width: '10%',
           },
           {
-            text: "Макс",
-            align: "center",
+            text: 'Макс',
+            align: 'center',
             sortable: false,
-            value: "maximum",
-            width: '10%'
+            value: 'maximum',
+            width: '10%',
           },
           {
-            text: "Медиана",
-            align: "center",
+            text: 'Медиана',
+            align: 'center',
             sortable: false,
-            value: "median",
-            width: '10%'
+            value: 'median',
+            width: '10%',
           },
           {
 
-            text: "Годны по всей пластине, %",
-            align: "start",
+            text: 'Годны по всей пластине, %',
+            align: 'start',
             sortable: false,
-            value: "fwPercentage",
-            width: '15%'
+            value: 'fwPercentage',
+            width: '15%',
           },
           {
-            text: "Годны из выбранных, %",
-            align: "center",
+            text: 'Годны из выбранных, %',
+            align: 'center',
             sortable: false,
-            value: "dirtyCells",
-            width: '15%'
-          }
-        ]},
+            value: 'dirtyCells',
+            width: '15%',
+          },
+          ],
+        },
 
-        ///MonitoringBig
+        /// MonitoringBig
         {
-          viewMode: "Мониторинг",
-          rowViewMode: "bigChart",
+          viewMode: 'Мониторинг',
+          rowViewMode: 'bigChart',
           headers: [{
-            text: "Название",
-            align: "center",
+            text: 'Название',
+            align: 'center',
             sortable: false,
-            value: "shortStatisticsName",
-            width: '25%'
+            value: 'shortStatisticsName',
+            width: '25%',
           },
           {
-            text: "μ",
-            align: "center",
+            text: 'μ',
+            align: 'center',
             sortable: false,
-            value: "expectedValue",
-            width: '15%'
+            value: 'expectedValue',
+            width: '15%',
           },
           {
-            text: "σ",
-            align: "center",
+            text: 'σ',
+            align: 'center',
             sortable: false,
-            value: "standartDeviation",
-            width: '15%'
+            value: 'standartDeviation',
+            width: '15%',
           },
           {
 
-            text: "Годны по всей пластине, %",
-            align: "start",
+            text: 'Годны по всей пластине, %',
+            align: 'start',
             sortable: false,
-            value: "fwPercentage",
-            width: '15%'
+            value: 'fwPercentage',
+            width: '15%',
           },
           {
-            text: "Годны из выбранных, %",
-            align: "center",
+            text: 'Годны из выбранных, %',
+            align: 'center',
             sortable: false,
-            value: "dirtyCells",
-            width: '30%'
+            value: 'dirtyCells',
+            width: '30%',
           }],
         },
 
-        ///SupplyMini
+        /// SupplyMini
         {
-          viewMode: "Поставка",
-          rowViewMode: "miniChart",
+          viewMode: 'Поставка',
+          rowViewMode: 'miniChart',
           headers: [{
-            text: "Название",
-            align: "center",
+            text: 'Название',
+            align: 'center',
             sortable: false,
-            value: "shortStatisticsName",
-            width: '30%'
-          },        
-          {
-            text: "Мин",
-            align: "center",
-            sortable: false,
-            value: "lowBorderFixed",
-            width: '20%'
+            value: 'shortStatisticsName',
+            width: '30%',
           },
           {
-            text: "Макс",
-            align: "center",
+            text: 'Мин',
+            align: 'center',
             sortable: false,
-            value: "topBorderFixed",
-            width: '20%'
-          },       
-          {
-            text: "Годны по всей пластине, %",
-            align: "start",
-            sortable: false,
-            value: "fwPercentage",
-            width: '15%'
+            value: 'lowBorderFixed',
+            width: '20%',
           },
           {
-            text: "Годны из выбранных, %",
-            align: "center",
+            text: 'Макс',
+            align: 'center',
             sortable: false,
-            value: "dirtyCells",
-            width: '15%'
-          }
-        ]},
+            value: 'topBorderFixed',
+            width: '20%',
+          },
+          {
+            text: 'Годны по всей пластине, %',
+            align: 'start',
+            sortable: false,
+            value: 'fwPercentage',
+            width: '15%',
+          },
+          {
+            text: 'Годны из выбранных, %',
+            align: 'center',
+            sortable: false,
+            value: 'dirtyCells',
+            width: '15%',
+          },
+          ],
+        },
         {
-          viewMode: "Поставка",
-          rowViewMode: "bigChart",
+          viewMode: 'Поставка',
+          rowViewMode: 'bigChart',
           headers: [],
-        }
-      ]
+        },
+      ],
     };
   },
 
   async created() {
-    this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName   
+    this.graphicName = this.$store.getters['wafermeas/getGraphicByGraphicState'](this.keyGraphicState).graphicName;
     this.fullWaferStatArray = (await this.$http
-      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data
-    this.calculateFullWaferDirtyCells(this.fullWaferStatArray)   
-    await this.getStatArray()
+      .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${this.statisticKf}`)).data;
+    this.calculateFullWaferDirtyCells(this.fullWaferStatArray);
+    await this.getStatArray();
   },
 
- 
-
   methods: {
-    delDirtyCells: function(dirtyCells) {
-      let deletedDies = this.viewMode === "Мониторинг" ? dirtyCells.statList : dirtyCells.fixedList
-      let selectedDies = this.selectedDies.filter(el => !deletedDies.includes(el))
-      this.$store.dispatch("wafermeas/updateSelectedDies", selectedDies)
+    delDirtyCells(dirtyCells) {
+      const deletedDies = this.viewMode === 'Мониторинг' ? dirtyCells.statList : dirtyCells.fixedList;
+      const selectedDies = this.selectedDies.filter((el) => !deletedDies.includes(el));
+      this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
     },
 
     showStatTab(statisticsName) {
-      this.activeTab = statisticsName
+      this.activeTab = statisticsName;
     },
 
     showPopoverClick(e) {
@@ -315,92 +316,94 @@ export default {
       });
     },
 
-    getStatArray: async function() {
+    async getStatArray() {
       if (this.measurementId != 0 && this.selectedDies.length > 0) {
-        this.loading = true
-        let singlestatModel = {};
-        singlestatModel.k = this.statisticKf
+        this.loading = true;
+        const singlestatModel = {};
+        singlestatModel.k = this.statisticKf;
         singlestatModel.divider = this.divider;
         singlestatModel.keyGraphicState = this.keyGraphicState;
         singlestatModel.measurementId = this.measurementId;
         singlestatModel.dieIdList = this.selectedDies;
         this.statArray = (await this.$http
-          .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data
-        this.statArray = this.statArray.map(s => ({...s, fwPercentage: { fixed: this.fullWaferStatArray.find(f => f.parameterID === s.parameterID).dirtyCells.fixedPercentageFullWafer, stat: this.fullWaferStatArray.find(f => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer}}))
-        this.loading = false
+          .get(`/api/statistic/GetStatisticSingleGraphic?statisticSingleGraphicViewModelJSON=${JSON.stringify(singlestatModel)}`)).data;
+        this.statArray = this.statArray.map((s) => ({ ...s, fwPercentage: { fixed: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.fixedPercentageFullWafer, stat: this.fullWaferStatArray.find((f) => f.parameterID === s.parameterID).dirtyCells.statPercentageFullWafer } }));
+        this.loading = false;
       }
     },
 
     calculateFullWaferDirtyCells(fullWaferStatArray) {
-      this.dirtyCellsFullWafer.stat.cellsId =  [...new Set(fullWaferStatArray.reduce((p,c) => [...p, ...c.dirtyCells.statList], []))] 
-      this.dirtyCellsFullWafer.fixed.cellsId = [...new Set(fullWaferStatArray.reduce((p,c) => [...p, ...c.dirtyCells.fixedList], []))]
-      this.dirtyCellsFullWafer.stat.percentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.stat.cellsId.length / this.avbSelectedDies.length)) * 100)
-      this.dirtyCellsFullWafer.fixed.percentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.fixed.cellsId.length / this.avbSelectedDies.length)) * 100)
-      this.$store.dispatch("wafermeas/updateDirtyCellsFullWaferSingleGraphic", { 
-        keyGraphicState: this.keyGraphicState, 
-        dirtyCells: {fixed: {cellsId: [...this.dirtyCellsFullWafer.fixed.cellsId], percentage: this.dirtyCellsFullWafer.fixed.percentage}, 
-                     stat: {cellsId: [...this.dirtyCellsFullWafer.stat.cellsId], percentage: this.dirtyCellsFullWafer.stat.percentage}},
-      })
-    }
+      this.dirtyCellsFullWafer.stat.cellsId = [...new Set(fullWaferStatArray.reduce((p, c) => [...p, ...c.dirtyCells.statList], []))];
+      this.dirtyCellsFullWafer.fixed.cellsId = [...new Set(fullWaferStatArray.reduce((p, c) => [...p, ...c.dirtyCells.fixedList], []))];
+      this.dirtyCellsFullWafer.stat.percentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.stat.cellsId.length / this.avbSelectedDies.length)) * 100);
+      this.dirtyCellsFullWafer.fixed.percentage = Math.ceil((1.0 - (this.dirtyCellsFullWafer.fixed.cellsId.length / this.avbSelectedDies.length)) * 100);
+      this.$store.dispatch('wafermeas/updateDirtyCellsFullWaferSingleGraphic', {
+        keyGraphicState: this.keyGraphicState,
+        dirtyCells: {
+          fixed: { cellsId: [...this.dirtyCellsFullWafer.fixed.cellsId], percentage: this.dirtyCellsFullWafer.fixed.percentage },
+          stat: { cellsId: [...this.dirtyCellsFullWafer.stat.cellsId], percentage: this.dirtyCellsFullWafer.stat.percentage },
+        },
+      });
+    },
   },
 
   watch: {
-    divider: async function() {
+    async divider() {
       await this.getStatArray();
     },
 
-    statisticKf: async function(newValue) {
+    async statisticKf(newValue) {
       this.fullWaferStatArray = (await this.$http
-          .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${newValue}`)).data
-      this.calculateFullWaferDirtyCells(this.fullWaferStatArray)
-      await this.getStatArray()
+        .get(`/api/statistic/GetStatisticSingleGraphicFullWafer?measurementRecordingId=${this.measurementId}&keyGraphicState=${this.keyGraphicState}&k=${newValue}`)).data;
+      this.calculateFullWaferDirtyCells(this.fullWaferStatArray);
+      await this.getStatArray();
     },
 
-    selectedDies: async function() {
+    async selectedDies() {
       await this.getStatArray();
-    }
+    },
   },
 
   computed: {
 
     ...mapGetters({
       selectedDies: 'wafermeas/selectedDies',
-      avbSelectedDies: 'wafermeas/avbSelectedDies'
+      avbSelectedDies: 'wafermeas/avbSelectedDies',
     }),
 
     headers() {
-       return this.headersConfigArray.find(x => x.viewMode === this.viewMode && x.rowViewMode === this.rowViewMode).headers
+      return this.headersConfigArray.find((x) => x.viewMode === this.viewMode && x.rowViewMode === this.rowViewMode).headers;
     },
-    
+
     dirtyCells() {
       let statArray = [];
       let fixedArray = [];
-      this.statArray.forEach(s => {
+      this.statArray.forEach((s) => {
         (statArray = statArray.concat(s.dirtyCells.statList)),
-          (fixedArray = fixedArray.concat(s.dirtyCells.fixedList));
+        (fixedArray = fixedArray.concat(s.dirtyCells.fixedList));
       });
       return {
         statList: [...new Set(statArray)],
-        fixedList: [...new Set(fixedArray)]
+        fixedList: [...new Set(fixedArray)],
       };
     },
 
     dirtyCellsStatPercentage() {
-      let dirtyCellsList = this.viewMode === "Мониторинг" ? this.dirtyCells.statList : this.dirtyCells.fixedList
-      let percentage = Math.ceil((1.0 - dirtyCellsList.length / this.selectedDies.length) * 100)
-      this.$store.dispatch("wafermeas/updateDirtyCellsSelectedNowSingleGraphic", { 
-        keyGraphicState: this.keyGraphicState, 
-        dirtyCells: {cellsId: [...dirtyCellsList], percentage: percentage},
-        viewMode: this.viewMode
-      })
-      return isNaN(percentage) ? 0 : percentage
+      const dirtyCellsList = this.viewMode === 'Мониторинг' ? this.dirtyCells.statList : this.dirtyCells.fixedList;
+      const percentage = Math.ceil((1.0 - dirtyCellsList.length / this.selectedDies.length) * 100);
+      this.$store.dispatch('wafermeas/updateDirtyCellsSelectedNowSingleGraphic', {
+        keyGraphicState: this.keyGraphicState,
+        dirtyCells: { cellsId: [...dirtyCellsList], percentage },
+        viewMode: this.viewMode,
+      });
+      return isNaN(percentage) ? 0 : percentage;
     },
 
     dirtyCellsFixedPercentage() {
-      let percentage = Math.ceil((1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) * 100)
-      return isNaN(percentage) ? 0 : percentage
-    }
-  }
+      const percentage = Math.ceil((1.0 - this.dirtyCells.fixedList.length / this.selectedDies.length) * 100);
+      return isNaN(percentage) ? 0 : percentage;
+    },
+  },
 };
 </script>
 

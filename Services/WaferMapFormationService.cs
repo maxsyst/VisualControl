@@ -31,12 +31,10 @@ namespace VueExample.Services
             YCoordinateMin = _dieList.Select(x => x.YCoordinate).Min();
         }
 
-        public string GetFormedWaferMap()
+        public List<WaferMapDie> GetFormedWaferMap()
         {
-            return JsonConvert.SerializeObject(WaferMapFormation());
+            return WaferMapFormation();
         }
-
-       
 
         private List<WaferMapDie> WaferMapFormation()
         {

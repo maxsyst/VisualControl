@@ -24,5 +24,10 @@ namespace VueExample.Providers.Srv6
         {
             await _standartMeasurementPatternProvider.Delete(standartMeasurementPatternId);
         }
+
+        public async Task<StandartMeasurementPatternModel> GetByStageAndElementAndPattern(int stageId, int elementId, int patternId)
+        {
+            return _mapper.Map<StandartMeasurementPatternEntity, StandartMeasurementPatternModel>(await _standartMeasurementPatternProvider.GetByStageAndElementAndPattern(stageId, elementId, patternId));
+        }
     }
 }

@@ -38,7 +38,6 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ProcessViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ResponseCache(CacheProfileName = "Default60")]
         [Route("dietype/{dieTypeId:int}")]
         public async Task<IActionResult> GetByDieTypeId(int dieTypeId)
             => Ok(_mapper.Map<Process, ProcessViewModel>(await _processProvider.GetProcessByDieTypeId(dieTypeId)));      
