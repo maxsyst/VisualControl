@@ -19,17 +19,17 @@
       right
       temporary
     >
-     
+
       <v-list>
         <v-chip>Настройки оси Y</v-chip>
         <v-divider></v-divider>
       </v-list>
 
        <v-list>
-       
+
         <v-row>
           <v-col lg="10" offset-lg="1">
-            <v-checkbox v-model="settings.axisY.strictMinMax" label="Ручная установка границ оси Y"></v-checkbox>      
+            <v-checkbox v-model="settings.axisY.strictMinMax" label="Ручная установка границ оси Y"></v-checkbox>
           <v-text-field
             label="Максимум:"
             :disabled="!settings.axisY.strictMinMax"
@@ -50,7 +50,7 @@
 
           </v-col>
         </v-row>
-    
+
       </v-list>
 
        <v-list>
@@ -98,7 +98,7 @@
           </v-col>
           <v-col lg="4" offset-lg="1">
            <swatches v-model="settings.colors.gridColor" colors="text-advanced" popover-to="left"></swatches>
-          </v-col>     
+          </v-col>
         </v-row>
 
         </v-list>
@@ -132,11 +132,11 @@
               v-on:click="saveSettings"
             >Сохранить настройки</v-btn>
        </v-list>
-   
+
     </v-navigation-drawer>
         <v-row>
-           <v-col lg="4">          
-         
+           <v-col lg="4">
+
             <v-select
               v-model="selectedFacility"
               :items="facilities"
@@ -148,8 +148,8 @@
               label="Название установки:"
             ></v-select>
           </v-col>
-          <v-col lg="4">          
-         
+          <v-col lg="4">
+
             <v-select
               v-model="selectedProcess"
               :items="processes"
@@ -189,7 +189,7 @@
             ></v-select>
           </v-col>
           <v-col lg="4">
-            <v-select 
+            <v-select
               v-model="selectedMeasurement"
               :items="measurements.filter(x => x.measuredDeviceId === selectedMeasuredDevice)"
               no-data-text="Нет данных"
@@ -202,7 +202,7 @@
           </v-col>
           <v-col class="justify-center" lg="4">
               <v-tooltip right>
-              <template v-slot:activator="{ on }">               
+              <template v-slot:activator="{ on }">
                  <v-chip label :color="onlineStatusColor" text-color="white" dark v-on="on">
                     {{selectedOnlineStatus.isOnline ? "Онлайн" : "Остановлено"}}
                     <v-icon right>{{selectedOnlineStatus.isOnline ? "live_tv" : "stop_screen_share"}}</v-icon>
@@ -277,11 +277,10 @@
               v-on:click="getPoints"
             >Добавить измерение к графику</v-btn>
 
-          
           </v-col>
            <v-col lg="3">
-               <v-btn 
-               
+               <v-btn
+
               v-if="measurementSets.filter(x => !x.isGenerated).length > 0"
               class="btn btn-primary"
               outlined
@@ -289,8 +288,7 @@
             >Добавить к серии</v-btn>
                 </v-col>
                    <v-col lg="3">
-            
-           
+
            </v-col>
         </v-row>
       </v-col>
@@ -322,27 +320,25 @@
                   <span class="circleDead"></span>
               </div>
               </v-list-item-action>
-            
+
                 <v-list-item-content>
                   <v-list-item-title>{{ item.measurementName }}</v-list-item-title>
                   <v-list-item-subtitle class="text--primary">Прибор: {{ item.deviceName }} Порт: {{ item.portNumber }}</v-list-item-subtitle>
-                 
+
                 </v-list-item-content>
 
                 <v-list-item-content>
-                
+
                   <div v-if="item.isOnline">
 
-                   
                        <v-progress-circular  v-if="item.live == '0'"
                         indeterminate
                         color="light-green accent-3"
                       ></v-progress-circular>
                       <strong class="yellow--text text--darken-2" v-else>{{item.live}} {{item.graphicUnit}}</strong>
-                    
-                    
-                  </div>             
-            
+
+                  </div>
+
               </v-list-item-content>
 
                 <v-list-item-action>
@@ -374,9 +370,6 @@
           v-on:click="addNewMeasurementSet"
         >Добавить новую серию</v-btn>
 
-        
-      
-
         <v-btn
           outlined
           v-if="measurementSets.length > 0 && !measurementSets.find(x => x.measurementSetId == selectedMeasurementSet.id).isGenerated"
@@ -396,7 +389,7 @@
                 item-value="measurementSetId"
                 label="Название серии измерений:"
               ></v-select>
-            
+
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -405,7 +398,6 @@
           </v-card>
         </v-dialog>
 
-        
         <v-dialog v-model="dialogSelectMaterial" max-width="500px">
           <v-card>
             <v-card-title>Изменение</v-card-title>
@@ -418,7 +410,7 @@
                 item-value="materialId"
                 label="Название материала:"
               ></v-select>
-            
+
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -484,7 +476,7 @@
             :settings="savedSettings"
           ></component>
         </div>
-       
+
       </v-col>
     </v-row>
 
@@ -509,8 +501,8 @@
         </v-toolbar>
       </template>
       <template v-slot:item="props">
-        <v-col lg="3"> 
-          
+        <v-col lg="3">
+
           <v-card>
             <v-card-title><h4>Испытание: {{ props.item.measurementName }}</h4></v-card-title>
             <v-divider></v-divider>
@@ -518,8 +510,8 @@
               <v-list-item>
                 <v-list-item-content>Прибор:</v-list-item-content>
                 <v-list-item-content class="align-end">Название: {{ props.item.deviceName }} Порт:{{ props.item.portNumber }}</v-list-item-content>
-              </v-list-item>           
-              
+              </v-list-item>
+
               <v-list-item>
                 <v-list-item-content>Значение в начале испытания:</v-list-item-content>
                 <v-list-item-content class="align-end yellow--text text--darken-2">{{  parseFloat(props.item.firstValue).toFixed(6) }} {{ props.item.graphicUnit }}</v-list-item-content>
@@ -530,7 +522,6 @@
                 <v-list-item-content class="align-end yellow--text text--darken-2">{{  parseFloat(props.item.lastValue).toFixed(6) }} {{ props.item.graphicUnit }}</v-list-item-content>
               </v-list-item>
 
-
                <v-list-item>
                 <v-list-item-content>Падение за время испытания:</v-list-item-content>
                 <v-list-item-content class="align-end yellow--text text--darken-2">{{ parseFloat(props.item.commonDifference).toFixed(6) * -1 }} {{ props.item.graphicUnit }}</v-list-item-content>
@@ -540,7 +531,7 @@
                 <v-list-item-content>Изменение в процентах:</v-list-item-content>
                 <v-list-item-content class="align-end yellow--text text--darken-2">{{ ((parseFloat(props.item.commonDifference) / parseFloat(props.item.firstValue)) * 100).toFixed(2) }} %</v-list-item-content>
               </v-list-item>
-           
+
             </v-list>
           </v-card>
         </v-col>
@@ -554,17 +545,15 @@
       <v-btn color="pink" text @click="snackbar = false">Закрыть</v-btn>
     </v-snackbar>
 
- 
-
   </v-container>
 </template>
 <script>
 
-import chart from "./time-chart.vue";
 import date from 'date-and-time';
 import * as signalR from '@aspnet/signalr';
-import Swatches from 'vue-swatches' 
-import "vue-swatches/dist/vue-swatches.min.css"
+import Swatches from 'vue-swatches';
+import chart from './time-chart.vue';
+import 'vue-swatches/dist/vue-swatches.min.css';
 
 date.locale('ru');
 
@@ -572,51 +561,51 @@ export default {
   data() {
     return {
       drawer: null,
-       fab: false,
+      fab: false,
       dialogAddToMeasurementSet: false,
       dialogStatistics: false,
       dialogAddMeasurementSet: false,
       dialogDeleteMeasurementSet: false,
       dialogSelectMaterial: false,
       dialogConfirm: false,
-      dialogConfirmText: "",
+      dialogConfirmText: '',
       snackbar: false,
-      snackbarText: "",
-      selectedMeasurement: "",
-      selectedMaterial: "",
-      newMeasurementSetName: "",
+      snackbarText: '',
+      selectedMeasurement: '',
+      selectedMaterial: '',
+      newMeasurementSetName: '',
       selectedMeasurementSet: {
-         id: '',
-         statistics: []
+        id: '',
+        statistics: [],
       },
-      selectedMeasurementSetInDialog: "",
-      selectedMaterialInDialog:"",
+      selectedMeasurementSetInDialog: '',
+      selectedMaterialInDialog: '',
       selectedOnlineStatus: {},
       selectedFacility: 0,
-      selectedProcess: "",
-      selectedCodeProduct: "",
-      selectedMeasuredDevice: "",
+      selectedProcess: '',
+      selectedCodeProduct: '',
+      selectedMeasuredDevice: '',
       measurements: [],
       processes: [],
       settings: {
-           smoothing:
+        smoothing:
            {
-               require: false,
-               power: 8
+             require: false,
+             power: 8,
            },
-           axisY:
+        axisY:
            {
-               strictMinMax: false,
-               min: 0,
-               max: 0
-              
+             strictMinMax: false,
+             min: 0,
+             max: 0,
+
            },
-           colors:
+        colors:
            {
-              backgroundColor: "#303030",
-              textColor: "#ffffff",
-              gridColor: "#ffcc00"
-           }
+             backgroundColor: '#303030',
+             textColor: '#ffffff',
+             gridColor: '#ffcc00',
+           },
       },
       savedSettings: {},
       codeproducts: [],
@@ -632,150 +621,125 @@ export default {
       connection: null,
       livepoints: [],
       points: {},
-      avDevices: "",
-      currentChart: ""
+      avDevices: '',
+      currentChart: '',
     };
   },
   components: {
-    chart, Swatches 
+    chart, Swatches,
   },
 
   computed:
   {
-     onlineStatusColor: function()
-     {
-         if(this.selectedOnlineStatus.isOnline)
-         {
-            return "green";
-         }
-         else
-         {
-            return "pink";
-         }
-     },
+    onlineStatusColor() {
+      if (this.selectedOnlineStatus.isOnline) {
+        return 'green';
+      }
+      return 'pink';
+    },
 
-     selectedDevice : function()
-     {
-         return this.devices === undefined || this.devices.length === 0  ? 0 : this.devices[0].deviceId
-     },
-     
-     selectedGraphic: function()
-     {
-        return this.graphics === undefined || this.graphics.length === 0 ? 0 : this.graphics[0].graphicId
-     },
+    selectedDevice() {
+      return this.devices === undefined || this.devices.length === 0 ? 0 : this.devices[0].deviceId;
+    },
 
-     selectedPort: function()
-     {
-         return this.ports === undefined || this.ports.length === 0 ? 0 : this.ports[0]
-     }
+    selectedGraphic() {
+      return this.graphics === undefined || this.graphics.length === 0 ? 0 : this.graphics[0].graphicId;
+    },
+
+    selectedPort() {
+      return this.ports === undefined || this.ports.length === 0 ? 0 : this.ports[0];
+    },
 
   },
   methods: {
 
-    pollData () {
-        this.polling = setInterval(() => {
-            
-            this.connection.send("getLastValues", this.selectedAtomics);
-             
-        }, 10000)
-   },
-   
-   livePointsRedraw(liveArray)
-   {
-       for (let index = 0; index < liveArray.length; index++) {
-         
-          this.selectedAtomics.find(x => x.measurementId == liveArray[index].measurementId)["live"] = liveArray[index].value;
-         
-       }      
-
-   },
-
-    saveSettings()
-    {
-       
-       this.savedSettings = JSON.parse(JSON.stringify(this.settings));
-       this.drawer = false;    
-      
-       
+    pollData() {
+      this.polling = setInterval(() => {
+        this.connection.send('getLastValues', this.selectedAtomics);
+      }, 10000);
     },
 
-     isNumber: function(evt) {
-      evt = (evt) ? evt : window.event;
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
+    livePointsRedraw(liveArray) {
+      for (let index = 0; index < liveArray.length; index += 1) {
+        this.selectedAtomics.find((x) => x.measurementId === liveArray[index].measurementId).live = liveArray[index].value;
+      }
+    },
+
+    saveSettings() {
+      this.savedSettings = JSON.parse(JSON.stringify(this.settings));
+      this.drawer = false;
+    },
+
+    isNumber(evt) {
+      evt = (evt) || window.event;
+      const charCode = (evt.which) ? evt.which : evt.keyCode;
       if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();;
+        evt.preventDefault();
       } else {
         return true;
       }
     },
 
-    getMeasurementStatistics()
-    {
-         this.dialogStatistics= true;
-         let atomicList = JSON.stringify(this.selectedAtomics);
-         this.$http.get(`/api/measurement/getmeasurementstatistics?atomiclist=${atomicList}`).then(response => {this.selectedMeasurementSet.statistics = response.data; this.dialogStatistics = false});
+    getMeasurementStatistics() {
+      this.dialogStatistics = true;
+      const atomicList = JSON.stringify(this.selectedAtomics);
+      this.$http.get(`/api/measurement/getmeasurementstatistics?atomiclist=${atomicList}`).then((response) => { this.selectedMeasurementSet.statistics = response.data; this.dialogStatistics = false; });
     },
 
-    editMaterial()
-    {
-       if (this.dialogSelectMaterial === false) {
-       
-        this.$http.get(`/api/material/getall`).then(response => this.avialiableMaterials = response.data);
+    editMaterial() {
+      if (this.dialogSelectMaterial === false) {
+        this.$http.get('/api/material/getall').then((response) => this.avialiableMaterials = response.data);
         this.selectedMaterialInDialog = this.selectedMaterial.materialId;
         this.dialogSelectMaterial = true;
-      }
-      else{
-      let changematerialViewModel =
-      {
-         measurementId: this.selectedMeasurement,
-         materialId: this.selectedMaterialInDialog
-      }
+      } else {
+        const changematerialViewModel = {
+          measurementId: this.selectedMeasurement,
+          materialId: this.selectedMaterialInDialog,
+        };
 
         this.$http({
-        method: "post",
-        url: `/api/material/changematerial`,
-        data: changematerialViewModel,
-        config: {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        }
-      })
-        .then(response => {
-          if (response.status === 200) {
-            this.snackbarText = "Успешно изменено";
-            this.selectedMaterial = response.data;
-            this.dialogSelectMaterial = false;
-            
-          }
-
-          this.snackbar = true;
+          method: 'post',
+          url: '/api/material/changematerial',
+          data: changematerialViewModel,
+          config: {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
         })
-        .catch(error => {
-          this.snackbar = true;
-          this.snackbarText = "Ошибка";
-        });
-          
+          .then((response) => {
+            if (response.status === 200) {
+              this.snackbarText = 'Успешно изменено';
+              this.selectedMaterial = response.data;
+              this.dialogSelectMaterial = false;
+            }
+
+            this.snackbar = true;
+          })
+          .catch((error) => {
+            this.snackbar = true;
+            this.snackbarText = 'Ошибка';
+          });
       }
     },
 
     addNewMeasurementSet() {
       if (this.dialogAddMeasurementSet === false) {
         this.dialogAddMeasurementSet = true;
-        this.newMeasurementSetName = "";
+        this.newMeasurementSetName = '';
       } else {
         this.$http({
-          method: "put",
-          url: `/api/measurementset/AddNewSet`,
+          method: 'put',
+          url: '/api/measurementset/AddNewSet',
           params: { name: this.newMeasurementSetName },
           config: {
             headers: {
-              "Content-Type": "text/plain"
-            }
-          }
+              'Content-Type': 'text/plain',
+            },
+          },
         })
-          .then(response => {
+          .then((response) => {
             if (response.status === 201) {
               this.snackbarText = `Серия ${
                 this.newMeasurementSetName
@@ -784,7 +748,6 @@ export default {
               this.selectedMeasurementSet.id = this.measurementSets[
                 this.measurementSets.length - 1
               ].measurementSetId;
-             
             }
 
             if (response.status === 200) {
@@ -794,7 +757,7 @@ export default {
             this.dialogAddMeasurementSet = false;
             this.snackbar = true;
           })
-          .catch(error => {
+          .catch((error) => {
             this.snackbar = true;
             this.snackbarText = error;
           });
@@ -803,31 +766,30 @@ export default {
 
     deleteThisMeasurementSet() {
       if (this.dialogDeleteMeasurementSet === false) {
-        if (this.measurementSets.filter(x => !x.isGenerated).length === 0) {
+        if (this.measurementSets.filter((x) => !x.isGenerated).length === 0) {
           this.snackbar = true;
-          this.snackbarText = "Нет серий для удаления";
+          this.snackbarText = 'Нет серий для удаления';
         } else {
           this.dialogDeleteMeasurementSet = true;
         }
       } else {
         this.$http({
-          method: "delete",
-          url: `/api/measurementset/DeleteSet`,
+          method: 'delete',
+          url: '/api/measurementset/DeleteSet',
           params: { measurementsetid: this.selectedMeasurementSet.id },
           config: {
             headers: {
-              "Content-Type": "text/plain"
-            }
-          }
+              'Content-Type': 'text/plain',
+            },
+          },
         })
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
               this.snackbarText = `Серия ${
-                this.measurementSets.find(_ => _.measurementSetId === this.selectedMeasurementSet.id).name} успешно удалена`;
-              this.measurementSets = this.measurementSets.filter(_ => _.measurementSetId !== this.selectedMeasurementSet.id);
+                this.measurementSets.find((_) => _.measurementSetId === this.selectedMeasurementSet.id).name} успешно удалена`;
+              this.measurementSets = this.measurementSets.filter((_) => _.measurementSetId !== this.selectedMeasurementSet.id);
               if (this.measurementSets.length > 0) {
                 this.selectedMeasurementSet.id = this.measurementSets[0].measurementSetId;
-              
               } else {
                 this.selectedAtomics = [];
               }
@@ -836,7 +798,7 @@ export default {
             this.dialogDeleteMeasurementSet = false;
             this.snackbar = true;
           })
-          .catch(error => {
+          .catch((error) => {
             this.snackbar = true;
             this.snackbarText = error;
           });
@@ -844,311 +806,282 @@ export default {
     },
 
     deleteFromSet(key) {
-      var atomicsetViewModel = {
+      const atomicsetViewModel = {
         atomicid: key,
-        measurementsetid: this.selectedMeasurementSet.id
+        measurementsetid: this.selectedMeasurementSet.id,
       };
       this.$http({
-        method: "post",
-        url: `/api/measurementset/deleteatomicfromset`,
+        method: 'post',
+        url: '/api/measurementset/deleteatomicfromset',
         data: atomicsetViewModel,
         config: {
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        }
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            this.snackbarText = "Успешно удалено";
+            this.snackbarText = 'Успешно удалено';
             this.selectedAtomics = this.selectedAtomics.filter(
-              i => i.atomicMeasurementId !== key
+              (i) => i.atomicMeasurementId !== key,
             );
           }
 
           this.snackbar = true;
         })
-        .catch(error => {
+        .catch((error) => {
           this.snackbar = true;
-          this.snackbarText = "Ошибка";
+          this.snackbarText = 'Ошибка';
         });
     },
 
     addToMeasurementSet() {
-      let atomicViewModel = {
+      const atomicViewModel = {
         measurementSetId: this.selectedMeasurementSetInDialog,
         measurementId: this.selectedMeasurement,
         portNumber: this.selectedPort,
         graphicId: this.selectedGraphic,
-        deviceId: this.selectedDevice
+        deviceId: this.selectedDevice,
       };
 
       this.$http({
-        method: "post",
-        url: `/api/measurementset/addnewatomictoset`,
+        method: 'post',
+        url: '/api/measurementset/addnewatomictoset',
         data: atomicViewModel,
         config: {
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        }
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            this.snackbarText = "Уже добавлен в эту серию";
+            this.snackbarText = 'Уже добавлен в эту серию';
           }
 
           if (response.status === 201) {
-            this.snackbarText = "Успешно добавлено";
-            var route = this.measurementSets.filter(x => x.measurementSetId == this.selectedMeasurementSet.id)[0].route + "/" + this.selectedFacility;
-            this.$http.get(`/api/measurementset/getatomics/${route}`).then(response => this.selectedAtomics = response.data);
-            
+            this.snackbarText = 'Успешно добавлено';
+            const route = `${this.measurementSets.filter((x) => x.measurementSetId === this.selectedMeasurementSet.id)[0].route}/${this.selectedFacility}`;
+            this.$http.get(`/api/measurementset/getatomics/${route}`).then((response) => this.selectedAtomics = response.data);
           }
 
           this.dialogAddToMeasurementSet = false;
           this.snackbar = true;
         })
-        .catch(error => {
+        .catch((error) => {
           this.snackbar = true;
-          this.snackbarText = "Ошибка";
+          this.snackbarText = 'Ошибка';
           this.dialogAddToMeasurementSet = false;
         });
     },
 
-    getPointsFromMeasurementSet: async function() {
-      this.currentChart = "";
+    async getPointsFromMeasurementSet() {
+      this.currentChart = '';
       this.points = {};
-      let queries = [];
-      for (let index = 0; index < this.selectedAtomics.length; index++) {
-        let query = this.$http.get(
+      const queries = [];
+      for (let index = 0; index < this.selectedAtomics.length; index += 1) {
+        const query = this.$http.get(
           `/api/point/get/withoutspaces?measurementid=${
             this.selectedAtomics[index].measurementId
           }&deviceid=${this.selectedAtomics[index].deviceId}&graphicid=${
             this.selectedAtomics[index].graphicId
-          }&port=${this.selectedAtomics[index].portNumber}`
+          }&port=${this.selectedAtomics[index].portNumber}`,
         );
         queries.push(query);
-        
       }
-      let response = await this.$http.all(queries);
-      response.forEach(_ => Object.assign(this.points, _.data))
-      this.currentChart = "chart";
-      this.$vuetify.goTo('#chart')
+      const response = await this.$http.all(queries);
+      response.forEach((_) => Object.assign(this.points, _.data));
+      this.currentChart = 'chart';
+      this.$vuetify.goTo('#chart');
     },
 
-    getPoints: async function(event) {
-      this.currentChart = "";
-      var graphicId = this.selectedGraphic;
-      var deviceId = this.selectedDevice;
-      var port = this.selectedPort;
-      var measurementId = this.selectedMeasurement;
-      if (event.currentTarget.id == "newgraphicButton") {
+    async getPoints(event) {
+      this.currentChart = '';
+      const graphicId = this.selectedGraphic;
+      const deviceId = this.selectedDevice;
+      const port = this.selectedPort;
+      const measurementId = this.selectedMeasurement;
+      if (event.currentTarget.id === 'newgraphicButton') {
         this.points = {};
         this.selectedGraphic = this.graphics.find(
-          x => x.graphicId === graphicId
+          (x) => x.graphicId === graphicId,
         );
       }
 
-      let response = await this.$http.get(
-        `/api/point/get/withoutspaces?measurementid=${measurementId}&deviceid=${deviceId}&graphicid=${graphicId}&port=${port}`
+      const response = await this.$http.get(
+        `/api/point/get/withoutspaces?measurementid=${measurementId}&deviceid=${deviceId}&graphicid=${graphicId}&port=${port}`,
       );
       if (
         !this.points.hasOwnProperty(
-          Object.getOwnPropertyNames(response.data)[0]
+          Object.getOwnPropertyNames(response.data)[0],
         )
       ) {
         Object.assign(this.points, response.data);
+      } else if (this.selectedGraphic.graphicId === this.selectedGraphic) {
+        this.$swal({
+          type: 'warning',
+          text: 'Идентичный график, невозможно добавить',
+          toast: true,
+          showConfirmButton: false,
+          position: 'center-start',
+          timer: 4000,
+        });
       } else {
-        if (this.selectedGraphic.graphicId === this.selectedGraphic) {
-          this.$swal({
-            type: "warning",
-            text: "Идентичный график, невозможно добавить",
-            toast: true,
-            showConfirmButton: false,
-            position: "center-start",
-            timer: 4000
-          });
-        } else {
-          this.$swal({
-            type: "warning",
-            text: "Другой тип графика, невозможно добавить",
-            toast: true,
-            showConfirmButton: false,
-            position: "center-start",
-            timer: 4000
-          });
-        }
+        this.$swal({
+          type: 'warning',
+          text: 'Другой тип графика, невозможно добавить',
+          toast: true,
+          showConfirmButton: false,
+          position: 'center-start',
+          timer: 4000,
+        });
       }
 
-      for (var prop in this.points) {
-        if (this.points[prop].length == 0) {
+      for (const prop in this.points) {
+        if (this.points[prop].length === 0) {
           delete this.points[prop];
         }
       }
       if (Object.keys(this.points).length > 0) {
-        this.currentChart = "chart";
-        this.$vuetify.goTo('#chart', { offset: 300 })
+        this.currentChart = 'chart';
+        this.$vuetify.goTo('#chart', { offset: 300 });
         if (response.status === 204) {
           this.$swal({
-            type: "warning",
-            text: "Измерения не найдены, невозможно добавить",
+            type: 'warning',
+            text: 'Измерения не найдены, невозможно добавить',
             toast: true,
             showConfirmButton: false,
-            position: "center-start",
-            timer: 4000
+            position: 'center-start',
+            timer: 4000,
           });
         }
       } else {
         this.$swal({
-          type: "error",
-          text: "Измерения не найдены, невозможно построить",
+          type: 'error',
+          text: 'Измерения не найдены, невозможно построить',
           toast: true,
           showConfirmButton: false,
-          position: "center-start",
-          timer: 4000
+          position: 'center-start',
+          timer: 4000,
         });
       }
-    }
+    },
   },
 
-  
-
   watch: {
-    
 
-    'settings.axisY': 
+    'settings.axisY':
     {
-            handler: function() {
-
-                     
-              if(this.settings.axisY.min > this.settings.axisY.max)
-              {
-                   this.settings.axisY.min = this.settings.axisY.max;
-              }
-                
-            },
-            deep: true
+      handler() {
+        if (this.settings.axisY.min > this.settings.axisY.max) {
+          this.settings.axisY.min = this.settings.axisY.max;
+        }
+      },
+      deep: true,
     },
 
-    selectedFacility: async function(val, oldVal)
-    {
+    async selectedFacility(val, oldVal) {
       let response = await this.$http.get(`/api/measurement/fullinfo/${val}`);
-      let data = response.data;
+      const { data } = response;
       this.processes = data.item1;
       this.codeproducts = data.item2;
       this.measureddevices = data.item3;
       this.measurements = data.item4;
       this.selectedProcess = this.processes[0].processId;
-      response = await this.$http.get(`/api/device/all`);
+      response = await this.$http.get('/api/device/all');
       this.avDevices = response.data;
       response = await this.$http.get(`/api/measurementset/getall/${val}`);
       this.measurementSets = response.data;
       this.selectedMeasuredDevice = this.measureddevices.filter(
-        x => x.codeProductId === this.selectedCodeProduct
-      )[0].measuredDeviceId
+        (x) => x.codeProductId === this.selectedCodeProduct,
+      )[0].measuredDeviceId;
       if (this.measurementSets.length > 0) {
         this.selectedMeasurementSet.id = this.measurementSets[0].measurementSetId;
-        
       }
-
     },
 
-    selectedMeasurement: async function() {
+    async selectedMeasurement() {
+      const measurementId = this.selectedMeasurement;
+      const self = this;
+      await this.$http.get(`/api/device/av/measurementid/${measurementId}`).then((response) => { self.devices = response.data; });
+      await this.$http.get(`/api/graphic/av/measurementid/${measurementId}`).then((response) => this.graphics = response.data);
+      await this.$http.get(`/api/measurement/getports/av/${measurementId}`).then((response) => { this.ports = response.data; });
 
-      var measurementId = this.selectedMeasurement;
-      let self = this;
-      await this.$http.get(`/api/device/av/measurementid/${measurementId}`).then(function (response) {self.devices = response.data});
-      await this.$http.get(`/api/graphic/av/measurementid/${measurementId}`).then(response => this.graphics = response.data); 
-      await this.$http.get(`/api/measurement/getports/av/${measurementId}`).then(function (response) {this.ports = response.data}.bind(this)); 
-    
-          
-
-      let material = await this.$http.get(
-        `/api/material/getbymeasurementid/${measurementId}`
+      const material = await this.$http.get(
+        `/api/material/getbymeasurementid/${measurementId}`,
       );
       this.selectedMaterial = material.data;
 
-      let onlinestatus = await this.$http.get(
-        `/api/measurement/getonlinestatus?measurementid=${measurementId}`
+      const onlinestatus = await this.$http.get(
+        `/api/measurement/getonlinestatus?measurementid=${measurementId}`,
       );
       this.selectedOnlineStatus = onlinestatus.data;
       this.selectedOnlineStatus.startTime = date.format(date.parse(this.selectedOnlineStatus.startTime.split('T')[0], 'YYYY-MM-DD'), 'DD MMM YYYY');
       this.selectedOnlineStatus.lastTime = date.format(date.parse(this.selectedOnlineStatus.lastTime.split('T')[0], 'YYYY-MM-DD'), 'DD MMM YYYY');
     },
 
-    selectedProcess: function() {
-      let selectedProcess = this.selectedProcess;
+    selectedProcess() {
+      const { selectedProcess } = this;
       this.selectedCodeProduct = this.codeproducts.filter(
-        x => x.processId === selectedProcess
+        (x) => x.processId === selectedProcess,
       )[0].idCp;
     },
 
-    selectedCodeProduct: function() {
-      let selectedCodeProduct = this.selectedCodeProduct;
+    selectedCodeProduct() {
+      const { selectedCodeProduct } = this;
       this.selectedMeasuredDevice = this.measureddevices.filter(
-        x => x.codeProductId === selectedCodeProduct
+        (x) => x.codeProductId === selectedCodeProduct,
       )[0].measuredDeviceId;
     },
 
-    'selectedMeasurementSet.id': async function() {
+    'selectedMeasurementSet.id': async function () {
       this.selectedMeasurementSet.statistics = [];
-      let route = this.measurementSets.filter(x => x.measurementSetId == this.selectedMeasurementSet.id)[0].route + "/" + this.selectedFacility;
-      let response = await this.$http.get(
-        `/api/measurementset/getatomics/${route}`
+      const route = `${this.measurementSets.filter((x) => x.measurementSetId === this.selectedMeasurementSet.id)[0].route}/${this.selectedFacility}`;
+      const response = await this.$http.get(
+        `/api/measurementset/getatomics/${route}`,
       );
       this.selectedAtomics = response.data;
-     
-     
     },
 
-    selectedMeasuredDevice: function() {
-      let selectedMeasuredDevice = this.selectedMeasuredDevice;
+    selectedMeasuredDevice() {
+      const { selectedMeasuredDevice } = this;
       this.selectedMeasurement = this.measurements.filter(
-        x => x.measuredDeviceId === selectedMeasuredDevice
+        (x) => x.measuredDeviceId === selectedMeasuredDevice,
       )[0].measurementId;
-    }
+    },
   },
   async created() {
     try {
-      
-      let response = await this.$http.get(`/api/facility/getall`);
-     
-      if(response.status == 200)
-      {
-          let data = response.data;
-          this.facilities = data;
-          this.selectedFacility = this.facilities[0].facilityId;      
-          this.connection = new signalR.HubConnectionBuilder()
-                                            .withUrl("/livepoint")
-                                            .build();
+      const response = await this.$http.get('/api/facility/getall');
 
-          this.connection.start().catch(err => console.log(err));
-          this.connection.on("lastValues", value => this.livePointsRedraw(value));     
-          this.savedSettings = JSON.parse(JSON.stringify(this.settings));
-      }
-      else
-      {
-         
-          this.snackbar = true;
-          this.snackbarText = response.statusText;
-          
-      }
-    
+      if (response.status === 200) {
+        const { data } = response;
+        this.facilities = data;
+        this.selectedFacility = this.facilities[0].facilityId;
+        this.connection = new signalR.HubConnectionBuilder()
+          .withUrl('/livepoint')
+          .build();
 
-      this.pollData()
-
-    } catch (error) {
+        this.connection.start().catch((err) => console.log(err));
+        this.connection.on('lastValues', (value) => this.livePointsRedraw(value));
+        this.savedSettings = JSON.parse(JSON.stringify(this.settings));
+      } else {
         this.snackbar = true;
-        this.snackbarText = error;
+        this.snackbarText = response.statusText;
+      }
+
+      this.pollData();
+    } catch (error) {
+      this.snackbar = true;
+      this.snackbarText = error;
     }
-  }
+  },
 };
 </script>
 <style>
-
-
 
 .circleOnline {
     width: 15px;
@@ -1172,7 +1105,7 @@ export default {
     animation: pulsate 2s ease-out;
     -webkit-animation: pulsate 2s ease-out;
     animation-iteration-count: infinite;
-    -webkit-animation-iteration-count: infinite; 
+    -webkit-animation-iteration-count: infinite;
     opacity: 0.0
 }
 
@@ -1186,7 +1119,6 @@ export default {
     left: 23px;
 }
 
-
 @-webkit-keyframes pulsate {
     0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
     50% {opacity: 1.0;}
@@ -1198,7 +1130,6 @@ export default {
     50% {opacity: 1.0;}
     100% {transform: scale(1.2, 1.2); opacity: 0.0;}
 }
-
 
 .v-speed-dial {
   position: absolute;

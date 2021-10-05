@@ -8,6 +8,7 @@ namespace VueExample.Providers.Srv6.Interfaces
     public interface IStandartPatternService
     {
         Task<IList<StandartPattern>> GetByDieTypeId(int dieTypeId);
+        Task<List<StandartPattern>> GetAll();
         Task<StandartPattern> GetByName(string name);
         Task<StandartPattern> Create(StandartPatternViewModel standartPattern);  
         Task<StandartPattern> Update(StandartMeasurementPatternFullViewModel standartMeasurementPatternFullViewModel);

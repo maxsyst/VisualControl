@@ -1,5 +1,5 @@
 <script>
-import { Bar } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs';
 
 export default {
   extends: Bar,
@@ -7,27 +7,27 @@ export default {
 
     chartdata: {
       type: Object,
-      default: null
+      default: null,
     },
 
     options: {
       type: Object,
-      default: null
+      default: null,
     },
 
     height: {
       type: Number,
-      default: 350
+      default: 350,
     },
 
     width: {
       type: Number,
-      default: 475
-    }
+      default: 475,
+    },
   },
 
-  mounted () {
-    this.renderChart(this.chartdata, this.options)
+  mounted() {
+    this.renderChart(this.chartdata, this.options);
   },
 
   methods: {
@@ -35,13 +35,13 @@ export default {
   },
 
   watch: {
-    chartdata: function(newVal) {
-        this.renderChart(newVal, this.options)
-    }      
+    chartdata(newVal) {
+      this.renderChart(newVal, this.options);
+    },
   },
 
   computed: {
 
-  }
-}
+  },
+};
 </script>

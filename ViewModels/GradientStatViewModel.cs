@@ -8,8 +8,15 @@ namespace VueExample.ViewModels
         public string Divider { get; set; }
         public string KeyGraphicState { get; set; }
         public string StatParameter { get; set; }
-        public double K { get; set; }
+        public string LowBorder { get; set; }
+        public string TopBorder { get; set; }
         public int StepsQuantity { get; set; }
-        public List<long> SelectedDiesId { get; set; } = new List<long>();
+        public void Deconstruct(out int _MeasurementRecordingId, out string _KeyGraphicState, out string _LowBorder, out string _TopBorder) 
+        {
+            _MeasurementRecordingId = MeasurementRecordingId;
+            _KeyGraphicState = KeyGraphicState;
+            _LowBorder = LowBorder;
+            _TopBorder = TopBorder;     
+        }
     }
 }

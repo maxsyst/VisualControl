@@ -1,28 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GraphQL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using VueExample.Contexts;
 
 namespace VueExample.Handlers
 {
     public class DuplicatesPreventionHandler<T> where T : class 
     {
+        private readonly VisualControlContext _visualControlContext;
+        public DuplicatesPreventionHandler(VisualControlContext visualControlContext)
+        {
+            _visualControlContext = visualControlContext;
+        }
         public T AddedObject  { get; private set; }
         public string Error { get; private set; }
 
         public void Add(T addingObject, DbContext dbContext)
         {
-            using (var applicationContext = new VisualControlContext())
-            {
-                applicationContext.Set<T>().Add(addingObject);
-                applicationContext.SaveChangesAsync();
-            }
+            _visualControlContext.Set<T>().Add(addingObject);
+            _visualControlContext.SaveChangesAsync();
         }
-
-
     }
 }

@@ -15,11 +15,11 @@ namespace VueExample.Controllers
             _dieProvider = dieProvider;
             _waferProvider = waferProvider;
         }
-        [HttpGet]
-        public IActionResult GetFolderDefects([FromQuery] string folderPath)
-        {
-            var massiveUploaderService = new MassiveUploaderService(_waferProvider, _dieProvider);
-            return Ok(massiveUploaderService.FindDefectsInFolder(folderPath));
-        }
+        // [HttpGet]
+        // public IActionResult GetFolderDefects([FromQuery] string folderPath)
+        // {
+        //     var massiveUploaderService = new MassiveUploaderService(_waferProvider, _dieProvider);
+        //     return Ok(massiveUploaderService.FindDefectsInFolder(folderPath));
+        // }
     }
 }

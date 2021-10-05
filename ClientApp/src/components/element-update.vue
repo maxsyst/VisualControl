@@ -9,14 +9,14 @@
           <v-card>
             <v-row>
               <v-col lg="5" class="pl-8">
-                <v-text-field                  
+                <v-text-field
                   v-model="editedElement.name"
                   :error-messages="validationErrors"
                   label="Название элемента"
                 ></v-text-field>
               </v-col>
               <v-col lg="7" class="px-8">
-                <v-select                  
+                <v-select
                   :items="avElementTypes"
                   v-model="editedElement.typeId"
                   no-data-text="Нет данных"
@@ -51,63 +51,50 @@
 <script>
 
 export default {
-    data() {
-        return {       
-            avElementTypes: [],
-            validationErrors: [],
-            menu: false,
-            editedElement: this.editedElement
-        }
+  data() {
+    return {
+      validationErrors: [],
+      menu: false,
+    };
+  },
+  props: ['editedElement', 'avElementTypes'],
+
+  methods: {
+
+    updateElement() {
+      this.menu = false;
+      this.$emit('update-element', this.editedElement);
     },
-    props: ['editedElement'],
-
-    methods: {
-
-        async initElementTypes() {
-            await this.$http
-                .get(`/api/elementtype/all`)
-                .then(response => { this.avElementTypes = response.data
-                                    this.editedElement.typeId = this.avElementTypes[0].id})
-                .catch(err => console.log(err))
-        },
-
-        updateElement() {        
-            this.menu = false
-            this.$emit('update-element', this.editedElement)
-        }
   },
 
   watch: {
-    elementName: function(newVal, oldVal) {
-        this.validationErrors = []
-        if(!this.elementName) {
-           this.validationErrors = 'Введите название элемента'
-        }
-        if(this.elements.filter(x => (x.name === this.elementName && x.elementId !== this.editedElement.elementId)).length > 0)
-        {
-           this.validationErrors = 'Элемент с таким названием уже существует'
-        }
-        
-    }
+    elementName(newValue) {
+      this.validationErrors = [];
+      if (!newValue) {
+        this.validationErrors = 'Введите название элемента';
+      }
+      if (this.elements.filter((x) => (x.name === newValue && x.elementId !== this.editedElement.elementId)).length > 0) {
+        this.validationErrors = 'Элемент с таким названием уже существует';
+      }
+    },
   },
 
   computed: {
 
     elementName() {
-        return this.editedElement.name
+      return this.editedElement.name;
     },
 
     elements() {
-        return this.$store.state.elements.elements
-    }
+      return this.$store.state.elements.elements;
+    },
   },
 
   async mounted() {
-    this.initElementTypes()
-  }
+    this.initElementTypes();
+  },
 
-
-}
+};
 </script>
 
 <style>

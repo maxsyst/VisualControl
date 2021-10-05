@@ -14,8 +14,6 @@
             </v-layout>
           </v-container>
         </v-img>
-     
-       
       </v-card>
     </v-flex>
   </v-layout>

@@ -4,9 +4,9 @@ namespace VueExample.ChartModels.ChartJs
     public class ChartData
     {
         public List<string> Labels {get; set;}
-        public IEnumerable<Dataset> Datasets {get; set;}
+        public Dictionary<long, Dataset> Datasets {get; set;}
               
-        public ChartData(List<string> labels, IEnumerable<Dataset> datasets)
+        public ChartData(List<string> labels, Dictionary<long, Dataset> datasets)
         {
             Labels = labels;
             Datasets = datasets;

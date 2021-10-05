@@ -7,18 +7,15 @@ namespace VueExample.Parsing.Concrete
 {
     public class HistogramStringGraphicParsingStrategy : IStringGraphicSRV6ParsingStrategy
     {
-        public Dictionary<string, DieValue> ParseStringGraphic(DieGraphics dieGraphic)
+        public DieValue ParseStringGraphic(DieGraphics dieGraphic)
         {
-            var dieValueDictionary = new Dictionary<string, DieValue>();
             var dieValue = new DieValue();
             dieValue.YList.Add(dieGraphic.ValueString.Split('X')[1]);
             dieValue.State = "HSTG";
             dieValue.GraphicId = dieGraphic.GraphicId;
             dieValue.DieId = dieGraphic.DieId;
             dieValue.MeasurementRecordingId = dieGraphic.MeasurementRecordingId;
-            var key = dieValue.KeyGenerate();
-            dieValueDictionary.Add(key, dieValue);
-            return dieValueDictionary;
+            return  dieValue;
         }
     }
 }

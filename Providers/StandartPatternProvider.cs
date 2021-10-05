@@ -33,6 +33,11 @@ namespace VueExample.Providers
             await _srv6Context.SaveChangesAsync();
         }
 
+        public async Task<IList<StandartPatternEntity>> GetAll()
+        {
+            return await _srv6Context.StandartPatterns.ToListAsync();
+        }
+
         public async Task<IList<StandartPatternEntity>> GetByDieTypeId(int dieTypeId)
            =>  await _srv6Context.StandartPatterns.Where(x => x.DieTypeId == dieTypeId).ToListAsync() ?? throw new RecordNotFoundException();
 

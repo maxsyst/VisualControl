@@ -6,14 +6,14 @@
                 <v-tab key="create">
                     Создание нового монитора
                 </v-tab>
-                <v-tab-item key="create">                   
-                    <create></create>                    
+                <v-tab-item key="create">
+                    <create></create>
                 </v-tab-item>
                 <v-tab key="update">
                     Редактирование монитора
                 </v-tab>
-                <v-tab-item key="update">                  
-                    <update ref="updateTab"></update>                    
+                <v-tab-item key="update">
+                    <update ref="updateTab"></update>
                 </v-tab-item>
             </v-tabs>
         </v-flex>
@@ -22,32 +22,31 @@
 </template>
 
 <script>
-    import DieTypeCreate from './dietype-create.vue';
-    import DieTypeUpdate from './dietype-update.vue';
-  
-    export default {
-        data() {
-            return {
+import DieTypeCreate from './dietype-create.vue';
+import DieTypeUpdate from './dietype-update.vue';
 
-            }
-        },
+export default {
+  data() {
+    return {
 
-        components:
+    };
+  },
+
+  components:
         {
-            "create": DieTypeCreate,
-            "update": DieTypeUpdate           
+          create: DieTypeCreate,
+          update: DieTypeUpdate,
         },
 
-        methods: {
-            tabChange(tabIndex) {
-                if(tabIndex === 0) {
-                    this.$store.commit("elements/clearElements")
-                }
-                if(tabIndex === 1 && this.$refs.updateTab) {
-                    this.$refs.updateTab.dieType = ""
-                }
-                
-            }
-        }
-    }
+  methods: {
+    tabChange(tabIndex) {
+      if (tabIndex === 0) {
+        this.$store.commit('elements/clearElements');
+      }
+      if (tabIndex === 1 && this.$refs.updateTab) {
+        this.$refs.updateTab.dieType = '';
+      }
+    },
+  },
+};
 </script>

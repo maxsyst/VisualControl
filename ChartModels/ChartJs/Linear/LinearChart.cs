@@ -5,10 +5,10 @@ namespace VueExample.ChartModels.ChartJs.Linear
 {
     public class LinearChart : AbstractChart
     {
-        public LinearChart(List<string> labelsList, IEnumerable<Dataset> dataSetList, XAxis xAxis, YAxis yAxis)
+        public LinearChart(List<string> labelsList, Dictionary<long, Dataset> dataSets, XAxis xAxis, YAxis yAxis)
         {
             this.Options = new LinearOptions(xAxis, yAxis);
-            this.ChartData = new ChartData(labelsList, dataSetList);
+            this.ChartData = new ChartData(labelsList, dataSets);
         }
     }
 }

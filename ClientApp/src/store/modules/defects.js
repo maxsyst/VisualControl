@@ -1,27 +1,24 @@
 const state = {
-   defectFilterList : []
-}
+  defectFilterList: [],
+};
 
-const getters = {}
-
+const getters = {};
 
 const actions = {
-  
-}
 
+};
 
 const mutations = {
 
-    setDefectFilter(state, list) {
-        state.defectFilterList = list;
+  setDefectFilter(state, list) {
+    state.defectFilterList = list;
+  },
 
-    }
-  
-}
+};
 
 export default {
   state,
   getters,
   actions,
-  mutations
-}
+  mutations,
+};

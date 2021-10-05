@@ -1,5 +1,5 @@
 <template>
-    <v-container> 
+    <v-container>
       <div class="d-flex flex-row justify-center align-center ma-4">
         <div>
           <v-card
@@ -9,9 +9,9 @@
             shaped
             @click="$router.push({ name: 'pwafer'})"
             class="d-flex left-card ma-2">
-             <v-card-text class="headline font-weight-bold">
+              <v-card-text class="headline font-weight-bold">
                     Просмотр измерений
-                </v-card-text>
+              </v-card-text>
             <v-card-actions>
             </v-card-actions>
           </v-card>
@@ -23,22 +23,10 @@
                 min-height="150"
                 shaped
                 color="indigo"
-                @click="$router.push({ name: 'testing'})"
+                @click="$router.push({ name: 'MeasurementAttemptsLastView'})"
                 class="d-flex ma-1">
                   <v-card-text class="headline font-weight-bold">
                     Результаты испытаний
-                  </v-card-text>
-                <v-card-actions>
-                </v-card-actions>
-              </v-card>
-              <v-card
-                min-height="150"
-                shaped
-                color="indigo"
-                @click="$router.push({ name: 'control-charts'})"
-                class="d-flex ma-1">
-                  <v-card-text class="headline font-weight-bold">
-                    Контрольные карты
                   </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
@@ -49,21 +37,21 @@
                 min-height="100"
                 shaped
                 color="indigo"
-                 @click="$router.push({ name: 'device'})"
+                 @click="$router.push({ name: 'mdvCreation'})"
                 class="d-flex ma-1">
                 <v-card-text class="headline font-weight-bold">
-                    Приборы
+                    Добавление образцов
                 </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
               </v-card>
               <v-card
                 min-height="100"
-                @click=""
+                @click="$router.push({ name: 'measurementCreation'})"
                 color="indigo"
                 class="d-flex ma-1">
                 <v-card-text class="headline font-weight-bold">
-                    Измеряемые устройства
+                    Добавление измерений
                 </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
@@ -72,10 +60,10 @@
                 min-height="100"
                 shaped
                 color="indigo"
-                @click=""
+                @click="$router.push({ name: 'livePoint'})"
                 class="d-flex ma-1">
                 <v-card-text class="headline font-weight-bold">
-                  Измерения
+                  Live
                 </v-card-text>
                 <v-card-actions>
                 </v-card-actions>
@@ -145,7 +133,7 @@
             min-width="500"
             shaped
             color="indigo"
-            @click="$router.push({ name: 'export'})"
+            @click="$router.push({ name: 'kurbatov'})"
             class="d-flex ma-2 left-card">
               <v-card-text class="headline font-weight-bold">
                Экспорт
@@ -188,10 +176,10 @@
 
 <script>
 export default {
-  data () {
-    return {}
-  }
-}
+  data() {
+    return {};
+  },
+};
 </script>
 
 <style scoped>

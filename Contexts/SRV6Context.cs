@@ -45,6 +45,7 @@ namespace VueExample.Contexts
         public DbSet<FkMrGraphic> FkMrGraphics { get; set; }
         public DbSet<ShortLinkEntity> ShortLinkEntities { get; set; }
         public DbSet<Divider> Dividers { get; set; }
+        public DbSet<StatisticParameter> StatisticParameters { get; set; }
         public DbSet<StatParameterForStage> StatParametersForStage { get; set; }
         public DbSet<PWafer> PWaferQuery { get; set; }
 

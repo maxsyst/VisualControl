@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Threading.Tasks;
+using VueExample.ViewModels;
 
 namespace VueExample.Controllers
 {
@@ -15,6 +16,13 @@ namespace VueExample.Controllers
         public GraphicSrv6Controller(ISRV6GraphicService graphicService)
         {
             _graphicService = graphicService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateS2P([Bind("CodeProductId", "GraphicS2PType")] GraphicS2PViewModel s2pGraphic)
+        {
+            var createdGraphic = await _graphicService.CreateS2P(s2pGraphic.CodeProductId, s2pGraphic.GraphicS2PType);           
+            return Created("", createdGraphic);
         }
 
         [HttpGet]

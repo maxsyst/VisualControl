@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace VueExample.Models.SRV6
 {
@@ -22,9 +23,9 @@ namespace VueExample.Models.SRV6
         public string Unit { get; set; }
         [Column("Millimeter")]
         public string Millimeter { get; set; }
-        [Column("MillimeterUnit")]
-        public string MillimeterUnit { get; set; }
         [Column("UserForMaps")]
         public string UsedForMaps { get; set; }
+        [JsonIgnore]
+        public IList<StatParameterForStage> StatParameterForStages { get; set; }
     }
 }

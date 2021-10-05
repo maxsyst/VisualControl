@@ -16,6 +16,18 @@ namespace VueExample.Providers.Srv6
            _srv6Context = srv6Context;
         }
 
+        public async Task<List<StatisticParameter>> GetAllParametersByStageId(int? stageId) 
+        {
+            if(stageId == null)
+            {
+                return new List<StatisticParameter>();
+            }
+            else
+            {
+                return await _srv6Context.StatParametersForStage.Include(x => x.StatisticParameter).Where(x => x.StageId == stageId).Select(x => x.StatisticParameter).ToListAsync();
+            }
+        }
+
         public async Task<List<StatParameterForStage>> GetByStageId(int? stageId) 
         {
             if(stageId == null)

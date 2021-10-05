@@ -1,5 +1,3 @@
-using System;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +7,6 @@ using VueExample.Providers.Srv6.Interfaces;
 using System.Collections.Generic;
 using VueExample.ViewModels;
 using AutoMapper;
-using VueExample.Models;
 
 namespace VueExample.Providers.Srv6
 {
@@ -57,7 +54,8 @@ namespace VueExample.Providers.Srv6
 
         public async Task<List<Element>> GetByDieType(int dieTypeId)
         {
-            var elementList = await _srv6Context.Elements.Join(_srv6Context.DieTypeElements, 
+            var elementList = await _srv6Context.Elements
+                                                .Join(_srv6Context.DieTypeElements, 
                                                         c => c.ElementId, 
                                                         p => p.ElementId, 
                                                         (c,p) => new {Element = c, DieTypeElement = p})

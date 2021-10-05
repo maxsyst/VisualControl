@@ -1,36 +1,23 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using ZeroFormatter;
 
 namespace VueExample.Models.SRV6
 {
     public class DieValue
     {
-        [JsonProperty("key")]
-        public string Key { get; set;}
         [JsonProperty("d")]
-        public long? DieId { get; set; }
+        public virtual long? DieId { get; set; }
         [JsonProperty("m")]
-        public int? MeasurementRecordingId { get; set; }
+        public virtual int? MeasurementRecordingId { get; set; }
         [JsonProperty("g")]
-        public int? GraphicId { get; set; }
+        public virtual int? GraphicId { get; set; }
         [JsonProperty("s")]
-        public string State { get; set; }
+        public virtual string State { get; set; }
         [JsonProperty("x")]
-        public List<string> XList { get; set; }
+        public virtual List<string> XList { get; set; } = new List<string>();
         [JsonProperty("y")]
-        public List<string> YList { get; set; }
+        public virtual List<string> YList { get; set; } = new List<string>();
 
-        public DieValue()
-        {
-            YList = new List<string>();
-            XList = new List<string>();
-           
-        }
-
-        public string KeyGenerate()
-        {
-            this.Key = this.GraphicId + "_" + this.State;
-            return this.Key;
-        }
     }
 }

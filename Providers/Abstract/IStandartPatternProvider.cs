@@ -8,6 +8,7 @@ namespace VueExample.Providers.Abstract
     public interface IStandartPatternProvider
     {
         Task<StandartPatternEntity> Create(StandartPattern standartPattern);
+        Task<IList<StandartPatternEntity>> GetAll();
         Task<IList<StandartPatternEntity>> GetByDieTypeId(int dieTypeId);
         Task<StandartPatternEntity> GetByName(string name);
         Task<StandartPatternEntity> GetById(int patternId);

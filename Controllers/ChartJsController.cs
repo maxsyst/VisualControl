@@ -17,12 +17,12 @@ namespace VueExample.Controllers
     [Route("api/[controller]")]
     public class ChartJsController : Controller
     {        
-        private readonly IAppCache cache;
+        private readonly IDieValueService _dieValueService;
         private readonly IChartJSProvider _chartJSProvider;
-        public ChartJsController(IChartJSProvider chartJSProvider, IAppCache cache)
+        public ChartJsController(IChartJSProvider chartJSProvider, IDieValueService dieValueService)
         {
-            this._chartJSProvider = chartJSProvider;
-            this.cache = cache;
+            _chartJSProvider = chartJSProvider;
+            _dieValueService = dieValueService;
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace VueExample.Controllers
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
-            var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[statisticSingleGraphicViewModel.KeyGraphicState];
+            var dieValueList = await _dieValueService.GetDieValuesByMeasurementRecordingAndKeyGraphicState(statisticSingleGraphicViewModel.MeasurementId, statisticSingleGraphicViewModel.KeyGraphicState);
             var chart = await _chartJSProvider.GetLinearFromDieValues(dieValueList.ToDictionary(x => x.DieId, x => x), 
                                                                       statisticSingleGraphicViewModel.dieIdList, 
                                                                       double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), 
@@ -50,7 +50,7 @@ namespace VueExample.Controllers
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             string measurementRecordingIdAsKey = Convert.ToString(statisticSingleGraphicViewModel.MeasurementId);
             string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
-            var dieValueList = (await cache.GetAsync<Dictionary<string, List<DieValue>>>($"V_{measurementRecordingIdAsKey}"))[keyGraphic];
+            var dieValueList = await _dieValueService.GetDieValuesByMeasurementRecordingAndKeyGraphicState(statisticSingleGraphicViewModel.MeasurementId, keyGraphic);
             var amchart = await _chartJSProvider.GetHistogramFromDieValues(dieValueList, 
                                                                            statisticSingleGraphicViewModel.dieIdList, 
                                                                            double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), 

@@ -1,8 +1,7 @@
-
 <template>
     <v-container>
         <v-layout row class="pt-8">
-           
+
             <v-flex lg6>
                 <v-tabs vertical background-color="indigo">
                     <v-tab key="cp">
@@ -20,11 +19,11 @@
                                 ></v-select>
                             </v-card-title>
                             <v-card-text>
-                                <v-list 
+                                <v-list
                                 subheader
                                 two-line
                                 >
-                                   
+
                                     <div style="max-height: 300px" class="overflow-y-auto">
                                         <v-list-item v-for="cp in avCodeProducts" :key="cp.id" >
                                             <v-list-item-action>
@@ -34,7 +33,7 @@
                                                 <v-list-item-title>{{cp.name}}</v-list-item-title>
                                             </v-list-item-content>
                                         </v-list-item>
-                                    </div>                        
+                                    </div>
                                 </v-list>
                             </v-card-text>
                         </v-card>
@@ -42,12 +41,12 @@
                     <v-tab key="elements">
                         Элементы
                     </v-tab>
-                    <v-tab-item key="elements">   
+                    <v-tab-item key="elements">
                         <v-card elevation="8">
                             <create-element mode="created"></create-element>
                             <v-list two-line rounded style="max-height: 350px" class="overflow-y-auto">
                                 <v-subheader v-if ="elements && elements.length > 0">Список элементов</v-subheader>
-                                <v-list-item v-for="element in elements" :key="element.name">                             
+                                <v-list-item v-for="element in elements" :key="element.name">
                                     <v-list-item-content>
                                         <v-list-item-title>{{element.name}}</v-list-item-title>
                                         <v-list-item-subtitle>{{element.comment}}</v-list-item-subtitle>
@@ -57,10 +56,10 @@
                                     </v-list-item-action>
                                 </v-list-item>
                             </v-list>
-                        </v-card>                        
+                        </v-card>
                     </v-tab-item>
                 </v-tabs>
-                
+
             </v-flex>
             <v-flex lg4 offset-lg1>
                  <v-text-field v-model="dieTypeName" label="Введите название монитора" outlined></v-text-field>
@@ -70,103 +69,100 @@
                  <v-checkbox :value="elements.length > 0" color="success" readonly  on-icon="done_outline" off-icon="report" class="mx-2" label="Создайте элементы для монитора"></v-checkbox>
                  <v-btn v-if="readyToCreate" color="success" @click="createDieType(dieTypeName, selectedCodeProducts, elements)">Создать монитор</v-btn>
             </v-flex>
-           
+
         </v-layout>
     </v-container>
 </template>
 <script>
-import ElementCreation from './create-element.vue'
-export default {    
-    data() {
-        return {
-            dieTypeName: "",
-            selectedProcess: "",
-            processes: [],
-            avCodeProducts: [],
-            selectedCodeProducts: [],
-        }
+import ElementCreation from './create-element.vue';
+
+export default {
+  data() {
+    return {
+      dieTypeName: '',
+      selectedProcess: '',
+      processes: [],
+      avCodeProducts: [],
+      selectedCodeProducts: [],
+    };
+  },
+
+  components: {
+    'create-element': ElementCreation,
+  },
+
+  methods: {
+    async getProcesses() {
+      await this.$http
+        .get('/api/process/all')
+        .then((response) => this.processes = response.data)
+        .catch((err) => console.log(err)); /// err
     },
 
-    components: {
-        "create-element": ElementCreation
-    },
-
-    methods: {
-        async getProcesses() {
-            await this.$http
-            .get(`/api/process/all`)
-            .then(response =>  this.processes = response.data)
-            .catch(err => console.log(err)); ///err
+    async createDieType(dieTypeName, selectedCodeProducts, elements) {
+      await this.$http({
+        method: 'put',
+        url: '/api/dietype',
+        data: { name: dieTypeName, codeProductIdsList: selectedCodeProducts, elementsList: elements.map(({ elementId, ...x }) => x) },
+        config: {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-        
-        async createDieType(dieTypeName, selectedCodeProducts, elements) {
-            await this.$http({
-                method: "put",
-                url: `/api/dietype`, 
-                data: {name: dieTypeName, codeProductIdsList: selectedCodeProducts, elementsList: elements.map(({elementId, ...x}) => x)}, 
-                config: {
-                    headers: {
-                        'Accept': "application/json",
-                        'Content-Type': "application/json"
-                    }
-                }
-            })
-            .then(response => { 
-                this.showSnackBar(`Монитор ${response.data} успешно добавлен`)
-                this.dieTypeName = ""
-                this.selectedCodeProducts = []
-                this.$store.commit("elements/clearElements")
-            
-            })
-            .catch(error => this.showSnackBar(error.response.data[0].message));  
-        },            
-
-        deleteElement(element) {
-            this.$store.commit("elements/deleteFromElements", element.name)
-        },
-
-       
-
-        showSnackBar(text)
-        {
-            this.$store.dispatch("alert/success", text)
-        }
+      })
+        .then((response) => {
+          this.showSnackBar(`Монитор ${response.data} успешно добавлен`);
+          this.dieTypeName = '';
+          this.selectedCodeProducts = [];
+          this.$store.commit('elements/clearElements');
+        })
+        .catch((error) => this.showSnackBar(error.response.data[0].message));
     },
 
-    computed: {
-        elements() {
-            return this.$store.state.elements.elements
-        },
-
-        readyToCreate() {
-            return this.dieTypeName && this.selectedCodeProducts.length > 0 && this.elements.length > 0 && !this.isDuplicateDieTypeExist
-        }
+    deleteElement(element) {
+      this.$store.commit('elements/deleteFromElements', element.name);
     },
 
-    asyncComputed: {
-        isDuplicateDieTypeExist: {
-            async get() {
-              return await this.$http.get(`/api/dietype/all`).then(response => response.data.some(x => x.name === this.dieTypeName))  
-            },
-            default() {
-                return true
-            },
-            watch: ['dieTypeName']
-        }   
-     
+    showSnackBar(text) {
+      this.$store.dispatch('alert/success', text);
+    },
+  },
+
+  computed: {
+    elements() {
+      return this.$store.state.elements.elements;
     },
 
-    watch: {
-        selectedProcess: async function(newVal, oldVal) {
-            await this.$http
-            .get(`/api/codeproduct/processid/${newVal}`)
-            .then(response => this.avCodeProducts = response.data)
-            .catch(err => console.log(err)) ///err
-        }
+    readyToCreate() {
+      return this.dieTypeName && this.selectedCodeProducts.length > 0 && this.elements.length > 0 && !this.isDuplicateDieTypeExist;
+    },
+  },
+
+  asyncComputed: {
+    isDuplicateDieTypeExist: {
+      async get() {
+        return await this.$http.get('/api/dietype/all').then((response) => response.data.some((x) => x.name === this.dieTypeName));
+      },
+      default() {
+        return true;
+      },
+      watch: ['dieTypeName'],
     },
 
-    async mounted() {
-        await this.getProcesses().then(() => this.selectedProcess = 333)         
-    }
-}
+  },
+
+  watch: {
+    async selectedProcess(newVal, oldVal) {
+      await this.$http
+        .get(`/api/codeproduct/processid/${newVal}`)
+        .then((response) => this.avCodeProducts = response.data)
+        .catch((err) => console.log(err)); /// err
+    },
+  },
+
+  async mounted() {
+    await this.getProcesses().then(() => this.selectedProcess = 333);
+  },
+};
 </script>

@@ -17,9 +17,11 @@ namespace VueExample.Providers
     {
         private readonly AppSettings _appSettings;
         private readonly List<User> _usersList;
+        private readonly VisualControlContext _visualControlContext;
 
-        public UserProvider(IOptions<AppSettings> appSettings, Srv6Context srv6Context)
+        public UserProvider(IOptions<AppSettings> appSettings, Srv6Context srv6Context, VisualControlContext visualControlContext)
         {
+            _visualControlContext = visualControlContext;
             _appSettings = appSettings.Value;
             _usersList = GetUsers();
         }
@@ -57,41 +59,30 @@ namespace VueExample.Providers
         }
 
         public Error IsExistUserDuplicate(User user)
-        {
-            using (var visualControlContext = new VisualControlContext())
+    {
+            if (_visualControlContext.Users.Any(x => x.Username == user.Username))
             {
-                if (visualControlContext.Users.Any(x => x.Username == user.Username))
-                {
-                    return new Error("Пользователь с таким логином уже существует", "RE001");
-                }
-
-                if (visualControlContext.Users.Any(x => x.Email == user.Email))
-                {
-                    return new Error("Пользователь с таким почтовым ящиком уже существует", "RE002");
-                }
+                return new Error("Пользователь с таким логином уже существует", "RE001");
             }
 
+            if (_visualControlContext.Users.Any(x => x.Email == user.Email))
+            {
+                return new Error("Пользователь с таким почтовым ящиком уже существует", "RE002");
+            }
             return null;
         }
 
        
         public User RegistryUser(User user)
         {
-            using (var visualControlContext = new VisualControlContext())
-            {
-               visualControlContext.Users.Add(user);
-               visualControlContext.SaveChanges();
-            }
-
+            _visualControlContext.Users.Add(user);
+            _visualControlContext.SaveChanges();
             return user;
         }
 
         private List<User> GetUsers()
         {
-            using (var visualControlContext = new VisualControlContext())
-            {
-                return visualControlContext.Users.ToList();
-            }
+            return _visualControlContext.Users.ToList();
         }
     }
 }

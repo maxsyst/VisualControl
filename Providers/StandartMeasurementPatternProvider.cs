@@ -43,6 +43,16 @@ namespace VueExample.Providers
             await _srv6Context.SaveChangesAsync();
         }
 
+        public async Task<StandartMeasurementPatternEntity> GetByStageAndElementAndPattern(int stageId, int elementId, int patternId)
+        {
+            var smp = await _srv6Context.StandartMeasurementPatterns.FirstOrDefaultAsync(x => x.StageId == stageId && x.ElementId == elementId && x.PatternId == patternId);
+            if(smp is null)
+            {
+                throw new RecordNotFoundException();
+            }
+            return smp;
+        }
+
         public async Task<List<StandartMeasurementPatternEntity>> GetFullList(int patternId)
         {
             return await _srv6Context.StandartMeasurementPatterns.Where(x => x.PatternId == patternId).Include(x => x.KurbatovParameters).ThenInclude(k => k.StandartParameterEntity)

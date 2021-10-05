@@ -13,5 +13,12 @@ namespace VueExample.ViewModels
         {
             this.dieIdList = new List<long?>();
         }
+
+        public void Deconstruct(out int _MeasurementId, out string _KeyGraphicState, out double _K) 
+        {
+            _MeasurementId = MeasurementId;
+            _KeyGraphicState = KeyGraphicState;
+            _K = K;
+        }
     }
 }
