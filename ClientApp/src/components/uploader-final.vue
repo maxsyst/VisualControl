@@ -302,7 +302,7 @@ export default {
         .get(`/api/dietype/wafer/${this.wafer}`)
         .then((response) => {
           this.monitors = response.data;
-          this.selectedMonitor = this.monitors[0].id;
+          this.selectedMonitor = this.monitors[0].dieTypeId;
         })
         .catch(() => this.showSnackBar('Ошибка при загрузке списка мониторов'));
     },

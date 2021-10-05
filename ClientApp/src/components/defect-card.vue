@@ -8,9 +8,6 @@
                 :directory="photoStorageAddress"
                 :timeoutDuration="5000" />
 
-
-
-
       <v-container grid-list-lg>
         <loading :active.sync="isloading"
                  :can-cancel="false"
@@ -32,12 +29,10 @@
           </v-tooltip>
         </v-layout>
 
-
         <v-tabs background-color="indigo"
                 dark
                 slider-color="primary"
                 icons-and-text>
-
 
           <v-tab href="#stage">
             Этап
@@ -85,7 +80,6 @@
           </v-tab-item>
           <v-tab-item value="extra">
 
-
             <v-card flat>
               <v-card-text>
                 <v-layout>
@@ -101,18 +95,9 @@
               </v-card-text>
             </v-card>
 
-
-
-
-
-
           </v-tab-item>
 
         </v-tabs>
-
-
-
-
 
         <v-layout row align-end justify-end>
 
@@ -141,19 +126,9 @@
                     </v-card>
                   </v-flex>
 
-
-
-
-
-
                 </v-tab-item>
               </v-tabs-items>
             </v-tabs>
-
-
-
-
-
 
           </v-flex>
 
@@ -170,159 +145,135 @@
 
 <script>
 
-  import VLazyImage from "v-lazy-image";
-  import Loading from 'vue-loading-overlay';
-  import 'vue-loading-overlay/dist/vue-loading.css';
+import VLazyImage from 'v-lazy-image';
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
-  export default {
-    props: ['defectId', 'dieCode'],
-   
-    mounted() {
+export default {
+  props: ['defectId', 'dieCode'],
 
-     
-      //let defectId = this.defectId;
-      //this.$http.get(`/api/defect/getbyid?defectId=${defectId}`).then((response) => {
-      //  this.defect = response.data;
-      //  let stageId = this.defect.stageId;
+  mounted() {
 
-      //  this.$http.get(`/api/stage/id/${stageId}`).then((response) => {
-      //    this.stage = response.data;
-      //  });
-      //  let dangerLevelId = this.defect.dangerLevelId;
-      //  this.$http.get(`/api/dangerlevel/getbyid?dangerlevelId=${dangerLevelId}`).then((response) => {
-      //    this.dangerLevel = response.data;
-      //  });
+    // let defectId = this.defectId;
+    // this.$http.get(`/api/defect/getbyid?defectId=${defectId}`).then((response) => {
+    //  this.defect = response.data;
+    //  let stageId = this.defect.stageId;
 
-      //  let defectTypeId = this.defect.defectTypeId;
-      //  this.$http.get(`/api/defecttype/getbyid?defecttypeId=${defectTypeId}`).then((response) => {
-      //    this.defectType = response.data;
-      //  });
+    //  this.$http.get(`/api/stage/id/${stageId}`).then((response) => {
+    //    this.stage = response.data;
+    //  });
+    //  let dangerLevelId = this.defect.dangerLevelId;
+    //  this.$http.get(`/api/dangerlevel/getbyid?dangerlevelId=${dangerLevelId}`).then((response) => {
+    //    this.dangerLevel = response.data;
+    //  });
 
-      //  this.date = this.defect.date;
-      //  this.operator = { name: this.defect.operator }
+    //  let defectTypeId = this.defect.defectTypeId;
+    //  this.$http.get(`/api/defecttype/getbyid?defecttypeId=${defectTypeId}`).then((response) => {
+    //    this.defectType = response.data;
+    //  });
 
+    //  this.date = this.defect.date;
+    //  this.operator = { name: this.defect.operator }
 
+    // });
 
+    //  this.$http.get(`/api/photo/getphotosbydefectid?defectId=${defectId}`).then((response) => {
+    //    this.photos = response.data;
+    //  });
 
-      //});
+  },
 
-
-     
-
-      //  this.$http.get(`/api/photo/getphotosbydefectid?defectId=${defectId}`).then((response) => {
-      //    this.photos = response.data;
-      //  });
-    
-      
-
-    },
-
-    computed:
+  computed:
     {
-      badgeDangerIcon()
-      {
+      badgeDangerIcon() {
         switch (this.dangerLevel.danger) {
           case 0:
-            return "done"
+            return 'done';
             break;
           case 1:
-            return "error_outline"
+            return 'error_outline';
             break;
           case 2:
-            return "error_outline"
+            return 'error_outline';
             break;
           default:
-            return "error_outline"
+            return 'error_outline';
         }
-      }
+      },
     },
 
-    watch:
+  watch:
     {
 
       defectId: {
 
-
         immediate: true,
         handler(newVal, oldVal) {
-
-
           this.isloading = true;
-          let defectId = this.defectId;
+          const { defectId } = this;
           this.$http.get(`/api/defect/getbyid?defectId=${defectId}`).then((response) => {
             this.defect = response.data;
-            let stageId = this.defect.stageId;
+            const { stageId } = this.defect;
 
             this.$http.get(`/api/stage/id/${stageId}`).then((response) => {
               this.stage = response.data;
             });
-            let dangerLevelId = this.defect.dangerLevelId;
+            const { dangerLevelId } = this.defect;
             this.$http.get(`/api/dangerlevel/getbyid?dangerlevelId=${dangerLevelId}`).then((response) => {
               this.dangerLevel = response.data;
             });
 
-            let defectTypeId = this.defect.defectTypeId;
+            const { defectTypeId } = this.defect;
             this.$http.get(`/api/defecttype/getbyid?defecttypeId=${defectTypeId}`).then((response) => {
               this.defectType = response.data;
             });
 
             this.date = this.defect.date;
-            this.operator = { name: this.defect.operator }
-
-
-
-
+            this.operator = { name: this.defect.operator };
           });
 
           this.$http.get(`/api/photo/getphotosbydefectid?defectId=${defectId}`).then((response) => {
             this.photos = response.data;
           });
-        }
         },
+      },
 
-        defect: async function () {
-
-          let waferId = this.defect.waferId;
-          await this.$http.get(`/api/photo/getphotostorageaddress`).then((response) => {
-            this.photoStorageAddress = response.data + waferId + "/";
-            this.isloading = false;
-          });
-
-
-        
-      }
+      async defect() {
+        const { waferId } = this.defect;
+        await this.$http.get('/api/photo/getphotostorageaddress').then((response) => {
+          this.photoStorageAddress = `${response.data + waferId}/`;
+          this.isloading = false;
+        });
+      },
 
     },
 
-    
+  components: {
+    VLazyImage, Loading,
+  },
 
-    components: {
-      VLazyImage, Loading
-    },
-
-    methods:
+  methods:
     {
-      showLightbox: function (imageName) {
+      showLightbox(imageName) {
         this.$refs.lightbox.show(imageName);
-      }
+      },
     },
 
-      data() {
-        return {
-          isloading: true,
-          defect: {},
-          stage: {},
-          defectType: {},
-          dangerLevel: {},
-          date: "",
-          photoStorageAddress: "",
-          operator: {},
-          photos: []
-         
-          
-        }
-      }
-  }
+  data() {
+    return {
+      isloading: true,
+      defect: {},
+      stage: {},
+      defectType: {},
+      dangerLevel: {},
+      date: '',
+      photoStorageAddress: '',
+      operator: {},
+      photos: [],
+
+    };
+  },
+};
 </script>
 
 <style>

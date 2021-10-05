@@ -4,9 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using VueExample.Entities;
+using VueExample.Models.SRV6;
 using VueExample.Models.SRV6.Uploader;
 using VueExample.Providers.Abstract;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.Services.Abstract;
 
 namespace VueExample.Providers.Srv6 
 {
@@ -19,8 +21,13 @@ namespace VueExample.Providers.Srv6
         private readonly IDieValueService _dieValueService;
         private readonly IShortLinkProvider _shortLinkProvider;
         private readonly IMeasurementRecordingService _measurementRecordingService;
-        public UploaderService (IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider) 
+        private readonly IFolderService _folderService;
+        private readonly IElementService _elementService;
+        private readonly IGraphic4Service _graphic4Service;
+        public UploaderService (IGraphic4Service graphic4Service, IElementService elementService, IUploadingTypeService uploadingTypeService, IFolderService folderService, IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider) 
         {
+            _graphic4Service = graphic4Service;
+            _elementService = elementService;
             _standartWaferService = standartWaferService;
             _stageProvider = stageProvider;
             _graphicService = graphicService;
@@ -28,6 +35,7 @@ namespace VueExample.Providers.Srv6
             _dieProvider = dieProvider;
             _shortLinkProvider = shortLinkProvider;
             _dieValueService = dieValueService;
+            _folderService = folderService;
         }
 
         public async Task<IList<UploadingFileStatus>> CheckStatus(IList<UploadingFile> uploadingFiles)
@@ -69,6 +77,43 @@ namespace VueExample.Providers.Srv6
                 }
             }
             return uploadingFileStatusList;
+        }
+
+        public async Task<string> UploadingGraphic4(UploadingFileGraphic4 uploadingFile)
+        {
+            var graphic4ParseList = await _folderService.GetGraphic4(uploadingFile);           
+            var bigMeasurementRecording = await _measurementRecordingService.GetOrAddBigMeasurement(uploadingFile.MeasurementRecordingName, uploadingFile.WaferId);
+            var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, uploadingFile.StageId);              
+            var graphic4ViewModel = await _graphic4Service.CreateGraphic4(graphic4ParseList, measurementRecording.Id, uploadingFile.WaferId);
+            await _measurementRecordingService.GetOrCreateFkMrP(measurementRecording.Id, 247, uploadingFile.WaferId);
+            foreach (var graphic in uploadingFile.UploadingType.Graphics)
+            {
+                await _measurementRecordingService.AddOrGetFkMrGraphics (new FkMrGraphic 
+                {
+                        GraphicId = graphic.GraphicSRV6Id,
+                        MeasurementRecordingId = measurementRecording.Id,
+                        DateFile = DateTime.Now,
+                        DateImport = DateTime.Now,
+                        Operator = uploadingFile.UserName,
+                        Comment = String.Empty
+                });
+            }
+            await _elementService.UpdateElementOnIdmr(measurementRecording.Id, uploadingFile.ElementId);
+            return measurementRecording.Name;
+        }
+
+        public async Task<MeasurementRecordingStatus> CheckStatusGraphic4(string waferId, string measurementRecordingName)
+        {
+            var directoryPath = $"{ExtraConfiguration.UploadingGraphic4Path}\\{waferId}";
+            var isExist = _folderService.IsWaferExistsInFolder(directoryPath,measurementRecordingName);
+            if(!isExist)
+                return new MeasurementRecordingStatus{Status = "notExists", MeasurementRecordingId = 0};
+            var measurementRecording = await _measurementRecordingService.GetByNameAndWaferId($"оп.{measurementRecordingName}", waferId);
+            if(measurementRecording != null)
+            {
+                return new MeasurementRecordingStatus{Status = "alreadyUploaded", MeasurementRecordingId = measurementRecording.Id};
+            }
+            return new MeasurementRecordingStatus{Status = "ready", MeasurementRecordingId = 0};
         }
 
         public async Task<string> Uploading (UploadingFile uploadingFile, int type) 
@@ -163,5 +208,7 @@ namespace VueExample.Providers.Srv6
             var link = await _shortLinkProvider.CreateSRV6(fullLink);
             return link.ShortLink;
         }
+
+        
     }
 }

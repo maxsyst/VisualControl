@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using VueExample.Helpers;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
+using VueExample.Services.Abstract;
 using VueExample.StatisticsCore.Abstract;
 using VueExample.ViewModels;
 
@@ -23,11 +24,13 @@ namespace VueExample.Controllers
         private readonly IStageProvider _stageProvider;
         private readonly IElementService _elementService;
         private readonly IExportProvider _exportProvider;
+        private readonly IGraphic4Service _graphic4Service;
         private readonly IMapper _mapper;   
        
-        public MeasurementRecordingController(IOptions<AppSettings> appSettings, IElementService elementService, IMapper mapper, IExportProvider exportProvider, IStageProvider stageProvider, IMeasurementRecordingService measurementRecordingService)
+        public MeasurementRecordingController(IOptions<AppSettings> appSettings, IGraphic4Service graphic4Service, IElementService elementService, IMapper mapper, IExportProvider exportProvider, IStageProvider stageProvider, IMeasurementRecordingService measurementRecordingService)
         {
             _appSettings = appSettings.Value;
+            _graphic4Service = graphic4Service;
             _elementService = elementService;
             _stageProvider = stageProvider;
             _measurementRecordingService = measurementRecordingService;
@@ -65,6 +68,14 @@ namespace VueExample.Controllers
                 return NoContent();
             }
             return Forbid();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("delete/graphic4/{measurementRecordingId:int}")]        
+        public async Task<IActionResult> Delete4([FromRoute] int measurementRecordingId)
+        {
+            return await _graphic4Service.DeleteGraphic4(measurementRecordingId) ? (IActionResult)NoContent() : (IActionResult)NotFound();
         }
 
         [HttpDelete]
@@ -122,6 +133,15 @@ namespace VueExample.Controllers
         {
             var measurementRecording = await _measurementRecordingService.UpdateName(measurementRecordingViewModel.Id, measurementRecordingViewModel.Name);
             return Ok(measurementRecording);  
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(MeasurementRecording), StatusCodes.Status200OK)]
+        [Route("merge/src/{srcMeasurementRecordingId:int}/dest/{destMeasurementRecordingId:int}")]
+        public async Task<IActionResult> Merge([FromRoute] int srcMeasurementRecordingId, [FromRoute] int destMeasurementRecordingId)
+        {
+            await _measurementRecordingService.Merge(srcMeasurementRecordingId, destMeasurementRecordingId);
+            return Ok(destMeasurementRecordingId);  
         }
 
         [HttpGet]
