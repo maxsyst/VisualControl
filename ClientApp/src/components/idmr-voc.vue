@@ -306,10 +306,8 @@ export default {
         if (!newStage) {
           const stage = this.allStagesArray.find((x) => x.stageId === newStageId);
           this.stagesArray.push({ id: stage.stageId, name: stage.stageName, measurementRecordingList: Array(1).fill(measurementRecording) });
-          this.e1 = this.stagesArray.length;
         } else {
           newStage.measurementRecordingList.push(measurementRecording);
-          this.e1 = this.stagesArray.findIndex((x) => x.id === newStageId) + 1;
         }
 
         const newOldStage = this.stagesArray.find((x) => x.id === oldStageId).measurementRecordingList.filter((x) => x.id !== idmr);
