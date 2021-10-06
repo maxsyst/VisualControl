@@ -50,7 +50,7 @@ export const smpstorage = {
     },
     async getElementsByDieType({ commit }, { ctx, selectedDieTypeId }) {
       await ctx.$http
-        .get(`/api/element/dietype/${selectedDieTypeId}`)
+        .get(`/api/element/dietype/id/${selectedDieTypeId}`)
         .then((response) => commit('updateElements', response.data), (error) => error);
     },
     async getStagesByProcessId({ commit }, { ctx, process }) {

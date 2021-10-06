@@ -14,7 +14,8 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<Element> GetById(int elementId);
         Task<Element> GetByDieTypeIdAndName(int dieTypeId, string name);
         Task<Element> GetByNameAndWafer(string name, string waferId);
-        Task<List<Element>> GetByDieType(int dieTypeId);
+        Task<List<Element>> GetByDieTypeName(string dieTypeName);
+        Task<List<Element>> GetByDieTypeId(int dieTypeId);
         Task<List<Element>> GetByIdmr(int idmr);
         Task<Element> UpdateElementOnIdmr(int measurementRecordingId, int newElementId);
     }

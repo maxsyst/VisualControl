@@ -52,7 +52,7 @@ namespace VueExample.Providers.Srv6
             return element;
         }
 
-        public async Task<List<Element>> GetByDieType(int dieTypeId)
+        public async Task<List<Element>> GetByDieTypeId(int dieTypeId)
         {
             var elementList = await _srv6Context.Elements
                                                 .Join(_srv6Context.DieTypeElements, 
@@ -67,6 +67,14 @@ namespace VueExample.Providers.Srv6
                                                 .Select(x => x.Element)     
                                                 .ToListAsync();
             return elementList;
+        }
+
+        public async Task<List<Element>> GetByDieTypeName(string dieTypeName)
+        {
+            var dieType = await _srv6Context.DieTypes.FirstOrDefaultAsync(x => x.Name == dieTypeName);
+            if(dieType is null) 
+                return new List<Element>();
+            return await GetByDieTypeId(dieType.DieTypeId);
         }
 
         public async Task<Element> GetById(int elementId) => await _srv6Context.Elements.FindAsync(elementId);
@@ -122,7 +130,7 @@ namespace VueExample.Providers.Srv6
 
         public async Task<Element> GetByDieTypeIdAndName(int dieTypeId, string name)
         {
-            var elementList = await GetByDieType(dieTypeId);
+            var elementList = await GetByDieTypeId(dieTypeId);
             return elementList.Count > 0 ? elementList.FirstOrDefault(x => x.Name == name) : new Element();
         }
     }

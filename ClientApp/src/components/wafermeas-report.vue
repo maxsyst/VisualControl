@@ -466,7 +466,7 @@ export default {
       if (newValue !== 'undefined') {
         const dieType = this.modes.element.dieTypes.find((x) => x.name === newValue);
         if (dieType) {
-          this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/${dieType.id}`)).data;
+          this.modes.element.avElements = (await this.$http.get(`/api/element/dietype/id/${dieType.id}`)).data;
           if (this.modes.element.avElements.length > 0) {
             this.modes.element.selectedElement = this.modes.element.avElements[0].elementId;
           }

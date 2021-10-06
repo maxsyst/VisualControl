@@ -32,7 +32,7 @@ export default {
     this.waferMap = (await this.$http.get(`/api/wafermap/getformedwafermap?waferMapFieldViewModelJSON=${JSON.stringify({
       waferId: this.waferId, fieldHeight: 200, fieldWidth: 200, streetSize: 2,
     })}`)).data;
-    await this.$http.get(`/api/measurementrecording/wafer/${this.waferId}/dietype/0`)
+    await this.$http.get(`/api/measurementrecording/wafer/${this.waferId}/dietype/all`)
       .then((response) => {
         if (response.status === 200) {
           this.initialArray = response.data.reduce((p, c) => [...p, ...c.measurementRecordingList.map((mr) => ({
