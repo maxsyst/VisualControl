@@ -257,21 +257,16 @@ export default {
         .then(async (response) => {
           this.simpleOperations = response.data.map((d) => ({ ...d, uploadStatus: '', shortLink: '' }));
           await this.checkUploadingStatus(this.simpleOperations);
-          this.measurementRecordingsWithStage.forEach((m) => {
+          this.measurementRecordingsWithStage = this.measurementRecordingsWithStage.map(function f(m) {
             const simpleOperation = this.simpleOperations.find((so) => so.name === m.id && so.uploadStatus === 'already');
-            if (simpleOperation) {
-              m.stage.id = simpleOperation.stage.id;
-              m.stage.name = simpleOperation.stage.name;
-              m.sealed = true;
-            }
+            return simpleOperation ? { ...m, stage: { id: simpleOperation.stage.id, name: simpleOperation.stage.name }, sealed: true } : m;
           });
-          const initialArray = this.simpleOperations.filter((so) => so.uploadStatus === 'initial');
-          initialArray.forEach((i) => {
+          let initialArray = this.simpleOperations.filter((so) => so.uploadStatus === 'initial');
+          initialArray = initialArray.map(function f(i) {
             const measurementRecordingWithStage = this.measurementRecordingsWithStage.find((mr) => mr.id === i.name);
-            if (measurementRecordingWithStage) {
-              i.stage.id = measurementRecordingWithStage.stage.id;
-              i.stage.name = measurementRecordingWithStage.stage.name;
-            }
+            return measurementRecordingWithStage 
+              ? { ...i, stage: { id: measurementRecordingWithStage.stage.id, name: measurementRecordingWithStage.stage.name } }
+              : i;
           });
         })
         .catch(() => {
@@ -287,7 +282,7 @@ export default {
     readyToUploading() {
       return this.simpleOperations.length > 0
         && this.simpleOperations.every((so) => so.fileName.graphicNames && so.element.elementId);
-        // && this.simpleOperations.every((so) => so.stage.id > 0);
+      // && this.simpleOperations.every((so) => so.stage.id > 0);
     },
     newStageValidation() {
       if (!this.newStageName) return 'Введите название этапа';
