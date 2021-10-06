@@ -106,9 +106,14 @@ namespace VueExample.Providers.Srv6
             return _srv6Context.MeasurementRecordings.FromSqlInterpolated($"EXECUTE select_mr_by_stagename_waferid_elementid @waferId = {waferId}, @elementId = {elementId}, @stageName = {stageName}").ToListAsync();
         }
 
-        public async Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, int dieTypeId)
+        public async Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, string dieTypeName)
         {
-            return await _srv6Context.MeasurementRecordings.FromSqlInterpolated($"EXECUTE select_all_mr_by_waferid_dietypeid @waferId = {waferId}, @dieTypeId = {dieTypeId}").ToListAsync();
+            var dieType = await _srv6Context.DieTypes.FirstOrDefaultAsync(x => x.Name == dieTypeName);
+            if(dieType is null)
+            {
+                return new List<MeasurementRecording>();
+            }
+            return await _srv6Context.MeasurementRecordings.FromSqlInterpolated($"EXECUTE select_all_mr_by_waferid_dietypeid @waferId = {waferId}, @dieTypeId = {dieType.DieTypeId}").ToListAsync();
         }
 
         public async Task<MeasurementRecording> UpdateStage(int measurementRecordingId, int stageId)

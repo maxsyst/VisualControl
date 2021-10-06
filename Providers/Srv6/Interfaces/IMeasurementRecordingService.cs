@@ -8,7 +8,7 @@ namespace VueExample.Providers.Srv6.Interfaces
     public interface IMeasurementRecordingService
     {
         Task<List<MeasurementRecording>> GetByWaferId(string waferId);
-        Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, int dieTypeId);
+        Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, string dieTypeName);
         Task<MeasurementRecording> GetOrCreate(string name, int type, int bmrId, int? stageId);
         Task Merge(int srcMeasurementRecordingId, int destMeasurementRecordingId);
         Task Delete(int measurementRecordingId);

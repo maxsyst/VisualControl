@@ -311,7 +311,7 @@ export default {
     },
 
     async getAvElements(selectedMonitor) {
-      await this.$http.get(`/api/element/dietype/${selectedMonitor}`)
+      await this.$http.get(`/api/element/dietype/id/${selectedMonitor}`)
         .then((response) => {
           this.avElements = response.data;
         })

@@ -2,7 +2,7 @@
     <v-container grid-list-lg>
         <v-row>
             <v-col lg="2" offset-lg="1">
-                <v-autocomplete v-model="waferId"
+                <v-autocomplete v-model="selectedWaferId"
                                     :items="wafers"
                                     no-data-text="Нет данных"
                                     item-text="waferId"
@@ -13,21 +13,22 @@
                 </v-autocomplete>
             </v-col>
             <v-col lg="2">
-                <v-select v-if="waferId"  v-model="selectedDieType"
+                <v-select v-if="selectedWaferId"  v-model="selectedDieTypeName"
                                 :items="dieTypes"
                                 no-data-text="Нет данных"
                                 outlined
                                 filled
                                 item-text="name"
-                                item-value="id"
+                                item-value="name"
                                 label="Тип монитора">
                 </v-select>
             </v-col>
             <v-col lg="3">
-                <v-checkbox v-if="waferId" class="mt-3" v-model="showAllMeasurements" label="Показать все операции на пластине"></v-checkbox>
+                <v-checkbox v-if="selectedWaferId" class="mt-3" v-model="showAllMeasurements" label="Показать все операции на пластине"></v-checkbox>
             </v-col>
             <v-col lg="3">
-                <v-btn v-if="waferId" color="indigo" class="mt-3" @click="goToStageTable(waferId)">Перейти к редактированию этапов</v-btn>
+                <v-btn v-if="selectedWaferId" color="indigo" class="mt-3"
+                       @click="goToStageTable(selectedWaferId)">Перейти к редактированию этапов</v-btn>
             </v-col>
         </v-row>
 
@@ -148,12 +149,14 @@ export default {
   },
   props: {
     waferId: String,
-    selectedDieType: Number,
+    dieTypeName: String,
   },
 
   data() {
     return {
       e1: 1,
+      selectedWaferId: this.waferId,
+      selectedDieTypeName: this.dieTypeName,
       showAllMeasurements: false,
       wafers: [],
       dieTypes: [],
@@ -215,11 +218,12 @@ export default {
         await this.getWafers();
       },
 
-      async getStagesByWaferId(waferId, dieTypeId) {
+      async getStagesByWaferId(waferId) {
+        let mode = this.selectedDieTypeName;
         if (this.showAllMeasurements) {
-          dieTypeId = 0;
+          mode = 'all';
         }
-        await this.$http.get(`/api/measurementrecording/wafer/${waferId}/dietype/${dieTypeId}`)
+        await this.$http.get(`/api/measurementrecording/wafer/${waferId}/dietype/${mode}`)
           .then((response) => {
             if (response.status === 200) {
               this.stagesArray = response.data;
@@ -247,7 +251,8 @@ export default {
       async deleteSelectedMeasurements(selectedMeasurements) {
         await this.$http.delete('/api/measurementrecording/delete/list', { data: selectedMeasurements })
           .then(() => {
-            this.stagesArray[this.e1 - 1].measurementRecordingList = this.stagesArray[this.e1 - 1].measurementRecordingList.filter((x) => !selectedMeasurements.includes(x.id));
+            this.stagesArray[this.e1 - 1].measurementRecordingList = this.stagesArray[this.e1 - 1]
+              .measurementRecordingList.filter((x) => !selectedMeasurements.includes(x.id));
             this.showSnackbar(`Удалено измерений -> ${selectedMeasurements.length}`);
             this.wipeDeleting();
           })
@@ -269,8 +274,8 @@ export default {
           });
       },
 
-      async getAvElements(dieTypeId) {
-        await this.$http.get(`/api/element/dietype/${dieTypeId}`)
+      async getAvElements(dieTypeName) {
+        await this.$http.get(`/api/element/dietype/name/${dieTypeName}`)
           .then((response) => {
             this.avElements = response.data;
           })
@@ -301,10 +306,8 @@ export default {
         if (!newStage) {
           const stage = this.allStagesArray.find((x) => x.stageId === newStageId);
           this.stagesArray.push({ id: stage.stageId, name: stage.stageName, measurementRecordingList: Array(1).fill(measurementRecording) });
-          this.e1 = this.stagesArray.length;
         } else {
           newStage.measurementRecordingList.push(measurementRecording);
-          this.e1 = this.stagesArray.findIndex((x) => x.id === newStageId) + 1;
         }
 
         const newOldStage = this.stagesArray.find((x) => x.id === oldStageId).measurementRecordingList.filter((x) => x.id !== idmr);
@@ -314,7 +317,7 @@ export default {
           this.stagesArray.find((x) => x.id === oldStageId).measurementRecordingList = newOldStage;
         }
 
-        const response = await this.$http({
+        await this.$http({
           method: 'post',
           url: '/api/measurementrecording/update-stage',
           data: { stageId: newStageId, measurementRecordingId: idmr },
@@ -334,7 +337,7 @@ export default {
       },
 
       async updateElementOnIdmr(idmr, elementId) {
-        const response = await this.$http({
+        await this.$http({
           method: 'post',
           url: '/api/element/updateElementOnIdmr',
           data: { elementId, measurementRecordingId: idmr },
@@ -355,33 +358,36 @@ export default {
     },
 
   watch: {
-    waferId: {
+    selectedWaferId: {
       immediate: true,
       async handler(newVal, oldVal) {
         if (newVal) {
-          if (oldVal || !this.selectedDieType) {
-            this.selectedDieType = 0;
-            await this.getDieTypesByWaferId(newVal).then(() => this.selectedDieType = this.dieTypes[0].id);
+          if (oldVal) {
+            await this.getDieTypesByWaferId(newVal);
+            this.selectedDieTypeName = this.dieTypes[0].name;
           } else {
             await this.getDieTypesByWaferId(newVal);
-            this.selectedDieType = +this.selectedDieType;
           }
           await this.getAllStages(newVal);
         }
       },
     },
 
-    async selectedDieType(newVal) {
-      if (newVal !== 0) {
+    async selectedDieTypeName(selectedDieTypeName) {
+      if (selectedDieTypeName !== '') {
         this.showLoading('Загрузка...');
-        this.$router.push({ name: 'idmrvoc', params: { waferId: this.waferId, selectedDieType: newVal } });
-        await this.getStagesByWaferId(this.waferId, newVal).then(async () => await this.getAvElements(newVal)).then(() => this.closeLoading());
+        this.$router.push({ name: 'idmrvoc', params: { waferId: this.selectedWaferId, dieTypeName: selectedDieTypeName } });
+        await this.getStagesByWaferId(this.selectedWaferId);
+        await this.getAvElements(selectedDieTypeName);
+        this.closeLoading();
       }
     },
 
-    async showAllMeasurements(newVal) {
+    async showAllMeasurements() {
       this.showLoading('Загрузка...');
-      await this.getStagesByWaferId(this.waferId, this.selectedDieType).then(async () => await this.getAvElements(this.selectedDieType)).then(() => this.closeLoading());
+      await this.getStagesByWaferId(this.selectedWaferId);
+      await this.getAvElements(this.selectedDieTypeName);
+      this.closeLoading();
     },
   },
 

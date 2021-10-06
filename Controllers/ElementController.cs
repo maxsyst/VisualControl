@@ -59,12 +59,21 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        [Route(("dietype/{id:int}"))]
-        public async Task<IActionResult> GetByDieType([FromRoute] int id)
+        [Route(("dietype/name/{dieTypeName}"))]
+        public async Task<IActionResult> GetByDieTypeName([FromRoute] string dieTypeName)
         {
-            var elementList = await _elementService.GetByDieType(id);
+            var elementList = await _elementService.GetByDieTypeName(dieTypeName);
             return elementList.Count > 0 ? Ok(elementList) : (IActionResult)NotFound();      
         }
+
+         [HttpGet]
+        [Route(("dietype/id/{dieTypeId:int}"))]
+        public async Task<IActionResult> GetByDieTypeId([FromRoute] int dieTypeId)
+        {
+            var elementList = await _elementService.GetByDieTypeId(dieTypeId);
+            return elementList.Count > 0 ? Ok(elementList) : (IActionResult)NotFound();      
+        }
+
 
         [HttpGet]
         [Route(("getbynameandwaferid"))]

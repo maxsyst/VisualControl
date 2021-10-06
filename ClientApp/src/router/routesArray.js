@@ -139,7 +139,7 @@ export const routes = [
     name: 'idmrvocstart', path: '/idmr-voc', component: IdmrVoc, display: 'Редактирование измерений', nav: true, uploadingArea: true,
   },
   {
-    name: 'idmrvoc', path: '/idmr-voc/:waferId/:selectedDieType', component: IdmrVoc, display: 'Редактирование измерений', props: true,
+    name: 'idmrvoc', path: '/idmr-voc/:waferId/:dieTypeName', component: IdmrVoc, display: 'Редактирование измерений', props: true,
   },
   {
     name: 'dietypesettings', path: '/dts', component: DieTypeSettings, display: 'Настройка элементов', nav: true, uploadingArea: true,
