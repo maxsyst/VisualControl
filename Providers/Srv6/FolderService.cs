@@ -204,7 +204,7 @@ namespace VueExample.Providers.Srv6
                         simpleOperation.Name = $"{meas}";
                         simpleOperation.Stage = new StageViewModel();
                         simpleOperation.Path = simpleOperationFileName;
-                        var element = (await _elementService.GetByDieType(dieTypeId)).FirstOrDefault(x => x.Name == dirElementName);
+                        var element = (await _elementService.GetByDieTypeId(dieTypeId)).FirstOrDefault(x => x.Name == dirElementName);
                         simpleOperation.Element = new ElementUploading{Name = dirElementName, ElementId = element?.ElementId, Comment = element?.Comment};
                         simpleOperation.FileName = new FileNameUploaderUViewModel{Name = Path.GetFileName(simpleOperationFileName)};
                         var fileNameWithoutExpansion = simpleOperation.FileName.Name.Contains('.') 

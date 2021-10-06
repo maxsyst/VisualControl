@@ -147,11 +147,11 @@ namespace VueExample.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<StageFullViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [Route("wafer/{waferid}/dietype/{dieTypeId:int}")]
-        public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId, [FromRoute] int dieTypeId)
+        [Route("wafer/{waferid}/dietype/{dieTypeName}")]
+        public async Task<IActionResult> GetMeasurementRecordingWithStagesByWaferId([FromRoute] string waferId, [FromRoute] string dieTypeName)
         {
-            var measurementRecordingList = dieTypeId == 0 ? (await _measurementRecordingService.GetByWaferId(waferId)).GroupBy(x => x.Id).Select(x => x.FirstOrDefault()).ToList() 
-                                                          : (await _measurementRecordingService.GetByWaferIdAndDieType(waferId, dieTypeId)).Distinct().ToList();
+            var measurementRecordingList = dieTypeName == "all" ? (await _measurementRecordingService.GetByWaferId(waferId)).GroupBy(x => x.Id).Select(x => x.FirstOrDefault()).ToList() 
+                                                          : (await _measurementRecordingService.GetByWaferIdAndDieType(waferId, dieTypeName)).Distinct().ToList();
             if(measurementRecordingList.Count == 0)
             {
                 return NoContent();
