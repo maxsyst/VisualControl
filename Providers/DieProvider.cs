@@ -27,6 +27,23 @@ namespace VueExample.Providers
             return dieParameter;
         }
 
+        public async Task<List<DieParameterOld>> GetOrAddDieParameters(List<long> dieIdList, int measurementRecordingId, short parameterId = 247, string value = "0")
+        {
+            var dieParameterList = new List<DieParameterOld>();
+            foreach (var dieId in dieIdList)
+            {
+                var dieParameter = await _srv6Context.DiesParameterOld.FirstOrDefaultAsync(x => x.MeasurementRecordingId == measurementRecordingId && x.DieId == dieId && x.Id247 == parameterId);
+                if(dieParameter is null)
+                {
+                    dieParameter = new DieParameterOld{DieId = dieId, MeasurementRecordingId = measurementRecordingId, Id247 = parameterId, Value = value};
+                    _srv6Context.DiesParameterOld.Add(dieParameter);
+                }
+                dieParameterList.Add(dieParameter);
+            }
+            await _srv6Context.SaveChangesAsync();
+            return dieParameterList;
+        }
+
         public async Task<Die> GetByWaferIdAndCode(string waferId, string code) 
             => await _srv6Context.Dies.FirstOrDefaultAsync(x => x.WaferId == waferId && x.Code == code);
 

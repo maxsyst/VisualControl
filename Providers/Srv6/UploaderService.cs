@@ -86,21 +86,19 @@ namespace VueExample.Providers.Srv6
             var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, uploadingFile.StageId);              
             var graphic4ViewModel = await _graphic4Service.CreateGraphic4(graphic4ParseList, measurementRecording.Id, uploadingFile.WaferId);
             var dieIdList = graphic4ParseList.FirstOrDefault().DieWithCodesList.Select(x => x.DieId).ToList();
-            var taskDieParameterList = (from dieId in dieIdList
-                            select _dieProvider.GetOrAddDieParameter(dieId, measurementRecording.Id)).ToList();
-            await Task.WhenAll(taskDieParameterList);
+            await _dieProvider.GetOrAddDieParameters(dieIdList, measurementRecording.Id);
             await _measurementRecordingService.GetOrCreateFkMrP(measurementRecording.Id, 247, uploadingFile.WaferId);
-            var taskFkMrList = (from graphic in uploadingFile.UploadingType.Graphics
-                                select _measurementRecordingService.AddOrGetFkMrGraphics(new FkMrGraphic
-                                {
-                                    GraphicId = graphic.GraphicSRV6Id,
-                                    MeasurementRecordingId = measurementRecording.Id,
-                                    DateFile = DateTime.Now,
-                                    DateImport = DateTime.Now,
-                                    Operator = uploadingFile.UserName,
-                                    Comment = String.Empty
-                                })).ToList();
-            await Task.WhenAll(taskFkMrList);
+            var fkMrGraphicsList = (from graphic in uploadingFile.UploadingType.Graphics
+                                    select new FkMrGraphic
+                                    {
+                                        GraphicId = graphic.GraphicSRV6Id,
+                                        MeasurementRecordingId = measurementRecording.Id,
+                                        DateFile = DateTime.Now,
+                                        DateImport = DateTime.Now,
+                                        Operator = uploadingFile.UserName,
+                                        Comment = String.Empty
+                                    }).ToList();
+            await _measurementRecordingService.AddOrGetFkMrGraphics(fkMrGraphicsList);
             await _elementService.UpdateElementOnIdmr(measurementRecording.Id, uploadingFile.ElementId);
             return measurementRecording.Name;
         }
@@ -191,19 +189,17 @@ namespace VueExample.Providers.Srv6
             }
 
             await _dieValueService.CreateDieGraphics(diegraphicList);
-            foreach (var graphic in uploadingFile.Graphics)
-            {
-                await _measurementRecordingService.AddOrGetFkMrGraphics (new FkMrGraphic 
-                {
-                        GraphicId = graphic.Id,
-                        MeasurementRecordingId = uploadingFile.MeasurementRecordingId,
-                        DateFile = modifieddate,
-                        DateImport = DateTime.Now,
-                        Operator = uploadingFile.UserName,
-                        Comment = uploadingFile.Comment
-                });
-            }
-
+            var fkMrGraphicList = (from graphic in uploadingFile.Graphics
+                                   select new FkMrGraphic
+                                   {
+                                       GraphicId = graphic.Id,
+                                       MeasurementRecordingId = uploadingFile.MeasurementRecordingId,
+                                       DateFile = modifieddate,
+                                       DateImport = DateTime.Now,
+                                       Operator = uploadingFile.UserName,
+                                       Comment = uploadingFile.Comment
+                                   }).ToList();
+            await _measurementRecordingService.AddOrGetFkMrGraphics(fkMrGraphicList);
             var dieidlink = dieList.Aggregate(String.Empty, (current, l) => current + "x" + l);
             var shorturl = _shortLinkProvider.Obfuscate(dieidlink.Remove(0,1));
             var fullLink = "srv6.svr.lan/Ns/WaferMapFaster.aspx?wid=" + uploadingFile.WaferId + "&idmrpcm=" + uploadingFile.MeasurementRecordingId + "&islink=t&dies=" +

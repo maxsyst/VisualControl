@@ -19,7 +19,8 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<BigMeasurementRecording> GetOrAddBigMeasurement(string name, string waferId);
         Task<FkMrP> GetOrCreateFkMrP(int measurementRecordingId, short parameterId, string waferId);
         Task<FkMrGraphic> GetFkMrGraphics(int? measurementRecordingId, int graphicId);
-        Task<FkMrGraphic> AddOrGetFkMrGraphics(FkMrGraphic fkMrGraphic);
+        Task<FkMrGraphic> AddOrGetFkMrGraphic(FkMrGraphic fkMrGraphic);
+        Task<List<FkMrGraphic>> AddOrGetFkMrGraphics(List<FkMrGraphic> fkMrGraphics);
         Task<List<MeasurementRecording>> GetByWaferIdAndStageNameAndElementId(string waferId, string stageName, int elementId);
         Task<MeasurementRecording> GetByNameAndWaferId(string name, string waferId);
         Task<MeasurementRecording> GetByBmrIdAndName(int bmrId, string name);
