@@ -85,19 +85,22 @@ namespace VueExample.Providers.Srv6
             var bigMeasurementRecording = await _measurementRecordingService.GetOrAddBigMeasurement(uploadingFile.MeasurementRecordingName, uploadingFile.WaferId);
             var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, uploadingFile.StageId);              
             var graphic4ViewModel = await _graphic4Service.CreateGraphic4(graphic4ParseList, measurementRecording.Id, uploadingFile.WaferId);
+            var dieIdList = graphic4ParseList.FirstOrDefault().DieWithCodesList.Select(x => x.DieId).ToList();
+            var taskDieParameterList = (from dieId in dieIdList
+                            select _dieProvider.GetOrAddDieParameter(dieId, measurementRecording.Id)).ToList();
+            await Task.WhenAll(taskDieParameterList);
             await _measurementRecordingService.GetOrCreateFkMrP(measurementRecording.Id, 247, uploadingFile.WaferId);
-            foreach (var graphic in uploadingFile.UploadingType.Graphics)
-            {
-                await _measurementRecordingService.AddOrGetFkMrGraphics (new FkMrGraphic 
-                {
-                        GraphicId = graphic.GraphicSRV6Id,
-                        MeasurementRecordingId = measurementRecording.Id,
-                        DateFile = DateTime.Now,
-                        DateImport = DateTime.Now,
-                        Operator = uploadingFile.UserName,
-                        Comment = String.Empty
-                });
-            }
+            var taskFkMrList = (from graphic in uploadingFile.UploadingType.Graphics
+                                select _measurementRecordingService.AddOrGetFkMrGraphics(new FkMrGraphic
+                                {
+                                    GraphicId = graphic.GraphicSRV6Id,
+                                    MeasurementRecordingId = measurementRecording.Id,
+                                    DateFile = DateTime.Now,
+                                    DateImport = DateTime.Now,
+                                    Operator = uploadingFile.UserName,
+                                    Comment = String.Empty
+                                })).ToList();
+            await Task.WhenAll(taskFkMrList);
             await _elementService.UpdateElementOnIdmr(measurementRecording.Id, uploadingFile.ElementId);
             return measurementRecording.Name;
         }

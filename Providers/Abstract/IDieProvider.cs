@@ -9,7 +9,7 @@ namespace VueExample.Providers
     {
         Task<List<Die>> GetDiesByWaferId(string waferId);
         Task<Die> GetByWaferIdAndCode(string waferId, string code);
-        Task<DieParameterOld> GetOrAddDieParameter(long dieId, int measurementRecordingId, int parameterId = 247, string value = "0");
+        Task<DieParameterOld> GetOrAddDieParameter(long dieId, int measurementRecordingId, short parameterId = 247, string value = "0");
         Task<Die> GetById(long dieId);
         Task<List<Die>> GetAll();
     }
