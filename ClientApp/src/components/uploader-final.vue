@@ -264,7 +264,7 @@ export default {
           let initialArray = this.simpleOperations.filter((so) => so.uploadStatus === 'initial');
           initialArray = initialArray.map(function f(i) {
             const measurementRecordingWithStage = this.measurementRecordingsWithStage.find((mr) => mr.id === i.name);
-            return measurementRecordingWithStage 
+            return measurementRecordingWithStage
               ? { ...i, stage: { id: measurementRecordingWithStage.stage.id, name: measurementRecordingWithStage.stage.name } }
               : i;
           });
@@ -348,8 +348,8 @@ export default {
     },
 
     async upload() {
-      this.measurementRecordingsWithStage.forEach((x) => { x.sealed = true; });
-      for (let index = 0; index < this.simpleOperations.length; index++) {
+      this.measurementRecordingsWithStage = this.measurementRecordingsWithStage.map((x) => ({ ...x, sealed: true }));
+      for (let index = 0; index < this.simpleOperations.length; index += 1) {
         const so = this.simpleOperations[index];
         if (so.uploadStatus !== 'already') {
           so.uploadStatus = 'pending';
@@ -428,7 +428,8 @@ export default {
       if (simpleOperation.alreadyData.length === 1) {
         requestString = `/api/measurementrecording/deletespecific/${ad.measurementRecordingId}/${ad.graphicId}`;
       } else {
-        requestString = `/api/measurementrecording/deletespecificmultiply/${ad.measurementRecordingId}/${simpleOperation.alreadyData.map((x) => x.graphicId).join('$')}`;
+        const path = simpleOperation.alreadyData.map((x) => x.graphicId).join('$');
+        requestString = `/api/measurementrecording/deletespecificmultiply/${ad.measurementRecordingId}/${path}`;
       }
 
       await this.$http.delete(requestString, {
