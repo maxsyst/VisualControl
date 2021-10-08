@@ -22,15 +22,14 @@ namespace VueExample.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateS2P([Bind("CodeProductId", "GraphicS2PType")] GraphicS2PViewModel s2pGraphic)
         {
-            var createdGraphic = await _graphicService.CreateS2P(s2pGraphic.CodeProductId, s2pGraphic.GraphicS2PType);           
+            var createdGraphic = await _graphicService.CreateS2P(s2pGraphic.CodeProductId, s2pGraphic.GraphicS2PType);
             return Created("", createdGraphic);
         }
 
         [HttpGet]
         [ResponseCache(CacheProfileName = "Default60")]
-        public async Task<IActionResult> GetGraphicNameByKeyGraphicState(string keyGraphicState) => 
-
-            Ok((await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState)).Name);
+        public async Task<IActionResult> GetGraphicNameByKeyGraphicState(string keyGraphicState)
+            => Ok((await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState)).Name);
 
         [HttpGet]
         public async Task<IActionResult> GetAvailiableGraphicsByKeyGraphicStateList(string keyGraphicStateJSON)
