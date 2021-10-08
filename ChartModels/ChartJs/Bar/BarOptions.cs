@@ -14,6 +14,5 @@ namespace VueExample.ChartModels.ChartJs.Bar
         public ChartJs.Options.Legend Legend { get; set; }
         public ChartJs.Options.XAxis XAxis { get; set; }
         public ChartJs.Options.YAxis YAxis { get; set; }
-        
     }
 }

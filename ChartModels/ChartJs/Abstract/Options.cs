@@ -1,7 +1,3 @@
-using System;
-using VueExample.ChartModels.ChartJs.Linear;
-using VueExample.ChartModels.ChartJs.Options;
-
 namespace VueExample.ChartModels.ChartJs.Abstract
 {
     public abstract class Options
@@ -21,9 +17,6 @@ namespace VueExample.ChartModels.ChartJs.Abstract
             MaintainAspectRatio = false;
             Animation = new ChartJs.Options.Animation();
             Hover = new ChartJs.Options.Hover();
-            
         }
-
-      
     }
 }
