@@ -34,5 +34,10 @@ namespace VueExample.Services
             await _measurementRecordingService.Delete(measurementRecordingId);
             return deleteResult.DeletedCount == 1;
         }
+
+        public async Task<Graphic4ViewModel> GetGraphic4ByMeasurementRecordingId(int measurementRecordingId)
+        {
+            return await _graphic4Collection.Find(Builders<Graphic4ViewModel>.Filter.Eq(x => x.MeasurementRecordingId, measurementRecordingId)).FirstOrDefaultAsync();
+        }
     }
 }

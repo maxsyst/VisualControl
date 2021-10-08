@@ -145,6 +145,7 @@ namespace VueExample
             services.AddTransient<StatisticsCoreRework.Services.StatisticService>();
             services.AddTransient<SingleParameterServiceHSTG>();
             services.AddTransient<SingleParameterServiceLNR>();
+            services.AddTransient<SingleParameterServiceGR4>();
             services.AddTransient<DirtyCellsService>();
             services.AddTransient<DirtyCellsCalculationStatService>();
             services.AddTransient<DirtyCellsCalculationFxdService>();
@@ -221,6 +222,7 @@ namespace VueExample
             services.AddTransient<StatisticsCoreRework.Abstract.IStatisticService, StatisticsCoreRework.CachedServices.StatisticCachedService>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceLNR>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceHSTG>();
+            services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceGR4>();
             services.AddTransient<IStatisticCalculationService, StatisticCalculationService>();
             services.AddTransient<IDirtyCellsService, DirtyCellsCachedService>();
             services.AddTransient<IDirtyCellsCalculationService, DirtyCellsCalculationService>();

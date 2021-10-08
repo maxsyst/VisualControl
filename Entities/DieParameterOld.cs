@@ -14,7 +14,7 @@ namespace VueExample.Entities
         [Column("id_die")]
         public long? DieId { get; set; }
         [Column("id_p")]
-        public int? Id247 { get; set; }
+        public short? Id247 { get; set; }
         [Column("Value")]
         public string Value { get; set; }
         [Column("id_mr")]

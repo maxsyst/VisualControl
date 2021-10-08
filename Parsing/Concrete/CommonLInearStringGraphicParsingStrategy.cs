@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using VueExample.Entities;
+using VueExample.Enums;
 using VueExample.Extensions;
 using VueExample.Models.SRV6;
 using VueExample.Parsing.Strategies;
@@ -19,7 +17,7 @@ namespace VueExample.Parsing.Concrete
             dieValue.YList.AddRange(stringGraphicSplit[1].Split('*').ToList());
             dieValue.XList.RemoveFirstIfStringEmpty();
             dieValue.YList.RemoveFirstIfStringEmpty();
-            dieValue.State = "LNR";
+            dieValue.State = GraphicType.LNR.ToString();
             dieValue.GraphicId = dieGraphic.GraphicId;
             dieValue.DieId = dieGraphic.DieId;
             dieValue.MeasurementRecordingId = dieGraphic.MeasurementRecordingId;  

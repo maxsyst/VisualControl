@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using VueExample.Providers.Srv6.Interfaces;
 using System.Threading.Tasks;
 using VueExample.ViewModels;
+using VueExample.Enums;
 
 namespace VueExample.Controllers
 {
@@ -21,33 +22,30 @@ namespace VueExample.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateS2P([Bind("CodeProductId", "GraphicS2PType")] GraphicS2PViewModel s2pGraphic)
         {
-            var createdGraphic = await _graphicService.CreateS2P(s2pGraphic.CodeProductId, s2pGraphic.GraphicS2PType);           
+            var createdGraphic = await _graphicService.CreateS2P(s2pGraphic.CodeProductId, s2pGraphic.GraphicS2PType);
             return Created("", createdGraphic);
         }
 
         [HttpGet]
         [ResponseCache(CacheProfileName = "Default60")]
         public async Task<IActionResult> GetGraphicNameByKeyGraphicState(string keyGraphicState)
-        {
-            return Ok((await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState)).Name);
-        }
+            => Ok((await _graphicService.GetGraphicByKeyGraphicState(keyGraphicState)).Name);
 
         [HttpGet]
         public async Task<IActionResult> GetAvailiableGraphicsByKeyGraphicStateList(string keyGraphicStateJSON)
         {
             var keyGraphicStateList = JsonConvert.DeserializeObject<List<string>>(keyGraphicStateJSON);
-            var availiableGraphicList = new List<ViewModels.GraphicWithKeyGraphicStateViewModel>();
-            foreach (var kgs in keyGraphicStateList)
+            var availiableGraphicList = new List<GraphicWithKeyGraphicStateViewModel>();
+            var graphicIdHashSet = new HashSet<int>(keyGraphicStateList.Select(x => Convert.ToInt32(x.Split('_').First())));
+            foreach (var graphicId in graphicIdHashSet.OrderBy(x => x))
             {
-                var graphicWithKeyGraphicStateViewModel = new ViewModels.GraphicWithKeyGraphicStateViewModel();
-                var graphicId = Convert.ToInt32(kgs.Split('_').FirstOrDefault());
-                graphicWithKeyGraphicStateViewModel.GraphicName = (await _graphicService.GetById(graphicId)).Name;
-                graphicWithKeyGraphicStateViewModel.KeyGraphicState = kgs;
+                var graphicWithKeyGraphicStateViewModel = new GraphicWithKeyGraphicStateViewModel();
+                var graphic = await _graphicService.GetById(graphicId);
+                graphicWithKeyGraphicStateViewModel.GraphicName = graphic.Name;
+                graphicWithKeyGraphicStateViewModel.KeyGraphicState = $"{graphicId}_{Enum.GetName(typeof(GraphicType), graphicId)}";
                 availiableGraphicList.Add(graphicWithKeyGraphicStateViewModel);
             }
-
-           return Ok(availiableGraphicList);
-            
+            return Ok(availiableGraphicList);
         }
     }
 }

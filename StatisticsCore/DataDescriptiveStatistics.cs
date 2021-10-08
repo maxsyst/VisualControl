@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using MathNet.Numerics.Statistics;
-using Newtonsoft.Json;
 
 
 namespace VueExample.StatisticsCore
@@ -25,10 +24,10 @@ namespace VueExample.StatisticsCore
 
         public DataDescriptiveStatistics()
         {
-            
+
         }
-        
-        public DataDescriptiveStatistics (List<double> list)
+
+        public DataDescriptiveStatistics(List<double> list)
         {
             Median = Convert.ToString(list.Median(), CultureInfo.InvariantCulture);
             Quartile1 = Convert.ToString(list.LowerQuartile(), CultureInfo.InvariantCulture);
@@ -62,12 +61,12 @@ namespace VueExample.StatisticsCore
         public List<double> Filtered(List<double> list)
         {
             list.RemoveAll(Double.IsNaN);
-            var lowlimit = (list.LowerQuartile() - 1.5 * IQR(list));
-            var upperlimit = (list.UpperQuartile() + 1.5 * IQR(list));
+            var lowlimit = (list.LowerQuartile() - (1.5 * IQR(list)));
+            var upperlimit = (list.UpperQuartile() + (1.5 * IQR(list)));
             var filteredList = list.Where(d => d > lowlimit && d < upperlimit).ToList();
-            return filteredList;            
+            return filteredList;
         }
-    
+
 
     }
 }
