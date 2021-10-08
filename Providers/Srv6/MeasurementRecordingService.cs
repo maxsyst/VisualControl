@@ -19,13 +19,13 @@ namespace VueExample.Providers.Srv6
         {
             _srv6Context = srv6Context;
         }
-        public async Task<MeasurementRecording> GetOrCreate(string name, int type, int bigMeasurementRecordingId, int? stageId = null) 
+        public async Task<MeasurementRecording> GetOrCreate(string name, int type, int bigMeasurementRecordingId, DateTime measurementDateTime, int? stageId = null) 
         {
             var measurementRecording = await GetByBmrIdAndName(bigMeasurementRecordingId, "оп." + name);
             if(measurementRecording is null)
             {
                 var newMeasurementRecording = new MeasurementRecording{Name = "оп." + name, 
-                                                                       MeasurementDateTime = DateTime.Now, Type = type, 
+                                                                       MeasurementDateTime = measurementDateTime, Type = type, 
                                                                        BigMeasurementRecordingId = bigMeasurementRecordingId, 
                                                                        StageId = stageId};
                 _srv6Context.MeasurementRecordings.Add(newMeasurementRecording);
@@ -58,7 +58,7 @@ namespace VueExample.Providers.Srv6
             }              
             return fkmrp;
         }
-        public async Task<FkMrGraphic> AddOrGetFkMrGraphics(FkMrGraphic fkMrGraphic) 
+        public async Task<FkMrGraphic> AddOrGetFkMrGraphic(FkMrGraphic fkMrGraphic) 
         {
             var newFkMrGraphic = await _srv6Context.FkMrGraphics.FirstOrDefaultAsync(x => x.MeasurementRecordingId == fkMrGraphic.MeasurementRecordingId
                                                                                        && x.GraphicId == fkMrGraphic.GraphicId);
@@ -68,6 +68,22 @@ namespace VueExample.Providers.Srv6
                 await _srv6Context.SaveChangesAsync();
             } 
             return newFkMrGraphic;              
+        }
+
+        public async Task<List<FkMrGraphic>> AddOrGetFkMrGraphics(List<FkMrGraphic> fkMrGraphics) 
+        {
+            var fkMrGraphicList = new List<FkMrGraphic>();
+            foreach (var fkMrGraphic in fkMrGraphics)
+            {
+                var newFkMrGraphic = await _srv6Context.FkMrGraphics.FirstOrDefaultAsync(x => x.MeasurementRecordingId == fkMrGraphic.MeasurementRecordingId
+                                                                                       && x.GraphicId == fkMrGraphic.GraphicId);
+                if(newFkMrGraphic is null)
+                {
+                    _srv6Context.FkMrGraphics.Add(fkMrGraphic);
+                } 
+            }
+            await _srv6Context.SaveChangesAsync();
+            return fkMrGraphicList;              
         }
 
         public async Task<List<MeasurementRecording>> GetByWaferId(string waferId)

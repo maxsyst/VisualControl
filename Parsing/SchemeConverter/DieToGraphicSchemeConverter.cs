@@ -13,6 +13,10 @@ namespace VueExample.Parsing.SchemeConverter
             graphic4ParseResult.Graphic = graphic;
             graphic4ParseResult.DieWithCodesList.AddRange(from dieWithCodeDictionary in dieWithCodeDictionaryList
                                                           select dieWithCodeDictionary[graphic.GraphicMode]);
+            if(graphic4ParseResult.DieWithCodesList.Count > 0)
+            {
+                graphic4ParseResult.States = graphic4ParseResult.DieWithCodesList.FirstOrDefault().SingleLineWithStateList.Select(x => x.State).ToList();
+            }
             return graphic4ParseResult;
         }
         public Dictionary<string, DieWithCode> ConvertDieWithCode(DieWithCode dieWithCode, Dictionary<string, Dictionary<string, SingleLine>> stateDictionary) 

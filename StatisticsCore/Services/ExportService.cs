@@ -15,7 +15,7 @@ namespace VueExample.StatisticsCore.Services
 {
     public class ExportService : IExportProvider
     {
-        private readonly IAppCache _appCache;        
+        private readonly IAppCache _appCache;
         private readonly IDieValueService _dieValueService;
         private readonly IStatParameterService _statParameterService;
         private readonly IStageProvider _stageProvider;
@@ -36,9 +36,9 @@ namespace VueExample.StatisticsCore.Services
             for (int i = 0; i < list.Count; i++)
             {
                 KurbatovParameter kurbatovParameter = list[i];
-                kurbatovXLS.kpList[i].advList.AddRange((await GetDieValues(kurbatovParameter)).ToList()); 
+                kurbatovXLS.kpList[i].advList.AddRange((await GetDieValues(kurbatovParameter)).ToList());
             }
-            kurbatovXLS.FindDirty();            
+            kurbatovXLS.FindDirty();
         }
 
         public async Task<List<string>> GetStatisticsNameByMeasurementId(int measurementRecordingId, double k)
@@ -47,14 +47,14 @@ namespace VueExample.StatisticsCore.Services
             string measurementRecordingIdAsKey = Convert.ToString(measurementRecordingId);
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
-            var statDictionary =  await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), measurementRecordingId, stageId, 1.0, k);
+            var statDictionary = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), measurementRecordingId, stageId, 1.0, k);
             statNamesList.AddRange(from stat in statDictionary
                                    from singleParameterStatistic in stat.Value
                                    select singleParameterStatistic.Name);
             return statNamesList;
         }
 
-        
+
 
         private async Task<List<AtomicDieValue>> GetDieValues(KurbatovParameter kurbatovParameter, double k = 1.5)
         {
@@ -62,31 +62,31 @@ namespace VueExample.StatisticsCore.Services
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(kurbatovParameter.MeasurementRecordingId)).StageId;
             var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(kurbatovParameter.MeasurementRecordingId);
             var statDictionary = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), kurbatovParameter.MeasurementRecordingId, stageId, 1.0, k);
-            foreach (var stat in statDictionary) 
+            foreach (var stat in statDictionary)
             {
-                foreach (var singleParameterStatistic in stat.Value) 
+                foreach (var singleParameterStatistic in stat.Value)
                 {
-                    if(kurbatovParameter.ParameterNameStat == singleParameterStatistic.Name)
+                    if (kurbatovParameter.ParameterNameStat == singleParameterStatistic.Name)
                     {
                         for (int i = 0; i < singleParameterStatistic.dieList.Count; i++)
                         {
-                            
+
                             long? die = (long?)singleParameterStatistic.dieList[i];
                             var value = singleParameterStatistic.valueList[i] / kurbatovParameter.Divider;
                             kurbatovParameter.advList.Add
                             (
                                 new AtomicDieValue
                                 {
-                                    DieCode = (await _dieProvider.GetById((long)die)).Code, 
-                                    Value = value, 
+                                    DieCode = (await _dieProvider.GetById((long)die)).Code,
+                                    Value = value,
                                     Status = GetStatus(kurbatovParameter.Lower, kurbatovParameter.Upper, value)
                                 }
                             );
 
-                           kurbatovParameter.advList = kurbatovParameter.advList.OrderBy(_ => Convert.ToInt32(_.DieCode)).ToList();                           
+                            kurbatovParameter.advList = kurbatovParameter.advList.OrderBy(_ => Convert.ToInt32(_.DieCode)).ToList();
                         }
                     }
-                    
+
                 }
             }
             return kurbatovParameter.advList;
@@ -94,7 +94,7 @@ namespace VueExample.StatisticsCore.Services
 
         private string GetStatus(double lower, double upper, double value)
         {
-            if((value >= lower || Double.IsNaN(lower)) && (value <= upper || Double.IsNaN(upper)))
+            if ((value >= lower || Double.IsNaN(lower)) && (value <= upper || Double.IsNaN(upper)))
             {
                 return "Годен";
             }
@@ -112,17 +112,17 @@ namespace VueExample.StatisticsCore.Services
             var stageId = (await _stageProvider.GetByMeasurementRecordingId(measurementRecordingId)).StageId;
             var dieValuesDictionary = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
             var statDictionary = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValuesDictionary), measurementRecordingId, stageId, 1.0, k);
-            foreach (var stat in statDictionary) 
+            foreach (var stat in statDictionary)
             {
-                foreach (var singleParameterStatistic in stat.Value) 
+                foreach (var singleParameterStatistic in stat.Value)
                 {
-                    if(statNamesList.Contains(singleParameterStatistic.Name))
+                    if (statNamesList.Contains(singleParameterStatistic.Name))
                     {
-                        
+
                         var d = new Dictionary<string, string>();
                         var dieList = new List<int>();
                         d["name"] = singleParameterStatistic.Name;
-                      
+
                         for (int i = 0; i < singleParameterStatistic.dieList.Count; i++)
                         {
                             long? die = (long?)singleParameterStatistic.dieList[i];
@@ -130,17 +130,17 @@ namespace VueExample.StatisticsCore.Services
                         }
                         for (int i = 0; i < dieList.Count; i++)
                         {
-                            d["#" + Convert.ToString(i+1)] = Convert.ToString(singleParameterStatistic.valueList[i], CultureInfo.InvariantCulture);
+                            d["#" + Convert.ToString(i + 1)] = Convert.ToString(singleParameterStatistic.valueList[i], CultureInfo.InvariantCulture);
                         }
-                        
-                        exportList.Add(d);                    
+
+                        exportList.Add(d);
                     }
-                 
+
                 }
             }
             return exportList;
         }
 
-    
+
     }
 }

@@ -43,6 +43,8 @@ namespace VueExample.StatisticsCoreRework.Services
                     return services.First(x => x.GetType() == typeof(SingleParameterCachedServiceLNR));
                 case 2:
                     return services.First(x => x.GetType() == typeof(SingleParameterCachedServiceHSTG));
+                case 4:
+                    return services.First(x => x.GetType() == typeof(SingleParameterCachedServiceGR4));
             }
             return services.First(x => x.GetType() == typeof(SingleParameterCachedServiceHSTG));
 

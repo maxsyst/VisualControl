@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Entities;
@@ -9,7 +10,7 @@ namespace VueExample.Providers.Srv6.Interfaces
     {
         Task<List<MeasurementRecording>> GetByWaferId(string waferId);
         Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, string dieTypeName);
-        Task<MeasurementRecording> GetOrCreate(string name, int type, int bmrId, int? stageId);
+        Task<MeasurementRecording> GetOrCreate(string name, int type, int bmrId, DateTime measurementDateTime, int? stageId);
         Task Merge(int srcMeasurementRecordingId, int destMeasurementRecordingId);
         Task Delete(int measurementRecordingId);
         Task DeleteSet(IList<int> measurementRecordingIdList);
@@ -19,7 +20,8 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<BigMeasurementRecording> GetOrAddBigMeasurement(string name, string waferId);
         Task<FkMrP> GetOrCreateFkMrP(int measurementRecordingId, short parameterId, string waferId);
         Task<FkMrGraphic> GetFkMrGraphics(int? measurementRecordingId, int graphicId);
-        Task<FkMrGraphic> AddOrGetFkMrGraphics(FkMrGraphic fkMrGraphic);
+        Task<FkMrGraphic> AddOrGetFkMrGraphic(FkMrGraphic fkMrGraphic);
+        Task<List<FkMrGraphic>> AddOrGetFkMrGraphics(List<FkMrGraphic> fkMrGraphics);
         Task<List<MeasurementRecording>> GetByWaferIdAndStageNameAndElementId(string waferId, string stageName, int elementId);
         Task<MeasurementRecording> GetByNameAndWaferId(string name, string waferId);
         Task<MeasurementRecording> GetByBmrIdAndName(int bmrId, string name);

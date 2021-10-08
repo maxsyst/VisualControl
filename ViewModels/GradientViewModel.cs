@@ -1,19 +1,12 @@
 using System.Collections.Generic;
 using VueExample.Extensions;
+using VueExample.ViewModels.Abstract;
 
 namespace VueExample.ViewModels
 {
     public class GradientViewModel
     {
         public List<GradientStep> GradientSteps { get; set; } = new List<GradientStep>();
-    }
-
-    public abstract class GradientStep
-    {
-        public string Color { get; protected set;}
-        public string Name { get; protected set; }
-        public List<long> DieList { get; } = new List<long>();
-        public abstract bool IsInStep(double value);
     }
 
     public class ExtremeLowGradientStep : GradientStep
@@ -27,7 +20,7 @@ namespace VueExample.ViewModels
         }
 
         private double _lowBorder;
-        public string LowBorder { get; private set;}
+        public string LowBorder { get; private set; }
 
         public override bool IsInStep(double value)
         {
@@ -46,11 +39,11 @@ namespace VueExample.ViewModels
         }
 
         private double _topBorder;
-        public string TopBorder { get; private set;}
+        public string TopBorder { get; private set; }
 
         public override bool IsInStep(double value)
         {
-            return value >  _topBorder;
+            return value > _topBorder;
         }
     }
 
@@ -60,17 +53,17 @@ namespace VueExample.ViewModels
         public ColorGradientStep(int index, double stepSize, double lowBorder, double topBorder, string color)
         {
             Name = $"Step{index + 1}";
-            _lowBorder = lowBorder + index * stepSize;
-            _topBorder = lowBorder + (index+1) * stepSize;
+            _lowBorder = (lowBorder + (index * stepSize));
+            _topBorder = (lowBorder + ((index + 1) * stepSize));
             LowBorder = _lowBorder.ToGoodFormat();
             TopBorder = _topBorder.ToGoodFormat();
             Color = color;
 
         }
         public double _lowBorder;
-        public string LowBorder { get; private set;}
+        public string LowBorder { get; private set; }
         public double _topBorder;
-        public string TopBorder { get; private set;}
+        public string TopBorder { get; private set; }
 
         public override bool IsInStep(double value)
         {
