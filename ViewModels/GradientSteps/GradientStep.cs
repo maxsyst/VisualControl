@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace VueExample.ViewModels.Abstract
+namespace VueExample.ViewModels.GradientSteps
 {
     public abstract class GradientStep
     {

@@ -35,7 +35,7 @@ namespace VueExample.StatisticsCore.SingleStatisticServices.Abstract
                 singleStatisticData.StatisticsName = statisticsItem.StatisticsName;
                 singleStatisticData.ShortStatisticsName = $"{statisticsItem.StatisticsName.Split(' ').FirstOrDefault()}";
                 singleStatisticDataList.Add(statisticsItem.StatisticsName, singleStatisticData);
-           };
+           }
            return singleStatisticDataList.Values.ToList();
         }
     }
