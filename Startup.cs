@@ -145,6 +145,7 @@ namespace VueExample
             services.AddTransient<StatisticsCoreRework.Services.StatisticService>();
             services.AddTransient<SingleParameterServiceHSTG>();
             services.AddTransient<SingleParameterServiceLNR>();
+            services.AddTransient<SingleParameterServiceGR4>();
             services.AddTransient<DirtyCellsService>();
             services.AddTransient<DirtyCellsCalculationStatService>();
             services.AddTransient<DirtyCellsCalculationFxdService>();
