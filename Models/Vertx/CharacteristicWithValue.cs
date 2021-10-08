@@ -7,7 +7,6 @@
         public double Value { get; set; }
         public CharacteristicWithValue()
         {
-
         }
         public CharacteristicWithValue(string name, string unit, double value)
         {

@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using LazyCache;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VueExample.ChartModels.ChartJs;
-using VueExample.Models.SRV6;
 using VueExample.Providers;
 using VueExample.Providers.Srv6.Interfaces;
 
@@ -57,6 +54,5 @@ namespace VueExample.Controllers
                                                                            keyGraphic);
             return Ok(amchart);
         }
-
     }
 }

@@ -16,6 +16,5 @@ namespace VueExample.Models.Vertx
         public DateTime Date { get; set; }
         [Column("measurementName")]
         public string MeasurementName { get; set; }
-
     }
 }

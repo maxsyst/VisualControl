@@ -118,7 +118,6 @@ namespace VueExample.Controllers
             return Ok(measurementRecording);
         }
 
-
         [HttpPost]
         [ProducesResponseType(typeof(BigMeasurementRecording), StatusCodes.Status200OK)]
         [Route("bmr/getorcreate")]

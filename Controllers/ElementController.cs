@@ -74,7 +74,6 @@ namespace VueExample.Controllers
             return elementList.Count > 0 ? Ok(elementList) : (IActionResult)NotFound();      
         }
 
-
         [HttpGet]
         [Route(("getbynameandwaferid"))]
         public async Task<IActionResult> GetByNameAndWaferId([FromQuery] string waferId, [FromQuery] string name)

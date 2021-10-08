@@ -48,14 +48,11 @@ namespace VueExample.Controllers
         [HttpPost]
         public IActionResult SaveNewDefect([FromBody]DefectViewModel defectViewModel)
         {
-
             var emptyPhotos = new List<string>();
             var ims = new ImageManipulationService();
             defectViewModel.Date = DateTime.Now;
             var defectId = _defectProvider.GetDuplicate(defectViewModel.DieId, defectViewModel.StageId, defectViewModel.DefectTypeId);
             var response = new StandardResponseObject { ResponseType = "success", Message = $"Обнаружен идентичный дефект в БД, загруженные фото добавлены к существующему дефекту, кристалл №{defectViewModel.DieCode} на пластине {defectViewModel.WaferId}"};
-
-
             if (defectId == 0)
             {
                 defectId = _defectProvider.InsertNewDefect(_mapper.Map<Defect>(defectViewModel));
@@ -65,8 +62,6 @@ namespace VueExample.Controllers
                     Message = $"Дефект успешно загружен, кристалл №{defectViewModel.DieCode} на пластине {defectViewModel.WaferId}"
                 };
             }
-            
-         
             var photoStorageFolder = FileSystemService.CreateNewFolder(ExtraConfiguration.PhotoStoragePath, defectViewModel.WaferId);
             foreach (var photoGuid in defectViewModel.LoadedPhotosList)
                 if (!string.IsNullOrEmpty(FileSystemService.FindFolderInTemporaryFolder(photoGuid)))
@@ -92,11 +87,7 @@ namespace VueExample.Controllers
                 if (_photoProvider.GetPhotosByDefectId(defectId).Count == 0) _defectProvider.DeleteById(defectId);
                 response = new StandardResponseObject {ResponseType = "error", Message = "Загрузите фото дефекта"};
             }
-
-          
-
             return Ok(response);
-
         }
     }
 }

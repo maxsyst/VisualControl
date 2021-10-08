@@ -7,7 +7,6 @@
 
         public Characteristic()
         {
-
         }
 
         public Characteristic(string name, string unit)

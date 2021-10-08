@@ -5,12 +5,10 @@ namespace VueExample.Exceptions
     {
         public RecordNotFoundException()
         {
-            
         }
         
         public RecordNotFoundException(string message) : base(message)
         {
-            
         }
     }
 }

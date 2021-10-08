@@ -6,7 +6,6 @@ namespace VueExample.ChartModels.ChartJs.Options
         public bool Display { get; set; } = true;
         public YAxis()
         {
-            
         }
         public YAxis(string label, bool display)
         {

@@ -42,6 +42,5 @@ namespace VueExample.Controllers
         {
            return Ok(await _waferProvider.GetByMeasurementRecordingId(measurementRecordingId));
         }
-
     }
 }

@@ -5,12 +5,10 @@ namespace VueExample.Exceptions
     {
         public DuplicateException()
         {
-            
         }
 
         public DuplicateException(string message) : base(message)
         {
-            
         }
     }
 }

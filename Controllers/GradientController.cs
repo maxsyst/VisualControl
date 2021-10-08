@@ -34,6 +34,5 @@ namespace VueExample.Controllers
             var gradient = _gradientService.GetGradient(singleParameterStatistic, gradientViewModel.StepsQuantity, lowBorder, topBorder, gradientViewModel.Divider);
             return gradient.GradientSteps.Count > 0 ? Ok(gradient) : (IActionResult)BadRequest(gradient);
         }
-
     }
 }

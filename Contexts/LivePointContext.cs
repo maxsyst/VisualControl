@@ -10,7 +10,6 @@ namespace VueExample.Contexts
         public DbSet<Graphic> Graphics { get; set; }
         public LivePointContext(DbContextOptions<LivePointContext> options): base(options)
         {
-            
         }
     }
 }

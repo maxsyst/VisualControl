@@ -99,6 +99,5 @@ namespace VueExample.Controllers
             await _stageProvider.Delete(stageId);
             return NoContent();
         }
-
     }
 }

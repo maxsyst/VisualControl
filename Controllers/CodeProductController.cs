@@ -4,7 +4,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Models;
-using VueExample.Providers;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
 
@@ -46,7 +45,5 @@ namespace VueExample.Controllers
             await Task.Yield();
             return Ok();
         }
-
-
     }
 }

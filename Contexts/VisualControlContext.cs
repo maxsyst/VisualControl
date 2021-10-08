@@ -13,7 +13,6 @@ namespace VueExample.Contexts
 
         public VisualControlContext(DbContextOptions<VisualControlContext> options): base(options)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

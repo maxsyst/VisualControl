@@ -21,6 +21,5 @@ namespace VueExample.Models
         {
             get { return Guid + ".jpg"; }
         }
-               
     }
 }

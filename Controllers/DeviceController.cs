@@ -12,7 +12,6 @@ using VueExample.ViewModels;
 namespace VueExample.Controllers
 {
     [Route ("api/[controller]/")]
-
     public class DeviceController : Controller 
     {
         private readonly IDeviceProvider _deviceProvider;
@@ -51,7 +50,6 @@ namespace VueExample.Controllers
             var result = await _deviceProvider.GetByName(name);
             return result.HasErrors ? (IActionResult)NotFound(result.GetErrors()) : (IActionResult)Ok(_mapper.Map<DeviceViewModel>(result.TObject));
         }
-
        
         [HttpGet]
         [ProducesResponseType(typeof(DeviceViewModel), StatusCodes.Status200OK)]
@@ -101,7 +99,6 @@ namespace VueExample.Controllers
         {
             var result = await _deviceProvider.Edit(deviceViewModel);
             return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)Ok(_mapper.Map<DefectViewModel>(result.TObject));
-
         }
     }
 }
