@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Entities;
@@ -9,7 +10,7 @@ namespace VueExample.Providers.Srv6.Interfaces
     {
         Task<List<MeasurementRecording>> GetByWaferId(string waferId);
         Task<List<MeasurementRecording>> GetByWaferIdAndDieType(string waferId, string dieTypeName);
-        Task<MeasurementRecording> GetOrCreate(string name, int type, int bmrId, int? stageId);
+        Task<MeasurementRecording> GetOrCreate(string name, int type, int bmrId, DateTime measurementDateTime, int? stageId);
         Task Merge(int srcMeasurementRecordingId, int destMeasurementRecordingId);
         Task Delete(int measurementRecordingId);
         Task DeleteSet(IList<int> measurementRecordingIdList);

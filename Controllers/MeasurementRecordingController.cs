@@ -54,6 +54,7 @@ namespace VueExample.Controllers
             var measurementRecording = await _measurementRecordingService.GetOrCreate(measurementRecordingWithBigMeasurementViewModel.Name, 
                                                                                 2, 
                                                                                 measurementRecordingWithBigMeasurementViewModel.BmrId, 
+                                                                                DateTime.Now,
                                                                                 measurementRecordingWithBigMeasurementViewModel.StageId);
             return Ok(measurementRecording);
         }

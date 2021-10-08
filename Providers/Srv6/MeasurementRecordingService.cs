@@ -19,13 +19,13 @@ namespace VueExample.Providers.Srv6
         {
             _srv6Context = srv6Context;
         }
-        public async Task<MeasurementRecording> GetOrCreate(string name, int type, int bigMeasurementRecordingId, int? stageId = null) 
+        public async Task<MeasurementRecording> GetOrCreate(string name, int type, int bigMeasurementRecordingId, DateTime measurementDateTime, int? stageId = null) 
         {
             var measurementRecording = await GetByBmrIdAndName(bigMeasurementRecordingId, "оп." + name);
             if(measurementRecording is null)
             {
                 var newMeasurementRecording = new MeasurementRecording{Name = "оп." + name, 
-                                                                       MeasurementDateTime = DateTime.Now, Type = type, 
+                                                                       MeasurementDateTime = measurementDateTime, Type = type, 
                                                                        BigMeasurementRecordingId = bigMeasurementRecordingId, 
                                                                        StageId = stageId};
                 _srv6Context.MeasurementRecordings.Add(newMeasurementRecording);

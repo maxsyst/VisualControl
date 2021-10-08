@@ -83,7 +83,8 @@ namespace VueExample.Providers.Srv6
         {
             var graphic4ParseList = await _folderService.GetGraphic4(uploadingFile);           
             var bigMeasurementRecording = await _measurementRecordingService.GetOrAddBigMeasurement(uploadingFile.MeasurementRecordingName, uploadingFile.WaferId);
-            var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, uploadingFile.StageId);              
+            var date = DateTime.Now.AddYears(-1);
+            var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, date, uploadingFile.StageId);              
             var graphic4ViewModel = await _graphic4Service.CreateGraphic4(graphic4ParseList, measurementRecording.Id, uploadingFile.WaferId);
             var dieIdList = graphic4ParseList.FirstOrDefault().DieWithCodesList.Select(x => x.DieId).ToList();
             await _dieProvider.GetOrAddDieParameters(dieIdList, measurementRecording.Id);
