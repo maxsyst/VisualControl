@@ -8,6 +8,7 @@ using VueExample.StatisticsCore;
 using VueExample.StatisticsCoreRework;
 using VueExample.StatisticsCoreRework.Models;
 using VueExample.ViewModels;
+using VueExample.ViewModels.GradientSteps;
 
 namespace VueExample.Providers.Srv6
 {

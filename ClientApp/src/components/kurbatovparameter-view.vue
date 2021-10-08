@@ -353,7 +353,7 @@ export default {
           },
         },
       })
-        .then((response) => {
+        .then(() => {
           this.patterns = this.patterns.filter((x) => x.id !== selectedPattern.id);
           this.selectedPattern = this.patterns[0] || {};
           this.showSnackbar('Успешно удалено');
@@ -364,7 +364,7 @@ export default {
             ? await this.changeSelectedPattern(selectedPattern)
             : Promise.resolve(this.reset()).then(() => this.showSnackbar('Удален последний шаблон'));
         })
-        .catch((error) => {
+        .catch(() => {
           this.showSnackbar('Ошибка при удалении');
         });
     },
@@ -396,7 +396,7 @@ export default {
             this.reset();
           }
         })
-        .catch((error) => reset());
+        .catch(() => this.reset());
     },
 
     async getSelectedPattern(selectedPattern) {

@@ -3,7 +3,7 @@
                <v-card class="mx-auto">
                     <v-card-text>
                        <v-select v-if="processesList.length > 0"
-                            class="pt-8" 
+                            class="pt-8"
                             v-model="selectedProcess"
                             :items="processesList"
                             no-data-text="Нет данных"
@@ -27,28 +27,29 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
-    export default {
-        data() {
-            return {
-                selectedProcess: {}
-            }
-        },
+import { mapGetters } from 'vuex';
 
-        computed: {
-            ...mapGetters({
-                processesList: 'controlCharts/processesList',
-                isProcessSelected: 'controlCharts/isProcessSelected'
-            })
-        },
+export default {
+  data() {
+    return {
+      selectedProcess: {},
+    };
+  },
 
-        methods: {
-            changeProcess: function (selectedProcess) {
-                this.$store.dispatch("controlCharts/changeProcess", selectedProcess)
-                this.$store.dispatch("controlCharts/getWafersWithParcels", {ctx: this, selectedProcess})
-                this.$store.dispatch("controlCharts/getStagesByProcessId", {ctx: this, processId: selectedProcess.processId})
-            } 
-        }
+  computed: {
+    ...mapGetters({
+      processesList: 'controlCharts/processesList',
+      isProcessSelected: 'controlCharts/isProcessSelected',
+    }),
+  },
 
-    }
+  methods: {
+    changeProcess(selectedProcess) {
+      this.$store.dispatch('controlCharts/changeProcess', selectedProcess);
+      this.$store.dispatch('controlCharts/getWafersWithParcels', { ctx: this, selectedProcess });
+      this.$store.dispatch('controlCharts/getStagesByProcessId', { ctx: this, processId: selectedProcess.processId });
+    },
+  },
+
+};
 </script>

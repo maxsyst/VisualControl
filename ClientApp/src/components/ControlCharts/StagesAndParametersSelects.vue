@@ -28,7 +28,7 @@
                 </v-chip>
             </div>
             <div class="d-flex">
-            
+
             </div>
         </div>
     </v-card-text>
@@ -37,30 +37,31 @@
 
 <script>
 import { mapGetters } from 'vuex';
+
 export default {
-    data() {
-        return {
-           selectedStage: {},
-           selectedStatParameter: {}
-        }
+  data() {
+    return {
+      selectedStage: {},
+      selectedStatParameter: {},
+    };
+  },
+
+  watch: {
+    selectedStage(selectedStage) {
+      this.$store.dispatch('controlCharts/changeSelectedStage', selectedStage);
+      this.$store.dispatch('controlCharts/getStatParametersByStage', { ctx: this, stageId: selectedStage.stageId });
     },
 
-    watch: {
-        selectedStage: function(selectedStage) {
-            this.$store.dispatch("controlCharts/changeSelectedStage", selectedStage)
-            this.$store.dispatch("controlCharts/getStatParametersByStage", {ctx: this, stageId: selectedStage.stageId})
-        },
-
-        selectedStatParameter: function(selectedStatParameter) {
-            this.$store.dispatch("controlCharts/changeSelectedStatParameter", selectedStatParameter)
-        }
+    selectedStatParameter(selectedStatParameter) {
+      this.$store.dispatch('controlCharts/changeSelectedStatParameter', selectedStatParameter);
     },
+  },
 
-    computed: {
-        ...mapGetters({
-            stagesList: 'controlCharts/stagesList',
-            statParametersList: 'controlCharts/statParametersList'
-        })
-    }
-}
+  computed: {
+    ...mapGetters({
+      stagesList: 'controlCharts/stagesList',
+      statParametersList: 'controlCharts/statParametersList',
+    }),
+  },
+};
 </script>
