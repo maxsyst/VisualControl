@@ -25,7 +25,7 @@
                         outlined
                         label="Выберите пластину">
                     </v-autocomplete>
-                  </v-flex>                  
+                  </v-flex>
               </v-layout>
                <v-layout>
                    <v-flex lg9 offset-lg1>
@@ -95,109 +95,106 @@
 </template>
 <script>
 export default {
-    data() {
-        return {
-            measuredDevices: [],
-            wafers: [],
-            newMeasuredDevice: {name: "", waferId: ""},
-            headers:    [{ text: 'ID', value: 'id', align: 'center', sortable: false},
-                        { text: 'Код кристалла', value: 'name', align: 'center', sortable: false },
-                        { text: 'Номер пластины', value: 'waferId', align: 'center', sortable: false }],
-            createDialog: false,
-            loading: true,
-            search: "",
-            snackbar: {text: "", color: "success", visible: false},
-            rules: {name: {require: false, errorMessages: []} }
-        }
-    },    
-    watch: 
+  data() {
+    return {
+      measuredDevices: [],
+      wafers: [],
+      newMeasuredDevice: { name: '', waferId: '' },
+      headers: [{
+        text: 'ID', value: 'id', align: 'center', sortable: false,
+      },
+      {
+        text: 'Код кристалла', value: 'name', align: 'center', sortable: false,
+      },
+      {
+        text: 'Номер пластины', value: 'waferId', align: 'center', sortable: false,
+      }],
+      createDialog: false,
+      loading: true,
+      search: '',
+      snackbar: { text: '', color: 'success', visible: false },
+      rules: { name: { require: false, errorMessages: [] } },
+    };
+  },
+  watch:
     {
-        createDialog: function(value) {          
-            if(!value) {
-                this.rules.name.require = false
-                this.rules.name.errorMessages = []  
-                Object.keys(this.newMeasuredDevice).forEach(_ => this.newMeasuredDevice[_] = "")
-            }               
-            else
-                this.getWafers()
-        }
+      createDialog(value) {
+        if (!value) {
+          this.rules.name.require = false;
+          this.rules.name.errorMessages = [];
+          Object.keys(this.newMeasuredDevice).forEach((_) => this.newMeasuredDevice[_] = '');
+        } else this.getWafers();
+      },
     },
 
-    methods: 
+  methods:
     {
-       async initialize () {
-           await this.$http
-            .get(`/api/measureddevice/all`)
-            .then((response) => {                             
-                if(response.status == 200) {  
-                    this.measuredDevices = response.data 
-                }
-                this.loading = false      
-            })
-            .catch((error) => {
-                this.loading = false
-            });
-               
-       },
-      
-       async getWafers() {
-           await this.$http
-            .get(`/api/wafer/all`)
-            .then((response) => {                             
-                if(response.status == 200) {  
-                    this.wafers = response.data 
-                }
-                    
-            })
-            .catch((error) => {
-                this.showSnackBar("Не удалось загрузить пластины", "error")
-            });
-       },
+      async initialize() {
+        await this.$http
+          .get('/api/measureddevice/all')
+          .then((response) => {
+            if (response.status === 200) {
+              this.measuredDevices = response.data;
+            }
+            this.loading = false;
+          })
+          .catch(() => {
+            this.loading = false;
+          });
+      },
 
-       async createMeasuredDevice() {
-          const {name, waferId} = this.newMeasuredDevice    
-          if(!name) {
-            this.rules.name.require = true
-            this.rules.name.errorMessages.push("Введите имя кристалла")   
-          }
-          else {
-            
-            const response = await this.$http({
-                method: "put",
-                url: `/api/measureddevice`, 
-                data: {name: name, waferId: waferId}, 
-                config: {
-                    headers: {
-                        'Accept': "application/json",
-                        'Content-Type': "application/json"
-                    }
-                }
-            })
-            .then((response) => {
-                if(response.status === 201) {
-                    this.measuredDevices.push(response.data)
-                    this.createDialog = false
-                    this.showSnackBar("Устройство успешно добавлено")
-                }              
-              
+      async getWafers() {
+        await this.$http
+          .get('/api/wafer/all')
+          .then((response) => {
+            if (response.status === 200) {
+              this.wafers = response.data;
+            }
+          })
+          .catch(() => {
+            this.showSnackBar('Не удалось загрузить пластины', 'error');
+          });
+      },
+
+      async createMeasuredDevice() {
+        const { name, waferId } = this.newMeasuredDevice;
+        if (!name) {
+          this.rules.name.require = true;
+          this.rules.name.errorMessages.push('Введите имя кристалла');
+        } else {
+          const response = await this.$http({
+            method: 'put',
+            url: '/api/measureddevice',
+            data: { name, waferId },
+            config: {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            },
+          })
+            .then((mresponse) => {
+              if (mresponse.status === 201) {
+                this.measuredDevices.push(mresponse.data);
+                this.createDialog = false;
+                this.showSnackBar('Устройство успешно добавлено');
+              }
             })
             .catch((error) => {
-                this.showSnackBar(error.response.data[0].message, "error")
-            });  
-          }
-        },
-
-        showSnackBar(text, color)
-        {
-          this.snackbar.text = text
-          this.snackbar.color = color
-          this.snackbar.visible = true
+              this.showSnackBar(error.response.data[0].message, 'error');
+            });
         }
+      },
+
+      showSnackBar(text, color) {
+        this.snackbar.text = text;
+        this.snackbar.color = color;
+        this.snackbar.visible = true;
+      },
     },
-    
-    async mounted()
-    {
-        this.initialize()
-    }
-}
+
+  async mounted() {
+    this.initialize();
+  },
+};
 </script>

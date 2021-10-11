@@ -42,7 +42,7 @@ namespace VueExample.Controllers
                 var graphicWithKeyGraphicStateViewModel = new GraphicWithKeyGraphicStateViewModel();
                 var graphic = await _graphicService.GetById(graphicId);
                 graphicWithKeyGraphicStateViewModel.GraphicName = graphic.Name;
-                graphicWithKeyGraphicStateViewModel.KeyGraphicState = $"{graphicId}_{Enum.GetName(typeof(GraphicType), graphicId)}";
+                graphicWithKeyGraphicStateViewModel.KeyGraphicState = $"{graphicId}_{Enum.GetName(typeof(GraphicType), graphic.Type)}";
                 availiableGraphicList.Add(graphicWithKeyGraphicStateViewModel);
             }
             return Ok(availiableGraphicList);

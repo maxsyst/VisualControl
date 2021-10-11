@@ -1,14 +1,10 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using VueExample.Providers;
 using VueExample.Providers.Abstract;
 
 namespace VueExample.Controllers
 {
     [Route("api/[controller]/[action]")]
-
     public class DangerLevelController : Controller
     {
         private readonly IDangerLevelProvider _dangerLevelProvider;

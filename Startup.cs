@@ -60,8 +60,8 @@ namespace VueExample
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            services.AddResponseCompression(options=>options.EnableForHttps = true);
-     
+            services.AddResponseCompression(options => options.EnableForHttps = true);
+
             services.Configure<GzipCompressionProviderOptions>(options =>
             {
                 options.Level = CompressionLevel.Optimal;
@@ -112,7 +112,7 @@ namespace VueExample
                     ValidateAudience = false
                 };
             });
-                
+
             // services.AddSwaggerGen(c =>
             // {
             //     c.SwaggerDoc("v0.2.2", new OpenApiInfo
@@ -125,18 +125,18 @@ namespace VueExample
             //     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             //     c.IncludeXmlComments(xmlPath);
             // });
-        
+
 
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
             services.AddDbContext<VisualControlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VisualControlContext")), ServiceLifetime.Transient);
             services.AddDbContext<LivePointContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LivePointContext")), ServiceLifetime.Transient);
 
-           // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
+            // services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundTasks.OnlineTestingService>();
             services.AddScoped<IMongoClient>(s => new MongoClient(Configuration.GetConnectionString("Mongo")));
             services.AddScoped<ICacheProvider, CacheProvider>();
             services.AddScoped<IUserProvider, UserProvider>();
-            
+
 
             services.AddTransient<StatisticsCoreRework.Statistics>();
             services.AddTransient<WaferMapService>();
@@ -149,8 +149,8 @@ namespace VueExample
             services.AddTransient<DirtyCellsService>();
             services.AddTransient<DirtyCellsCalculationStatService>();
             services.AddTransient<DirtyCellsCalculationFxdService>();
-             
-            
+
+
             services.AddTransient<IGraphic4Service, Graphic4Service>();
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
             services.AddTransient<IMdvService, MdvService>();
@@ -242,7 +242,8 @@ namespace VueExample
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseGlobalExceptionHandler(x => {
+            app.UseGlobalExceptionHandler(x =>
+            {
                 x.ContentType = "application/json";
                 x.ResponseBody(s => JsonConvert.SerializeObject(new
                 {
@@ -252,7 +253,7 @@ namespace VueExample
                 x.Map<RecordNotFoundException>().ToStatusCode(StatusCodes.Status404NotFound);
                 x.Map<CollectionIsEmptyException>().ToStatusCode(StatusCodes.Status404NotFound);
                 x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
-            });           
+            });
 
 
             app.UseCors("DefaultPolicy");

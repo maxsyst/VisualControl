@@ -119,6 +119,5 @@ namespace VueExample.Controllers
             var directoriesList = _folderService.GetAllMeasurementRecordingFolder(directoryPath, codeProductFolderName, wafer);
             return Ok(directoriesList);
         }
-
     }
 }

@@ -37,8 +37,5 @@ namespace VueExample.Controllers
         //     var defectiveDies = _defectiveDieProvider.GetBadByDefectType(defectsList, defectType, dangerLevel);
         //     return Ok(defectiveDies);
         // }
-
-
-
     }
 }

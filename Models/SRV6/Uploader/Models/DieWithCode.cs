@@ -8,7 +8,6 @@ public class DieWithCode
     public List<SingleLineWithState> SingleLineWithStateList { get; set; } = new List<SingleLineWithState>();
     public DieWithCode()
     {
-        
     }
 
     public DieWithCode(long id, string code)

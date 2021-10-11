@@ -7,7 +7,6 @@ namespace VueExample.Entities
     [Table ("FK_MR_P")]
     public class FkMrP 
     {
-
         [Column ("id_mr_p")]
         public int Id { get; set; }
 
@@ -21,6 +20,5 @@ namespace VueExample.Entities
         public string WaferId { get; set; }
         
         public MeasurementRecording MeasurementRecording { get; set; }
-
     }
 }

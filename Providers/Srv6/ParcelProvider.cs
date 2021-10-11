@@ -42,8 +42,7 @@ namespace VueExample.Providers.Srv6
                                                  .AsNoTracking()
                                                  .ToListAsync();
                                                
-            return parcelWithWafersViewModelsList.GroupBy(x => x.ParcelId).Select(g => g.FirstOrDefault()).ToList();;                                
-
+            return parcelWithWafersViewModelsList.GroupBy(x => x.ParcelId).Select(g => g.FirstOrDefault()).ToList();                               
         }
 
         public async Task<ParcelViewModel> GetByWaferId(string waferId)

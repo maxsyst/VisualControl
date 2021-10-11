@@ -1233,7 +1233,6 @@ namespace VueExample.Controllers
             row8.parameters.Add(new KurbatovParameter { ParameterName = "Idss(3V)", Lower = 0.32, Upper = 0.56, Divider = 0.6, DividerId = 10, RussianParameterName = "Начальный ток стока, A/мм", ParameterNameStat = "I<sub>DSS(3V)</sub> (начальный ток стока)" });
             row8.parameters.Add(new KurbatovParameter { ParameterName = "Ugs(off)", Lower = -1.8, Upper = -1.3, DividerId = 1, RussianParameterName = "Напряжение отсечки, В", ParameterNameStat = "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)" });
 
-
             var row9 = new KurbatovXLSViewModel();
             row9.ElementName = "TC8_Ris";
             row9.OperationNumber = "560.00.00";
@@ -1389,9 +1388,7 @@ namespace VueExample.Controllers
 
             foreach (var kurbatovXLS in xlsList.Select((value, i) => new { i, value }))
             {
-
                 var worksheet = package.Workbook.Worksheets.Add(kurbatovXLS.value.OperationNumber + "_" + kurbatovXLS.value.ElementName.Split('_')[0]);
-
 
                 worksheet.Cells[6, 1, kurbatovXLS.value.kpList[0].advList.Count + 9, 2 + kurbatovXLS.value.kpList.Count].Style.Border.Top.Style = ExcelBorderStyle.Thin;
                 worksheet.Cells[6, 1, kurbatovXLS.value.kpList[0].advList.Count + 9, 2 + kurbatovXLS.value.kpList.Count].Style.Border.Right.Style = ExcelBorderStyle.Thin;
@@ -1539,12 +1536,9 @@ namespace VueExample.Controllers
                         {
                             worksheet.Cells[10 + j, 2 + i].Value = value.ToString("0.00");
                         }
-
-
                     }
                 }
             }
-
             commonWorksheet.Cells[1, 1, currentCursor - 1, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
             commonWorksheet.Cells[1, 1, currentCursor - 1, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
             commonWorksheet.Cells[1, 1, currentCursor - 1, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;

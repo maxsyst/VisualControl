@@ -22,17 +22,15 @@ namespace VueExample.Contexts
       
         public ApplicationContext(DbContextOptions<ApplicationContext> options): base(options)
         {
-            
         }
            
-        protected override void OnModelCreating (ModelBuilder modelBuilder) {
-
+        protected override void OnModelCreating (ModelBuilder modelBuilder) 
+        {
             modelBuilder.ApplyConfiguration(new MeasurementSetAtomicMeasurementConfiguration());
             modelBuilder.ApplyConfiguration(new DeviceConfiguration());
             modelBuilder.ApplyConfiguration(new MeasurementConfiguration());
             modelBuilder.ApplyConfiguration(new MaterialConfiguration());
             modelBuilder.ApplyConfiguration(new GraphicConfiguration());
-                     
         }
     }
 }

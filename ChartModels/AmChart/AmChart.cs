@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace VueExample.ChartModels.AmChart
 {
@@ -9,7 +6,5 @@ namespace VueExample.ChartModels.AmChart
     {
         public abstract List<T> Data { get; set; }
         public string Title { get; set; }
-
-
     }
 }

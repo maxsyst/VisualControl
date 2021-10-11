@@ -10,6 +10,6 @@ namespace VueExample.Models
         public int ProcessId { get; set; }
         [Column("Process_Name")]
         public string ProcessName { get; set; }
-        public IList<CodeProduct> CodeProducts {get; set;}
+        public IList<CodeProduct> CodeProducts { get; set; }
     }
 }

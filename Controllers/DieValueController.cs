@@ -12,9 +12,7 @@ namespace VueExample.Controllers
     [Route("api/[controller]/[action]")]
     public class DieValueController : Controller
     {
-
         private readonly IDieValueService _dieValueService;
-
         public DieValueController(IDieValueService dieValueService)
         {
             _dieValueService = dieValueService;

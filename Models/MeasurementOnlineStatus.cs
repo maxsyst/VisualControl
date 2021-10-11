@@ -10,6 +10,5 @@ namespace VueExample.Models
         public DateTime LastTime { get; set;  }
         public bool IsOnline { get; set; }
         public int FullTimeInSeconds { get; set; }
-      
     }
 }

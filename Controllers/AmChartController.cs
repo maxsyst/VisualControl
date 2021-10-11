@@ -29,15 +29,6 @@ namespace VueExample.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBadGood(string waferId)
-        {
-            var chart3DPieChart = _amChartProvider.GetBadGoodAmChart3DPieChart(_defectProvider.GetByWaferId(waferId),
-                await _dieProvider.GetDiesByWaferId(waferId));
-            return Ok(chart3DPieChart);
-
-        }
-
-        [HttpGet]
         public async Task<IActionResult> GetLinearForMeasurement([FromQuery] string statisticSingleGraphicViewModelJSON)
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);

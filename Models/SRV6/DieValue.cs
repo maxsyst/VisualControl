@@ -18,6 +18,5 @@ namespace VueExample.Models.SRV6
         public virtual List<string> XList { get; set; } = new List<string>();
         [JsonProperty("y")]
         public virtual List<string> YList { get; set; } = new List<string>();
-
     }
 }

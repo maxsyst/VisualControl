@@ -13,7 +13,6 @@ namespace VueExample.Models.Vertx
 
         public LastUpdate()
         {
-
         }
 
         public LastUpdate(double value)

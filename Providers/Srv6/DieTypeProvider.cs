@@ -24,7 +24,6 @@ namespace VueExample.Providers.Srv6
         }        
         public async Task<DieType> Create(DieTypeUpdatingViewModel dieTypeViewModel)
         {            
-          
             var dieType = new DieType{Name = dieTypeViewModel.Name};
             _srv6Context.DieTypes.Add(dieType);
             await _srv6Context.SaveChangesAsync();
@@ -49,7 +48,6 @@ namespace VueExample.Providers.Srv6
             }
             await _srv6Context.SaveChangesAsync();
             return dieType;
-            
         }
 
         public async Task<DieType> Update(DieTypeViewModel dieTypeViewModel)
@@ -61,14 +59,12 @@ namespace VueExample.Providers.Srv6
              _srv6Context.Entry(dieType).CurrentValues.SetValues(_mapper.Map<DieTypeViewModel, DieType>(dieTypeViewModel));
             await _srv6Context.SaveChangesAsync();
             return dieType;
-            
         }
 
         public async Task<List<DieType>> GetAll() => await _srv6Context.DieTypes.ToListAsync();
 
         public async Task<DieTypeUpdatingViewModel> GetCodeProductsAndElements(int id)
         {
-            
             var elementsList =      await _srv6Context.Elements
                                     .Join(_srv6Context.DieTypeElements
                                     .Where(x => x.DieTypeId == id), c => c.ElementId, p => p.ElementId, (c,p) => p.Element)
@@ -96,7 +92,6 @@ namespace VueExample.Providers.Srv6
             return new DieTypeUpdatingViewModel{Name = dieType.Name, 
                                                 CodeProductIdsList = codeProductIdsList.ToList(), 
                                                 ElementsList = elementsViewModelList}; 
-            
         }
 
         public async Task<Tuple<CodeProductViewModel, string>> UpdateCodeProductsMap(int dieTypeId, int codeProductId)
@@ -129,7 +124,6 @@ namespace VueExample.Providers.Srv6
                                 .AsNoTracking()
                                 .ToListAsync();
             return dieTypesList;
-          
         }
         
         public async Task<DieType> GetByName(string name)

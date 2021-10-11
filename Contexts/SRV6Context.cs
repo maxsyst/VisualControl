@@ -40,7 +40,7 @@ namespace VueExample.Contexts
         public DbSet<CodeProductGraphic> CodeProductGraphic { get; set; }
         public DbSet<CodeProductStandartWafer> CodeProductStandartWafers { get; set; }
         public DbSet<MapStandartWafer> MapStandartWafers { get; set; }
-        public DbSet<MeasurementRecordingElement> MeasurementRecordingElements {get; set;}
+        public DbSet<MeasurementRecordingElement> MeasurementRecordingElements { get; set; }
         public DbSet<FkMrP> FkMrPs { get; set; }
         public DbSet<FkMrGraphic> FkMrGraphics { get; set; }
         public DbSet<ShortLinkEntity> ShortLinkEntities { get; set; }
@@ -65,7 +65,6 @@ namespace VueExample.Contexts
 
         public Srv6Context(DbContextOptions<Srv6Context> options): base(options)
         {
-            
         }
     }
 }

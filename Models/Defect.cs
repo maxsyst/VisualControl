@@ -16,7 +16,6 @@ namespace VueExample.Models
         [Column("id_stage")]
         public int StageId { get; set; }
 
-        
         [Column("id_defecttype")]
         public int DefectTypeId { get; set; }
         
@@ -34,6 +33,5 @@ namespace VueExample.Models
         public DefectType DefectType { get; set; }
         [JsonIgnore]
         public DangerLevel DangerLevel { get; set; }
-
     }
 }

@@ -31,7 +31,6 @@ namespace VueExample.Controllers
                 Console.WriteLine(e);
                 return StatusCode(500);
             }
-            
         }
 
         // [HttpGet]
@@ -56,21 +55,17 @@ namespace VueExample.Controllers
             }
 
             return Ok(returnObject.TObject);
-
         }
 
         [HttpPost]
         public IActionResult DeleteDefectType([FromBody] DefectTypeViewModel defectTypeViewModel)
         {
             var returnObject = _defectTypeProvider.DeleteDefectType(defectTypeViewModel.Description);
-
             if (returnObject.HasErrors)
             {
                 return BadRequest(returnObject.GetErrors());
             }
-
             return Ok(returnObject.TObject);
         }
-
     }
 }

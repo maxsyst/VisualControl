@@ -28,7 +28,11 @@ namespace VueExample.StatisticsCoreRework.CachedServices
 
         public async Task<Dictionary<string, SingleParameterStatisticCalculated>> GetCalculatedStatisticByMeasurementRecordingGraphicStateAndDies(int measurementRecordingId, string keyGraphicState, double divider, List<long> dieIdList)
         {
-            var statParameterDict = (await GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId))[keyGraphicState];
+            var graphicId = keyGraphicState.Split('_')[0];
+            var statParameterDict = ((await GetSingleParameterStatisticByMeasurementRecording(measurementRecordingId)).Where(x => x.Key.Split('_')[0] == graphicId))
+                                    .Select(x => x.Value)
+                                    .SelectMany(d => d)
+                                    .ToDictionary(e => e.Key, e => e.Value);
             return CreateSingleParameterStatisticCalculated(statParameterDict, divider, dieIdList);
         }
         

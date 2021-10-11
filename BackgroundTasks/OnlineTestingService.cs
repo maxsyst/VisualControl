@@ -10,7 +10,7 @@ namespace VueExample.BackgroundTasks
         private readonly ILogger<OnlineTestingService> _logger;
         public OnlineTestingService(ILogger<OnlineTestingService> logger)
         {
-            _logger = logger;    
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -22,12 +22,11 @@ namespace VueExample.BackgroundTasks
                 _logger.LogInformation($"OnlineTesting task doing background work.");
                 await Task.Delay(1000, stoppingToken);
             }
-
         }
 
-        private void OnStopping() 
+        private void OnStopping()
         {
-             _logger.LogInformation($"Stopped.");
+            _logger.LogInformation($"Stopped.");
         }
     }
 }

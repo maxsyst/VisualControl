@@ -23,14 +23,14 @@ namespace VueExample.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Authenticate([FromBody]UserViewModel userViewModel)
+        public IActionResult Authenticate([FromBody] UserViewModel userViewModel)
         {
             var currentUser = _userProvider.Authenticate(_mapper.Map<User>(userViewModel));
 
             if (currentUser == null)
-                return BadRequest(new StandardResponseObject{ Message = "Пароль или имя пользователя не совпадают" });
+                return BadRequest(new StandardResponseObject { Message = "Пароль или имя пользователя не совпадают" });
 
-            return Ok(new StandardResponseObject<User>{Body = currentUser, Message = "Успешная авторизация"});
+            return Ok(new StandardResponseObject<User> { Body = currentUser, Message = "Успешная авторизация" });
         }
 
         [AllowAnonymous]
@@ -38,7 +38,7 @@ namespace VueExample.Controllers
         public IActionResult Registry([FromBody] RegistryViewModel registryViewModel)
         {
             var user = _mapper.Map<User>(registryViewModel);
-            
+
             var duplicateError = _userProvider.IsExistUserDuplicate(user);
             if (duplicateError == null)
             {
@@ -52,12 +52,7 @@ namespace VueExample.Controllers
             {
                 return BadRequest(new StandardResponseObject { Message = duplicateError.Message });
             }
-
-          
-
         }
-
-
     }
 }
 

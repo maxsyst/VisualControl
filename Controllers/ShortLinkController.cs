@@ -48,7 +48,6 @@ namespace VueExample.Controllers
                                                 Name = (await _measurementRecordingService.GetById(shortLinkInfo.TObject.MeasurementRecordingId)).Name, 
                                                 WaferId = shortLinkInfo.TObject.WaferId,
                                                 avStatisticParameters = shortLinkInfo.TObject.StatisticNameList}});
-                      
         }
 
         [HttpPost]

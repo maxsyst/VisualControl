@@ -7,6 +7,5 @@ namespace VueExample.Color
         string GetRandomHexColor();
         string GetHexColorByDieId (long? die);
         List<Color> GetGradientColors();
-
     }
 }

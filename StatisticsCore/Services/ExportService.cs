@@ -54,8 +54,6 @@ namespace VueExample.StatisticsCore.Services
             return statNamesList;
         }
 
-
-
         private async Task<List<AtomicDieValue>> GetDieValues(KurbatovParameter kurbatovParameter, double k = 1.5)
         {
             string measurementRecordingIdAsKey = Convert.ToString(kurbatovParameter.MeasurementRecordingId);
@@ -140,7 +138,5 @@ namespace VueExample.StatisticsCore.Services
             }
             return exportList;
         }
-
-
     }
 }

@@ -5,12 +5,10 @@ namespace VueExample.Exceptions
     {
         public ValidationErrorException()
         {
-            
         }
 
         public ValidationErrorException(string message) : base(message)
         {
-            
         }
     }
 }

@@ -13,7 +13,6 @@ namespace VueExample.Configuration
 
             builder.HasMany(c => c.Points)
                    .WithOne(e => e.Measurement);
-
         }
     }
 }

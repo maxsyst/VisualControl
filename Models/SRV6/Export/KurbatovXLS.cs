@@ -17,7 +17,7 @@ namespace VueExample.Models.SRV6.Export
         [JsonProperty(Order = -2)]
         public int DieQuantity { get; set; }        
         [JsonProperty(Order = -2)]
-        public int DirtyPercentage { get; set;}
+        public int DirtyPercentage { get; set; }
         public bool IsAddedToCommonWorksheet { get; set; }
         public bool IsNeedToCopyS2P { get; set; }
         [JsonProperty(Order = 0)]

@@ -19,7 +19,5 @@ namespace VueExample.Entities
         public virtual StandartMeasurementPatternEntity StandartMeasurementPatternEntity { get; set; }
         public virtual StandartParameterEntity StandartParameterEntity { get; set; }
         public virtual KurbatovParameterBordersEntity KurbatovParameterBordersEntity { get; set; }
-
-
     }
 }

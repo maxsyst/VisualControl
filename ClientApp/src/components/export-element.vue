@@ -453,7 +453,7 @@ export default {
             });
           }
         })
-        .catch((error) => {
+        .catch(() => {
           this.$store.commit('exportkurb/updateElementAutoIdmr', {
             key: this.id,
             operation: this.operation.number,
@@ -516,7 +516,7 @@ export default {
       if (this.parameters.length === 0) {
         return true;
       }
-      for (let i = 0; i < this.parameters.length; i++) {
+      for (let i = 0; i < this.parameters.length; i += 1) {
         const currentParameter = this.parameters[i];
         if (!this.validateParameter(currentParameter)) {
           return false;
@@ -630,15 +630,15 @@ export default {
         parameter.selectedStatParameter,
       )
         ? (
-          1 / this.dividers.find((_) => _.id == parameter.dividerId).dividerK
+          1 / this.dividers.find((_) => _.id === parameter.dividerId).dividerK
         ).toFixed(3)
-        : (+this.dividers.find((_) => _.id == parameter.dividerId)
+        : (+this.dividers.find((_) => _.id === parameter.dividerId)
           .dividerK).toFixed(3);
     },
 
     changeMeasurementRecording(parameter) {
       parameter.statParameterArray = this.measurementRecordings.filter(
-        (x) => x.id == parameter.measurementRecording,
+        (x) => x.id === parameter.measurementRecording,
       )[0].avStatisticParameters;
     },
 

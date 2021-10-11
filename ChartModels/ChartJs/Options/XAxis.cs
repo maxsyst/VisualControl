@@ -6,12 +6,11 @@ namespace VueExample.ChartModels.ChartJs.Options
         public bool Display { get; set; } = true;
         public XAxis()
         {
-            
         }
         public XAxis(string label, bool display)
         {
             this.Label = label;
             this.Display = display;
-        }       
+        }
     }
 }

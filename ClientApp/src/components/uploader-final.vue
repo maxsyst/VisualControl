@@ -504,7 +504,8 @@ export default {
 
     .rotatingBorder {
         width: max-content;
-        background: linear-gradient(90deg, #e91e63 50%, transparent 50%), linear-gradient(90deg, #e91e63 50%, transparent 50%), linear-gradient(0deg, #e91e63 50%, transparent 50%), linear-gradient(0deg, #e91e63 50%, transparent 50%);
+        background: linear-gradient(90deg, #e91e63 50%, transparent 50%), linear-gradient(90deg, #e91e63 50%, transparent 50%),
+                    linear-gradient(0deg, #e91e63 50%, transparent 50%), linear-gradient(0deg, #e91e63 50%, transparent 50%);
         background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
         background-size: 5px 2px, 5px 2px, 2px 5px, 2px 5px;
         padding: 10px;

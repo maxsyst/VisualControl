@@ -169,7 +169,6 @@ namespace VueExample.Services.Vertx.Implementation
             var measurementIdsList = await _measurementAttemptService.GetAllMeasurementIds(measurementAttemptId);
             var pointsDictionary = new Dictionary<string, MeasurementResponseModelWithPoints>();
             var currentDuration = TimeSpan.Zero;
-            ;
             foreach (var measurementId in measurementIdsList.Select(x => x.ToString()).ToList())
             {
                 var measurementResponseModelWithPoints =
@@ -212,7 +211,6 @@ namespace VueExample.Services.Vertx.Implementation
                 }             
                 pointsDictionary.Add(measurementId, measurementResponseModelWithPoints);
             }
-
             return pointsDictionary;
         }
 
@@ -229,7 +227,6 @@ namespace VueExample.Services.Vertx.Implementation
                     .Where(x => x.FromStartDate.TotalSeconds < seconds).ToList();
                 pointsDictionary.Add(measurementId, measurementResponseModelWithPoints);
             }
-
             return pointsDictionary;
         }
 
@@ -241,7 +238,6 @@ namespace VueExample.Services.Vertx.Implementation
             {
                 return points.ToList();
             }
-
             var quartile1Double = MathNet.Numerics.Statistics.Statistics.LowerQuartile(points.Select(x => x.Value));
             var quartile3Double = MathNet.Numerics.Statistics.Statistics.UpperQuartile(points.Select(x => x.Value));
             var iqr = MathNet.Numerics.Statistics.Statistics.InterquartileRange(points.Select(x => x.Value));

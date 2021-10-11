@@ -11,47 +11,48 @@
                 <v-treeview
                     v-model="selectedWafers"
                     selectable
-                    :items="wafersWithParcels" 
+                    :items="wafersWithParcels"
                     @input="wafersArrayChanged">
                 </v-treeview>
             </div>
         </v-card-text>
-       
+
     </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+
 export default {
-    data() {
-        return {
-            selectedWafers: []
-        }
+  data() {
+    return {
+      selectedWafers: [],
+    };
+  },
+
+  computed: {
+    ...mapGetters({
+      wafersWithParcels: 'controlCharts/wafersWithParcels',
+    }),
+  },
+
+  methods: {
+    wafersArrayChanged(selectedWafers) {
+      this.$store.dispatch('controlCharts/changeSelectedWafers', selectedWafers);
     },
 
-    computed: {
-        ...mapGetters({
-            wafersWithParcels: 'controlCharts/wafersWithParcels',
-        })
+    selectAllWafers() {
+      this.selectedWafers = this.wafersWithParcels.map((x) => x.children.map((c) => c.name)).flat();
+      this.$store.dispatch('controlCharts/changeSelectedWafers', this.selectedWafers);
     },
 
-    methods: {
-        wafersArrayChanged: function(selectedWafers) {
-            this.$store.dispatch("controlCharts/changeSelectedWafers", selectedWafers)
-        },
+    clearSelectedWafers() {
+      this.selectedWafers = [];
+      this.$store.dispatch('controlCharts/changeSelectedWafers', []);
+    },
+  },
 
-        selectAllWafers: function() {
-            this.selectedWafers = this.wafersWithParcels.map(x => x.children.map(c => c.name)).flat()
-            this.$store.dispatch("controlCharts/changeSelectedWafers", this.selectedWafers)
-        },
-
-        clearSelectedWafers: function() {
-            this.selectedWafers = []
-            this.$store.dispatch("controlCharts/changeSelectedWafers", [])
-        }
-    }
-
-}
+};
 </script>
 
 <style>
