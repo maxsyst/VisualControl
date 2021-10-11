@@ -55,7 +55,6 @@ namespace VueExample.Controllers
         {
             var statisticSingleGraphicViewModel = JsonConvert.DeserializeObject<VueExample.ViewModels.StatisticSingleGraphicViewModel>(statisticSingleGraphicViewModelJSON);
             var (measurementRecordingId, keyGraphicState, _) = statisticSingleGraphicViewModel;
-            string keyGraphic = statisticSingleGraphicViewModel.KeyGraphicState;
             var dict = await _statisticService.GetCalculatedStatisticByMeasurementRecordingGraphicStateAndDies(measurementRecordingId, keyGraphicState, double.Parse(statisticSingleGraphicViewModel.Divider, CultureInfo.InvariantCulture), statisticSingleGraphicViewModel.dieIdList.Select(x => (long)x).ToList());
             return Ok(dict.Values.ToList());
         }

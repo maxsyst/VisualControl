@@ -5456,8 +5456,8 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                  
-                    GetFullStatisticsFromList(s21at10List, "S21<sub>(10GHz)</sub> - type: " + type, "дБ"),
-                    GetFullStatisticsFromList(s21sigmaList, "S21<sub>sigma(8GHz-12GHz)</sub> - type: " + type, "дБ"),
+                    GetFullStatisticsFromList(s21at10List, "S21<sub>(10GHz)</sub>$$" + type, "дБ"),
+                    GetFullStatisticsFromList(s21sigmaList, "S21<sub>sigma(8GHz-12GHz)</sub>$$" + type, "дБ"),
 
                 };
             return returnList;
@@ -5557,8 +5557,8 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
 
-                    GetFullStatisticsFromList(s21at10List, "Phase_S21<sub>(10GHz)</sub> - type: " + type, "дБ"),
-                    GetFullStatisticsFromList(s21sigmaList, "Phase_S21<sub>sigma(8GHz-12GHz)</sub> - type: " + type, "дБ"),
+                    GetFullStatisticsFromList(s21at10List, "Phase_S21<sub>(10GHz)</sub>$$" + type, "дБ"),
+                    GetFullStatisticsFromList(s21sigmaList, "Phase_S21<sub>sigma(8GHz-12GHz)</sub>$$" + type, "дБ"),
 
                 };
             return returnList;
