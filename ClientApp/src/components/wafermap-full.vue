@@ -2,7 +2,8 @@
   <v-container grid-list-lg>
     <v-layout row>
       <v-flex d-flex lg7>
-        <wafermap-trtd @show-footer="showDefects" :defectiveDiesSearchProps="defectiveDiesSearchProps" :waferId="waferId" :streetSize="streetSize" :fieldHeight="fieldHeight" :fieldWidth="fieldWidth">
+        <wafermap-trtd @show-footer="showDefects" :defectiveDiesSearchProps="defectiveDiesSearchProps"
+                       :waferId="waferId" :streetSize="streetSize" :fieldHeight="fieldHeight" :fieldWidth="fieldWidth">
         </wafermap-trtd>
       </v-flex>
       <v-flex d-flex lg5>
@@ -238,6 +239,5 @@ export default {
 <style scoped>
   .bottomsheet {
     background-color: rgba(48, 48, 48, 0.9);
-
   }
 </style>
