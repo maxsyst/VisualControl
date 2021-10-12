@@ -49,8 +49,6 @@ namespace VueExample.StatisticsCoreRework.Services
             measurementRecordingDirtyCellsSnapshot.BadDies =  new HashSet<long>(measurementRecordingDirtyCellsSnapshot.SingleGraphicDirtyCellsDictionary.SelectMany(kv => kv.Value.BadDies)).ToList();
             measurementRecordingDirtyCellsSnapshot.GoodDiesPercentage = Convert.ToString(Math.Ceiling((1.0 - measurementRecordingDirtyCellsSnapshot.BadDies.Count / (diesCount + 0.0)) * 100), CultureInfo.InvariantCulture);
             return measurementRecordingDirtyCellsSnapshot;
-
-            
         }
 
         public async Task<SingleGraphicDirtyCells> GetDirtyCellsShortsByKeyGraphicState(int measurementRecordingId, string keyGraphicState, List<DirtyCellsProfile> dirtyCellsProfiles) 
@@ -89,6 +87,5 @@ namespace VueExample.StatisticsCoreRework.Services
                 profile.TopBorder = dcStat.TopBorder;
             }
         }
-
     }
 }
