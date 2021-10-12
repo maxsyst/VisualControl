@@ -34,6 +34,7 @@
                       <v-data-table v-if="statArrayRWRK.length > 0"
                         :headers="headers"
                         :items="statArrayRWRK"
+                        :items-per-page="maxRowCount"
                         loading-text="Загрузка данных..."
                         no-data-text="Нет данных"
                         class="elevation-2 pa-0"
@@ -119,6 +120,7 @@ export default {
       showPopover: false,
       PopoverX: 0,
       PopoverY: 0,
+      maxRowCount: 256,
       statArrayRWRK: [],
       graphicName: '',
       activeTab: 'commonTable',

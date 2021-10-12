@@ -44,6 +44,11 @@ namespace VueExample.Providers.Srv6
             return await _appCache.GetOrAddAsync($"GRAPHIC:ID:{graphicId}", cachedService);
         }
 
+        public async Task<List<Graphic>> GetByMeasurementRecordingId(int measurementRecordingId)
+        {
+            return await _graphicProvider.GetByMeasurementRecordingId(measurementRecordingId);
+        }
+
         public async Task<Graphic> GetGraphicByKeyGraphicState(string keyGraphicState)
         {
             var graphicId = Convert.ToInt32(keyGraphicState.Split('_')[0]);

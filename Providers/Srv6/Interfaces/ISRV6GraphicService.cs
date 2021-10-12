@@ -12,5 +12,6 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<Graphic> GetGraphicByKeyGraphicState(string keyGraphicState);
         Task<Graphic> GetById(int graphicId);
         Task<List<Graphic>> GetByCodeProduct(int codeProductId);
+        Task<List<Graphic>> GetByMeasurementRecordingId(int measurementRecordingId);
     }
 }
