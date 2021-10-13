@@ -15,7 +15,7 @@ namespace VueExample.Parsing.SchemeConverter
                                                           select dieWithCodeDictionary[graphic.GraphicMode]);
             if(graphic4ParseResult.DieWithCodesList.Count > 0)
             {
-                graphic4ParseResult.States = graphic4ParseResult.DieWithCodesList.FirstOrDefault().SingleLineWithStateList.Select(x => x.State).ToList();
+                graphic4ParseResult.States = graphic4ParseResult.DieWithCodesList.FirstOrDefault().ValueListWithState.Select(x => x.State).ToList();
             }
             return graphic4ParseResult;
         }
@@ -35,8 +35,7 @@ namespace VueExample.Parsing.SchemeConverter
                     var isGraphicExists = stateDictionary[state].TryGetValue(graphicName, out singleLine);
                     if(isGraphicExists)
                     {
-                        var singleLineWithState = new SingleLineWithState(singleLine, state);
-                        dieWithCodeGraphic.SingleLineWithStateList.Add(singleLineWithState);
+                        dieWithCodeGraphic.SetValues(new SingleLineWithState(singleLine, state));
                     }
                 }
                 graphicsDictionary.Add(graphicName, dieWithCodeGraphic);                
