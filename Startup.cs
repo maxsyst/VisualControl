@@ -150,7 +150,7 @@ namespace VueExample
             services.AddTransient<DirtyCellsCalculationStatService>();
             services.AddTransient<DirtyCellsCalculationFxdService>();
 
-
+          
             services.AddTransient<IGraphic4Service, Graphic4Service>();
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
             services.AddTransient<IMdvService, MdvService>();
@@ -218,7 +218,7 @@ namespace VueExample
             services.AddTransient<IKurbatovParameterBordersService, KurbatovParameterBordersService>();
             services.AddTransient<IKurbatovParameterProvider, KurbatovParameterProvider>();
             services.AddTransient<IKurbatovParameterService, KurbatovParameterService>();
-
+            services.AddTransient<IDieWithCodeService, DieWithCodeService>();
             services.AddTransient<StatisticsCoreRework.Abstract.IStatisticService, StatisticsCoreRework.CachedServices.StatisticCachedService>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceLNR>();
             services.AddTransient<ISingleParameterStatisticService, SingleParameterCachedServiceHSTG>();

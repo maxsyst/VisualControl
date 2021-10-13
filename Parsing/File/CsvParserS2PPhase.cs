@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using VueExample.Extensions;
 using VueExample.Parsing.Models;
 using VueExample.Parsing.StrategyInterface;
-
 namespace VueExample.Parsing.File
 {
     public class CsvParserS2PPhase : ICsvParsingS2PStrategy
@@ -36,11 +36,10 @@ namespace VueExample.Parsing.File
             {
                 var nospaceline = Regex.Replace(line, " {1,}", @"\t");
                 var splitarray = nospaceline.Split(@"\t").ToList();
-                singleLine.AbscissList.Add(Math.Round((double.Parse(splitarray[0], CultureInfo.InvariantCulture) / 1E9), 2).ToString(CultureInfo.InvariantCulture));
-                singleLine.ValueList.Add((Math.Atan2(Math.Round((double.Parse(splitarray[index + 1], CultureInfo.InvariantCulture)*180/Math.PI), 8),Math.Round((double.Parse(splitarray[index], CultureInfo.InvariantCulture) * 180 / Math.PI), 8))*180/Math.PI).ToString(CultureInfo.InvariantCulture));
+                singleLine.AbscissList.Add(Math.Round((double.Parse(splitarray[0], CultureInfo.InvariantCulture) / 1E9), 2).ToGoodFormat());
+                singleLine.ValueList.Add((Math.Atan2(Math.Round((double.Parse(splitarray[index + 1], CultureInfo.InvariantCulture)*180/Math.PI), 8),Math.Round((double.Parse(splitarray[index], CultureInfo.InvariantCulture) * 180 / Math.PI), 8))*180/Math.PI).ToGoodFormat());
             }
             return singleLine;
         }
-
     }
 }

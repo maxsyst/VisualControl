@@ -18,7 +18,6 @@ namespace VueExample.Services
       
         private readonly List<Die> _dieList;
 
-
         public WaferMapFormationService(double fieldHeight, double fieldWidth, double streetSize, List<Die> dieList)
         {
             FieldHeight = fieldHeight;

@@ -9,6 +9,5 @@ namespace VueExample.StatisticsCore.Abstract
         Task<List<Dictionary<string, string>>> Export(int idmr, string statNames, string delimeter, double k);
         Task<List<string>> GetStatisticsNameByMeasurementId(int measurementRecordingId, double k);
         Task PopulateKurbatovXLSByValues(KurbatovXLS kurbatovXLS);
-        
     }
 }

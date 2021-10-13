@@ -11,9 +11,6 @@ namespace VueExample.ResponseObjects
         public string ResponseType { get; set; }
         public string Message { get; set; }
         public string ErrorCode { get; set; }
-
-        
-
     }
 
     public class StandardResponseObject<T> where T : class
@@ -22,7 +19,5 @@ namespace VueExample.ResponseObjects
         public string ResponseType { get; set; }
         public string Message { get; set; }
         public string ErrorCode { get; set; }
-
-
     }
 }

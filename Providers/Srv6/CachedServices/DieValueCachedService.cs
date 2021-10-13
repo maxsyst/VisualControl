@@ -77,13 +77,13 @@ namespace VueExample.Providers.Srv6.CachedServices
                     var dieValueList = new List<DieValue>();
                     foreach (var dieWithCode in graphicData.DieWithCodesList)
                     {
-                        var currentState = dieWithCode.SingleLineWithStateList.FirstOrDefault(x => x.State == state);
+                        var currentState = dieWithCode.ValueListWithState.FirstOrDefault(x => x.State == state);
                         var dieValue = new DieValue();
                         dieValue.DieId = dieWithCode.DieId;
                         dieValue.MeasurementRecordingId = graphic4ViewModel.MeasurementRecordingId;
                         dieValue.GraphicId = graphicData.Graphic.GraphicSRV6Id;
                         dieValue.State = currentState.State;
-                        dieValue.XList = currentState.AbscissList;
+                        dieValue.XList = dieWithCode.AbscissList;
                         dieValue.YList = currentState.ValueList;
                         dieValueList.Add(dieValue);
                     }
@@ -92,6 +92,5 @@ namespace VueExample.Providers.Srv6.CachedServices
             }
             return dieValueDictionary;
         }
-
     }
 }

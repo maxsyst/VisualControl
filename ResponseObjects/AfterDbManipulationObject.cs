@@ -17,7 +17,6 @@ namespace VueExample.ResponseObjects
             this.ErrorsList = new List<Error>();
         }
 
-
         public AfterDbManipulationObject(Error error, string manipulationType = "ADD")
         {
             this.HasErrors = true;
@@ -40,7 +39,6 @@ namespace VueExample.ResponseObjects
             {
                 this.HasErrors = true;
             }
-
         }
 
         public AfterDbManipulationObject<T> CreateWithError(Error error)

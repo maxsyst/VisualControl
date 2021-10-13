@@ -21,6 +21,5 @@ namespace VueExample.ResponseObjects
         {
             return Code == "AAA";
         }
-    
     }
 }

@@ -59,7 +59,7 @@ namespace VueExample.Providers
         }
 
         public Error IsExistUserDuplicate(User user)
-    {
+        {
             if (_visualControlContext.Users.Any(x => x.Username == user.Username))
             {
                 return new Error("Пользователь с таким логином уже существует", "RE001");
@@ -71,7 +71,6 @@ namespace VueExample.Providers
             }
             return null;
         }
-
        
         public User RegistryUser(User user)
         {

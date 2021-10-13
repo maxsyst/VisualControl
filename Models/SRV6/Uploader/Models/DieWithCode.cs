@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 using VueExample.Parsing.Models;
 
 public class DieWithCode
 {
     public long DieId { get; set; }
     public string DieCode { get; set; }
-    public List<SingleLineWithState> SingleLineWithStateList { get; set; } = new List<SingleLineWithState>();
+    public List<string> AbscissList { get; set; } = new List<string>();
+    public List<ValueListWithState> ValueListWithState { get; set; } = new List<ValueListWithState>();
     public DieWithCode()
     {
     }
@@ -14,5 +16,14 @@ public class DieWithCode
     {
         this.DieId = id;
         this.DieCode = code;
+    }
+    public DieWithCode SetValues(SingleLineWithState singleLineWithState) 
+    {
+        if(AbscissList.Count == 0)
+        {
+            AbscissList = singleLineWithState.AbscissList.ToList();
+        }
+        ValueListWithState.Add(new ValueListWithState{State = singleLineWithState.State, ValueList = singleLineWithState.ValueList.ToList()});
+        return this;
     }
 }

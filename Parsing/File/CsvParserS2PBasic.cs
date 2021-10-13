@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using VueExample.Extensions;
 using VueExample.Parsing.Models;
 using VueExample.Parsing.StrategyInterface;
 
@@ -19,8 +20,8 @@ namespace VueExample.Parsing.File
             {
                 var nospaceline = Regex.Replace(line, " {2,}", @"\t");
                 var splitarray = nospaceline.Split(@"\t").ToList();
-                singleLine.AbscissList.Add(Math.Round((double.Parse(splitarray[0], CultureInfo.InvariantCulture) / 1E9), 2).ToString(CultureInfo.InvariantCulture));
-                singleLine.ValueList.Add(Math.Round((double.Parse(splitarray[2], CultureInfo.InvariantCulture)), 8).ToString(CultureInfo.InvariantCulture));
+                singleLine.AbscissList.Add(Math.Round((double.Parse(splitarray[0], CultureInfo.InvariantCulture) / 1E9), 2).ToGoodFormat());
+                singleLine.ValueList.Add(Math.Round((double.Parse(splitarray[2], CultureInfo.InvariantCulture)), 8).ToGoodFormat());
             }
             return singleLine;
         }

@@ -29,8 +29,8 @@ namespace VueExample.Parsing.UploadingType
             {
                 var deltaS21OrdinateList = new List<string>();
                 var deltaPhaseOrdinateList = new List<string>();
-                deltaS21OrdinateList.AddRange(S21A0State.ValueList);
-                deltaPhaseOrdinateList.AddRange(phaseA0State.ValueList);
+                deltaS21OrdinateList.AddRange(stateDictionary[state]["S21"].ValueList);
+                deltaPhaseOrdinateList.AddRange(stateDictionary[state]["Phase"].ValueList);
                 for (var i = 0; i < S21A0State.ValueList.Count; i++)
                 {
                     deltaS21OrdinateList[i] = (Convert.ToDouble(deltaS21OrdinateList[i], CultureInfo.InvariantCulture) - Convert.ToDouble(S21A0State.ValueList[i], CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture);
@@ -56,6 +56,5 @@ namespace VueExample.Parsing.UploadingType
             var phaseSingleLine = _csvParsingPhase.Parse(path, "S21", _s2pType);
             return new Dictionary<string, SingleLine>{{"S21", s21SingleLine}, {"Phase", phaseSingleLine}};
         }
-        
     }
 }

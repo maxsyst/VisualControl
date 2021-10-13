@@ -71,7 +71,7 @@ namespace VueExample.StatisticsCoreRework.CachedServices
             var dict = new Dictionary<string, SingleParameterStatisticCalculated>();
             foreach (var stat in statParameterDict)
             {
-                dict.Add(stat.Key, new SingleParameterStatisticCalculated {ShortStatisticsName = $"{stat.Value.StatisticName.Split(' ').FirstOrDefault()}", StatisticsName = stat.Value.StatisticName, Unit = stat.Value.Unit});
+                dict.Add(stat.Key, new SingleParameterStatisticCalculated(statisticsName: stat.Value.StatisticName, shortStatisticsName: $"{stat.Value.StatisticName.Split(' ').FirstOrDefault()}", unit: stat.Value.Unit));
             }
             return dict;
         }

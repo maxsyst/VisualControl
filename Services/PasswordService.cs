@@ -20,7 +20,6 @@ namespace VueExample.Services
         {
             var salt = GenerateSaltForPassword();
             return new Password(Convert.ToBase64String(ComputePasswordHash(rawPassword, salt)), Convert.ToBase64String(salt));
-
         }
 
         private byte[] ComputePasswordHash(string password, byte[] salt) => KeyDerivation.Pbkdf2(
@@ -30,8 +29,6 @@ namespace VueExample.Services
             iterationCount: 10000,
             numBytesRequested: 256 / 8);
 
-        
-
         private byte[] GenerateSaltForPassword()
         {
             var salt = new byte[128 / 8];
@@ -40,7 +37,6 @@ namespace VueExample.Services
                 rng.GetBytes(salt);
 
             }
-
             return salt;
         }
     }

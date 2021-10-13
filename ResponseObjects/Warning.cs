@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace VueExample.ResponseObjects
 {
     public class Warning
@@ -15,7 +10,5 @@ namespace VueExample.ResponseObjects
 
         public string Message { get; }
         public string Code { get; }
-
-
     }
 }

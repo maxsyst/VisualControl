@@ -46,5 +46,13 @@ namespace VueExample.Providers
         {
             return await _srv6Context.Graphics.FirstOrDefaultAsync(x => x.Id == graphicId);
         }
+
+        public async Task<List<Graphic>> GetByMeasurementRecordingId(int measurementRecordingId)
+        {
+            return await (from f in _srv6Context.FkMrGraphics
+                    join g in _srv6Context.Graphics on f.GraphicId equals g.Id
+                    where f.MeasurementRecordingId == measurementRecordingId
+                    select g).ToListAsync();
+        }
     }
 }

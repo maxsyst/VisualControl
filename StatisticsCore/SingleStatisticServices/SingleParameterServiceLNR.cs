@@ -12,7 +12,6 @@ namespace VueExample.StatisticsCore.SingleStatisticServices
     {
         public SingleParameterServiceLNR()
         {
-
         }
         public override List<SingleParameterStatistic> CreateSingleParameterStatisticsList(List<DieValue> dieValues, Graphic graphic, List<StatParameterForStage> statParameterForStage, double divider, double k)
         {

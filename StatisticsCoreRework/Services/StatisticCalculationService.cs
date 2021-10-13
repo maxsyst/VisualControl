@@ -18,42 +18,36 @@ namespace VueExample.StatisticsCoreRework.Services
             var (statName, unit, dividerProfile, _, values) = singleParameterStatisticValues;
             if(dividerProfile == DividerProfile.WithoutDivider || Math.Abs(divider - 1.0) < 1E-6) 
             {
-                return new SingleParameterStatisticCalculated {
-                                                        Minimum = CalculateMinimum(values),
-                                                        Maximum = CalculateMaximum(values),
-                                                        ExpectedValue = CalculateExpectedValue(values),
-                                                        Median = CalculateMedian(values),
-                                                        StandartDeviation = CalculateStandartDeviation(values),
-                                                        StatisticsName = statName,
-                                                        ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
-                                                        Unit = unit
-                                                    };
+                return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values), 
+                                                              maximum: CalculateMaximum(values), 
+                                                              minimum: CalculateMinimum(values),
+                                                              standartDeviation: CalculateStandartDeviation(values),
+                                                              statisticsName: statName,
+                                                              shortStatisticsName: $"{statName.Split(' ').FirstOrDefault()}",
+                                                              unit: unit,
+                                                              median: CalculateMedian(values));
             }
             if(dividerProfile == DividerProfile.WithDivider) 
             {
-                return new SingleParameterStatisticCalculated {
-                                                        Minimum = CalculateMinimum(values, divider),
-                                                        Maximum = CalculateMaximum(values, divider),
-                                                        ExpectedValue = CalculateExpectedValue(values, divider),
-                                                        Median = CalculateMedian(values, divider),
-                                                        StandartDeviation = CalculateStandartDeviation(values, divider),
-                                                        StatisticsName = statName,
-                                                        ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
-                                                        Unit = $"{unit}/мм" 
-                                                    };
+                 return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values, divider),
+                                                              maximum: CalculateMaximum(values, divider),
+                                                              minimum: CalculateMinimum(values, divider),
+                                                              standartDeviation: CalculateStandartDeviation(values, divider),
+                                                              statisticsName: statName,
+                                                              shortStatisticsName: $"{statName.Split(' ').FirstOrDefault()}",
+                                                              unit: $"{unit}/мм",
+                                                              median: CalculateMedian(values, divider));
             }
             if(dividerProfile == DividerProfile.ROnFamily) 
             {
-                return new SingleParameterStatisticCalculated {
-                                                        Minimum = CalculateMinimum(values, 1/divider),
-                                                        Maximum = CalculateMaximum(values, 1/divider),
-                                                        ExpectedValue = CalculateExpectedValue(values, 1/divider),
-                                                        Median = CalculateMedian(values, 1/divider),
-                                                        StandartDeviation = CalculateStandartDeviation(values, 1/divider),
-                                                        StatisticsName = statName,
-                                                        ShortStatisticsName = $"{statName.Split(' ').FirstOrDefault()}",
-                                                        Unit = $"{unit}*мм" 
-                                                    };
+                return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values, 1/divider),
+                                                              maximum: CalculateMaximum(values, 1/divider),
+                                                              minimum: CalculateMinimum(values, 1/divider),
+                                                              standartDeviation: CalculateStandartDeviation(values, 1/divider),
+                                                              statisticsName: statName,
+                                                              shortStatisticsName: $"{statName.Split(' ').FirstOrDefault()}",
+                                                              unit: $"{unit}*мм",
+                                                              median: CalculateMedian(values, 1/divider));
             }
             return new SingleParameterStatisticCalculated();
         }
