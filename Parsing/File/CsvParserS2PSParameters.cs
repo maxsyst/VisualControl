@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using VueExample.Extensions;
 using VueExample.Parsing.Models;
 using VueExample.Parsing.StrategyInterface;
-
 namespace VueExample.Parsing.File
 {
     public class CsvParserS2PSParameters : ICsvParsingS2PStrategy
@@ -35,7 +35,7 @@ namespace VueExample.Parsing.File
             {
                 var nospaceline = Regex.Replace(line, " {1,}", @"\t");
                 var splitarray = nospaceline.Split(@"\t").ToList();
-                singleLine.AbscissList.Add(Math.Round((double.Parse(splitarray[0], CultureInfo.InvariantCulture) / 1E9), 2).ToString(CultureInfo.InvariantCulture));
+                singleLine.AbscissList.Add(Math.Round((double.Parse(splitarray[0], CultureInfo.InvariantCulture) / 1E9), 2).ToGoodFormat());
                 singleLine.ValueList.Add(CheckType(splitarray, index, S2PType));
             }
             return singleLine;
@@ -44,9 +44,9 @@ namespace VueExample.Parsing.File
         {
             if(S2PType == "RI")
             {
-                return FromRItoDB(CalculateValue(splitArray, index), CalculateValue(splitArray, index + 1)).ToString(CultureInfo.InvariantCulture);
+                return FromRItoDB(CalculateValue(splitArray, index), CalculateValue(splitArray, index + 1)).ToGoodFormat();
             }
-            return CalculateValue(splitArray, index).ToString(CultureInfo.InvariantCulture);
+            return CalculateValue(splitArray, index).ToGoodFormat();
         }
         private double CalculateValue(List<string> splitArray, int index)
         {
