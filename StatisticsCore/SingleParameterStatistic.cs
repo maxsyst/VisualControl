@@ -18,7 +18,7 @@ namespace VueExample.StatisticsCore
         public string TopBorderFixed{ get; set; }
         public string AverageFixed { get; set; }
         public bool IsHasFixed { get; set; } = false;
-        public DirtyCells DirtyCells{ get; set; } 
+        public DirtyCells DirtyCells{ get; set; }
 
         public SingleParameterStatistic()
         {
@@ -42,20 +42,19 @@ namespace VueExample.StatisticsCore
             this.DirtyCells.StatList = originDirtyCells.StatList.Intersect(dieList).ToList();
             this.DirtyCells.FixedList = originDirtyCells.FixedList.Intersect(dieList).ToList();
         }
-    
 
         private void CalculateDirtyCellsStat(double k)
         {
             var dds = new DataDescriptiveStatistics(valueList.Where(v => !Double.IsNaN(v)).ToList());
             for (int i = 0; i < valueList.Count; i++)
             {
-                if((dds.Quartile3Double + k*dds.IQRDouble < valueList[i] || dds.Quartile1Double - dds.IQRDouble*k > valueList[i] || double.IsNaN(valueList[i])))
+                if((dds.Quartile3Double + (k * dds.IQRDouble) < valueList[i] || dds.Quartile1Double - (dds.IQRDouble * k) > valueList[i] || double.IsNaN(valueList[i])))
                 {
                     this.DirtyCells.StatList.Add(dieList[i]);
                 }
             }
-            this.LowBorderStat = (dds.Quartile1Double - dds.IQRDouble * k).ToGoodFormat();
-            this.TopBorderStat = (dds.Quartile3Double + k * dds.IQRDouble).ToGoodFormat();
+            this.LowBorderStat = (dds.Quartile1Double - (dds.IQRDouble * k)).ToGoodFormat();
+            this.TopBorderStat = (dds.Quartile3Double + (k * dds.IQRDouble)).ToGoodFormat();
         }
 
         public SingleParameterStatistic CalculateDirtyCellsFixed(StatParameterForStage statParameterForStage)

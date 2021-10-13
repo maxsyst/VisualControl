@@ -21,7 +21,6 @@ namespace VueExample.Providers.ChipVerification
         {
             _appSettings = appSettings.Value;
             _applicationContext = applicationContext;
-
         }
 
         public (MeasurementSetViewModel, Error) Create(string name)
@@ -64,7 +63,6 @@ namespace VueExample.Providers.ChipVerification
             _applicationContext.Remove(deleted);
             _applicationContext.SaveChanges();
             return true;
-
         }
 
         public List<MeasurementSetViewModel> GetAllSets(int facilityId)
@@ -83,10 +81,7 @@ namespace VueExample.Providers.ChipVerification
                                                   });
 
             return measurementSetsViewModelList;
-
         }
-
-
 
         public List<AtomicMeasurementExtendedViewModel> GetAtomicsById(Guid measurementSetId, IMeasurementProvider measurementProvider)
         {
@@ -115,9 +110,6 @@ namespace VueExample.Providers.ChipVerification
                                              MeasurementSetId = measurementSetId,
                                              IsOnline = measurementProvider.IsMeasurementOnline(atomic.MeasurementId)
                                          });
-
-
-
             return atomicViewModelList;
         }
 
@@ -146,8 +138,6 @@ namespace VueExample.Providers.ChipVerification
                                              PortNumber = atomic.PortNumber,
                                              IsOnline = measurementProvider.IsMeasurementOnline(atomic.MeasurementId)
                                          });
-
-
             return atomicViewModelList;
         }
 
@@ -230,7 +220,5 @@ namespace VueExample.Providers.ChipVerification
 
             return materialBasedMeasurementSetsList;
         }
-
-
     }
 }

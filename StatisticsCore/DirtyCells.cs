@@ -8,10 +8,10 @@ namespace VueExample.StatisticsCore
     {
         public List<long?> StatList { get; set; } = new List<long?>();
         public List<long?> FixedList { get; set; } = new List<long?>();
-        public string StatPercentageSelected { get; set;}
-        public string FixedPercentageSelected { get; set;}
-        public string StatPercentageFullWafer { get; set;}
-        public string FixedPercentageFullWafer { get; set;}
+        public string StatPercentageSelected { get; set; }
+        public string FixedPercentageSelected { get; set; }
+        public string StatPercentageFullWafer { get; set; }
+        public string FixedPercentageFullWafer { get; set; }
 
         public DirtyCells Distinct()
         {
@@ -19,7 +19,7 @@ namespace VueExample.StatisticsCore
             this.FixedList = this.FixedList.Distinct().ToList();
             return this;
         }
-        
+
         public DirtyCells CalculatePercentage(int dieCount)
         {
             this.StatPercentageFullWafer = Convert.ToString(Math.Ceiling((1.0 - (this.StatList.Count / (dieCount + 0.0))) * 100), CultureInfo.InvariantCulture);

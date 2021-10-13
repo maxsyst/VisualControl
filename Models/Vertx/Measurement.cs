@@ -64,7 +64,6 @@ namespace VueExample.Models.Vertx
 
         public Measurement()
         {
-
         }
 
         public Measurement(string name, string measurementAttemptId)
@@ -76,7 +75,5 @@ namespace VueExample.Models.Vertx
             Name = name;
             Goal = new List<string>();
         }
-
     }
-
 }

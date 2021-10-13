@@ -18,7 +18,7 @@ using VueExample.ViewModels;
 namespace VueExample.Providers
 {
     public class ShortLinkProvider : IShortLinkProvider
-    {   
+    {
         private readonly Srv6Context _srv6Context;
         private readonly IMapper _mapper;
         private readonly IExportProvider _exportProvider;
@@ -59,7 +59,7 @@ namespace VueExample.Providers
 
         public async Task<AfterDbManipulationObject<ShortLinkInfoViewModel>> GetElementExportDetails(string shortLink)
         {
-            var shortLinkViewModel = _mapper.Map<ShortLinkInfoViewModel>(await GetFullUrlFromShortUrl(shortLink));        
+            var shortLinkViewModel = _mapper.Map<ShortLinkInfoViewModel>(await GetFullUrlFromShortUrl(shortLink));
             var obj = new AfterDbManipulationObject<ShortLinkInfoViewModel>();
             if(shortLinkViewModel.GeneratedId == default(Guid))
             {
@@ -69,11 +69,11 @@ namespace VueExample.Providers
             {
                 shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId, 1.5)).ToList();
                 obj.SetObject(shortLinkViewModel);
-            } 
+            }
             if(shortLinkViewModel.StatisticNameList is null || shortLinkViewModel.StatisticNameList.Count == 0)
             {
                 obj.AddError(new Error("Статистика не найдена"));
-            }              
+            }
             return obj;
         }
 
@@ -92,14 +92,13 @@ namespace VueExample.Providers
             {
                 return await Srv3Handler(shorturl);
             }
-            else 
+            else
             {
                 return await Srv6Handler(shorturl);
             }
-           
         }
 
-        private async Task<ShortLink> Srv6Handler(ShortLinkEntity shorturl) 
+        private async Task<ShortLink> Srv6Handler(ShortLinkEntity shorturl)
         {
             var link = shorturl.Link;
             var measurementRecordingId = Convert.ToInt32(link.Split(new string[] {"idmrpcm="}, StringSplitOptions.None)[1].Split('&')[0]);
@@ -113,13 +112,13 @@ namespace VueExample.Providers
                         Divider = (await _srv6Context.Dividers.ToListAsync()).ElementAtOrDefault(Convert.ToInt32(link.Split(new string[] {"square="}, StringSplitOptions.None)[1].Split('&')[0])),
                         SelectedDies = selectedDies,
                         SelectedGraphics = selectedGraphic == null ? new List<GraphicShortLinkViewModel>() : new List<GraphicShortLinkViewModel>{new GraphicShortLinkViewModel(await _graphicService.GetById((int)selectedGraphic))},
-                        MeasurementRecording = measurementRecording, 
+                        MeasurementRecording = measurementRecording,
                         GeneratedId = shorturl.GeneratedId
                     };
             return shortinfo;
         }
 
-        private async Task<ShortLink> Srv3Handler(ShortLinkEntity shortLinkEntity) 
+        private async Task<ShortLink> Srv3Handler(ShortLinkEntity shortLinkEntity)
         {
             var generateViewModel = JsonConvert.DeserializeObject<ShortLinkGenerateViewModel>(Deobfuscate(shortLinkEntity.Link));
             var measurementRecording = await _measurementRecordingService.GetById(generateViewModel.MeasurementRecordingId);
@@ -130,7 +129,7 @@ namespace VueExample.Providers
                         Divider = await _srv6Context.Dividers.FirstOrDefaultAsync(x => x.DividerK == generateViewModel.Divider),
                         SelectedDies = generateViewModel.SelectedDies,
                         SelectedGraphics = generateViewModel.SelectedGraphics,
-                        MeasurementRecording = measurementRecording, 
+                        MeasurementRecording = measurementRecording,
                         GeneratedId = shortLinkEntity.GeneratedId
                     };
             return shortinfo;
@@ -160,9 +159,7 @@ namespace VueExample.Providers
                 var bytes = Convert.FromBase64String(str);
                 for (int i = 0; i < bytes.Length; i++) bytes[i] ^= 0x5a;
                 return Encoding.UTF8.GetString(bytes);
-            }            
+            }
         }
-
-      
     }
 }

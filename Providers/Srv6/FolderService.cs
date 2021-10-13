@@ -48,8 +48,8 @@ namespace VueExample.Providers.Srv6
                 var simpleStateFileArray = Directory.EnumerateFiles($"{directoryPath}\\{dieWithCode.DieCode}",
                                                                     "*.*",
                                                                     SearchOption.TopDirectoryOnly)
-                                                    .Where(s => s.EndsWith(".s2p"));      
-                var stateDictionary = new Dictionary<string, Dictionary<string, SingleLine>>();   
+                                                    .Where(s => s.EndsWith(".s2p"));
+                var stateDictionary = new Dictionary<string, Dictionary<string, SingleLine>>();
                 foreach (var simpleStateFile in simpleStateFileArray)
                 {
                     var dict = parsingContext.Parse(simpleStateFile);
@@ -58,10 +58,10 @@ namespace VueExample.Providers.Srv6
                 stateDictionary = parsingContext.DeltaCalculation(stateDictionary);
                 dieWithCodeDictionaryList.Add(schemeConverter.ConvertDieWithCode(dieWithCode, stateDictionary));
             }
-          
+
             graphic4ParseResultList.AddRange(from graphic in uploadingFile.UploadingType.Graphics
                                              select schemeConverter.ConvertToScheme(dieWithCodeDictionaryList, graphic));
-            return graphic4ParseResultList;     
+            return graphic4ParseResultList;
         }
         public List<string> GetAllCodeProductInUploaderDirectory(string directoryPath)
         {
@@ -73,7 +73,7 @@ namespace VueExample.Providers.Srv6
                 var dir = new DirectoryInfo(directory);
                 var dirName = dir.Name;
                 directoriesNameList.Add(dirName);
-            }           
+            }
             return directoriesNameList;
         }
 
@@ -93,7 +93,7 @@ namespace VueExample.Providers.Srv6
                 var dir = new DirectoryInfo(directory);
                 var dirName = dir.Name;
                 directoriesNameList.Add(dirName);
-            }           
+            }
             return directoriesNameList;
         }
 
@@ -107,7 +107,7 @@ namespace VueExample.Providers.Srv6
                 var dir = new DirectoryInfo(directory);
                 var dirName = dir.Name;
                 directoriesNameList.Add(dirName);
-            }           
+            }
             return directoriesNameList;
         }
 
@@ -121,11 +121,11 @@ namespace VueExample.Providers.Srv6
                 var dir = new DirectoryInfo(directory);
                 var dirName = dir.Name;
                 directoriesNameList.Add(dirName);
-            }           
+            }
             return directoriesNameList;
         }
 
-        public Dictionary<string, UploadingFileData> GetDataFromLNRFile(string path) 
+        public Dictionary<string, UploadingFileData> GetDataFromLNRFile(string path)
         {
             path = GetTruePath(path);
             var dataDictionary = new Dictionary<string, UploadingFileData>();
@@ -153,14 +153,13 @@ namespace VueExample.Providers.Srv6
                             uploaderFileData.ValueLists[graphicNamesList[j]].Add(dataArray[j]);
                         }
                     }
-                  
+
                 }
             }
             return dataDictionary;
-
         }
 
-        public Dictionary<string, UploadingFileData> GetDataFromHSTGFile(string path) 
+        public Dictionary<string, UploadingFileData> GetDataFromHSTGFile(string path)
         {
             path = GetTruePath(path);
             var dataDictionary = new Dictionary<string, UploadingFileData>();
@@ -179,15 +178,15 @@ namespace VueExample.Providers.Srv6
                 var dataArray = dataList[2].Split(',');
                 for (int i = 0; i < graphicNamesList.Length; i++)
                 {
-                    uploaderFileData.ValueLists.Add(graphicNamesList[i], new List<string>{dataArray[i]});                  
-                }      
+                    uploaderFileData.ValueLists.Add(graphicNamesList[i], new List<string>{dataArray[i]});
+                }
             }
             return dataDictionary;
         }
 
         public async Task<List<SimpleOperationUploaderViewModel>> GetSimpleOperations(string directoryPath, string codeProductName, string waferName, int dieTypeId, List<string> measurementRecordings)
         {
-            var simpleOperationList = new List<SimpleOperationUploaderViewModel>(); 
+            var simpleOperationList = new List<SimpleOperationUploaderViewModel>();
             directoryPath = GetTruePath(directoryPath);
             var fileNames = await _fileGraphicUploaderService.GetAllFileNamesByProcessId((await _processProvider.GetProcessByCodeProductId((await _codeProductProvider.GetByWaferId(waferName)).IdCp)).ProcessId);
             foreach (var meas in measurementRecordings)
@@ -197,7 +196,7 @@ namespace VueExample.Providers.Srv6
                 {
                     var dirElementName = new DirectoryInfo(directory).Name;
                     var simpleOperationArray = Directory.EnumerateFiles($"{directoryPath}\\{codeProductName}\\meas\\{waferName}\\{meas}\\{dirElementName}", "*.*", SearchOption.TopDirectoryOnly)
-                                                        .Where(s => s.EndsWith(".csv") || s.EndsWith(".s2p"));                    
+                                                        .Where(s => s.EndsWith(".csv") || s.EndsWith(".s2p"));
                     foreach (var simpleOperationFileName in simpleOperationArray)
                     {
                         var simpleOperation = new SimpleOperationUploaderViewModel{Guid = Guid.NewGuid().ToString()};
@@ -207,8 +206,8 @@ namespace VueExample.Providers.Srv6
                         var element = (await _elementService.GetByDieTypeId(dieTypeId)).FirstOrDefault(x => x.Name == dirElementName);
                         simpleOperation.Element = new ElementUploading{Name = dirElementName, ElementId = element?.ElementId, Comment = element?.Comment};
                         simpleOperation.FileName = new FileNameUploaderUViewModel{Name = Path.GetFileName(simpleOperationFileName)};
-                        var fileNameWithoutExpansion = simpleOperation.FileName.Name.Contains('.') 
-                                                       ? simpleOperation.FileName.Name.Substring(0, simpleOperation.FileName.Name.Length - simpleOperation.FileName.Name.Split('.').Last().Length - 1) 
+                        var fileNameWithoutExpansion = simpleOperation.FileName.Name.Contains('.')
+                                                       ? simpleOperation.FileName.Name.Substring(0, simpleOperation.FileName.Name.Length - simpleOperation.FileName.Name.Split('.').Last().Length - 1)
                                                        : String.Empty;
                         var fileName = fileNames.FirstOrDefault(f => f.Name == fileNameWithoutExpansion);
                         if(fileName != null)
@@ -230,11 +229,10 @@ namespace VueExample.Providers.Srv6
                             }
                             simpleOperation.FileName.GraphicNames = graphicNamesDict.Values.ToList();
                             simpleOperation.FileName.SelectedGraphicNames = simpleOperation.FileName.GraphicNames.FirstOrDefault();
-                        }                        
+                        }
                         simpleOperationList.Add(simpleOperation);
                     }
-                    
-                }           
+                }
             }
             return simpleOperationList;
         }
@@ -245,7 +243,5 @@ namespace VueExample.Providers.Srv6
             path = path.Replace(@"T:\\", _path);
             return path;
         }
-
-       
     }
 }
