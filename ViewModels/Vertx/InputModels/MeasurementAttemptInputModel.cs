@@ -5,6 +5,5 @@ namespace VueExample.ViewModels.Vertx.InputModels
         public string Id { get; set; }
         public string Name { get; set; }
         public string MdvId { get; set; }
-
     }
 }

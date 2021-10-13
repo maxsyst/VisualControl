@@ -7,11 +7,11 @@ namespace VueExample.ViewModels
     public class StandartMeasurementPatternFullViewModel
     {
         public StandartPatternViewModel StandartPattern { get; set; }
-        
+
         [JsonProperty(PropertyName = "standartMeasurementPatternList")]
         public List<StandartMeasurementPatternViewModel> standartMeasurementPatternList { get; set; } = new List<StandartMeasurementPatternViewModel>();
     }
-    
+
     public class StandartMeasurementPatternViewModel
     {
         public int Id { get; set; }
@@ -21,7 +21,7 @@ namespace VueExample.ViewModels
         public int PatternId { get; set; }
         public string Name { get; set; }
         public string MslName { get; set; }
-        
+
         [IgnoreMap]
         [JsonProperty(PropertyName = "kpList")]
         public List<KurbatovParameterViewModel> kpList { get; set; } = new List<KurbatovParameterViewModel>();
@@ -40,5 +40,4 @@ namespace VueExample.ViewModels
         public string Lower { get; set; }
         public string Upper { get; set; }
     }
-
 }

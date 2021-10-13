@@ -12,14 +12,11 @@ namespace VueExample.ViewModels
         public string MapType { get; set; } = String.Empty;
         public string Comment { get; set; } = String.Empty;
     }
-    
-    public class ElementUploading 
+
+    public class ElementUploading
     {
         public int? ElementId { get; set; }
         public string Name { get; set; }
         public string Comment { get; set; }
-
     }
-
-
 }

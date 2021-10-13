@@ -22,7 +22,6 @@ namespace VueExample.StatisticsCore
 
         public SingleParameterStatistic()
         {
-            
         }
 
         public SingleParameterStatistic(string name, List<long?> dieList, List<double> valueList, double k)
@@ -69,7 +68,6 @@ namespace VueExample.StatisticsCore
             }
 
             return this;
-            
         }
 
         private void CalculateFixedList()

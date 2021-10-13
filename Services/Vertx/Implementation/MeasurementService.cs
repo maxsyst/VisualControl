@@ -102,7 +102,6 @@ namespace VueExample.Services.Vertx.Implementation
                 .ToListAsync();
         }
 
-
         public async Task<bool> Delete(ObjectId id)
         {
             var deleteResult =

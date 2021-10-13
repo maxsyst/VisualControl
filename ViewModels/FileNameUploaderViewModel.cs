@@ -10,7 +10,6 @@ namespace VueExample.ViewModels
         public string Path { get; set; }
         public int ProcessId { get; set; }
         public List<GraphicNameUploaderViewModel> GraphicNames { get; set; }
-        
     }
 
     public class FileNameUploaderUViewModel
@@ -20,6 +19,5 @@ namespace VueExample.ViewModels
         public int ProcessId { get; set; }
         public string SelectedGraphicNames { get; set; }
         public List<string> GraphicNames { get; set; }
-        
     }
 }

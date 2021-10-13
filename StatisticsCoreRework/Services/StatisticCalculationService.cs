@@ -16,10 +16,10 @@ namespace VueExample.StatisticsCoreRework.Services
 
         private SingleParameterStatisticCalculated SingleParameterStatisticCalculatedBuilder(SingleParameterStatisticValues singleParameterStatisticValues, double divider) {
             var (statName, unit, dividerProfile, _, values) = singleParameterStatisticValues;
-            if(dividerProfile == DividerProfile.WithoutDivider || Math.Abs(divider - 1.0) < 1E-6) 
+            if(dividerProfile == DividerProfile.WithoutDivider || Math.Abs(divider - 1.0) < 1E-6)
             {
-                return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values), 
-                                                              maximum: CalculateMaximum(values), 
+                return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values),
+                                                              maximum: CalculateMaximum(values),
                                                               minimum: CalculateMinimum(values),
                                                               standartDeviation: CalculateStandartDeviation(values),
                                                               statisticsName: statName,
@@ -27,7 +27,7 @@ namespace VueExample.StatisticsCoreRework.Services
                                                               unit: unit,
                                                               median: CalculateMedian(values));
             }
-            if(dividerProfile == DividerProfile.WithDivider) 
+            if(dividerProfile == DividerProfile.WithDivider)
             {
                  return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values, divider),
                                                               maximum: CalculateMaximum(values, divider),
@@ -38,7 +38,7 @@ namespace VueExample.StatisticsCoreRework.Services
                                                               unit: $"{unit}/мм",
                                                               median: CalculateMedian(values, divider));
             }
-            if(dividerProfile == DividerProfile.ROnFamily) 
+            if(dividerProfile == DividerProfile.ROnFamily)
             {
                 return new SingleParameterStatisticCalculated(expectedValue: CalculateExpectedValue(values, 1/divider),
                                                               maximum: CalculateMaximum(values, 1/divider),
@@ -77,6 +77,5 @@ namespace VueExample.StatisticsCoreRework.Services
             }
             return ToStringD(standartdeviation);
         }
-
     }
 }

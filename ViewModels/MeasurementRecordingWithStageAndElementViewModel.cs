@@ -16,23 +16,22 @@ namespace VueExample.ViewModels
         public int? StageId { get; set; }
     }
 
-    public class StageFullViewModel 
+    public class StageFullViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public List<MeasurementRecordingWithStageAndElementViewModel> MeasurementRecordingList { get; set; }
     }
 
-    public class StageMeasurementRecordingChunkViewModel 
+    public class StageMeasurementRecordingChunkViewModel
     {
         public int StageId { get; set; }
-        public int MeasurementRecordingId { get; set; }    
+        public int MeasurementRecordingId { get; set; }
     }
-    
 
-    public class ElementMeasurementRecordingChunkViewModel 
+    public class ElementMeasurementRecordingChunkViewModel
     {
         public int ElementId { get; set; }
-        public int MeasurementRecordingId { get; set; }    
+        public int MeasurementRecordingId { get; set; }
     }
-}  
+}

@@ -14,6 +14,4 @@ namespace VueExample.ViewModels
         public List<int> CodeProductIdsList { get; set; }
         public List<ElementViewModel> ElementsList { get; set; }
     }
-
-
 }

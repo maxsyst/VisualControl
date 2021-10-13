@@ -9,7 +9,6 @@ namespace VueExample.StatisticsCore
 {
     public class DataDescriptiveStatistics
     {
-
         public string Median { get; set; }
         public string Quartile1 { get; set; }
         public string Quartile3 { get; set; }
@@ -24,7 +23,6 @@ namespace VueExample.StatisticsCore
 
         public DataDescriptiveStatistics()
         {
-
         }
 
         public DataDescriptiveStatistics(List<double> list)
@@ -66,7 +64,5 @@ namespace VueExample.StatisticsCore
             var filteredList = list.Where(d => d > lowlimit && d < upperlimit).ToList();
             return filteredList;
         }
-
-
     }
 }
