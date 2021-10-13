@@ -14,7 +14,6 @@ namespace VueExample.StatisticsCoreRework.Models
         public string GoodDiesPercentage { get; set; } = "0.0";
         public DirtyCellsShort()
         {
-            
         }
         public DirtyCellsShort(string statName, string lowBorder, string topBorder)
         {
@@ -30,5 +29,4 @@ namespace VueExample.StatisticsCoreRework.Models
             return this;
         }
     }
-    
 }

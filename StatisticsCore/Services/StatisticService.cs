@@ -104,9 +104,6 @@ namespace VueExample.StatisticsCore.Services
                     return new SingleStatisticServices.SingleParameterServiceHSTG();
             }
             return new SingleStatisticServices.SingleParameterServiceLNR();
-
        }
-
-       
     }
 }

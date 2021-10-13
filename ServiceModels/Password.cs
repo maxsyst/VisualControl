@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using VueExample.Services;
-
 namespace VueExample.ServiceModels
 {
     public class Password
@@ -19,8 +10,5 @@ namespace VueExample.ServiceModels
             Hash = hash;
             Salt = salt;
         }
-        
     }
-
-    
 }

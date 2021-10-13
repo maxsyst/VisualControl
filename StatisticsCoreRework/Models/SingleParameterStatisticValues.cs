@@ -14,7 +14,6 @@ namespace VueExample.StatisticsCoreRework.Models
 
         public SingleParameterStatisticValues()
         {
-            
         }
 
         public SingleParameterStatisticValues(string name, string unit, DividerProfile dividerProfile, List<long?> dieList, List<double> valueList)
@@ -27,18 +26,15 @@ namespace VueExample.StatisticsCoreRework.Models
                 if(Double.IsNaN(valueList[i])) 
                 {
                      DieStatDictionary.Add((long)dieList[i], "NaN");
-            
                 }
                 else 
                 {
                      DieStatDictionary.Add((long)dieList[i], Convert.ToString(valueList[i], CultureInfo.InvariantCulture));
-            
                 }
            }
         }       
 
         public List<double> GetValues() => DieStatDictionary.Values.Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture)).ToList();
-
 
         public void Deconstruct(out string _StatisticName, out string _Unit, out DividerProfile _DividerProfile, out Dictionary<long, string> _DieStatDictionary, out List<double> _Values) 
         {
@@ -47,7 +43,6 @@ namespace VueExample.StatisticsCoreRework.Models
             _DividerProfile = DividerProfile;
             _DieStatDictionary = DieStatDictionary;
             _Values = GetValues();
-
         }
     }
 }

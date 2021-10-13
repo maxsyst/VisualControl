@@ -17,6 +17,5 @@ namespace VueExample.StatisticsCore.DataModels
         public string TopBorderFixed{ get; set; }
         public string AverageFixed { get; set; }
         public DirtyCells DirtyCells{get; set; }
-
     }
 }

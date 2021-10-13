@@ -11,6 +11,5 @@ namespace VueExample.ResponseObjects
         public string ResponseType { get; set; }
         public List<Error> ErrorList { get; set; } = new List<Error>();
         public List<Warning> WarningList { get; set; } = new List<Warning>();
-
     }
 }
