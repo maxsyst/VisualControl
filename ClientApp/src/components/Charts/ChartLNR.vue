@@ -71,6 +71,8 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
+import ChartJsDeffered from 'chartjs-plugin-deferred';
+// eslint-disable-next-line no-unused-vars
 import ChartJsZoom from 'chartjs-plugin-zoom';
 import LineChart from './LineChart.vue';
 import Settings from './ChartSettings/ChartSettingsLNR';
@@ -179,9 +181,9 @@ export default {
       let nextA;
 
       // always add the first point
-      sampled[sampledIndex++] = data[a];
+      sampled[sampledIndex += 1] = data[a];
 
-      for (let i = 0; i < threshold - 2; i++) {
+      for (let i = 0; i < threshold - 2; i += 1) {
         // Calculate point average for next bucket (containing c)
         let avgX = 0;
         let avgY = 0;
@@ -190,7 +192,7 @@ export default {
         avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
 
         const avgRangeLength = avgRangeEnd - avgRangeStart;
-        for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
+        for (; avgRangeStart < avgRangeEnd; avgRangeStart += 1) {
           avgX += data[avgRangeStart].x * 1; // * 1 enforces Number (value may be Date)
           avgY += data[avgRangeStart].y * 1;
         }
@@ -205,9 +207,9 @@ export default {
         const pointAX = data[a].x * 1; // enforce Number (value may be Date)
         const pointAY = data[a].y * 1;
 
-        maxArea = area = -1;
-
-        for (; rangeOffs < rangeTo; rangeOffs++) {
+        maxArea = -1;
+        area = -1;
+        for (; rangeOffs < rangeTo; rangeOffs += 1) {
           // Calculate triangle area over three buckets
           area = abs((pointAX - avgX) * (data[rangeOffs].y - pointAY)
                         - (pointAX - data[rangeOffs].x) * (avgY - pointAY)) * 0.5;
@@ -218,7 +220,7 @@ export default {
           }
         }
 
-        sampled[sampledIndex++] = maxAreaPoint; // Pick this point from the bucket
+        sampled[sampledIndex += 1] = maxAreaPoint; // Pick this point from the bucket
         a = nextA; // This a is the next a (chosen b)
       }
 
@@ -227,7 +229,7 @@ export default {
       return sampled;
     },
 
-    settingsChanged(e) {
+    settingsChanged() {
       this.settings = _.cloneDeep(this.$store.getters['wafermeas/getGraphicSettingsKeyGraphicState'](this.keyGraphicState));
     },
 

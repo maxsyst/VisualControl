@@ -114,7 +114,6 @@ export default {
             this.updateCircular.value += 25;
           }, 250);
         }
-
       }
     },
 
@@ -248,6 +247,7 @@ export default {
     },
 
     selectedDies() {
+      this.capSelectedDies = [...this.selectedDies];
       this.refresh();
     },
   },

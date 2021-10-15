@@ -43,6 +43,22 @@
             dark
             color="indigo"
             v-on="on"
+            @click="unselectAllDies">
+            <v-icon>not_interested</v-icon>
+          </v-btn>
+          </template>
+          <span>Снять выбор со всех кристаллов</span>
+      </v-tooltip>
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-scroll="onScroll"
+            v-show="fabToTop"
+            fab
+            small
+            dark
+            color="indigo"
+            v-on="on"
             @click="delDirtyCells(dirtyCellsSnapshot.badDies, selectedDies)">
             <v-icon>cached</v-icon>
           </v-btn>
@@ -440,6 +456,10 @@ export default {
 
     selectAllDies(avbSelectedDies) {
       this.$store.dispatch('wafermeas/updateSelectedDies', [...avbSelectedDies]);
+    },
+
+    unselectAllDies() {
+      this.$store.dispatch('wafermeas/updateSelectedDies', []);
     },
 
     selectAllGraphics() {
