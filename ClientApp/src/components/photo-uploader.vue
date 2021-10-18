@@ -13,76 +13,67 @@
                accepted-file-types="image/jpeg, image/png"
                v-on:processfile ="handleProcessFile"
                v-bind:server="server"/>
-               
+
   </div>
 </template>
 
 <script>
- 
-  import vueFilePond from 'vue-filepond';
 
-  // Import plugins
-  import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js';
+import vueFilePond from 'vue-filepond';
 
-  // Import styles
-  import 'filepond/dist/filepond.min.css';
-  import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+// Import plugins
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js';
 
-  // Create FilePond component
-  const FilePond = vueFilePond(FilePondPluginImagePreview);
+// Import styles
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 
-  
-  
-  export default {
+// Create FilePond component
+const FilePond = vueFilePond(FilePondPluginImagePreview);
 
-    props: ['reset'],
-    data: function () {
-      return {
-        
-        server: {
-          process: {
-            url: './api/photouploading/saveimage',
-            method: 'POST',
-            withCredentials: false,
-            onload: function (response) {
-              return response;
-            },
-            onerror: function (response) {
-              return response;
-            }
-           
+export default {
+
+  props: ['reset'],
+  data() {
+    return {
+
+      server: {
+        process: {
+          url: './api/photouploading/saveimage',
+          method: 'POST',
+          withCredentials: false,
+          onload(response) {
+            return response;
+          },
+          onerror(response) {
+            return response;
           },
 
-          fetch: null,
-          revert: null
-        }
-      };
-    },
-    methods: {
-      
-      handleProcessFile: function () {
-       
-        this.$emit('fileLoaded', this.$refs.pond.getFile().serverId);
-       
-      }
+        },
 
-     
+        fetch: null,
+        revert: null,
+      },
+    };
+  },
+  methods: {
+
+    handleProcessFile() {
+      this.$emit('fileLoaded', this.$refs.pond.getFile().serverId);
     },
-    watch:
+
+  },
+  watch:
     {
-        reset: function ()
-        {
-          if (this.reset === "reset")
-          {
-            this.$refs.pond.removeFiles();
-          }
-           
-            
+      reset() {
+        if (this.reset === 'reset') {
+          this.$refs.pond.removeFiles();
         }
+      },
     },
-    components: {
-      FilePond
-    }
-    
-  };
+  components: {
+    FilePond,
+  },
+
+};
 </script>

@@ -38,6 +38,4 @@ namespace VueExample.Models.Vertx
             Name = name;
         }
     }
-
-
 }

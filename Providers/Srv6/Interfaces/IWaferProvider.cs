@@ -11,6 +11,5 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<List<PWafer>> GetPWafer();
         Task<Wafer> GetByWaferId(string waferId);
         Task<Wafer> GetByMeasurementRecordingId(int measurementRecordingId);
-
     }
 }

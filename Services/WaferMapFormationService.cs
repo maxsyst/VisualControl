@@ -15,7 +15,7 @@ namespace VueExample.Services
         private int XCoordinateMin { get; }
         private int YCoordinateMax { get; }
         private int XCoordinateMax { get; }
-      
+
         private readonly List<Die> _dieList;
 
         public WaferMapFormationService(double fieldHeight, double fieldWidth, double streetSize, List<Die> dieList)
@@ -40,15 +40,13 @@ namespace VueExample.Services
             var waferMapDieList = new List<WaferMapDie>();
             var xQuantity = XCoordinateMax - XCoordinateMin + 1;
             var yQuantity = YCoordinateMax - YCoordinateMin + 1;
-            var xGridCellSize = (FieldWidth - xQuantity * StreetSize) / xQuantity;
-            var yGridCellSize = (FieldHeight - yQuantity * StreetSize) / yQuantity;
+            var xGridCellSize = (FieldWidth - (xQuantity * StreetSize)) / xQuantity;
+            var yGridCellSize = (FieldHeight - (yQuantity * StreetSize)) / yQuantity;
 
             foreach (var die in _dieList)
                 waferMapDieList.Add(new WaferMapDie(
-                    (die.XCoordinate - XCoordinateMin) * xGridCellSize +
-                    (die.XCoordinate - XCoordinateMin) * StreetSize,
-                    (die.YCoordinate - YCoordinateMin) * yGridCellSize +
-                    (die.YCoordinate - YCoordinateMin) * StreetSize, yGridCellSize, xGridCellSize, die.DieId, die.Code));
+                    ((die.XCoordinate - XCoordinateMin) * xGridCellSize) + ((die.XCoordinate - XCoordinateMin) * StreetSize),
+                    ((die.YCoordinate - YCoordinateMin) * yGridCellSize) +  ((die.YCoordinate - YCoordinateMin) * StreetSize), yGridCellSize, xGridCellSize, die.DieId, die.Code));
 
             return waferMapDieList;
         }
