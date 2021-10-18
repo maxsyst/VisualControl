@@ -10,7 +10,6 @@ namespace VueExample.StatisticsCoreRework.Models
         public Dictionary<string, Limitation> Fixed { get; set; }
         public StatParameterDirtyCells()
         {
-
         }
         public StatParameterDirtyCells(string name)
         {
@@ -19,5 +18,4 @@ namespace VueExample.StatisticsCoreRework.Models
             Fixed = new Dictionary<string, Limitation>();
         }
     }
-
 }

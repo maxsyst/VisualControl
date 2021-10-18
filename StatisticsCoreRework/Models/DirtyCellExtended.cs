@@ -13,7 +13,6 @@ namespace VueExample.StatisticsCoreRework.Models
 
         public DirtyCellExtended()
         {
-
         }
 
         public DirtyCellExtended(long dieId, double trueValue, string lowBorder, string topBorder)

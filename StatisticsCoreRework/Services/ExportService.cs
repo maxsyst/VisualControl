@@ -67,7 +67,6 @@ namespace VueExample.StatisticsCoreRework.Services
                     {
                         for (int i = 0; i < singleParameterStatistic.Value.DieStatDictionary.Count; i++)
                         {
-
                             long? die = (long?)singleParameterStatistic.Value.DieStatDictionary.Keys.ElementAt(i);
                             var value = Convert.ToDouble(singleParameterStatistic.Value.DieStatDictionary.Values.ElementAt(i), CultureInfo.InvariantCulture) / kurbatovParameter.Divider;
                             kurbatovParameter.advList.Add
@@ -113,7 +112,6 @@ namespace VueExample.StatisticsCoreRework.Services
                 {
                     if (statNamesList.Contains(singleParameterStatistic.Value.StatisticName))
                     {
-
                         var d = new Dictionary<string, string>();
                         var dieList = new List<int>();
                         d["name"] = singleParameterStatistic.Value.StatisticName;
