@@ -19,9 +19,9 @@ namespace VueExample.Providers.ChipVerification
             _mapper = mapper;
             _applicationContext = applicationContext;
         }
-         
+
         public async Task<AfterDbManipulationObject<MaterialViewModel>> ChangeMaterialOnMeasurement(int measurementId, int materialId)
-        {           
+        {
             var measurement = await _applicationContext.Measurement.FindAsync(measurementId);
             var material = await _applicationContext.Material.FindAsync(materialId);
             var obj = new AfterDbManipulationObject<MaterialViewModel>();
@@ -40,16 +40,15 @@ namespace VueExample.Providers.ChipVerification
             {
                 return obj;
             }
-        
+
             material.MaterialId = materialId;
             await _applicationContext.SaveChangesAsync();
             obj.SetObject(_mapper.Map<MaterialViewModel>(material));
-            return obj;                                        
-
+            return obj;
         }
 
         public async Task<AfterDbManipulationObject<List<MaterialViewModel>>> GetAll()
-        {              
+        {
             var obj = new AfterDbManipulationObject<List<MaterialViewModel>>();
             var materialList = await _applicationContext.Material.ToListAsync();
 
@@ -59,24 +58,22 @@ namespace VueExample.Providers.ChipVerification
                 return obj;
             }
 
-            obj.SetObject(materialList.Select(x => _mapper.Map<MaterialViewModel>(x)).ToList());           
+            obj.SetObject(materialList.Select(x => _mapper.Map<MaterialViewModel>(x)).ToList());
             return obj;
         }
 
         public async Task<AfterDbManipulationObject<MaterialViewModel>> GetMaterialByMeasurementId(int measurementId)
         {
             var obj = new AfterDbManipulationObject<MaterialViewModel>();
-            var material = await _applicationContext.Measurement.Where(m => m.MeasurementId == measurementId).Join(_applicationContext.Material, 
-                                                            m1 => m1.MaterialId, 
+            var material = await _applicationContext.Measurement.Where(m => m.MeasurementId == measurementId).Join(_applicationContext.Material,
+                                                            m1 => m1.MaterialId,
                                                             m2 => m2.MaterialId,
                                                             (m1, m2) => new MaterialViewModel{MaterialId = m2.MaterialId, Name = m2.Name}).FirstOrDefaultAsync();
-                                                            
             if(material is null)
             {
                 obj.AddError(new Error(@"Материал не найден"));
                 return obj;
             }
-
             obj.SetObject(material);
             return obj;
         }

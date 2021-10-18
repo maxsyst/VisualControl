@@ -8,7 +8,6 @@ namespace VueExample.Parsing.UploadingType
     {
         public PswParseStrategy()
         {
-            
         }
 
         public Dictionary<string, Dictionary<string, SingleLine>> DeltaCalculation(Dictionary<string, Dictionary<string, SingleLine>> stateDictionary)

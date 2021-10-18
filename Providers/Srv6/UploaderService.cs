@@ -10,9 +10,9 @@ using VueExample.Providers.Abstract;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services.Abstract;
 
-namespace VueExample.Providers.Srv6 
+namespace VueExample.Providers.Srv6
 {
-    public class UploaderService : IUploaderService 
+    public class UploaderService : IUploaderService
     {
         private readonly IStandartWaferService _standartWaferService;
         private readonly IDieProvider _dieProvider;
@@ -24,7 +24,7 @@ namespace VueExample.Providers.Srv6
         private readonly IFolderService _folderService;
         private readonly IElementService _elementService;
         private readonly IGraphic4Service _graphic4Service;
-        public UploaderService (IGraphic4Service graphic4Service, IElementService elementService, IUploadingTypeService uploadingTypeService, IFolderService folderService, IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider) 
+        public UploaderService (IGraphic4Service graphic4Service, IElementService elementService, IUploadingTypeService uploadingTypeService, IFolderService folderService, IStandartWaferService standartWaferService, ISRV6GraphicService graphicService, IMeasurementRecordingService measurementRecordingService, IDieProvider dieProvider, IDieValueService dieValueService, IShortLinkProvider shortLinkProvider, IStageProvider stageProvider)
         {
             _graphic4Service = graphic4Service;
             _elementService = elementService;
@@ -53,10 +53,10 @@ namespace VueExample.Providers.Srv6
                         var fkMrGraphics = await _measurementRecordingService.GetFkMrGraphics(measurementRecording?.Id, graphic.Id);
                         fkMrGraphicsList.Add(fkMrGraphics);
                     }
-                    if(fkMrGraphicsList.Count > 0) 
+                    if(fkMrGraphicsList.Count > 0)
                     {
                         var stage = await _stageProvider.GetByMeasurementRecordingId(measurementRecording.Id);
-                        if(stage.IsNullObject) 
+                        if(stage.IsNullObject)
                         {
                             uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, Stage = new ViewModels.StageViewModel(), UploadStatus = "already"});
                         }
@@ -64,9 +64,9 @@ namespace VueExample.Providers.Srv6
                         {
                             uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, Stage = new ViewModels.StageViewModel {Id = stage.StageId, Name = stage.StageName}, UploadStatus = "already"});
                         }
-                        
-                    } 
-                    else 
+
+                    }
+                    else
                     {
                         uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, Stage = new ViewModels.StageViewModel(), UploadStatus = "initial"});
                     }
@@ -81,10 +81,10 @@ namespace VueExample.Providers.Srv6
 
         public async Task<string> UploadingGraphic4(UploadingFileGraphic4 uploadingFile)
         {
-            var graphic4ParseList = await _folderService.GetGraphic4(uploadingFile);           
+            var graphic4ParseList = await _folderService.GetGraphic4(uploadingFile);
             var bigMeasurementRecording = await _measurementRecordingService.GetOrAddBigMeasurement(uploadingFile.MeasurementRecordingName, uploadingFile.WaferId);
             var date = DateTime.Now.AddYears(-1);
-            var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, date, uploadingFile.StageId);              
+            var measurementRecording = await _measurementRecordingService.GetOrCreate(uploadingFile.MeasurementRecordingName, 2, bigMeasurementRecording.Id, date, uploadingFile.StageId);
             var graphic4ViewModel = await _graphic4Service.CreateGraphic4(graphic4ParseList, measurementRecording.Id, uploadingFile.WaferId);
             var dieIdList = graphic4ParseList.FirstOrDefault().DieWithCodesList.Select(x => x.DieId).ToList();
             await _dieProvider.GetOrAddDieParameters(dieIdList, measurementRecording.Id);
@@ -118,42 +118,42 @@ namespace VueExample.Providers.Srv6
             return new MeasurementRecordingStatus{Status = "ready", MeasurementRecordingId = 0};
         }
 
-        public async Task<string> Uploading (UploadingFile uploadingFile, int type) 
+        public async Task<string> Uploading (UploadingFile uploadingFile, int type)
         {
             DateTime modifieddate = DateTime.Now;
             var diegraphicList = new List<DieGraphics>();
             var dieList = new List<string>();
 
-            foreach (var data in uploadingFile.Data) 
+            foreach (var data in uploadingFile.Data)
             {
                 string code = data.Key;
-                if (!String.IsNullOrEmpty(uploadingFile.Map)) 
+                if (!String.IsNullOrEmpty(uploadingFile.Map))
                 {
                     code = await _standartWaferService.GetCodeFromStandartWafer(code, uploadingFile.Map);
                 }
                 var die = await _dieProvider.GetByWaferIdAndCode(uploadingFile.WaferId, code);
-                if (die != null) 
+                if (die != null)
                 {
                     dieList.Add(Convert.ToString(die.DieId));
-                    if (uploadingFile.IsNewMeasurement) 
+                    if (uploadingFile.IsNewMeasurement)
                     {
                         await _dieProvider.GetOrAddDieParameter(die.DieId, (int) uploadingFile.MeasurementRecordingId);
                     }
 
-                    if (type == 1) 
+                    if (type == 1)
                     {
-                        for (var i = 0; i < uploadingFile.Graphics.Count; i++) 
+                        for (var i = 0; i < uploadingFile.Graphics.Count; i++)
                         {
                             var ordinateList = new List<string>();
                             var abcissList = new List<string>();
                             abcissList = data.Value.AbscissList.GetRange(0, data.Value.AbscissList.Count);
 
-                            for (int j = 0; j < data.Value.AbscissList.Count; j++) 
-                            {                              
-                                ordinateList.Add(data.Value.ValueLists.ElementAt(i).Value[j]);                                
+                            for (int j = 0; j < data.Value.AbscissList.Count; j++)
+                            {
+                                ordinateList.Add(data.Value.ValueLists.ElementAt(i).Value[j]);
                             }
 
-                            if (double.Parse(abcissList.FirstOrDefault(), CultureInfo.InvariantCulture) > double.Parse(abcissList.Last(), CultureInfo.InvariantCulture)) 
+                            if (double.Parse(abcissList.FirstOrDefault(), CultureInfo.InvariantCulture) > double.Parse(abcissList.Last(), CultureInfo.InvariantCulture))
                             {
                                 ordinateList.Reverse();
                                 abcissList.Reverse();
@@ -162,7 +162,7 @@ namespace VueExample.Providers.Srv6
                             var graphicstring = abcissList.Aggregate(String.Empty, (current, abc) => current + "*" + abc);
                             graphicstring = graphicstring + "X";
                             graphicstring = ordinateList.Aggregate(graphicstring, (current, ord) => current + "*" + ord);
-                            diegraphicList.Add(new DieGraphics 
+                            diegraphicList.Add(new DieGraphics
                             {
                                 DieId = die.DieId,
                                 GraphicId = uploadingFile.Graphics[i].Id,
@@ -173,11 +173,11 @@ namespace VueExample.Providers.Srv6
                         }
                     }
 
-                    if (type == 2) 
+                    if (type == 2)
                     {
-                        for (int i = 0; i < uploadingFile.Graphics.Count; i++) 
+                        for (int i = 0; i < uploadingFile.Graphics.Count; i++)
                         {
-                            diegraphicList.Add(new DieGraphics 
+                            diegraphicList.Add(new DieGraphics
                             {
                                     DieId = die.DieId,
                                     GraphicId = uploadingFile.Graphics[i].Id,
@@ -208,7 +208,5 @@ namespace VueExample.Providers.Srv6
             var link = await _shortLinkProvider.CreateSRV6(fullLink);
             return link.ShortLink;
         }
-
-        
     }
 }

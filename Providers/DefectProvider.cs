@@ -19,9 +19,6 @@ namespace VueExample.Providers
             _visualControlContext.SaveChanges();
             return defect.DefectId;
         }
-
-       
-
         public void DeleteById(int defectId)
         {
             var deletedDefect = _visualControlContext.Defects.FirstOrDefault(x => x.DefectId == defectId);

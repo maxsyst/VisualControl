@@ -12,6 +12,5 @@ namespace VueExample.Profiles
         {
             CreateMap<PointViewModel, Point>().ForMember(dest => dest.Time, source => source.MapFrom(_ => _.Time.Trim(TimeSpan.TicksPerSecond)));
         }
-        
     }
 }

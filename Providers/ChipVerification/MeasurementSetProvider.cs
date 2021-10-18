@@ -188,7 +188,6 @@ namespace VueExample.Providers.ChipVerification
             {
                 return true;
             }
-
             return false;
         }
 
@@ -217,7 +216,6 @@ namespace VueExample.Providers.ChipVerification
                     Route = $"material/{material.MaterialId}"
                 });
             }
-
             return materialBasedMeasurementSetsList;
         }
     }

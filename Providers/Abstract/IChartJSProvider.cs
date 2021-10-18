@@ -9,6 +9,5 @@ namespace VueExample.Providers
     {
         Task<AbstractChart> GetLinearFromDieValues (Dictionary <long?, DieValue> dieValuesDictionary, List<long?> dieIdList, double divider, string keyGraphicState);
         Task<AbstractChart> GetHistogramFromDieValues (List<DieValue> dieValuesList, List<long?> dieIdList, double divider, string keyGraphicState);
-
     }
 }
