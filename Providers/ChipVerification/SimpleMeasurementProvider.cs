@@ -25,7 +25,6 @@ namespace VueExample.Providers.ChipVerification
         }
         public (List<Process>, List<CodeProduct>, List<MeasuredDevice>, List<Measurement>) GetAllMeasurementInfo(int facilityId)
         {
-
             var codeProductIdList = new List<int>();
             var codeProductList = new List<CodeProduct>();
             var processList = new List<Process>();
@@ -41,8 +40,6 @@ namespace VueExample.Providers.ChipVerification
 
             measurementList = _applicationContext.Measurement.ToList();
 
-
-
             foreach (var codeproductid in codeProductIdList.Distinct().ToList())
             {
                 processIdList.Add(_srv6Context.CodeProducts.FirstOrDefault(x=>x.IdCp == codeproductid).ProcessId);
@@ -54,12 +51,9 @@ namespace VueExample.Providers.ChipVerification
                 processList.Add(_srv6Context.Processes.FirstOrDefault(x=>x.ProcessId == processid));
             }
 
-
             measurementList.Reverse();
             return (processList.Distinct().ToList(), codeProductList.Distinct().ToList(), measuredDeviceList.Distinct().OrderBy(_ => _.Name).ToList(), measurementList);
         }
-
-
 
         public Measurement GetById(int measurementId)
         {

@@ -153,7 +153,6 @@ namespace VueExample.Providers.Srv6
                             uploaderFileData.ValueLists[graphicNamesList[j]].Add(dataArray[j]);
                         }
                     }
-
                 }
             }
             return dataDictionary;

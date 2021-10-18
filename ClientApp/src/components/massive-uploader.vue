@@ -42,7 +42,6 @@
         </v-card>
       </v-flex>
 
-
     </v-layout>
 
     <v-layout row wrap>
@@ -74,48 +73,41 @@
 </v-container>
 </template>
 
-
 <script>
-  export default {
+export default {
 
-    data() {
-      return {
-        selectedWafer: "",
-        folderPath: "",
-        errorSnackbar: false,
-        snackbarText: "",
-        selectedStage: "",
-        stages: []
+  data() {
+    return {
+      selectedWafer: '',
+      folderPath: '',
+      errorSnackbar: false,
+      snackbarText: '',
+      selectedStage: '',
+      stages: [],
 
+    };
+  },
 
-      }
-    },
-
-    methods:
+  methods:
     {
-      async getFolderDefects()
-      {
+      async getFolderDefects() {
         await this.$http.get(`/api/massiveuploader/getfolderdefects?folderPath=${this.folderPath}`)
           .then((response) => {
-            
-            if (response.data.errorList.length > 0)
-            {
-                this.snackbarText = response.data.errorList[0].message;
-                this.errorSnackbar = true;
+            if (response.data.errorList.length > 0) {
+              this.snackbarText = response.data.errorList[0].message;
+              this.errorSnackbar = true;
             }
           })
-          .catch((error) => {
+          .catch(() => {
 
           });
-      }
-    }
+      },
+    },
 
-  }
+};
 
 </script>
 
-
 <style>
-
 
 </style>

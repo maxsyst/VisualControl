@@ -135,7 +135,6 @@ namespace VueExample
             services.AddScoped<ICacheProvider, CacheProvider>();
             services.AddScoped<IUserProvider, UserProvider>();
 
-
             services.AddTransient<StatisticsCoreRework.Statistics>();
             services.AddTransient<WaferMapService>();
             services.AddTransient<DieValueService>();
@@ -146,7 +145,6 @@ namespace VueExample
             services.AddTransient<DirtyCellsService>();
             services.AddTransient<DirtyCellsCalculationStatService>();
             services.AddTransient<DirtyCellsCalculationFxdService>();
-
 
             services.AddTransient<IGraphic4Service, Graphic4Service>();
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
@@ -223,7 +221,6 @@ namespace VueExample
             services.AddTransient<IDirtyCellsCalculationService, DirtyCellsCalculationService>();
             services.AddTransient<IDirtyCellsCalculationFxdService, DirtyCellsCalculationFxdCachedService>();
             services.AddTransient<IDirtyCellsCalculationStatService, DirtyCellsCalculationStatCachedService>();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -250,7 +247,6 @@ namespace VueExample
                 x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
             });
 
-
             app.UseCors("DefaultPolicy");
             // app.UseSwagger();
             // app.UseSwaggerUI(c =>
@@ -258,7 +254,6 @@ namespace VueExample
             //     c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
             //     c.RoutePrefix = string.Empty;
             // });
-
 
             app.UseAuthentication();
             app.UseResponseCompression();

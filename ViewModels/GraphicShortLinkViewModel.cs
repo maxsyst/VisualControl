@@ -1,5 +1,3 @@
-
-
 using VueExample.Models.SRV6;
 
 namespace VueExample.ViewModels
@@ -13,13 +11,12 @@ namespace VueExample.ViewModels
 
         public GraphicShortLinkViewModel()
         {
-            
         }
 
         public GraphicShortLinkViewModel(Graphic graphic, string mode = "initial", bool isLog = false)
         {
             GraphicId = graphic.Id;
-            if(graphic.Name.Contains("Count")) 
+            if(graphic.Name.Contains("Count"))
             {
                 KeyGraphicState = graphic.Id + "_HSTG";
             }

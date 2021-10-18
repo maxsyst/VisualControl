@@ -5,7 +5,7 @@ namespace VueExample.ViewModels
     {
         public string Guid { get; set; }
         public string Name { get; set; }
-        public StageViewModel Stage {get; set;}
+        public StageViewModel Stage {get; set; }
         public string Path { get; set; }
         public ElementUploading Element { get; set; }
         public FileNameUploaderUViewModel FileName { get; set; }

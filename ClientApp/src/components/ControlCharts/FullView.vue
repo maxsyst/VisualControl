@@ -14,36 +14,37 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import InitialDialog from './ProcessSelectDialog.vue' 
-import WaferSelect from './WaferSelect.vue'
-import StageAndParametersSelects from './StagesAndParametersSelects.vue'
+import InitialDialog from './ProcessSelectDialog.vue';
+import WaferSelect from './WaferSelect.vue';
+import StageAndParametersSelects from './StagesAndParametersSelects.vue';
+
 export default {
-    data() {
-        return {
+  data() {
+    return {
 
-        }
-    },
+    };
+  },
 
-    components: {
-        "initial-dialog": InitialDialog,
-        "wafer-select": WaferSelect,
-        "stageandparameters-select": StageAndParametersSelects
-    },
+  components: {
+    'initial-dialog': InitialDialog,
+    'wafer-select': WaferSelect,
+    'stageandparameters-select': StageAndParametersSelects,
+  },
 
-    mounted() {
-        this.$store.dispatch("controlCharts/getProcessesFromDb", {ctx: this})
-    },
+  mounted() {
+    this.$store.dispatch('controlCharts/getProcessesFromDb', { ctx: this });
+  },
 
-    computed: {
-        ...mapGetters({
-            selectedProcess: 'controlCharts/selectedProcess',
-        })
-    },
+  computed: {
+    ...mapGetters({
+      selectedProcess: 'controlCharts/selectedProcess',
+    }),
+  },
 
-    beforeDestroy() {
-        this.$store.dispatch("controlCharts/reset")
-  }
-}
+  beforeDestroy() {
+    this.$store.dispatch('controlCharts/reset');
+  },
+};
 </script>
 
 <style>

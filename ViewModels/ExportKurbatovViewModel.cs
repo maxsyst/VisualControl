@@ -21,7 +21,7 @@ namespace VueExample.ViewModels
     {
         public string OperationNumber { get; set; }
         public string ElementName { get; set; }
-        public string StageName {get; set;}
+        public string StageName {get; set; }
         public bool IsAddedToCommonWorksheet { get; set; } = true;
         public bool IsNeedToCopyS2P { get; set; } = false;
         public List<KurbatovParameter> parameters = new List<KurbatovParameter>();

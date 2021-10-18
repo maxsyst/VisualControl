@@ -1,7 +1,6 @@
 <template>
   <v-container grid-list-lg>
-   
-     
+
         <form>
 
           <v-layout align-start wrap>
@@ -13,7 +12,7 @@
                             readonly>
 
               </v-text-field>
-             
+
             </v-flex>
             <v-flex>
               <v-btn outlined to="\login" color="teal">Я уже зарегистрирован в системе</v-btn>
@@ -28,7 +27,7 @@
                             @input="$v.password.$touch()"
                             @blur="$v.password.$touch()">
               </v-text-field>
-            
+
             </v-flex>
             <v-flex lg4 offset-lg4>
               <v-text-field v-model="firstname"
@@ -63,7 +62,7 @@
             <v-flex lg4 offset-lg5>
                <v-btn outlined @click.native="registerAttempt">Зарегистрироваться в системе</v-btn>
             </v-flex>
-            
+
           </v-layout>
         </form>
     <v-snackbar v-model="errorSnackbar"
@@ -75,111 +74,109 @@
         Закрыть
       </v-btn>
     </v-snackbar>
-     
+
 </v-container>
 </template>
 
 <script>
-  import { transliterate as tr } from 'transliteration';
-  import { required, minLength, email } from 'vuelidate/lib/validators'
-  export default {
-    data() {
-      return {
+import { transliterate as tr } from 'transliteration';
+import { required, minLength, email } from 'vuelidate/lib/validators';
 
-        errorSnackbar: false,
-        password: '1234556',
-        firstname: 'Денис',
-        surname: 'Куликов',
-        email: 'kulikov@svrost.ru'
-       
-      }
-    },
+export default {
+  data() {
+    return {
 
-    methods:
+      errorSnackbar: false,
+      password: '1234556',
+      firstname: 'Денис',
+      surname: 'Куликов',
+      email: 'kulikov@svrost.ru',
+
+    };
+  },
+
+  methods:
     {
-      registerAttempt()
-      {
+      registerAttempt() {
         this.$v.$touch();
         if (!this.$v.$invalid) {
-          let user = { login: this.login, password: this.password, firstname: this.firstname, surname: this.surname, email: this.email };
+          const user = {
+            login: this.login, password: this.password, firstname: this.firstname, surname: this.surname, email: this.email,
+          };
           const { dispatch } = this.$store;
           dispatch('authentication/registry', { user });
-          
         }
-      }
+      },
     },
 
-    computed:
+  computed:
     {
-      login()
-      {
-          return tr(this.surname);
+      login() {
+        return tr(this.surname);
       },
 
-      snackbarText()
-      {
-        let request = this.$store.state.alert.message;
+      snackbarText() {
+        const request = this.$store.state.alert.message;
         if (request) {
           this.errorSnackbar = true;
           return request.response.data.message;
         }
         this.errorSnackbar = false;
-        return ""; 
+        return '';
       },
 
       passwordErrors() {
-        const errors = []
-        if (!this.$v.password.$error) return errors
-        !this.$v.password.required && errors.push('Введите пароль')
-        !this.$v.password.minLength && errors.push('Пароль должен быть более 6 символов')
-        return errors
+        const errors = [];
+        if (!this.$v.password.$error) return errors;
+        !this.$v.password.required && errors.push('Введите пароль');
+        !this.$v.password.minLength && errors.push('Пароль должен быть более 6 символов');
+        return errors;
       },
 
       firstnameErrors() {
-        const errors = []
-        if (!this.$v.firstname.$error) return errors
-        !this.$v.firstname.required && errors.push('Введите имя')
-        return errors
+        const errors = [];
+        if (!this.$v.firstname.$error) return errors;
+        !this.$v.firstname.required && errors.push('Введите имя');
+        return errors;
       },
 
       surnameErrors() {
-        const errors = []
-        if (!this.$v.surname.$error) return errors
-        !this.$v.surname.required && errors.push('Введите фамилию')
-        return errors
+        const errors = [];
+        if (!this.$v.surname.$error) return errors;
+        !this.$v.surname.required && errors.push('Введите фамилию');
+        return errors;
       },
 
       emailErrors() {
-        const errors = []
-        if (!this.$v.email.$error) return errors
-        !this.$v.email.required && errors.push('Введите адрес электронной почты')
-        !this.$v.email.email && errors.push('Введите существующий адрес электронной почты')
-        return errors
-      }
-
+        const errors = [];
+        if (!this.$v.email.$error) return errors;
+        !this.$v.email.required && errors.push('Введите адрес электронной почты');
+        !this.$v.email.email && errors.push('Введите существующий адрес электронной почты');
+        return errors;
+      },
 
     },
 
-    validations: {
-      password: {
-        required,
-        minLength: minLength(6)
-      },
-      firstname: {
-        required
-      },
-      surname: {
-        required
-      },
-      email:
+  validations: {
+    password: {
+      required,
+      minLength: minLength(6),
+    },
+    firstname: {
+      required,
+    },
+    surname: {
+      required,
+    },
+    email:
       {
-        required, email
-      }
+        required, email,
+      },
 
-    }
-  };
+  },
+};
 </script>
 
 <style>
 
-</style> 
+</style>
