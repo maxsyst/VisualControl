@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
 
-namespace VueExample.StatisticsCore.DirtyCellsCore
+namespace VueExample.StatisticsCoreRework.Models
 {
-    public class SingleDirtyCell
+    public class DirtyCellExtended
     {
         public long DieId { get; set; }
         public bool IsDirty { get; set; } = false;
@@ -11,12 +11,12 @@ namespace VueExample.StatisticsCore.DirtyCellsCore
         public string Difference { get; set; } = "0.0";
         public string TrueValue { get; set; } = "0.0";
 
-        public SingleDirtyCell()
+        public DirtyCellExtended()
         {
-            
+
         }
-        
-        public SingleDirtyCell(long dieId, double trueValue, string lowBorder, string topBorder)
+
+        public DirtyCellExtended(long dieId, double trueValue, string lowBorder, string topBorder)
         {
             DieId = dieId;
             TrueValue = Convert.ToString(trueValue, CultureInfo.InvariantCulture);

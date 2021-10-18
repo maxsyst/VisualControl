@@ -12,7 +12,7 @@ using VueExample.Models.SRV6;
 using VueExample.Providers.Abstract;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ResponseObjects;
-using VueExample.StatisticsCore.Abstract;
+using VueExample.StatisticsCoreRework.Abstract;
 using VueExample.ViewModels;
 
 namespace VueExample.Providers
@@ -67,7 +67,7 @@ namespace VueExample.Providers
             }
             if(!obj.HasErrors)
             {
-                shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId, 1.5)).ToList();
+                shortLinkViewModel.StatisticNameList = (await _exportProvider.GetStatisticsNameByMeasurementId(shortLinkViewModel.MeasurementRecordingId)).ToList();
                 obj.SetObject(shortLinkViewModel);
             }
             if(shortLinkViewModel.StatisticNameList is null || shortLinkViewModel.StatisticNameList.Count == 0)

@@ -2,7 +2,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using VueExample.Models.SRV6.Export;
-using VueExample.StatisticsCore.Abstract;
 using VueExample.ViewModels;
 using OfficeOpenXml;
 using System.IO;
@@ -14,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
 using System.IO.Compression;
+using VueExample.StatisticsCoreRework.Abstract;
 
 namespace VueExample.Controllers
 {
@@ -40,7 +40,7 @@ namespace VueExample.Controllers
         public IActionResult GetKurbatovByMeasurementId([FromQuery] int measurementRecordingId, [FromQuery] string statNames)
         {
             // string n = "S21<sub>(2.5GHz)</sub>(коэффициент передачи)$S<sub>22(5GHz)</sub>";
-            var result = _exportProvider.Export(measurementRecordingId, statNames, "$", 1.5);
+            var result = _exportProvider.Export(measurementRecordingId, statNames, "$");
             return Ok(result);
         }
 
