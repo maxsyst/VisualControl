@@ -420,7 +420,8 @@ export default {
         this.$store.dispatch('wafermeas/updateSelectedDies', params.shortLinkVm.selectedDies);
         this.$store.dispatch('wafermeas/updateSelectedGraphics', [...params.shortLinkVm.selectedGraphics.map((g) => g.keyGraphicState)]);
         this.selectedMeasurementId = selectedMeasurementId;
-        const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
+        const avPath = `/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`;
+        const availiableGraphics = (await this.$http.get(avPath)).data;
         this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
         this.selectAllGraphics();
         this.loading = false;
@@ -439,7 +440,8 @@ export default {
       this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.$store.dispatch('wafermeas/updateSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.delDirtyCells(this.dirtyCellsSnapshot.badDies, this.avbSelectedDies);
-      const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
+      const avPath = `/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`;
+      const availiableGraphics = (await this.$http.get(avPath)).data;
       this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
       this.selectAllGraphics();
       this.loading = false;

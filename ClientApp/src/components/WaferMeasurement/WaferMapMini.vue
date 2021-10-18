@@ -7,12 +7,12 @@
               <rect :dieIndex="key" :id="die.id"
                     :x="die.x" :y="die.y"
                     :width="die.width" :height="die.height"
-                    :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie"/>
+                    :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDieWithTimer" @contextmenu="selectDie" />
             </g>
           </svg>
         </v-col>
         <v-col>
-          <v-progress-circular
+          <v-progress-circular v-if="updateCircular.value > 0"
             :value="updateCircular.value"
             color="primary"
           >
@@ -85,14 +85,14 @@ export default {
         ...die, fill: '#A1887F', isActive: false, fillOpacity: 1.6,
       }));
     },
-    selectDie(e) {
+    selectDieWithTimer(e) {
       e.preventDefault();
       const die = this.dies[+e.currentTarget.attributes.dieIndex.value];
       const dieId = die.id;
       if (die.isActive) {
         if (this.updateTimer) {
           clearInterval(this.updateCircular.interval);
-          this.updateCircular.value = 0;
+          this.updateCircular.value = 0.1;
           clearTimeout(this.updateTimer);
         } else {
           this.capSelectedDies = [...this.selectedDies];
@@ -117,10 +117,31 @@ export default {
       }
     },
 
+    selectDie(e) {
+      e.preventDefault();
+      const die = this.dies[+e.currentTarget.attributes.dieIndex.value];
+      const dieId = die.id;
+      if (die.isActive) {
+        this.capSelectedDies = [...this.selectedDies];
+        const position = this.capSelectedDies.indexOf(dieId);
+        // eslint-disable-next-line no-bitwise
+        if (~position) {
+          this.capSelectedDies.splice(position, 1);
+          die.fill = this.dieFillStrategy(die, this.mode, new Set([...this.capSelectedDies]), this.$store.getters['wafermeas/dieColors']);
+          this.updateSelectedDies([...this.capSelectedDies]);
+        } else {
+          this.capSelectedDies.push(dieId);
+          die.fill = this.dieFillStrategy(die, this.mode, new Set([...this.capSelectedDies]), this.$store.getters['wafermeas/dieColors']);
+          this.updateSelectedDies([...this.capSelectedDies]);
+        }
+      }
+    },
+
     updateSelectedDies(selectedDies) {
       clearInterval(this.updateCircular.interval);
       this.updateCircular.value = 100;
       this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
+      this.updateCircular.value = 0;
     },
 
     goToInitial() {
