@@ -14,9 +14,8 @@
         <v-col>
           <v-progress-circular v-if="updateCircular.value > 0"
             :value="updateCircular.value"
-            color="primary"
-          >
-    </v-progress-circular>
+            color="primary">
+          </v-progress-circular>
         </v-col>
         <v-col class="d-flex flex-column align-center">
             <v-btn :color="mode === 'initial' ? 'indigo' : 'grey darken-2'" class="mt-auto" fab x-small dark @click="goToInitial()">
