@@ -117,7 +117,6 @@ namespace VueExample.Controllers
             row8.parameters.Add(new KurbatovParameter { ParameterName = "Idss(3V)", Lower = 0.3, Upper = 0.6, Divider = 0.6, DividerId = 10, RussianParameterName = "Начальный ток стока, A/мм", ParameterNameStat = "I<sub>DSS(3V)</sub> (начальный ток стока)" });
             row8.parameters.Add(new KurbatovParameter { ParameterName = "Ugs(off)", Lower = -1.9, Upper = -1.25, DividerId = 1, RussianParameterName = "Напряжение отсечки, В", ParameterNameStat = "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)" });
 
-
             var row9 = new KurbatovXLSViewModel();
             row9.ElementName = "TC8_Ris";
             row9.OperationNumber = "570.00.00";
@@ -594,8 +593,6 @@ namespace VueExample.Controllers
             xlsList.Add(row66);
             return Ok(xlsList);
         }
-
-
 
         [HttpGet]
         [Route(("pattern/va50n_NU"))]

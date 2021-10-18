@@ -240,29 +240,29 @@ export default {
         this.defectFilter.avbDefectTypesList.forEach((x) => x.disabled = false);
         this.defectFilter.avbDangerLevelList.forEach((x) => x.disabled = false);
 
-        if (this.selectedDies.length != this.defectFilter.avbDiesList.length) {
-          const avbDefects = this.defects.filter((d) => this.selectedDies.some((t) => t == d.dieId));
+        if (this.selectedDies.length !== this.defectFilter.avbDiesList.length) {
+          const avbDefects = this.defects.filter((d) => this.selectedDies.some((t) => t === d.dieId));
 
           const avbStages = [...new Set(avbDefects.map((d) => d = d.stageId))];
           this.defectFilter.avbStagesList.forEach((x) => {
-            if (!avbStages.some((a) => a == x.stageId)) {
+            if (!avbStages.some((a) => a === x.stageId)) {
               x.disabled = true;
-              this.selectedStages = this.selectedStages.filter((c) => c != x.stageId);
+              this.selectedStages = this.selectedStages.filter((c) => c !== x.stageId);
             }
           });
 
           const avbTypes = [...new Set(avbDefects.map((d) => d = d.defectTypeId))];
           this.defectFilter.avbDefectTypesList.forEach((x) => {
-            if (!avbTypes.some((a) => a == x.defectTypeId)) {
+            if (!avbTypes.some((a) => a === x.defectTypeId)) {
               x.disabled = true;
-              this.selectedDefectType = this.selectedDefectType.filter((c) => c != x.defectTypeId);
+              this.selectedDefectType = this.selectedDefectType.filter((c) => c !== x.defectTypeId);
             }
           });
 
           this.defectFilter.avbDangerLevelList.forEach((x) => {
-            if (![...new Set(avbDefects.map((d) => d = d.dangerLevelId))].some((a) => a == x.dangerLevelId)) {
+            if (![...new Set(avbDefects.map((d) => d = d.dangerLevelId))].some((a) => a === x.dangerLevelId)) {
               x.disabled = true;
-              this.selectedDangerLevel = this.selectedDangerLevel.filter((c) => c != x.dangerLevelId);
+              this.selectedDangerLevel = this.selectedDangerLevel.filter((c) => c !== x.dangerLevelId);
             }
           });
           if (this.selectedsingledieId) {

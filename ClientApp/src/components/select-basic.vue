@@ -258,7 +258,10 @@
             <label for="graphicSelect"></label>
           </v-col>
           <v-col lg="6">
-            <v-text-field :value="selectedMaterial.name" label="Материал" append-outer-icon="cached" outlined readonly @click:append-outer="editMaterial"></v-text-field>
+            <v-text-field :value="selectedMaterial.name"
+                          label="Материал"
+                          append-outer-icon="cached" outlined readonly @click:append-outer="editMaterial">
+            </v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -342,7 +345,7 @@
               </v-list-item-content>
 
                 <v-list-item-action>
-                  <v-icon v-if="measurementSets.length > 0 && !measurementSets.find(x => x.measurementSetId === selectedMeasurementSet.id).isGenerated"
+                <v-icon v-if="measurementSets.length > 0 && !measurementSets.find(x => x.measurementSetId === selectedMeasurementSet.id).isGenerated"
                     color="primary"
                     @click="deleteFromSet(item.atomicMeasurementId)"
                   >delete_outline</v-icon>
@@ -514,22 +517,26 @@
 
               <v-list-item>
                 <v-list-item-content>Значение в начале испытания:</v-list-item-content>
-                <v-list-item-content class="align-end yellow--text text--darken-2">{{  parseFloat(props.item.firstValue).toFixed(6) }} {{ props.item.graphicUnit }}</v-list-item-content>
+                <v-list-item-content class="align-end yellow--text text--darken-2">
+                  {{  parseFloat(props.item.firstValue).toFixed(6) }} {{ props.item.graphicUnit }}</v-list-item-content>
               </v-list-item>
 
               <v-list-item>
                 <v-list-item-content>Текущее значение:</v-list-item-content>
-                <v-list-item-content class="align-end yellow--text text--darken-2">{{  parseFloat(props.item.lastValue).toFixed(6) }} {{ props.item.graphicUnit }}</v-list-item-content>
+                <v-list-item-content class="align-end yellow--text text--darken-2">
+                  {{  parseFloat(props.item.lastValue).toFixed(6) }} {{ props.item.graphicUnit }}</v-list-item-content>
               </v-list-item>
 
                <v-list-item>
                 <v-list-item-content>Падение за время испытания:</v-list-item-content>
-                <v-list-item-content class="align-end yellow--text text--darken-2">{{ parseFloat(props.item.commonDifference).toFixed(6) * -1 }} {{ props.item.graphicUnit }}</v-list-item-content>
+                <v-list-item-content class="align-end yellow--text text--darken-2">
+                  {{ parseFloat(props.item.commonDifference).toFixed(6) * -1 }} {{ props.item.graphicUnit }}</v-list-item-content>
               </v-list-item>
 
                 <v-list-item>
                 <v-list-item-content>Изменение в процентах:</v-list-item-content>
-                <v-list-item-content class="align-end yellow--text text--darken-2">{{ ((parseFloat(props.item.commonDifference) / parseFloat(props.item.firstValue)) * 100).toFixed(2) }} %</v-list-item-content>
+                <v-list-item-content class="align-end yellow--text text--darken-2">
+                  {{ ((parseFloat(props.item.commonDifference) / parseFloat(props.item.firstValue)) * 100).toFixed(2) }} %</v-list-item-content>
               </v-list-item>
 
             </v-list>
@@ -683,7 +690,8 @@ export default {
     getMeasurementStatistics() {
       this.dialogStatistics = true;
       const atomicList = JSON.stringify(this.selectedAtomics);
-      this.$http.get(`/api/measurement/getmeasurementstatistics?atomiclist=${atomicList}`).then((response) => { this.selectedMeasurementSet.statistics = response.data; this.dialogStatistics = false; });
+      this.$http.get(`/api/measurement/getmeasurementstatistics?atomiclist=${atomicList}`)
+        .then((response) => { this.selectedMeasurementSet.statistics = response.data; this.dialogStatistics = false; });
     },
 
     editMaterial() {
@@ -717,7 +725,7 @@ export default {
 
             this.snackbar = true;
           })
-          .catch((error) => {
+          .catch(() => {
             this.snackbar = true;
             this.snackbarText = 'Ошибка';
           });
@@ -831,7 +839,7 @@ export default {
 
           this.snackbar = true;
         })
-        .catch((error) => {
+        .catch(() => {
           this.snackbar = true;
           this.snackbarText = 'Ошибка';
         });
@@ -871,7 +879,7 @@ export default {
           this.dialogAddToMeasurementSet = false;
           this.snackbar = true;
         })
-        .catch((error) => {
+        .catch(() => {
           this.snackbar = true;
           this.snackbarText = 'Ошибка';
           this.dialogAddToMeasurementSet = false;
@@ -983,7 +991,7 @@ export default {
       deep: true,
     },
 
-    async selectedFacility(val, oldVal) {
+    async selectedFacility(val) {
       let response = await this.$http.get(`/api/measurement/fullinfo/${val}`);
       const { data } = response;
       this.processes = data.item1;
