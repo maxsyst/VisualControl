@@ -124,7 +124,6 @@ namespace VueExample
             //     c.IncludeXmlComments(xmlPath);
             // });
 
-
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
             services.AddDbContext<VisualControlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VisualControlContext")), ServiceLifetime.Transient);

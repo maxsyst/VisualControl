@@ -63,7 +63,6 @@ namespace VueExample.Services
 
             var diesCodes = dies.Select(x => x.Code).ToList();
 
-
             foreach (var typeFolderPath in Directory.GetDirectories($"{path}\\Брак", "*", SearchOption.TopDirectoryOnly).ToList())
             {
                 var typeFolder = typeFolderPath.Split("\\").Last();
@@ -105,7 +104,6 @@ namespace VueExample.Services
                             {
                                 response.Body.FirstOrDefault(x => x.DefectTypeId == defectTypeId && x.DieId == dieId).LoadedPhotosList.Add(image);
                             }
-                            
                         }
                     }
                 }

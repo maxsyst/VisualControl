@@ -28,7 +28,6 @@ namespace VueExample.Controllers
         //         Console.WriteLine(e);
         //         return StatusCode(500);
         //     }
-            
         // }
 
         // [HttpGet]
@@ -36,7 +35,6 @@ namespace VueExample.Controllers
         // {
         //     return Ok(JsonConvert.SerializeObject(_dangerLevelProvider.GetDangerLevelFromDefectList(_defectProvider.GetByWaferIdWithIncludes(waferId))));
         // }
-
 
         // [HttpGet]
         // [ProducesResponseType(200)]

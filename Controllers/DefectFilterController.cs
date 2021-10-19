@@ -51,8 +51,6 @@ namespace VueExample.Controllers
         //         return Ok(new StandardResponseObject {ResponseType = "error", ErrorCode = "UE001"});
 
         //     }
-
-
         // }
     }
 }

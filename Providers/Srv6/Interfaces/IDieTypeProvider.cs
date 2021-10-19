@@ -17,6 +17,5 @@ namespace VueExample.Providers.Srv6.Interfaces
         Task<DieType> Update(DieTypeViewModel dieTypeViewModel);
         Task<List<DieType>> GetByCodeProductId(int codeProductId);
         Task<Tuple<CodeProductViewModel, string>> UpdateCodeProductsMap(int dieTypeId, int codeProductId);
-
     }
 }

@@ -3626,8 +3626,8 @@ namespace VueExample.StatisticsCoreRework
                 var interpolationmethod = Interpolate.Linear(xListdouble, yListdouble);
                 var tempList = xListdouble.Where(x => x >= xListdouble[onehalfIndex]).Select(interpolationmethod.Differentiate).ToList();
                 sfList.Add(Math.Abs(tempList.Max() - tempList.Min()) * 1000);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
             }
 
             foreach (List<double> yListdouble in enumerable.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
@@ -3678,8 +3678,8 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id4List.Add(yListdouble[fourIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
                 ocList.Add(xListdouble[ocIndex] / yListdouble[ocIndex]);
             }
 
@@ -3724,8 +3724,8 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id4List.Add(yListdouble[fourIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
                 ocList.Add(xListdouble[ocIndex]/yListdouble[ocIndex]);
             }
 
@@ -5251,17 +5251,17 @@ namespace VueExample.StatisticsCoreRework
             for (int index = 0; index < xList.Count; index++)
             {
                 var x = double.Parse(xList[index], CultureInfo.InvariantCulture);
-                if (0.15 <= x && x <= 0.2)
+                if (x >= 0.15 && x <= 0.2)
                 {
                     xListdouble.Add(x);
                     indexesList.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoubleforn.Add(x);
                     indexesListforn.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoublefornn.Add(x);
                     indexesListfornn.Add(index);
@@ -5547,17 +5547,17 @@ namespace VueExample.StatisticsCoreRework
             for (int index = 0; index < xList.Count; index++)
             {
                 var x = double.Parse(xList[index], CultureInfo.InvariantCulture);
-                if (0.15 <= x && x <= 0.2)
+                if (x >= 0.15 && x <= 0.2)
                 {
                     xListdouble.Add(x);
                     indexesList.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoubleforn.Add(x);
                     indexesListforn.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoublefornn.Add(x);
                     indexesListfornn.Add(index);

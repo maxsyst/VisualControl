@@ -1,4 +1,3 @@
-
 namespace VueExample.ViewModels.DieType
 {
     public class DieTypeViewModel
