@@ -1,31 +1,28 @@
-import {authHeader} from "../helpers";
-import axios from 'axios'
-
+import axios from 'axios';
+import { authHeader } from '../helpers';
 
 export const userService = {
   login,
   registry,
   logout,
-  getAll
+  getAll,
 };
 
 function login(username, password) {
-    return axios({
+  return axios({
     method: 'post',
     url: 'auth/user/authenticate',
     data: { username, password },
     config: {
       headers: {
-        'Accept': "application/json",
-        'Content-Type': "application/json"
-      }
-    }
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    },
   }).then(handleResponse)
-    .then(user => {
-
+    .then((user) => {
       if (user.body.token) {
-
-        localStorage.setItem("user", JSON.stringify(user.body));
+        localStorage.setItem('user', JSON.stringify(user.body));
       }
 
       return user.body;
@@ -34,29 +31,23 @@ function login(username, password) {
 
 function registry(user) {
   return axios({
-    method: "post",
-    url: "auth/user/registry",
-    data: user
-    
-    
+    method: 'post',
+    url: 'auth/user/registry',
+    data: user,
+
   }).then(handleResponse)
-    .then(u => {
-       return login(u.body.username, u.body.password);
-    });
+    .then((u) => login(u.body.username, u.body.password));
 }
 
 function logout() {
-  localStorage.removeItem("user");
+  localStorage.removeItem('user');
 }
 
 function getAll() {
-  return axios({ method: "post", url: `auth/user/getall`, config: { headers: authHeader() }}).then(handleResponse);
+  return axios({ method: 'post', url: 'auth/user/getall', config: { headers: authHeader() } }).then(handleResponse);
 }
 
-
 function handleResponse(response) {
-
-
   if (!(response.status === 200)) {
     if (response.status === 401) {
       logout();
@@ -68,5 +59,4 @@ function handleResponse(response) {
   }
 
   return response.data;
-
 }

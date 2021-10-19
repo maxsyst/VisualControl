@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
 using System.IO.Compression;
 using VueExample.StatisticsCoreRework.Abstract;
+using VueExample.ViewModels.Kurbatov;
 
 namespace VueExample.Controllers
 {
@@ -116,7 +117,6 @@ namespace VueExample.Controllers
             row8.parameters.Add(new KurbatovParameter { ParameterName = "rDS(on)", Lower = 1.2, Upper = 3.0, Divider = 1.66, DividerId = 10, RussianParameterName = "Сопротивление открытого канала, Ом*мм", ParameterNameStat = "R<sub>ds(on)</sub> (сопротивление открытого канала)" });
             row8.parameters.Add(new KurbatovParameter { ParameterName = "Idss(3V)", Lower = 0.3, Upper = 0.6, Divider = 0.6, DividerId = 10, RussianParameterName = "Начальный ток стока, A/мм", ParameterNameStat = "I<sub>DSS(3V)</sub> (начальный ток стока)" });
             row8.parameters.Add(new KurbatovParameter { ParameterName = "Ugs(off)", Lower = -1.9, Upper = -1.25, DividerId = 1, RussianParameterName = "Напряжение отсечки, В", ParameterNameStat = "U<sub>GS(off)</sub> (напряжение отсечки при Idss/1000)" });
-
 
             var row9 = new KurbatovXLSViewModel();
             row9.ElementName = "TC8_Ris";
@@ -594,8 +594,6 @@ namespace VueExample.Controllers
             xlsList.Add(row66);
             return Ok(xlsList);
         }
-
-
 
         [HttpGet]
         [Route(("pattern/va50n_NU"))]

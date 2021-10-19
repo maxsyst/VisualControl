@@ -8,6 +8,8 @@ using VueExample.Models.SRV6;
 using VueExample.Providers.Abstract;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
+using VueExample.ViewModels.Kurbatov;
+using VueExample.ViewModels.StandartMeasurementPattern;
 
 namespace VueExample.Providers.Srv6
 {
@@ -37,10 +39,10 @@ namespace VueExample.Providers.Srv6
             var standartPattern = new StandartPatternEntity{Name = standartMeasurementPatternFull.StandartPattern.Name, DieTypeId = standartMeasurementPatternFull.StandartPattern.DieTypeId};
             foreach(var smp in standartMeasurementPatternFull.standartMeasurementPatternList)
             {
-                var smpFull = new StandartMeasurementPatternEntity{ ElementId = smp.ElementId, 
-                                                                    StageId = smp.StageId, 
-                                                                    DividerId = smp.DividerId, 
-                                                                    PatternId = smp.PatternId, 
+                var smpFull = new StandartMeasurementPatternEntity{ ElementId = smp.ElementId,
+                                                                    StageId = smp.StageId,
+                                                                    DividerId = smp.DividerId,
+                                                                    PatternId = smp.PatternId,
                                                                     MslName = smp.MslName,
                                                                     Name = smp.Name};
                 smpFull.StandartPattern = standartPattern;
@@ -71,10 +73,10 @@ namespace VueExample.Providers.Srv6
             foreach(var smp in standartMeasurementPatternFull.standartMeasurementPatternList)
             {
                 var smpFull = new StandartMeasurementPatternEntity{ Id = smp.Id,
-                                                                    ElementId = smp.ElementId, 
-                                                                    StageId = smp.StageId, 
-                                                                    DividerId = smp.DividerId, 
-                                                                    PatternId = smp.PatternId, 
+                                                                    ElementId = smp.ElementId,
+                                                                    StageId = smp.StageId,
+                                                                    DividerId = smp.DividerId,
+                                                                    PatternId = smp.PatternId,
                                                                     MslName = smp.MslName,
                                                                     Name = smp.Name};
                 smpFull.KurbatovParameters = new List<KurbatovParameterEntity>();
@@ -120,7 +122,7 @@ namespace VueExample.Providers.Srv6
             if(standartPattern.IsNullObject)
                 throw new RecordNotFoundException();
             standartPatternFull.StandartPattern = _mapper.Map<StandartPattern, StandartPatternViewModel>(_mapper.Map<StandartPatternEntity, StandartPattern>(standartPattern));
-            var smpList = await _standartMeasurementPatternProvider.GetFullList(patternId);   
+            var smpList = await _standartMeasurementPatternProvider.GetFullList(patternId);
             if(smpList.Count == 0)
                 throw new CollectionIsEmptyException();
             foreach (var smp in smpList)
@@ -130,10 +132,10 @@ namespace VueExample.Providers.Srv6
                 {
                     var kpVm = new KurbatovParameterViewModel();
                     kpVm.Id = kp.Id;
-                    kpVm.KurbatovParameterBorders = new KurbatovParameterBordersViewModel{Id = kp.KurbatovParameterBordersEntity?.Id, 
-                                                                                          Lower = kp.KurbatovParameterBordersEntity?.Lower, 
+                    kpVm.KurbatovParameterBorders = new KurbatovParameterBordersViewModel{Id = kp.KurbatovParameterBordersEntity?.Id,
+                                                                                          Lower = kp.KurbatovParameterBordersEntity?.Lower,
                                                                                           Upper = kp.KurbatovParameterBordersEntity?.Upper};
-                    kpVm.StandartParameter = _mapper.Map<StandartParameterModel, StandartParameterViewModel>(_mapper.Map<StandartParameterEntity, StandartParameterModel>(kp.StandartParameterEntity));                
+                    kpVm.StandartParameter = _mapper.Map<StandartParameterModel, StandartParameterViewModel>(_mapper.Map<StandartParameterEntity, StandartParameterModel>(kp.StandartParameterEntity));
                     smpVm.kpList.Add(kpVm);
                 }
                 standartPatternFull.standartMeasurementPatternList.Add(smpVm);

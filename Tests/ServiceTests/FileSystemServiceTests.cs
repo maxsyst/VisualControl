@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using VueExample.Services;
 using Xunit;
-
 
 namespace VueExample.Tests.ServiceTests
 {
@@ -17,6 +11,5 @@ namespace VueExample.Tests.ServiceTests
             var folderName = FileSystemService.FindFolderInTemporaryFolder("VS");
             Assert.Equal("VS", folderName);
         }
-
     }
 }

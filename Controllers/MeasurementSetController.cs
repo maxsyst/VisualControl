@@ -13,8 +13,8 @@ namespace VueExample.Controllers
         private readonly IAtomicMeasurementProvider _atomicMeasurementProvider;
         public MeasurementSetController(IMeasurementSetProvider measurementsetProvider, IAtomicMeasurementProvider atomicMeasurementProvider)
         {
-            _measurementSetProvider = measurementsetProvider;     
-            _atomicMeasurementProvider = atomicMeasurementProvider;        
+            _measurementSetProvider = measurementsetProvider;
+            _atomicMeasurementProvider = atomicMeasurementProvider;
         }
 
         [HttpGet]
@@ -23,7 +23,6 @@ namespace VueExample.Controllers
         {
             return Ok(_measurementSetProvider.GetAllSets(facilityId));
         }
-        
 
         [HttpPut]
         [Route("addnewset")]
@@ -32,22 +31,20 @@ namespace VueExample.Controllers
         public IActionResult AddNewSet([FromQuery(Name = "name")] string setName)
         {
             var createdMeasurementSet = _measurementSetProvider.Create(setName);
-            
+
             if(createdMeasurementSet.Item1 == null)
             {
                 return Ok(createdMeasurementSet.Item2.Message);
             }
-         
             return CreatedAtAction("Add", createdMeasurementSet.Item1);
         }
-  
+
         [HttpDelete]
         [Route("deleteset")]
         public IActionResult DeleteSet([FromQuery(Name = "measurementsetid")] Guid measurementSetId)
         {
             _measurementSetProvider.Delete(measurementSetId);
-            return Ok(); 
-           
+            return Ok();
         }
 
         [Route("getatomics/{measurementSetId:guid}/{facilityId}")]
@@ -56,7 +53,7 @@ namespace VueExample.Controllers
         {
             return Ok(_measurementSetProvider.GetAtomicsById(measurementSetId, measurementProvider));
         }
-        
+
         [Route("getatomics/online/{facilityId}")]
         [HttpGet]
         public IActionResult GetAtomicsOnline([FromServices] IMeasurementProvider measurementProvider, [FromRoute] int facilityId)
@@ -87,7 +84,7 @@ namespace VueExample.Controllers
 
         [HttpPost]
         [Route("deleteatomicfromset")]
-        [ProducesResponseType(StatusCodes.Status200OK)]        
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult DeleteAtomicFromSet([FromBody] AtomicMeasurementMeasurementSetViewModel atomicMeasurementMeasurementSetViewModel)
         {
             _atomicMeasurementProvider.DeleteFromMeasurementSet(atomicMeasurementMeasurementSetViewModel.MeasurementSetId, atomicMeasurementMeasurementSetViewModel.AtomicId);

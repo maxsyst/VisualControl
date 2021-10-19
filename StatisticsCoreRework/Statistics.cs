@@ -440,11 +440,9 @@ namespace VueExample.StatisticsCoreRework
                         else
                         {
                             ugsoffwithinterpolation100List.Add(xListdouble[i]);
-
                         }
                         i = yListdouble.Count - 1;
                     }
-
                 }
                 if (!isugsoff)
                 {
@@ -586,7 +584,6 @@ namespace VueExample.StatisticsCoreRework
                     var isugsoff = false;
                     for (int i = yListdouble.Count - 1; i > -1; i--)
                     {
-
                         if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                         {
                             if (i < yListdouble.Count - 1)
@@ -1018,7 +1015,6 @@ namespace VueExample.StatisticsCoreRework
             return returnList;
         }
 
-
         private List<Statistics> GetMongoFirstPoint(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
             var idssList = commonYList.Select(yList => yList.Select(x => x / divider).ToList()).Select(yListdouble => yListdouble[0]).ToList();
@@ -1040,7 +1036,6 @@ namespace VueExample.StatisticsCoreRework
             var tenIndex = GetIndexOfList(xListdouble, 0.5);
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 idssList.Add(yListdouble.Max());
                 vkneeList.Add(xListdouble[yListdouble.IndexOf(yListdouble.Max())]);
                 ronList.Add(xListdouble[tenIndex]/yListdouble[tenIndex]);
@@ -1407,7 +1402,7 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetTFRLong(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = GetIndexOfList(xListdouble, 0.3);;
+            var zeroIndex = GetIndexOfList(xListdouble, 0.3);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
             var returnList = new List<Statistics>
                 {
@@ -1522,7 +1517,7 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetCapLeaks(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = GetIndexOfList(xListdouble, 20.0);;
+            var zeroIndex = GetIndexOfList(xListdouble, 20.0);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
@@ -1626,7 +1621,6 @@ namespace VueExample.StatisticsCoreRework
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -2341,8 +2335,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetFilterCKBA_PF8(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -2830,7 +2822,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.6GHz-0.75GHz)</sub>", "", 56)
-
                 };
             return returnList;
         }
@@ -2993,7 +2984,6 @@ namespace VueExample.StatisticsCoreRework
             return returnList;
         }
 
-
         private List<Statistics> GetFilterMarkers2000_1000(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -3034,8 +3024,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetFilterMarkers2000_900(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -3073,7 +3061,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(bandfbList, "Fb", "ГГц", 54),
                     GetFullStatisticsFromList(bandfdleftList, "FD_left", "ГГц", 55),
                     GetFullStatisticsFromList(bandfdrightList, "FD_right", "ГГц", 56)
-
                 };
             return returnList;
         }
@@ -3091,7 +3078,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(id15List, "Потери на 1.5ГГц", "дБ")
-
                 };
             return returnList;
         }
@@ -3109,7 +3095,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(id15List, "Потери на 1.5ГГц", "дБ")
-
                 };
             return returnList;
         }
@@ -3118,7 +3103,7 @@ namespace VueExample.StatisticsCoreRework
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var twohalfIndex = GetIndexOfList(xListdouble, 1.0);
             var fiveIndex = GetIndexOfList(xListdouble, 5.0);
-            var tenIndex = GetIndexOfList(xListdouble, 10.0);;
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
             var eightteenIndex = GetIndexOfList(xListdouble, 20.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
@@ -3147,7 +3132,7 @@ namespace VueExample.StatisticsCoreRework
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var twohalfIndex = GetIndexOfList(xListdouble, 1.0);
             var fiveIndex = GetIndexOfList(xListdouble, 5.0);
-            var tenIndex = GetIndexOfList(xListdouble, 10.0);;
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
             var eightteenIndex = GetIndexOfList(xListdouble, 20.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
@@ -3328,13 +3313,11 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id10List, "S21<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
         private List<Statistics> GetS11BURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var threeIndex = GetIndexOfList(xListdouble, 3.0);
             var fiveIndex = GetIndexOfList(xListdouble, 5.0);
@@ -3384,7 +3367,6 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetS22BURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var threeIndex = GetIndexOfList(xListdouble, 3.0);
             var fiveIndex = GetIndexOfList(xListdouble, 5.0);
@@ -3458,8 +3440,8 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var tenIndex = GetIndexOfList(xListdouble, 10.0);;
-            var twIndex = GetIndexOfList(xListdouble, 20.0);;
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var twIndex = GetIndexOfList(xListdouble, 20.0);
 
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
@@ -3623,7 +3605,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var ocIndex = GetIndexOfList(xListdouble, 0.15);
-            var oneIndex = GetIndexOfList(xListdouble, 1.0);;
+            var oneIndex = GetIndexOfList(xListdouble, 1.0);
             var twoIndex = GetIndexOfList(xListdouble, 2.0);
             var threeIndex = GetIndexOfList(xListdouble, 3.0);
             var fourIndex = GetIndexOfList(xListdouble, 4.0);
@@ -3644,8 +3626,8 @@ namespace VueExample.StatisticsCoreRework
                 var interpolationmethod = Interpolate.Linear(xListdouble, yListdouble);
                 var tempList = xListdouble.Where(x => x >= xListdouble[onehalfIndex]).Select(interpolationmethod.Differentiate).ToList();
                 sfList.Add(Math.Abs(tempList.Max() - tempList.Min()) * 1000);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
             }
 
             foreach (List<double> yListdouble in enumerable.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
@@ -3672,7 +3654,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var ocIndex = GetIndexOfList(xListdouble, 0.15);
-            var oneIndex = GetIndexOfList(xListdouble, 1.0);;
+            var oneIndex = GetIndexOfList(xListdouble, 1.0);
             var twoIndex = GetIndexOfList(xListdouble, 2.0);
             var threeIndex = GetIndexOfList(xListdouble, 3.0);
             var fourIndex = GetIndexOfList(xListdouble, 4.0);
@@ -3696,8 +3678,8 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id4List.Add(yListdouble[fourIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
                 ocList.Add(xListdouble[ocIndex] / yListdouble[ocIndex]);
             }
 
@@ -3717,7 +3699,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
              var ocIndex = GetIndexOfList(xListdouble, 0.15);
-            var oneIndex = GetIndexOfList(xListdouble, 1.0);;
+            var oneIndex = GetIndexOfList(xListdouble, 1.0);
             var twoIndex = GetIndexOfList(xListdouble, 2.0);
             var threeIndex = GetIndexOfList(xListdouble, 3.0);
             var fourIndex = GetIndexOfList(xListdouble, 4.0);
@@ -3742,8 +3724,8 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id4List.Add(yListdouble[fourIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
                 ocList.Add(xListdouble[ocIndex]/yListdouble[ocIndex]);
             }
 
@@ -4724,7 +4706,7 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetPSMongo(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-            var twelveIndex = GetIndexOfList(xListdouble, 12.0);;
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
             var tenIndex = GetIndexOfList(xListdouble, 10.0);
             var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
@@ -4745,7 +4727,7 @@ namespace VueExample.StatisticsCoreRework
         }
         private List<Statistics> GetATTMongoPhase(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-            var twelveIndex = GetIndexOfList(xListdouble, 12.0);;
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
             var tenIndex = GetIndexOfList(xListdouble, 10.0);
             var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
@@ -4767,7 +4749,7 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetPSMongoPhase(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-            var twelveIndex = GetIndexOfList(xListdouble, 12.0);;
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
             var tenIndex = GetIndexOfList(xListdouble, 10.0);
             var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
@@ -4790,7 +4772,7 @@ namespace VueExample.StatisticsCoreRework
         }
         private List<Statistics> GetATTMongoS21(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-            var twelveIndex = GetIndexOfList(xListdouble, 12.0);;
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
             var tenIndex = GetIndexOfList(xListdouble, 10.0);
             var eightIndex = GetIndexOfList(xListdouble, 8.0);
 
@@ -5269,17 +5251,17 @@ namespace VueExample.StatisticsCoreRework
             for (int index = 0; index < xList.Count; index++)
             {
                 var x = double.Parse(xList[index], CultureInfo.InvariantCulture);
-                if (0.15 <= x && x <= 0.2)
+                if (x >= 0.15 && x <= 0.2)
                 {
                     xListdouble.Add(x);
                     indexesList.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoubleforn.Add(x);
                     indexesListforn.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoublefornn.Add(x);
                     indexesListfornn.Add(index);
@@ -5321,10 +5303,10 @@ namespace VueExample.StatisticsCoreRework
                 var nnList = new List<double>();
              //   var dn = interpolationmethodvpofornn.Differentiate(0.6);
                 const double contactArea = 7.5E-9;
-                const double A = 8.17E+4;//постоянная Ричардсона
+                const double A = 8.17E+4; //постоянная Ричардсона
                 const int T = 295;
                 const double k = 8.617332E-5;
-                var k2 = 1.380648E-23;//постоянная Больцмана
+                var k2 = 1.380648E-23; //постоянная Больцмана
                 var e = 1.60218E-19;
                 var vbo = k * T * Math.Log(10) * (Math.Log10(contactArea * A * Math.Pow(T, 2)) - Is);
                 for (double i = 0.2; i < 0.75; i = i + 0.0025)
@@ -5565,17 +5547,17 @@ namespace VueExample.StatisticsCoreRework
             for (int index = 0; index < xList.Count; index++)
             {
                 var x = double.Parse(xList[index], CultureInfo.InvariantCulture);
-                if (0.15 <= x && x <= 0.2)
+                if (x >= 0.15 && x <= 0.2)
                 {
                     xListdouble.Add(x);
                     indexesList.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoubleforn.Add(x);
                     indexesListforn.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoublefornn.Add(x);
                     indexesListfornn.Add(index);
@@ -5617,10 +5599,10 @@ namespace VueExample.StatisticsCoreRework
                 var nnList = new List<double>();
                 //   var dn = interpolationmethodvpofornn.Differentiate(0.6);
                 const double contactArea = 7.5E-9;
-                const double A = 8.17E+4;//постоянная Ричардсона
+                const double A = 8.17E+4; //постоянная Ричардсона
                 const int T = 295;
                 const double k = 8.617332E-5;
-                var k2 = 1.380648E-23;//постоянная Больцмана
+                var k2 = 1.380648E-23; //постоянная Больцмана
                 var e = 1.60218E-19;
                 var vbo = k * T * Math.Log(10) * (Math.Log10(contactArea * A * Math.Pow(T, 2)) - Is);
                 for (double i = 0.2; i < 0.75; i = i + 0.0025)
@@ -5819,7 +5801,6 @@ namespace VueExample.StatisticsCoreRework
             returnList[0].FullList = vbrdgList.ToList();
             return returnList;
         }
-
 
         private List<Statistics> GetCMIM_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {

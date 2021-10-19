@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
+using VueExample.ViewModels.DieType;
 
 namespace VueExample.Controllers
 {
@@ -48,7 +49,7 @@ namespace VueExample.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("")]
         public async Task<IActionResult> Create([FromBody] JObject dieTypeUpdatingJObject)
-        {           
+        {
             var dieTypeUpdatingViewModel = dieTypeUpdatingJObject.ToObject<DieTypeUpdatingViewModel>();
             var dieType = await _dieTypeProvider.Create(dieTypeUpdatingViewModel);
             return Created("", dieType.Name);
@@ -87,7 +88,7 @@ namespace VueExample.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("wafer/{waferId}")]
         public async Task<IActionResult> GetByWaferId([FromRoute] string waferId)
-        {   
+        {
             var dieTypes = await _dieTypeProvider.GetByWaferId(waferId);
             return !dieTypes.Any() ? (IActionResult)NotFound() : Ok(dieTypes);
         }

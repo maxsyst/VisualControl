@@ -37,5 +37,4 @@ namespace VueExample.StatisticsCoreRework.Models
         public string Median { get; set; } = "?";
         public int State { get; set; } = 0;
     }
-
 }

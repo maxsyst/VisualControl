@@ -86,8 +86,6 @@ namespace VueExample.Providers.ChipVerification
         public List<AtomicMeasurementExtendedViewModel> GetAtomicsById(Guid measurementSetId, IMeasurementProvider measurementProvider)
         {
             var atomicViewModelList = new List<AtomicMeasurementExtendedViewModel>();
-
-
             var atomicList = _applicationContext.AtomicMeasurement.Include(_ => _.MeasurementSetAtomicMeasurement).
                                                                   ThenInclude(_ => _.MeasurementSet).
                                                                   Include(_ => _.Device).
@@ -116,8 +114,6 @@ namespace VueExample.Providers.ChipVerification
         public List<AtomicMeasurementExtendedViewModel> GetAtomicsByMaterial(int materialId, IMeasurementProvider measurementProvider, int facilityId)
         {
             var atomicViewModelList = new List<AtomicMeasurementExtendedViewModel>();
-
-
             var atomicList = _applicationContext.AtomicMeasurement.Include(_ => _.Device).
                                                                     Include(_ => _.Graphic).
                                                                     Include(_ => _.Measurement).

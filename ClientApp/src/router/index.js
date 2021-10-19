@@ -1,31 +1,28 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import { routes } from './routes'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import { routes } from './routes';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
     path: '/index.html',
-    redirect: '/'
-  }, ...routes]
-})
-
+    redirect: '/',
+  }, ...routes],
+});
 
 router.beforeEach((to, from, next) => {
-
-  const publicPages = ["/login", "/registration"];
+  const publicPages = ['/login', '/registration'];
   const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem("user");
+  const loggedIn = localStorage.getItem('user');
 
   if (authRequired && !loggedIn) {
-    return next("/login");
+    return next('/login');
   }
 
   next();
 });
 
-export default router
-
+export default router;

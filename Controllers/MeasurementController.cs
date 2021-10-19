@@ -14,16 +14,16 @@ namespace VueExample.Controllers
     [Route("api/[controller]")]
     public class MeasurementController : Controller
     {
-        private readonly IMeasurementProvider _measurementProvider;          
+        private readonly IMeasurementProvider _measurementProvider;
         public MeasurementController(IMeasurementProvider measurementProvider)
         {
-            _measurementProvider = measurementProvider;                   
+            _measurementProvider = measurementProvider;
         }
 
     /// <remarks>
     /// Sample
     ///
-    /// MeasurementViewModel: 
+    /// MeasurementViewModel:
     /// {
     ///      name: string,
     ///      materialId: int,
@@ -31,8 +31,7 @@ namespace VueExample.Controllers
     ///      facilityId: int,
     ///      intervalInSeconds: int
     /// }
-    /// </remarks> 
-
+    /// </remarks>
         [HttpPut]
         [ProducesResponseType(typeof(MeasurementViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<ResponseObjects.Error>), StatusCodes.Status409Conflict)]
@@ -40,10 +39,10 @@ namespace VueExample.Controllers
         public async Task<IActionResult> Create([FromBody] JObject measurementViewModel)
         {
             var result = await _measurementProvider.Create(measurementViewModel.ToObject<MeasurementViewModel>());
-            return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)CreatedAtAction("Create", result.TObject);         
+            return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)CreatedAtAction("Create", result.TObject);
         }
 
-        [HttpDelete]     
+        [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(List<ResponseObjects.Error>), StatusCodes.Status409Conflict)]
         [Route("delete/{measurementId:int}")]
@@ -60,8 +59,8 @@ namespace VueExample.Controllers
         {
              var result = await _measurementProvider.GetByMeasuredDeviceIdAndName(measuredDeviceId, name);
              return result.HasErrors ? (IActionResult)NotFound(result.GetErrors()) : (IActionResult)Ok(result.TObject);
-        }        
-       
+        }
+
         [HttpGet]
         [Route("fullinfo/{facilityId:int}")]
         public IActionResult FullInfo([FromRoute] int facilityId)
@@ -77,8 +76,8 @@ namespace VueExample.Controllers
         {
             var onlineStatus = _measurementProvider.GetMeasurementOnlineStatus(measurementId);
             return Ok(onlineStatus);
-        }     
-     
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<MeasurementStatisticsViewModel>), StatusCodes.Status200OK)]
         [Route("getmeasurementstatistics")]
@@ -95,7 +94,5 @@ namespace VueExample.Controllers
            var ports = await _measurementProvider.GetAvailablePorts(measurementId);
            return Ok(ports);
         }
-
-        
     }
 }

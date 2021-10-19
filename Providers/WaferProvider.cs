@@ -21,7 +21,7 @@ namespace VueExample.Providers
             _cacheProvider = cacheProvider;
             _srv6Context = srv6Context;
         }
-        public async Task<List<Wafer>> GetWafers() 
+        public async Task<List<Wafer>> GetWafers()
         {
             var waferList = await _cacheProvider.GetFromCache<List<Wafer>>("WAFER:ALL");
             if(waferList is null) {
@@ -41,16 +41,15 @@ namespace VueExample.Providers
                     .SetSlidingExpiration(TimeSpan.FromMinutes(1)));
             }
             return pwaferList;
-           
         }
 
         public async Task<Wafer> GetByMeasurementRecordingId(int measurementRecordingId)
         {
             var wafer = await _cacheProvider.GetFromCache<Wafer>($"WAFER:MEASUREMENTRECORDINGID:{measurementRecordingId}");
             if(wafer is null) {
-                var waferId = await _srv6Context.Wafers.Join(_srv6Context.FkMrPs.Where(x => x.MeasurementRecordingId == measurementRecordingId), 
+                var waferId = await _srv6Context.Wafers.Join(_srv6Context.FkMrPs.Where(x => x.MeasurementRecordingId == measurementRecordingId),
                                             c => c.WaferId,
-                                            p => p.WaferId, 
+                                            p => p.WaferId,
                                             (c,p) => p.WaferId).AsNoTracking().FirstOrDefaultAsync();
                 wafer = await this.GetByWaferId(waferId);
                 await _cacheProvider.SetCache<Wafer>($"WAFER:MEASUREMENTRECORDINGID:{measurementRecordingId}", wafer, new DistributedCacheEntryOptions()

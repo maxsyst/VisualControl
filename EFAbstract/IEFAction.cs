@@ -5,8 +5,8 @@ namespace VueExample.EFAbstract
 {
     public interface IEFAction<in Tin, out Tout>
     {
-        ImmutableList<ValidationError> validationErrorList {get;}
-        bool HasErrors {get;}
+        ImmutableList<ValidationError> validationErrorList {get; }
+        bool HasErrors {get; }
         Tout Action(Tin dto);
     }
 }

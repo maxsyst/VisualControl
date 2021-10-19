@@ -12,7 +12,7 @@ namespace VueExample.Controllers
         private IDieProvider  _dieProvider;
         private IDefectTypeProvider _defectTypeProvider;
         private IDangerLevelProvider _dangerLevelProvider;
-        
+
         public DefectFilterController(IDieProvider dieProvider, IStageProvider stageProvider, IDefectTypeProvider defectTypeProvider, IDangerLevelProvider dangerLevelProvider)
         {
             _dieProvider = dieProvider;
@@ -51,8 +51,6 @@ namespace VueExample.Controllers
         //         return Ok(new StandardResponseObject {ResponseType = "error", ErrorCode = "UE001"});
 
         //     }
-          
-
         // }
     }
 }

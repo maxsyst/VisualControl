@@ -1,4 +1,3 @@
-
 namespace VueExample.ViewModels
 {
     public class RegistryViewModel

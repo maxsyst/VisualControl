@@ -34,7 +34,6 @@ namespace VueExample.Controllers.Vertx
             {
                 return Conflict();
             }
-
             return CreatedAtAction("Create", measurementAttemptResponseModel);
         }
 
@@ -57,6 +56,5 @@ namespace VueExample.Controllers.Vertx
                 ? (IActionResult)NotFound()
                 : Ok(measurementAttemptList);
         }
-
     }
 }

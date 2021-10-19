@@ -64,7 +64,6 @@ namespace VueExample.Providers.Srv6
                         {
                             uploadingFileStatusList.Add(new UploadingFileStatus{Guid = uploadingFile.Guid, AlreadyData = fkMrGraphicsList, Stage = new ViewModels.StageViewModel {Id = stage.StageId, Name = stage.StageName}, UploadStatus = "already"});
                         }
-
                     }
                     else
                     {
@@ -168,7 +167,6 @@ namespace VueExample.Providers.Srv6
                                 GraphicId = uploadingFile.Graphics[i].Id,
                                 MeasurementRecordingId = uploadingFile.MeasurementRecordingId,
                                 ValueString = graphicstring
-
                             });
                         }
                     }

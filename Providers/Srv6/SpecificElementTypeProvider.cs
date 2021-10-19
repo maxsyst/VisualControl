@@ -24,7 +24,7 @@ namespace VueExample.Providers.Srv6
                                                               Specification = specificElementTypeViewModel.Specification};
             _srv6Context.SpecificElementTypes.Add(specificElementType);
             await _srv6Context.SaveChangesAsync();
-            return specificElementType;                                       
+            return specificElementType;
         }
 
         public async Task<SpecificElementType> Update(SpecificElementTypeViewModel specificElementTypeViewModel)
@@ -45,11 +45,10 @@ namespace VueExample.Providers.Srv6
             await _srv6Context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<SpecificElementType>> GetByElementTypeId(int elementTypeId) 
+        public async Task<IEnumerable<SpecificElementType>> GetByElementTypeId(int elementTypeId)
             => await _srv6Context.SpecificElementTypes.Where(x => x.ElementTypeId == elementTypeId).ToListAsync();
 
-        public async Task<SpecificElementType> GetById(int id) 
+        public async Task<SpecificElementType> GetById(int id)
             => await _srv6Context.SpecificElementTypes.FirstOrDefaultAsync(x => x.Id == id) ?? throw new RecordNotFoundException();
-
     }
 }

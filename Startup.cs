@@ -124,7 +124,6 @@ namespace VueExample
             //     c.IncludeXmlComments(xmlPath);
             // });
 
-
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")), ServiceLifetime.Transient);
             services.AddDbContext<Srv6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("SRV6Context")), ServiceLifetime.Transient);
             services.AddDbContext<VisualControlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VisualControlContext")), ServiceLifetime.Transient);
@@ -134,7 +133,6 @@ namespace VueExample
             services.AddScoped<IMongoClient>(s => new MongoClient(Configuration.GetConnectionString("Mongo")));
             services.AddScoped<ICacheProvider, CacheProvider>();
             services.AddScoped<IUserProvider, UserProvider>();
-
 
             services.AddTransient<StatisticsCoreRework.Statistics>();
             services.AddTransient<WaferMapService>();
@@ -146,7 +144,6 @@ namespace VueExample
             services.AddTransient<DirtyCellsService>();
             services.AddTransient<DirtyCellsCalculationStatService>();
             services.AddTransient<DirtyCellsCalculationFxdService>();
-
 
             services.AddTransient<IGraphic4Service, Graphic4Service>();
             services.AddTransient<IWaferMapService, WaferMapCachedService>();
@@ -223,7 +220,6 @@ namespace VueExample
             services.AddTransient<IDirtyCellsCalculationService, DirtyCellsCalculationService>();
             services.AddTransient<IDirtyCellsCalculationFxdService, DirtyCellsCalculationFxdCachedService>();
             services.AddTransient<IDirtyCellsCalculationStatService, DirtyCellsCalculationStatCachedService>();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -250,7 +246,6 @@ namespace VueExample
                 x.Map<ValidationErrorException>().ToStatusCode(StatusCodes.Status403Forbidden);
             });
 
-
             app.UseCors("DefaultPolicy");
             // app.UseSwagger();
             // app.UseSwaggerUI(c =>
@@ -258,7 +253,6 @@ namespace VueExample
             //     c.SwaggerEndpoint("v0.2.2/swagger.json", "SVR_MES_19_API_0.2.2");
             //     c.RoutePrefix = string.Empty;
             // });
-
 
             app.UseAuthentication();
             app.UseResponseCompression();
@@ -282,7 +276,6 @@ namespace VueExample
                         npmScript: "serve",
                         regex: "Compiled successfully");
                 }
-
             });
 
             app.UseSpa(spa =>

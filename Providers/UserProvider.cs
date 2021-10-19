@@ -25,16 +25,14 @@ namespace VueExample.Providers
             _appSettings = appSettings.Value;
             _usersList = GetUsers();
         }
-        
+
         public User Authenticate(User user)
         {
             var currentUser = _usersList.SingleOrDefault(x => x.Username == user.Username && x.Password == user.Password);
 
-          
             if (currentUser == null)
                 return null;
 
-            
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -71,7 +69,7 @@ namespace VueExample.Providers
             }
             return null;
         }
-       
+
         public User RegistryUser(User user)
         {
             _visualControlContext.Users.Add(user);
