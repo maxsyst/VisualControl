@@ -35,7 +35,7 @@ export default {
     };
   },
   methods: {
-    toggleCollapsed(event) {
+    toggleCollapsed() {
       this.collapsed = !this.collapsed;
     },
   },

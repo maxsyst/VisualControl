@@ -12,11 +12,11 @@ using VueExample.ViewModels;
 namespace VueExample.Controllers
 {
     [Route ("api/[controller]/")]
-    public class DeviceController : Controller 
+    public class DeviceController : Controller
     {
         private readonly IDeviceProvider _deviceProvider;
         private readonly IMapper _mapper;
-        public DeviceController (IDeviceProvider deviceProvider, IMapper mapper) 
+        public DeviceController (IDeviceProvider deviceProvider, IMapper mapper)
         {
             _deviceProvider = deviceProvider;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace VueExample.Controllers
         [ProducesResponseType(typeof(List<DeviceViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
         [Route("all")]
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll()
         {
             var result = await _deviceProvider.GetAll();
             return result.HasErrors ? (IActionResult)NotFound(result.GetErrors()) : (IActionResult)Ok(result.TObject);
@@ -50,7 +50,7 @@ namespace VueExample.Controllers
             var result = await _deviceProvider.GetByName(name);
             return result.HasErrors ? (IActionResult)NotFound(result.GetErrors()) : (IActionResult)Ok(_mapper.Map<DeviceViewModel>(result.TObject));
         }
-       
+
         [HttpGet]
         [ProducesResponseType(typeof(DeviceViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
@@ -60,17 +60,17 @@ namespace VueExample.Controllers
             var result = await _deviceProvider.GetByAddress(address);
             return result.HasErrors ? (IActionResult)NotFound(result.GetErrors()) : (IActionResult)Ok(_mapper.Map<DeviceViewModel>(result.TObject));
         }
+        
     /// <remarks>
     /// Sample
     ///
-    /// DeviceViewModel: 
+    /// DeviceViewModel:
     /// {
     ///     name: string,
     ///     address: string,
     ///     model: string
     /// }
-    /// </remarks> 
-
+    /// </remarks>
         [HttpPut]
         [ProducesResponseType(typeof(DeviceViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseObjects.Error), StatusCodes.Status409Conflict)]
@@ -78,7 +78,7 @@ namespace VueExample.Controllers
         public async Task<IActionResult> Create([FromBody] JObject deviceViewModel)
         {
             var result = await _deviceProvider.Create(deviceViewModel.ToObject<DeviceViewModel>());
-            return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)CreatedAtAction("Create", _mapper.Map<DeviceViewModel>(result.TObject));           
+            return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)CreatedAtAction("Create", _mapper.Map<DeviceViewModel>(result.TObject));
         }
 
         [HttpDelete]

@@ -1,4 +1,6 @@
 using System;
+using VueExample.ViewModels.FileNameUploader;
+
 namespace VueExample.ViewModels
 {
     public class SimpleOperationUploaderViewModel

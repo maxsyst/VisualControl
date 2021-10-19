@@ -32,6 +32,5 @@ namespace VueExample.Controllers
             await _normalizeService.CreateNewNormalizeHistogram(idmr, graphicId, waferId, Convert.ToDouble(mean, CultureInfo.InvariantCulture), Convert.ToDouble(stddev, CultureInfo.InvariantCulture));
             return Ok();
         }
-
     }
 }

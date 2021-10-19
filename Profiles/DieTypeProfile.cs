@@ -1,6 +1,7 @@
 using AutoMapper;
 using VueExample.Models.SRV6;
 using VueExample.ViewModels;
+using VueExample.ViewModels.DieType;
 
 namespace VueExample.Profiles
 {

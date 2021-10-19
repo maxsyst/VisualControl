@@ -2822,7 +2822,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.6GHz-0.75GHz)</sub>", "", 56)
-
                 };
             return returnList;
         }
@@ -3079,7 +3078,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(id15List, "Потери на 1.5ГГц", "дБ")
-
                 };
             return returnList;
         }
@@ -3097,7 +3095,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(id15List, "Потери на 1.5ГГц", "дБ")
-
                 };
             return returnList;
         }

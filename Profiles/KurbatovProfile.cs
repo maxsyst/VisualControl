@@ -1,6 +1,6 @@
 using AutoMapper;
 using VueExample.Models.SRV6.Export;
-using VueExample.ViewModels;
+using VueExample.ViewModels.Kurbatov;
 
 namespace VueExample.Profiles
 {

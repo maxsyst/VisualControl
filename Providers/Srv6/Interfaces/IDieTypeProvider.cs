@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Models.SRV6;
 using VueExample.ViewModels;
+using VueExample.ViewModels.DieType;
 
 namespace VueExample.Providers.Srv6.Interfaces
 {

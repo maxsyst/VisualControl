@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using VueExample.Providers.Srv6.Interfaces;
 using System.IO.Compression;
 using VueExample.StatisticsCoreRework.Abstract;
+using VueExample.ViewModels.Kurbatov;
 
 namespace VueExample.Controllers
 {

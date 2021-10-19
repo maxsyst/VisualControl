@@ -47,19 +47,19 @@ namespace VueExample.Controllers.Vertx
             return CreatedAtAction("CreateMeasurement", measurementResponseModel);
         }
 
-        
+
         [HttpPost("create/withmdv")]
         public async Task<IActionResult> CreateMeasurementWithMdv([FromBody] MeasurementWithMdvInputModel measurementWithMdvInputModel)
         {
             var mdv = await _mdvService.GetByWaferAndCode(measurementWithMdvInputModel.WaferId, measurementWithMdvInputModel.Code);
-            if (mdv == null) 
+            if (mdv == null)
             {
                 return (IActionResult)NotFound();
             }
             var measurementAttempt = await _measurementAttemptService.GetMasterByMdvId(mdv.Id.ToString());
             var measurementInputModel = measurementWithMdvInputModel.MeasurementInputModel;
             measurementInputModel.MeasurementAttemptId = measurementAttempt.Id.ToString();
-            if(measurementInputModel.CreationDate.Ticks == 0) 
+            if(measurementInputModel.CreationDate.Ticks == 0)
             {
                 measurementInputModel.CreationDate = DateTime.Now;
             }
@@ -142,6 +142,5 @@ namespace VueExample.Controllers.Vertx
                 ? (IActionResult)NotFound()
                 : Ok(_mapper.Map<MeasurementResponseModel>(measurement));
         }
-
     }
 }

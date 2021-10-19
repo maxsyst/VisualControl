@@ -32,7 +32,6 @@ namespace VueExample.Controllers
     ///      intervalInSeconds: int
     /// }
     /// </remarks>
-
         [HttpPut]
         [ProducesResponseType(typeof(MeasurementViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<ResponseObjects.Error>), StatusCodes.Status409Conflict)]

@@ -277,7 +277,6 @@ namespace VueExample
                         npmScript: "serve",
                         regex: "Compiled successfully");
                 }
-
             });
 
             app.UseSpa(spa =>

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace VueExample.Models
 {
     [Table("Graphic")]
-    
     public class Graphic
     {
         [Column("id_graphic")]

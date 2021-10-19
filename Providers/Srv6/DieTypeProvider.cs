@@ -10,6 +10,7 @@ using VueExample.Models;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
+using VueExample.ViewModels.DieType;
 
 namespace VueExample.Providers.Srv6
 {
@@ -21,9 +22,9 @@ namespace VueExample.Providers.Srv6
         {
             _srv6Context = srv6Context;
             _mapper = mapper;
-        }        
+        }
         public async Task<DieType> Create(DieTypeUpdatingViewModel dieTypeViewModel)
-        {            
+        {
             var dieType = new DieType{Name = dieTypeViewModel.Name};
             _srv6Context.DieTypes.Add(dieType);
             await _srv6Context.SaveChangesAsync();
@@ -33,7 +34,6 @@ namespace VueExample.Providers.Srv6
                 var createdElement = new Element{Name = element.Name, Comment = element.Comment, TypeId = element.TypeId};
                 _srv6Context.Elements.Add(createdElement);
                 elementsList.Add(createdElement);
-                    
             }
             await _srv6Context.SaveChangesAsync();
 
@@ -54,7 +54,7 @@ namespace VueExample.Providers.Srv6
         {
             if(String.IsNullOrEmpty(dieTypeViewModel.Name))
                 throw new ValidationErrorException();
-            
+
             var dieType = await _srv6Context.DieTypes.FirstOrDefaultAsync(x => x.DieTypeId == dieTypeViewModel.Id) ?? throw new RecordNotFoundException();
              _srv6Context.Entry(dieType).CurrentValues.SetValues(_mapper.Map<DieTypeViewModel, DieType>(dieTypeViewModel));
             await _srv6Context.SaveChangesAsync();
@@ -80,7 +80,7 @@ namespace VueExample.Providers.Srv6
             var dieType =           await _srv6Context.DieTypes
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.DieTypeId == id);
-                
+
             var elementsViewModelList = _mapper.Map<List<Element>, List<ElementViewModel>>(elementsList);
             foreach(var element in elementsViewModelList)
             {
@@ -89,9 +89,9 @@ namespace VueExample.Providers.Srv6
                     element.IsAvaliableToDelete = false;
                 }
             }
-            return new DieTypeUpdatingViewModel{Name = dieType.Name, 
-                                                CodeProductIdsList = codeProductIdsList.ToList(), 
-                                                ElementsList = elementsViewModelList}; 
+            return new DieTypeUpdatingViewModel{Name = dieType.Name,
+                                                CodeProductIdsList = codeProductIdsList.ToList(),
+                                                ElementsList = elementsViewModelList};
         }
 
         public async Task<Tuple<CodeProductViewModel, string>> UpdateCodeProductsMap(int dieTypeId, int codeProductId)
@@ -110,7 +110,7 @@ namespace VueExample.Providers.Srv6
                 action = "DELETED";
             }
             await _srv6Context.SaveChangesAsync();
-            var codeProduct = await _srv6Context.CodeProducts.FirstOrDefaultAsync(x => x.IdCp == codeProductId);               
+            var codeProduct = await _srv6Context.CodeProducts.FirstOrDefaultAsync(x => x.IdCp == codeProductId);
             return new Tuple<CodeProductViewModel, string>(_mapper.Map<CodeProduct, CodeProductViewModel>(codeProduct), codeProduct is null ? "ERROR" : action);
         }
 
@@ -118,14 +118,14 @@ namespace VueExample.Providers.Srv6
         {
             var dieTypesList =  await _srv6Context.DieTypes
                                 .Join(_srv6Context.DieTypeCodeProducts.Where(x => x.CodeProductId == codeProductId),
-                                      c => c.DieTypeId, 
-                                      p => p.DieTypeId, 
+                                      c => c.DieTypeId,
+                                      p => p.DieTypeId,
                                       (c,p) => p.DieType)
                                 .AsNoTracking()
                                 .ToListAsync();
             return dieTypesList;
         }
-        
+
         public async Task<DieType> GetByName(string name)
         {
             var dieType =  await _srv6Context.DieTypes.FirstOrDefaultAsync( x => x.Name == name);

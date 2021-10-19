@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VueExample.Models.SRV6.Uploader;
 using VueExample.ViewModels;
+using VueExample.ViewModels.FileNameUploader;
 
 namespace VueExample.Providers.Srv6.Interfaces
 {
