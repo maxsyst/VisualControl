@@ -10,6 +10,5 @@ namespace VueExample.Profiles
         {
             CreateMap<MeasuredDeviceViewModel, MeasuredDevice>().ReverseMap();
         }
-       
     }
 }

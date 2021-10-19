@@ -146,7 +146,8 @@
                         </v-row>
                         <v-row class="mt-6" v-if="selectedDieTypeId">
                             <v-col lg="12">
-                                <v-btn v-if="mode==='updating'" block @click="changeSelectedPattern(selectedPattern)" color="indigo">Подтвердить выбор</v-btn>
+                                <v-btn v-if="mode==='updating'" block
+                                       @click="changeSelectedPattern(selectedPattern)" color="indigo">Подтвердить выбор</v-btn>
                                 <v-btn v-else block @click="goToUpdatingMode(selectedDieTypeId)" color="indigo">Редактировать шаблон</v-btn>
                             </v-col>
                         </v-row>
@@ -233,7 +234,9 @@ export default {
       const parentSmp = this.$store.getters['smpstorage/currentSmp'](this.copyguid);
       selectedElementIds.forEach((elementId) => {
         const element = this.elementsArray.find((e) => e.elementId === elementId);
-        const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === 'Нет' ? 'No' : parentSmp.divider.name}µm`;
+        const name = `${element.name}_${parentSmp.stage.stageName.split(' ').join('+')}_${parentSmp.divider.name === 'Нет'
+          ? 'No'
+          : parentSmp.divider.name}µm`;
         this.createSmpFromService({
           name, mslName: '', element: { ...element }, stage: { ...parentSmp.stage }, divider: { ...parentSmp.divider }, kpList: [...parentSmp.kpList],
         });
@@ -250,7 +253,12 @@ export default {
     createSmp() {
       if (!this.$store.getters['smpstorage/existInSmpArray'](this.smpName)) {
         this.createSmpFromService({
-          name: this.smpName, mslName: '', element: this.selectedElementSMP, stage: this.selectedStageSMP, divider: this.selectedDividerSMP, kpList: [],
+          name: this.smpName,
+          mslName: '',
+          element: this.selectedElementSMP,
+          stage: this.selectedStageSMP,
+          divider: this.selectedDividerSMP,
+          kpList: [],
         });
         this.smpCreateDialog = false;
       } else {
@@ -283,11 +291,11 @@ export default {
       if (routeName === 'kurbatovparameter-creating') {
         this.initialDialog = false;
         this.selectedDieTypeId = +this.$route.params.dieType;
-        this.dieTypes
-          .map((x) => x.id)
-          .includes(this.selectedDieTypeId)
-          ? await this.goToCreatingMode()
-          : this.reset();
+        if (this.dieTypes.map((x) => x.id).includes(this.selectedDieTypeId)) {
+          await this.goToCreatingMode();
+        } else {
+          this.reset();
+        }
       }
       if (routeName === 'kurbatovparameter-updating') {
         this.initialDialog = false;
@@ -359,10 +367,12 @@ export default {
           this.showSnackbar('Успешно удалено');
           return this.selectedPattern;
         })
-        .then(async (selectedPattern) => {
-          _.isEmpty(selectedPattern)
-            ? await this.changeSelectedPattern(selectedPattern)
-            : Promise.resolve(this.reset()).then(() => this.showSnackbar('Удален последний шаблон'));
+        .then(async (selectedPatternA) => {
+          if (_.isEmpty(selectedPatternA)) {
+            await this.changeSelectedPattern(selectedPatternA);
+          } else {
+            Promise.resolve(this.reset()).then(() => this.showSnackbar('Удален последний шаблон'));
+          }
         })
         .catch(() => {
           this.showSnackbar('Ошибка при удалении');
@@ -423,7 +433,7 @@ export default {
     async getProcessByDieId(selectedDieTypeId) {
       await this.$http
         .get(`/api/process/dietype/${selectedDieTypeId}`)
-        .then((response) => this.process = response.data)
+        .then(function f(response) { this.process = response.data; })
         .catch((error) => this.showSnackbar(error.response.data[0].message));
     },
 
@@ -470,14 +480,19 @@ export default {
     },
 
     smpName() {
-      if (this.readyToCreateSMP) { return `${this.selectedElementSMP.name}_${this.selectedStageSMP.stageName.split(' ').join('+')}_${this.selectedDividerSMP.name === 'Нет' ? 'No' : this.selectedDividerSMP.name}µm`; }
+      if (this.readyToCreateSMP) {
+        return `${this.selectedElementSMP.name}_${this.selectedStageSMP.stageName.split(' ').join('+')}_${this.selectedDividerSMP.name === 'Нет'
+          ? 'No'
+          : this.selectedDividerSMP.name}µm`;
+      }
       return '';
     },
   },
 
   async mounted() {
     this.showLoading('Загрузка...');
-    await this.initialize().then(async () => await this.routeHandler(this.$route.name)).then(() => this.closeLoading());
+    await this.routeHandler(this.$route.name);
+    this.closeLoading();
   },
 
   beforeDestroy() {

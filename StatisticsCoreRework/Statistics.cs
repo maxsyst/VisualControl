@@ -8,7 +8,6 @@ using VueExample.Models.SRV6;
 
 namespace VueExample.StatisticsCoreRework
 {
-
     public class Statistics
     {
         public string ExpectedValue { get; set; }
@@ -18,15 +17,12 @@ namespace VueExample.StatisticsCoreRework
         public string StatisticsName { get; set; }
         public string Unit { get; set; }
         public string Median { get; set; }
-        public int ParameterID { get; set; }       
+        public int ParameterID { get; set; }
         public DividerProfile NeedDivider { get; set; }
         public List<double> FullList { get; set; }
 
-      
-
         public Statistics()
         {
-
         }
 
         public List<Statistics> GetStatistics(List<string> xList, List<List<string>> commonYList, Graphic graphics, double divider)
@@ -42,8 +38,6 @@ namespace VueExample.StatisticsCoreRework
             var st = theMethod.Invoke(this, new object[] { xList, commonYList, divider }) as List<Statistics>;
             return st;
         }
-
-
         public List<Statistics> GetStatisticsHistogram(List<string> valueList, Graphic graphics)
         {
             var thisType = GetType();
@@ -85,8 +79,6 @@ namespace VueExample.StatisticsCoreRework
             var st = theMethod.Invoke(this, new object[] { xList, commonYList, type, points }) as String;
             return st;
         }
-
-
         public string GetStatistics(List<double> xList, Dictionary<string, List<List<double>>> commonYList, string statisticsfunction, Dictionary<string,string> type, Dictionary<string, double> points)
         {
             var thisType = GetType();
@@ -100,13 +92,8 @@ namespace VueExample.StatisticsCoreRework
             var st = theMethod.Invoke(this, new object[] { xList, commonYList, type, points }) as String;
             return st;
         }
-
-
-
-
         public static Statistics GetStatisticsAverageFull(List<Statistics> list)
         {
-
             var diffstat = new Statistics
             {
                 Minimum = GetAverageFromFullStatistics(list, "Minimum"),
@@ -120,7 +107,6 @@ namespace VueExample.StatisticsCoreRework
 
         public static Statistics GetStatisticsSDFull(List<Statistics> list)
         {
-
             var diffstat = new Statistics
             {
                 Minimum = GetSDFromFullStatistics(list, "Minimum"),
@@ -130,7 +116,7 @@ namespace VueExample.StatisticsCoreRework
                 Median = GetSDFromFullStatistics(list, "Median")
             };
             return diffstat;
-        }      
+        }
 
         public List<Statistics> GetStatistics(List<string> list, Graphic graphics, StatisticParameter statisticParameter = null)
         {
@@ -170,26 +156,18 @@ namespace VueExample.StatisticsCoreRework
                 returnstring = "<br><span class=\"differencespan\" style=\"display:none\">" + "<font color=\"#8F2323\">" + ToStringD(Math.Abs(difference)) + "↓" + "</font>" + "</span></br>";
             }
             return returnstring;
-
         }
 
         private static string GetAverageFromFullStatistics(IEnumerable<Statistics> list, string propertyname)
         {
-
             return CalculateExpectedValue(list.Select(statisticse => double.Parse(Convert.ToString(statisticse.GetType().GetProperty(propertyname).GetValue(statisticse, null)))).ToList());
-
-
         }
 
         private static string GetSDFromFullStatistics(IEnumerable<Statistics> list, string propertyname)
         {
-
             return CalculateStandartDeviation(list.Select(statisticse => double.Parse(Convert.ToString(statisticse.GetType().GetProperty(propertyname).GetValue(statisticse, null)))).ToList());
-
-
         }
 
-        
         private static string CalculateExpectedValue(IEnumerable<double> list)
         {
             var enumerable = list as IList<double> ?? list.ToList();
@@ -198,11 +176,7 @@ namespace VueExample.StatisticsCoreRework
                 return String.Empty;
             }
             var average = enumerable.Average();
-            if ((Math.Abs(average) >= 10000 || Math.Abs(average) < 1E-2) && Math.Abs(average - 0) > 1E-20)
-            {
-                return average.ToString("0.00E0");
-            }
-            return average.ToString("0.000");
+            return ToStringD(average);
         }
 
         private static string ToStringD(double d)
@@ -218,16 +192,11 @@ namespace VueExample.StatisticsCoreRework
         {
             var enumerable = list as IList<double> ?? list.ToList();
             var median = MathNet.Numerics.Statistics.Statistics.Median(enumerable);
-            if ((Math.Abs(median) >= 10000 || Math.Abs(median) < 1E-2) && Math.Abs(median - 0) > 1E-20)
-            {
-                return median.ToString("0.00E0");
-            }
-            return median.ToString("0.000");
+            return ToStringD(median);
         }
 
         private static string CalculateStandartDeviation(List<double> list)
         {
-
             var enumerable = list as IList<double> ?? list.ToList();
             if (enumerable.Count == 0)
             {
@@ -240,30 +209,17 @@ namespace VueExample.StatisticsCoreRework
             {
                 standartdeviation = 0.0;
             }
-            if ((Math.Abs(standartdeviation) >= 10000 || Math.Abs(standartdeviation) < 1E-2) && Math.Abs(standartdeviation - 0) > 1E-20)
-            {
-                return standartdeviation.ToString("0.00E0");
-            }
-            return standartdeviation.ToString("0.000");
-
-
+           return ToStringD(standartdeviation);
         }
-
         private static string CalculateMinimum(IEnumerable<double> list)
         {
-
-
             var enumerable = list as IList<double> ?? list.ToList();
             if (enumerable.Count == 0)
             {
                 return String.Empty;
             }
             var minimum = enumerable.Min();
-            if ((Math.Abs(minimum) >= 10000 || Math.Abs(minimum) < 1E-2) && Math.Abs(minimum - 0) > 1E-20)
-            {
-                return minimum.ToString("0.00E0");
-            }
-            return minimum.ToString("0.000");
+            return ToStringD(minimum);
         }
 
         private static string CalculateMaximum(IEnumerable<double> list)
@@ -274,14 +230,8 @@ namespace VueExample.StatisticsCoreRework
                 return String.Empty;
             }
             var maximum = enumerable.Max();
-            if ((Math.Abs(maximum) >= 10000 || Math.Abs(maximum) < 1E-2) && Math.Abs(maximum - 0) > 1E-20)
-            {
-                return maximum.ToString("0.00E0");
-            }
-            return maximum.ToString("0.000");
+            return ToStringD(maximum);
         }
-
-
         private Statistics GetFullStatisticsFromList(List<double> list, string statisticsname, string unit, int parameterId = 0, DividerProfile dividerProfile = DividerProfile.WithoutDivider)
         {
             var statisitics = new Statistics
@@ -299,11 +249,15 @@ namespace VueExample.StatisticsCoreRework
             return list.Where(d => !double.IsNaN(d)).ToList();
         }
 
+        private int GetIndexOfList(List<double> xListDouble, double value)
+        {
+            return xListDouble.IndexOf(xListDouble.OrderBy(item => Math.Abs(value - item)).FirstOrDefault());
+        }
         private List<Statistics> GetIdssAndUgsoff(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-            List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
+            var xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 0.5);
             var idssList = new List<double>();
             var id05List = new List<double>();
             var ugsoffwithinterpolationList = new List<double>();
@@ -319,7 +273,6 @@ namespace VueExample.StatisticsCoreRework
                 ugsoffminList.Add(xListdouble[yListdouble.IndexOf(yListdouble.Min())]);
                 for (int i = yListdouble.Count - 1; i > -1; i--)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 1000)
                     {
                         if (i < yListdouble.Count - 1)
@@ -328,7 +281,7 @@ namespace VueExample.StatisticsCoreRework
                             var ytwopointList = new List<double> {yListdouble[i], yListdouble[i + 1]};
                             var interpolationmethod = Interpolate.Linear(ytwopointList, xtwopointList);
                             ugsoffwithinterpolationList.Add(interpolationmethod.Interpolate(yListdouble[zeroIndex] / 1000));
-                        
+
                             ugsoffList.Add((xListdouble[i] + xListdouble[i + 1]) / 2);
                             isugsoff = true;
                         }
@@ -341,7 +294,6 @@ namespace VueExample.StatisticsCoreRework
 
                         i = -1;
                     }
-
                 }
                 var isugsoff100 = false;
                 for (int i = yListdouble.Count - 1; i > -1; i--)
@@ -355,8 +307,6 @@ namespace VueExample.StatisticsCoreRework
                             var interpolationmethod100 = Interpolate.Linear(ytwopointList, xtwopointList);
                             ugsoffwithinterpolation100List.Add(interpolationmethod100.Interpolate(yListdouble[zeroIndex] / 100));
                             isugsoff100 = true;
-                            
-                          
                         }
                         else
                         {
@@ -366,7 +316,6 @@ namespace VueExample.StatisticsCoreRework
 
                         i = -1;
                     }
-
                 }
                 if (!isugsoff)
                 {
@@ -376,8 +325,6 @@ namespace VueExample.StatisticsCoreRework
                 if(!isugsoff100) {
                     ugsoffwithinterpolation100List.Add(double.NaN);
                 }
-
-
             }
             if (ugsoffList.Count(x => Double.IsNaN(x)) == ugsoffList.Count())
             {
@@ -387,7 +334,6 @@ namespace VueExample.StatisticsCoreRework
                     var isugsoff = false;
                     for (int i = yListdouble.Count - 1; i > -1; i--)
                     {
-
                         if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                         {
                             if (i < yListdouble.Count - 1)
@@ -414,9 +360,6 @@ namespace VueExample.StatisticsCoreRework
                         ugsoffList.Add(double.NaN);
                         ugsoffwithinterpolationList.Add(1E9);
                     }
-
-
-
                 }
 
                 var returnexList = new List<Statistics>
@@ -425,10 +368,8 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В", 4),
                     GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
-
                 };
                 return returnexList;
-
             }
 
             var returnList = new List<Statistics>
@@ -438,7 +379,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolation100List, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
-
                 };
             return returnList;
         }
@@ -446,8 +386,8 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetIdssAndUgsoff_REVERSED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 0.5);
             var idssList = new List<double>();
             var id05List = new List<double>();
             var ugsoffwithinterpolationList = new List<double>();
@@ -463,7 +403,6 @@ namespace VueExample.StatisticsCoreRework
                 ugsoffminList.Add(xListdouble[yListdouble.IndexOf(yListdouble.Min())]);
                 for (int i = 0; i < yListdouble.Count; i++)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 1000)
                     {
                         if (i < yListdouble.Count - 1)
@@ -485,12 +424,10 @@ namespace VueExample.StatisticsCoreRework
 
                         i = yListdouble.Count - 1;
                     }
-
                 }
 
                 for (int i = 0; i < yListdouble.Count; i++)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                     {
                         if (i < yListdouble.Count - 1)
@@ -499,28 +436,19 @@ namespace VueExample.StatisticsCoreRework
                             var ytwopointList = new List<double> { yListdouble[i], yListdouble[i + 1] };
                             var interpolationmethod100 = Interpolate.Linear(ytwopointList, xtwopointList);
                             ugsoffwithinterpolation100List.Add(interpolationmethod100.Interpolate(yListdouble[zeroIndex] / 100));
-
-
-
                         }
                         else
                         {
                             ugsoffwithinterpolation100List.Add(xListdouble[i]);
-
                         }
-
                         i = yListdouble.Count - 1;
                     }
-
                 }
                 if (!isugsoff)
                 {
                     ugsoffList.Add(double.NaN);
                     ugsoffwithinterpolationList.Add(double.NaN);
                 }
-
-
-
             }
             if (ugsoffList.Count(x => Double.IsNaN(x)) == ugsoffList.Count())
             {
@@ -530,7 +458,6 @@ namespace VueExample.StatisticsCoreRework
                     var isugsoff = false;
                     for (int i = 0; i < yListdouble.Count; i++)
                     {
-
                         if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                         {
                             if (i < yListdouble.Count - 1)
@@ -548,7 +475,6 @@ namespace VueExample.StatisticsCoreRework
                                 ugsoffList.Add(xListdouble[i]);
                                 isugsoff = true;
                             }
-
                             i = yListdouble.Count - 1;
                         }
                     }
@@ -557,9 +483,6 @@ namespace VueExample.StatisticsCoreRework
                         ugsoffList.Add(double.NaN);
                         ugsoffwithinterpolationList.Add(1E9);
                     }
-
-
-
                 }
 
                 var returnexList = new List<Statistics>
@@ -568,10 +491,8 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(ugsoffwithinterpolationList.Select(x => x*(-1)).ToList(), "U<sub>GS(off)</sub> (напряжение отсечки при Idss/100) !Транзисторы не закрываются!", "В", 4),
                     GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffminList.Select(x => x*(-1)).ToList(), "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
-
                 };
                 return returnexList;
-
             }
 
             var returnList = new List<Statistics>
@@ -581,16 +502,14 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolation100List.Select(x => x*(-1)).ToList(), "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
                     GetFullStatisticsFromList(ugsoffminList.Select(x => x*(-1)).ToList(), "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetIdssAndUgsoff_Progress(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 0.5);
             var idssList = new List<double>();
             var id05List = new List<double>();
             var ugsoffwithinterpolationList = new List<double>();
@@ -600,20 +519,17 @@ namespace VueExample.StatisticsCoreRework
             var unit = "A";
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
             {
-
                 idssList.Add(yListdouble[zeroIndex] * 1.1 / divider);
-               
             }
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 var isugsoff = false;
-              
+
                 id05List.Add(yListdouble[fiveIndex]);
                 ugsoffminList.Add(xListdouble[yListdouble.IndexOf(yListdouble.Min())]);
                 for (int i = yListdouble.Count - 1; i > -1; i--)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 1000)
                     {
                         if (i < yListdouble.Count - 1)
@@ -632,15 +548,12 @@ namespace VueExample.StatisticsCoreRework
                             ugsoffList.Add(xListdouble[i]);
                             isugsoff = true;
                         }
-
                         i = -1;
                     }
-
                 }
 
                 for (int i = yListdouble.Count - 1; i > -1; i--)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                     {
                         if (i < yListdouble.Count - 1)
@@ -649,28 +562,19 @@ namespace VueExample.StatisticsCoreRework
                             var ytwopointList = new List<double> { yListdouble[i], yListdouble[i + 1] };
                             var interpolationmethod100 = Interpolate.Linear(ytwopointList, xtwopointList);
                             ugsoffwithinterpolation100List.Add(interpolationmethod100.Interpolate(yListdouble[zeroIndex] / 100));
-
-
-
                         }
                         else
                         {
                             ugsoffwithinterpolation100List.Add(xListdouble[i]);
-
                         }
-
                         i = -1;
                     }
-
                 }
                 if (!isugsoff)
                 {
                     ugsoffList.Add(double.NaN);
                     ugsoffwithinterpolationList.Add(double.NaN);
                 }
-
-
-
             }
             if (ugsoffList.Count(x => Double.IsNaN(x)) == ugsoffList.Count())
             {
@@ -680,7 +584,6 @@ namespace VueExample.StatisticsCoreRework
                     var isugsoff = false;
                     for (int i = yListdouble.Count - 1; i > -1; i--)
                     {
-
                         if (yListdouble[i] < yListdouble[zeroIndex] / 100)
                         {
                             if (i < yListdouble.Count - 1)
@@ -698,7 +601,6 @@ namespace VueExample.StatisticsCoreRework
                                 ugsoffList.Add(xListdouble[i]);
                                 isugsoff = true;
                             }
-
                             i = -1;
                         }
                     }
@@ -707,9 +609,6 @@ namespace VueExample.StatisticsCoreRework
                         ugsoffList.Add(double.NaN);
                         ugsoffwithinterpolationList.Add(double.NaN);
                     }
-
-
-
                 }
 
                 var returnexList = new List<Statistics>
@@ -718,10 +617,8 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(ugsoffwithinterpolationList, "U<sub>GS(off)</sub> (напряжение отсечки при Idss/100) !Транзисторы не закрываются!", "В", 4),
                     GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение отсечки при Imin)", "В"),
-
                 };
                 return returnexList;
-
             }
 
             var returnList = new List<Statistics>
@@ -731,22 +628,17 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id05List, "Id<sub>max</sub> (ток при Vgs=0.5В)", "А", 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ugsoffwithinterpolation100List, "U<sub>GS-100(off)</sub> (напряжение отсечки при Idss/100)", "В"),
                     GetFullStatisticsFromList(ugsoffminList, "U<sub>GS(min)</sub> (напряжение при Imin)", "В"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetLR(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.05 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.05);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>ind</sub> при U=0.05В (сопротивление катушки)", "Ом"),
-                  
                 };
             return returnList;
         }
@@ -757,24 +649,19 @@ namespace VueExample.StatisticsCoreRework
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(minList, "Harmony_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "Harmony_DELTA", "дБм"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetHarmony(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList, "Harmony_MAX", "дБм"),
                     GetFullStatisticsFromList(deltaList, "Harmony_DELTA", "дБм"),
-
                 };
             return returnList;
         }
@@ -784,15 +671,11 @@ namespace VueExample.StatisticsCoreRework
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList.Select(Math.Abs).ToList(), "ALFA1_MAX", "дБм", 48),
                     GetFullStatisticsFromList(minList.Select(Math.Abs).ToList(), "ALFA1_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "ALFA1_DELTA", "дБм"),
-
                 };
             return returnList;
         }
@@ -802,15 +685,11 @@ namespace VueExample.StatisticsCoreRework
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-            
-            
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList.Select(Math.Abs).ToList(), "ALFA2_MAX", "дБм", 46),
                     GetFullStatisticsFromList(minList.Select(Math.Abs).ToList(), "ALFA2_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "ALFA2_DELTA", "дБм"),
-
                 };
             return returnList;
         }
@@ -820,35 +699,24 @@ namespace VueExample.StatisticsCoreRework
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-          
-            
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList.Select(Math.Abs).ToList(), "ALFA3_MAX", "дБм", 49),
                     GetFullStatisticsFromList(minList.Select(Math.Abs).ToList(), "ALFA3_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "ALFA3_DELTA", "дБм"),
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetALFA4(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-            
-            
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList.Select(Math.Abs).ToList(), "ALFA4_MAX", "дБм", 47),
                     GetFullStatisticsFromList(minList.Select(Math.Abs).ToList(), "ALFA4_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "ALFA4_DELTA", "дБм"),
-
                 };
             return returnList;
         }
@@ -858,55 +726,39 @@ namespace VueExample.StatisticsCoreRework
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList.Select(Math.Abs).ToList(), "ALFA5_MAX", "дБм"),
                     GetFullStatisticsFromList(minList.Select(Math.Abs).ToList(), "ALFA5_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "ALFA5_DELTA", "дБм"),
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetCL(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var maxList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Max()).ToList();
             var minList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble.Min()).ToList();
             var deltaList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => Math.Abs(yListdouble.Max() - yListdouble.Min())).ToList();
-
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(maxList, "ConversionLoss_MAX", "дБм", 45),
                     GetFullStatisticsFromList(minList, "ConversionLoss_MIN", "дБм"),
                     GetFullStatisticsFromList(deltaList, "ConversionLoss_DELTA", "дБм"),
-
                 };
             return returnList;
         }
-
-
-
         private List<Statistics> GetIdssAndUgsoffX5(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
             var ugsoffList = new List<double>();
             var iMinList = new List<double>();
-
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
                 var isugsoff = false;
                 iMinList.Add(yListdouble.Min());
                 for (int i = yListdouble.Count - 1; i > -1; i--)
                 {
-
                     if (yListdouble[i] < yListdouble[zeroIndex] / 1000)
                     {
                         if (i < yListdouble.Count - 1)
@@ -919,7 +771,6 @@ namespace VueExample.StatisticsCoreRework
                             ugsoffList.Add(xListdouble[i]);
                             isugsoff = true;
                         }
-
                         i = -1;
                     }
                 }
@@ -927,9 +778,6 @@ namespace VueExample.StatisticsCoreRework
                 {
                     ugsoffList.Add(double.NaN);
                 }
-
-
-
             }
             if (ugsoffList.Count(x => Double.IsNaN(x)) == ugsoffList.Count())
             {
@@ -953,27 +801,20 @@ namespace VueExample.StatisticsCoreRework
                                 ugsoffList.Add(xListdouble[i]);
                                 isugsoff = true;
                             }
-
                             i = -1;
                         }
-
                     }
                     if (!isugsoff)
                     {
                         ugsoffList.Add(double.NaN);
                     }
-
-
                 }
                 var returnexList = new List<Statistics>
                 {
-                   
                     GetFullStatisticsFromList(ugsoffList, "U<sub>gs(off)-10</sub>", "", 4),
                     GetFullStatisticsFromList(iMinList, "I<sub>minimal</sub>", "A", 0, DividerProfile.WithDivider)
-
                 };
                 return returnexList;
-
             }
 
             var returnList = new List<Statistics>
@@ -984,10 +825,8 @@ namespace VueExample.StatisticsCoreRework
             return returnList;
         }
 
-
         private List<Statistics> GetSingleStatistics(List<string> list, Graphic graphics, StatisticParameter statisticParameter)
         {
-
             var listdouble = list.Select(x => String.IsNullOrEmpty(x) ? Double.NaN : double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
@@ -1006,7 +845,6 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetRDivided01(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)*10).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
@@ -1020,11 +858,9 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetRDivided01_1DOT1(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) * 10 / 1.1).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(listdouble, "Удельное " + statname, graphics.OrdinateUnit +  "/кв", statID),
@@ -1034,7 +870,6 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetCAPLEAKVA50N(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var vbrList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
@@ -1049,7 +884,6 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes.Add(index);
                         }
-
                     }
                 }
                 vbrList.Add(indexes.Count == 0
@@ -1061,27 +895,22 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-
                    GetFullStatisticsFromList(vbrList, "V<sub>brc</sub> (пробивное напряжение МДМ-конденсатора)", "В", 50),
-
                 };
             return returnList;
         }
 
-          private List<Statistics> GetS21VA50N_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
+        private List<Statistics> GetS21VA50N_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-
+            var tenIndex = GetIndexOfList(xListdouble, 5.0);
+            var twIndex = GetIndexOfList(xListdouble, 20.0);
 
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id20List.Add(yListdouble[twIndex]);
                 id10List.Add(yListdouble[tenIndex]);
             }
@@ -1090,25 +919,20 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S21<sub>(5GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id20List, "S21<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetS11VA50N_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-
-
+            var tenIndex = GetIndexOfList(xListdouble, 5.0);
+            var twIndex = GetIndexOfList(xListdouble, 20.0);
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id20List.Add(yListdouble[twIndex]);
                 id10List.Add(yListdouble[tenIndex]);
             }
@@ -1117,44 +941,34 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S11<sub>(5GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id20List, "S11<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetRDivided01_1DOT2(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) * 10 / 1.2).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(listdouble, "Удельное " + statname, graphics.OrdinateUnit +  "/кв", statID),
                 };
             return returnList;
         }
-
         private List<Statistics> GetRDivided_NO(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(listdouble, "Удельное " + statname, graphics.OrdinateUnit +  "/кв", statID),
                 };
             return returnList;
         }
-
-       
-
         private List<Statistics> GetRDivided10(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / 10).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
@@ -1168,7 +982,6 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetRDivided10_1DOT23(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / 10 / 1.23).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
@@ -1182,62 +995,47 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetRDivided10_1DOT22(List<string> valueList, Graphic graphics)
         {
-
             var listdouble = valueList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / 10 / 1.22).ToList();
             var statname = graphics.Ordinate;
             var statID = 0;
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(listdouble, "Удельное " + statname, graphics.OrdinateUnit + "/кв", statID),
                 };
             return returnList;
         }
-
-
-
-
         private List<Statistics> GetIdss(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             int zeroIndex = xList.IndexOf("0");
             var idssList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(idssList, "I<sub>dss</sub> (ток при Uзи = 0В, Uси = 10В)", "А", 3, DividerProfile.WithDivider),
-                   
                 };
             return returnList;
         }
 
-
         private List<Statistics> GetMongoFirstPoint(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-
-            
             var idssList = commonYList.Select(yList => yList.Select(x => x / divider).ToList()).Select(yListdouble => yListdouble[0]).ToList();
 
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(idssList, "FirstPoint " + type , "", 3),
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetIdssVknee(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             int maxIndex = xList.IndexOf("0");
             var idssList = new List<double>();
             var ronList = new List<double>();
             var vkneeList = new List<double>();
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
+            var tenIndex = GetIndexOfList(xListdouble, 0.5);
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 idssList.Add(yListdouble.Max());
                 vkneeList.Add(xListdouble[yListdouble.IndexOf(yListdouble.Max())]);
                 ronList.Add(xListdouble[tenIndex]/yListdouble[tenIndex]);
@@ -1248,22 +1046,19 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(idssList, "Idss", "А", 3, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(vkneeList, "Vknee", "В"),
                     GetFullStatisticsFromList(ronList, "Ron", "Ом", 12, DividerProfile.ROnFamily)
-                   
                 };
             return returnList;
         }
 
         private List<Statistics> GetFalconC(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             var c0List = new List<double>();
             var c2List = new List<double>();
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var twoIndex = GetIndexOfList(xListdouble, 2.0);
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 c0List.Add(yListdouble[zeroIndex]);
                 c2List.Add(twoIndex < yListdouble.Count ? yListdouble[twoIndex] : 0.0);
             }
@@ -1272,22 +1067,19 @@ namespace VueExample.StatisticsCoreRework
                 {
                     GetFullStatisticsFromList(c0List, "C<sub>0V</sub>", "Ф"),
                     GetFullStatisticsFromList(c2List, "C<sub>2V</sub>", "Ф")
-                 
                 };
             return returnList;
         }
 
         private List<Statistics> GetSnowC(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             var c0List = new List<double>();
             var c10List = new List<double>();
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var twoIndex = GetIndexOfList(xListdouble, 10.0);
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 c0List.Add(yListdouble[zeroIndex]);
                 c10List.Add(twoIndex < yListdouble.Count ? yListdouble[twoIndex] : 0.0);
             }
@@ -1296,13 +1088,9 @@ namespace VueExample.StatisticsCoreRework
                 {
                     GetFullStatisticsFromList(c0List, "C<sub>0V</sub>", "Ф"),
                     GetFullStatisticsFromList(c10List, "C<sub>10V</sub>", "Ф")
-
                 };
             return returnList;
         }
-
-
-
         private List<Statistics> GetRon(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             int zeroIndex = 0;
@@ -1314,7 +1102,6 @@ namespace VueExample.StatisticsCoreRework
                 {
                     zeroIndex = index;
                 }
-
             }
 
             var ronList = new List<double>();
@@ -1345,7 +1132,6 @@ namespace VueExample.StatisticsCoreRework
                 {
                     zeroIndex = index;
                 }
-
             }
 
             var ronList = new List<double>();
@@ -1372,7 +1158,6 @@ namespace VueExample.StatisticsCoreRework
                 {
                     zeroIndex = index;
                 }
-
             }
 
             var ronList = new List<double>();
@@ -1399,7 +1184,6 @@ namespace VueExample.StatisticsCoreRework
                 {
                     zeroIndex = index;
                 }
-
             }
 
             var ronList = new List<double>();
@@ -1414,7 +1198,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetGmax(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -1428,8 +1211,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetVbr(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -1446,7 +1227,6 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes.Add(index);
                         }
-
                     }
                 }
                 vbrList.Add(indexes.Count == 0
@@ -1476,7 +1256,6 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes.Add(index);
                         }
-
                     }
                 }
                 vbrList.Add(indexes.Count == 0
@@ -1490,14 +1269,12 @@ namespace VueExample.StatisticsCoreRework
             return returnList;
         }
 
-
-
         private List<Statistics> GetLeak(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
-            var fiftyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(50.0 - item)).FirstOrDefault());
-            var hundredIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(100.0 - item)).FirstOrDefault());
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var fiftyIndex = GetIndexOfList(xListdouble, 50.0);
+            var hundredIndex = GetIndexOfList(xListdouble, 100.0);
 
             var ig10List = new List<double>();
             var ig50List = new List<double>();
@@ -1505,7 +1282,6 @@ namespace VueExample.StatisticsCoreRework
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 ig10List.Add(tenIndex < 0 ? yListdouble[0] : yListdouble[tenIndex]);
                 ig50List.Add(fiftyIndex < 0 ? yListdouble[0] : yListdouble[fiftyIndex]);
                 ig100List.Add(hundredIndex < 0 ? yListdouble[0] : yListdouble[hundredIndex]);
@@ -1513,7 +1289,6 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(ig10List, "I(V=10В) ток утечки мезы", "А"),
                     GetFullStatisticsFromList(ig50List, "I(V=50В) ток утечки мезы", "А"),
                     GetFullStatisticsFromList(ig100List, "I(V=100В) ток утечки мезы", "А")
@@ -1521,35 +1296,27 @@ namespace VueExample.StatisticsCoreRework
             return returnList;
         }
 
-       
-
         private List<Statistics> GetRLine(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.3 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.3);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>16</sub> при R=0.3В (гальваника)", "Ом"),
-                  
                 };
             return returnList;
         }
-
         private List<Statistics> GetRLine05(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.5);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>line</sub> при R=0.5В ", "Ом"),
-                  
                 };
             return returnList;
         }
@@ -1557,32 +1324,24 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetR02(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.2 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.2);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R(V=0.2В)", "Ом"),
-                  
                 };
-
             return returnList;
         }
 
         private List<Statistics> GetRgate(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.2 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.2);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>6</sub> при U=0.3B (затвор)", "Ом"),
-                  
                 };
             return returnList;
         }
@@ -1590,16 +1349,11 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetRchain1(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.2 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.2);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>11</sub>(при U=0.3B)", "Ом"),
-                  
                 };
             return returnList;
         }
@@ -1607,32 +1361,23 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetRchain2(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.2 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.2);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>12</sub>(при U=0.3B)", "Ом"),
-                  
                 };
             return returnList;
         }
         private List<Statistics> GetRTFR(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.2 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.2);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>TFR</sub> при U=0.3B (TFR-резистор)", "Ом"),
-                  
                 };
             return returnList;
         }
@@ -1640,19 +1385,16 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetRisol(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var sixIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6 - item)).FirstOrDefault());
-            
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var sixIndex = GetIndexOfList(xListdouble, 6.0);
+
             var tenList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => tenIndex < 0 ? 10 / yListdouble[0] * 1E-9 : 10 / yListdouble[tenIndex] * 1E-9).ToList();
             var sixList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => sixIndex < 0 ? 6 / yListdouble[0] * 1E-9 : 6 / yListdouble[sixIndex] * 1E-9).ToList();
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(sixList, "R<sub>isol</sub>(V=6В)", "ГОм"),
                     GetFullStatisticsFromList(tenList, "R<sub>isol</sub>(V=10В)", "ГОм")
-                    
-                  
                 };
             return returnList;
         }
@@ -1660,16 +1402,11 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetTFRLong(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.3 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.3);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "R<sub>14</sub> при R=0.6В (змейка TFR)", "кОм"),
-                  
                 };
 
             return returnList;
@@ -1678,17 +1415,12 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetCAPPCM(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "C при U=0В", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E14).ToList(), "C<sub>MIM</sub>при U=0B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37),
-                  
                 };
             return returnList;
         }
@@ -1696,36 +1428,24 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetCAPPCM025(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-
-
+            var zeroIndex =  GetIndexOfList(xListdouble, 0.0);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(zeroList, "C при U=0В", "Ф")
-                  
-
                 };
             return returnList;
         }
 
-       
         private List<Statistics> GetCMIM_BURN(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
-
-
+            var zeroIndex =  GetIndexOfList(xListdouble, 0.06);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.0625).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
-
                 };
             return returnList;
         }
@@ -1733,17 +1453,12 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetCMIM_SNOW(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
-
-
+            var zeroIndex =  GetIndexOfList(xListdouble, 0.06);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.01).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
-
                 };
             return returnList;
         }
@@ -1751,36 +1466,25 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetCMIM(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
-            
-
+            var zeroIndex =  GetIndexOfList(xListdouble, 0.06);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.09).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
-                  
                 };
             return returnList;
         }
 
-
         private List<Statistics> GetCMIM003(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.06);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.03).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
-
                 };
             return returnList;
         }
@@ -1788,17 +1492,13 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetCMIM0025(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.06 - item)).FirstOrDefault());
-
-
+            var zeroIndex =  GetIndexOfList(xListdouble, 0.06);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(zeroList, "C при U=0.06В", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.0025).ToList(), "C<sub>MIM</sub> при U=0.06B (удельная ёмкость МДМ-конденсатора)", "пФ/мм²", 37)
-
                 };
             return returnList;
         }
@@ -1806,42 +1506,26 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetI(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.2 - item)).FirstOrDefault());
-
-
+            var zeroIndex =  GetIndexOfList(xListdouble, 0.2);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-            
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "I(V=0.2В)", "А"),
-                  
                 };
             return returnList;
         }
-
-
-      
-
         private List<Statistics> GetCapLeaks(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20.0 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 20.0);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList(zeroList, "I(V=20В)", "А"),
-                  
                 };
             return returnList;
         }
-
-      
-
         private List<Statistics> GetIgss(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -1865,10 +1549,8 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes.Add(index);
                         }
-
                     }
                 }
-              
                 vbdgList.Add(indexes.Count == 0
                                 ? xListdouble[0]
                                 : indexes.Select(index => xListdouble[index]).ToList().Max());
@@ -1878,14 +1560,12 @@ namespace VueExample.StatisticsCoreRework
                 {
                     GetFullStatisticsFromList(ig3List, "I<sub>GSS(-3V)</sub> (ток утечки затвора при Uзи=-3В)", unit, 7, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(ig10List, "I<sub>GSS(-10V)</sub> (ток утечки затвора при Uзи=-10В)", unit, 8, DividerProfile.WithDivider)
-                    
                 };
             return returnList;
         }
 
         private List<Statistics> GetIgss10V(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-5 - item)).FirstOrDefault());
             var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-10 - item)).FirstOrDefault());
@@ -1910,18 +1590,15 @@ namespace VueExample.StatisticsCoreRework
 
         private List<Statistics> GetIgss1E6(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
             var ig2List = new List<double>();
             var ig10List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 ig2List.Add(twoIndex < 0 ? yListdouble[0] : yListdouble[twoIndex]);
                 ig10List.Add(xListdouble[yListdouble.IndexOf(yListdouble.OrderBy(item => Math.Abs(1E-6 - item)).FirstOrDefault())]);
             }
-
 
             var returnList = new List<Statistics>
                 {
@@ -1944,14 +1621,10 @@ namespace VueExample.StatisticsCoreRework
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -1960,7 +1633,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>21OFF(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>21OFF(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>21OFF(20GHz)</sub>", "дБ"),
-                   
                 };
             return returnList;
         }
@@ -2007,10 +1679,8 @@ namespace VueExample.StatisticsCoreRework
             var bandfdleftList = new List<double>();
             var bandfdrightList = new List<double>();
 
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[index3]);
                 id11List.Add(yListdouble[index11]);
 
@@ -2031,8 +1701,6 @@ namespace VueExample.StatisticsCoreRework
                 bandfbList.Add(xListdouble[rightIndex]);
                 //bandfdleftList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(xListdouble[leftIndex] - 0.5 - item)).FirstOrDefault())]));
                 //bandfdrightList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(xListdouble[rightIndex] + 0.5 - item)).FirstOrDefault())]));
-
-
             }
 
             var returnList = new List<Statistics>
@@ -2044,7 +1712,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(bandfbList, "Fb", "ГГц"),
                     //GetFullStatisticsFromList(bandfdleftList, "FD_left", "ГГц", 55),
                     //GetFullStatisticsFromList(bandfdrightList, "FD_right", "ГГц", 56)
-
                 };
             return returnList;
         }
@@ -2064,7 +1731,6 @@ namespace VueExample.StatisticsCoreRework
             var A0F0List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
-           
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
@@ -2118,7 +1784,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(1GHz-1.2GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
@@ -2137,7 +1802,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(1GHz-1.2GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
@@ -2210,11 +1874,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(1.2GHz-1.5GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF2_VSWR2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2229,11 +1891,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(1.2GHz-1.5GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF3(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -2302,7 +1962,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(1.6GHz-1.9GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
@@ -2321,11 +1980,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(1.6GHz-1.9GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF4(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -2379,7 +2036,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF4_VSWR1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2394,7 +2050,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(2.2GHz-2.5GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
@@ -2413,7 +2068,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(2.2GHz-2.5GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
@@ -2471,7 +2125,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF5_VSWR1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2486,11 +2139,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(2.9GHz-3.5GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF5_VSWR2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2505,11 +2156,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(2.9GHz-3.5GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF6(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -2563,7 +2212,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF6_VSWR1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2578,11 +2226,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(4.1GHz-5.1GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF6_VSWR2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2597,11 +2243,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(4.1GHz-5.1GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF7(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -2670,7 +2314,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(5.8GHz-7.65GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
@@ -2689,26 +2332,23 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(5.8GHz-7.65GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetFilterCKBA_PF8(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.2 - item)).FirstOrDefault());
+            var indexA0F0 = GetIndexOfList(xListdouble, 10.2);
             var A0F0List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
 
-            var indexAIn1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.1 - item)).FirstOrDefault());
-            var indexAIn2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.65 - item)).FirstOrDefault());
-            var indexAIb1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.85 - item)).FirstOrDefault());
-            var indexAIb2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+            var indexAIn1 = GetIndexOfList(xListdouble, 0.1);
+            var indexAIn2 = GetIndexOfList(xListdouble, 6.65);
+            var indexAIb1 = GetIndexOfList(xListdouble, 13.85);
+            var indexAIb2 = GetIndexOfList(xListdouble, 20.0);
             var bandainList = new List<double>();
             var bandaibList = new List<double>();
 
@@ -2763,11 +2403,9 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(8.9GHz-11.5GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF8_VSWR2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2782,7 +2420,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(8.9GHz-11.5GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
@@ -2791,16 +2428,16 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.45 - item)).FirstOrDefault());
+            var indexA0F0 = GetIndexOfList(xListdouble, 0.45);
             var A0F0List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
 
-            var indexAIn1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.1 - item)).FirstOrDefault());
-            var indexAIn2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.19 - item)).FirstOrDefault());
-            var indexAIb1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.75 - item)).FirstOrDefault());
-            var indexAIb2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.4 - item)).FirstOrDefault());
+            var indexAIn1 = GetIndexOfList(xListdouble, 0.1);
+            var indexAIn2 = GetIndexOfList(xListdouble, 0.19);
+            var indexAIb1 = GetIndexOfList(xListdouble, 0.75);
+            var indexAIb2 = GetIndexOfList(xListdouble, 1.4);
             var bandainList = new List<double>();
             var bandaibList = new List<double>();
 
@@ -2851,15 +2488,12 @@ namespace VueExample.StatisticsCoreRework
             {
                 vswrMaxList.Add(yListdouble.GetRange(leftIndex, rightIndex - leftIndex).Max());
             }
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(0.37GHz-0.53GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF9_VSWR2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2874,7 +2508,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.37GHz-0.53GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
@@ -2932,7 +2565,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetFilterCKBA_PF10_VSWR1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -2947,7 +2579,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(0.6GHz-0.75GHz)</sub>", "", 55)
-
                 };
             return returnList;
         }
@@ -2966,7 +2597,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.6GHz-0.75GHz)</sub>", "", 56)
-
                 };
             return returnList;
         }
@@ -2975,7 +2605,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.85 - item)).FirstOrDefault());
+            var indexA0F0 =  GetIndexOfList(xListdouble, 1.85);
             var A0F0List = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
@@ -3017,7 +2647,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(0.1GHz-3.5GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
@@ -3036,7 +2665,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.1GHz-3.5GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
@@ -3045,7 +2673,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7.55 - item)).FirstOrDefault());
+            var indexA0F0 =  GetIndexOfList(xListdouble, 7.55);
             var A0F0List = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
@@ -3087,7 +2715,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(0.1GHz-12.5GHz)</sub>", "", 57)
-
                 };
             return returnList;
         }
@@ -3106,7 +2733,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.1GHz-12.5GHz)</sub>", "", 58)
-
                 };
             return returnList;
         }
@@ -3115,16 +2741,16 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.378 - item)).FirstOrDefault());
+            var indexA0F0 = GetIndexOfList(xListdouble, 0.378);
             var A0F0List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
 
-            var indexAIn1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.01 - item)).FirstOrDefault());
-            var indexAIn2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.16 - item)).FirstOrDefault());
-            var indexAIb1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.65 - item)).FirstOrDefault());
-            var indexAIb2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
+            var indexAIn1 =  GetIndexOfList(xListdouble, 0.01);
+            var indexAIn2 =  GetIndexOfList(xListdouble, 0.16);
+            var indexAIb1 =  GetIndexOfList(xListdouble, 0.65);
+            var indexAIb2 =  GetIndexOfList(xListdouble, 2.0);
             var bandainList = new List<double>();
             var bandaibList = new List<double>();
 
@@ -3164,9 +2790,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-       
-
         private List<Statistics> GetFilterCKBA_PF15_VSWR1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var vswrMaxList = new List<double>();
@@ -3181,7 +2804,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН1 в полосе<sub>(0.6GHz-0.75GHz)</sub>", "", 55)
-
                 };
             return returnList;
         }
@@ -3200,7 +2822,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vswrMaxList, "КСВН2 в полосе<sub>(0.6GHz-0.75GHz)</sub>", "", 56)
-
                 };
             return returnList;
         }
@@ -3209,7 +2830,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.175 - item)).FirstOrDefault());
+            var indexA0F0 =  GetIndexOfList(xListdouble, 0.175);
             var A0F0List = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
@@ -3241,16 +2862,16 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
+            var indexA0F0 =  GetIndexOfList(xListdouble, 10.0);
             var A0F0List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
 
-            var indexAIn1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.1 - item)).FirstOrDefault());
-            var indexAIn2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.65 - item)).FirstOrDefault());
-            var indexAIb1 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.85 - item)).FirstOrDefault());
-            var indexAIb2 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+            var indexAIn1 = GetIndexOfList(xListdouble, 0.1);
+            var indexAIn2 = GetIndexOfList(xListdouble, 6.65);
+            var indexAIb1 = GetIndexOfList(xListdouble, 13.85);
+            var indexAIb2 = GetIndexOfList(xListdouble, 20.0);
             var bandainList = new List<double>();
             var bandaibList = new List<double>();
 
@@ -3295,7 +2916,7 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var indexA0F0 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.0 - item)).FirstOrDefault());
+            var indexA0F0 = GetIndexOfList(xListdouble, 13.0);
             var A0F0List = new List<double>();
             var bandfbList = new List<double>();
             var bandaiList = new List<double>();
@@ -3322,23 +2943,19 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetFilterMarkers15(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
+            var onehalfIndex =  GetIndexOfList(xListdouble, 1.5);
             var id15List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandfdleftList = new List<double>();
             var bandfdrightList = new List<double>();
 
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id15List.Add(yListdouble[onehalfIndex]);
                 var maxIndex = yListdouble.IndexOf(yListdouble.Max());
                 var leftsideList = yListdouble.Take(maxIndex + 1).ToList();
@@ -3354,8 +2971,6 @@ namespace VueExample.StatisticsCoreRework
                 bandfbList.Add(xListdouble[rightIndex]);
                 bandfdleftList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(xListdouble[leftIndex] - 0.5 - item)).FirstOrDefault())]));
                 bandfdrightList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(xListdouble[rightIndex] + 0.5 - item)).FirstOrDefault())]));
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3365,27 +2980,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(bandfbList, "Fb", "ГГц", 54),
                     GetFullStatisticsFromList(bandfdleftList, "FD_left", "ГГц", 55),
                     GetFullStatisticsFromList(bandfdrightList, "FD_right", "ГГц", 56)
-
                 };
             return returnList;
         }
-
 
         private List<Statistics> GetFilterMarkers2000_1000(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.075 - item)).FirstOrDefault());
+            var onehalfIndex = GetIndexOfList(xListdouble, 2.075);
             var id15List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandfdleftList = new List<double>();
             var bandfdrightList = new List<double>();
 
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id15List.Add(yListdouble[onehalfIndex]);
                 var maxIndex = yListdouble.IndexOf(yListdouble.Max());
                 var leftsideList = yListdouble.Take(maxIndex + 1).ToList();
@@ -3401,8 +3012,6 @@ namespace VueExample.StatisticsCoreRework
                 bandfbList.Add(xListdouble[rightIndex]);
                 bandfdleftList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(Math.Abs(xListdouble[leftIndex] - 0.5 - item))).FirstOrDefault())]));
                 bandfdrightList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(Math.Abs(xListdouble[rightIndex] + 0.5 - item))).FirstOrDefault())]));
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3412,27 +3021,22 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(bandfbList, "Fb", "ГГц", 54),
                     GetFullStatisticsFromList(bandfdleftList, "FD_left", "ГГц", 55),
                     GetFullStatisticsFromList(bandfdrightList, "FD_right", "ГГц", 56)
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetFilterMarkers2000_900(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.075 - item)).FirstOrDefault());
+            var onehalfIndex =  GetIndexOfList(xListdouble, 2.075);
             var id15List = new List<double>();
             var bandfnList = new List<double>();
             var bandfbList = new List<double>();
             var bandfdleftList = new List<double>();
             var bandfdrightList = new List<double>();
 
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id15List.Add(yListdouble[onehalfIndex]);
                 var maxIndex = yListdouble.IndexOf(yListdouble.Max());
                 var leftsideList = yListdouble.Take(maxIndex + 1).ToList();
@@ -3448,8 +3052,6 @@ namespace VueExample.StatisticsCoreRework
                 bandfbList.Add(xListdouble[rightIndex]);
                 bandfdleftList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(Math.Abs(xListdouble[leftIndex] - 0.5 - item))).FirstOrDefault())]));
                 bandfdrightList.Add(Math.Abs(yListdouble[xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(Math.Abs(xListdouble[rightIndex] + 0.5 - item))).FirstOrDefault())]));
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3459,7 +3061,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(bandfbList, "Fb", "ГГц", 54),
                     GetFullStatisticsFromList(bandfdleftList, "FD_left", "ГГц", 55),
                     GetFullStatisticsFromList(bandfdrightList, "FD_right", "ГГц", 56)
-
                 };
             return returnList;
         }
@@ -3467,23 +3068,16 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetFilterMarkers20S21S22(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.075 - item)).FirstOrDefault());
-
+            var onehalfIndex = GetIndexOfList(xListdouble, 2.075);
             var id15List = new List<double>();
-
-
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id15List.Add(yListdouble[onehalfIndex]);
-
             }
 
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(id15List, "Потери на 1.5ГГц", "дБ")
-
                 };
             return returnList;
         }
@@ -3491,48 +3085,36 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetFilterMarkers15S21S22(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
-
+            var onehalfIndex =  GetIndexOfList(xListdouble, 1.5);
             var id15List = new List<double>();
-           
-
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id15List.Add(yListdouble[onehalfIndex]);
-              
             }
 
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(id15List, "Потери на 1.5ГГц", "дБ")
-                  
                 };
             return returnList;
         }
-
         private List<Statistics> GetS21ONMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 1.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 20.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3541,7 +3123,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>21ON(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>21ON(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>21ON(20GHz)</sub>", "дБ"),
-                   
                 };
             return returnList;
         }
@@ -3549,24 +3130,20 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS21ONMarkersBURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 1.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 20.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3575,28 +3152,23 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetS22OFFMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3605,31 +3177,26 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>22OFF(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>22OFF(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>22OFF(18GHz)</sub>", "дБ"),
-                   
                 };
             return returnList;
         }
         private List<Statistics> GetS22ONMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3638,7 +3205,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>22ON(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>22ON(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>22ON(18GHz)</sub>", "дБ"),
-                   
                 };
             return returnList;
         }
@@ -3646,24 +3212,20 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS11OFFMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3672,31 +3234,26 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>11OFF(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>11OFF(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>11OFF(18GHz)</sub>", "дБ"),
-                   
                 };
             return returnList;
         }
         private List<Statistics> GetS11ONMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -3705,22 +3262,18 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>11ON(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>11ON(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>11ON(18GHz)</sub>", "дБ"),
-                   
                 };
             return returnList;
         }
 
-
-
         private List<Statistics> GetS21BURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-            
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-            
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var twentyIndex = GetIndexOfList(xListdouble, 20.0);
+
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
             List<double> id10List = new List<double>();
@@ -3728,7 +3281,6 @@ namespace VueExample.StatisticsCoreRework
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -3741,24 +3293,18 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S21<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id20List, "S21<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
         private List<Statistics> GetS21BURN_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-
-       
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var twIndex = GetIndexOfList(xListdouble, 20.0);
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id20List.Add(yListdouble[twIndex]);
                 id10List.Add(yListdouble[tenIndex]);
             }
@@ -3767,24 +3313,21 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id10List, "S21<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
         private List<Statistics> GetS11BURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
             List<double> id10List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -3795,25 +3338,21 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id3List, "S11<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S11<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S11<sub>(10GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetS11BURN_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var twIndex =GetIndexOfList(xListdouble, 20.0);
 
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id20List.Add(yListdouble[twIndex]);
                 id10List.Add(yListdouble[tenIndex]);
             }
@@ -3822,25 +3361,22 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S11<sub>(10GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id10List, "S11<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetS22BURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
             List<double> id10List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -3851,25 +3387,19 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id3List, "S22<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S22<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S22<sub>(10GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetS22BURN_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-
-
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var twIndex = GetIndexOfList(xListdouble, 20.0);
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id20List.Add(yListdouble[twIndex]);
                 id10List.Add(yListdouble[tenIndex]);
             }
@@ -3878,25 +3408,21 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S22<sub>(10GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id10List, "S22<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS12BURN(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
             List<double> id10List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -3907,25 +3433,20 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id3List, "S12<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S12<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S12<sub>(10GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS12BURN_PASSIVE(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var twIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
-
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var twIndex = GetIndexOfList(xListdouble, 20.0);
 
             List<double> id10List = new List<double>();
             List<double> id20List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id20List.Add(yListdouble[twIndex]);
                 id10List.Add(yListdouble[tenIndex]);
             }
@@ -3934,25 +3455,20 @@ namespace VueExample.StatisticsCoreRework
                 {
                    GetFullStatisticsFromList(id10List, "S12<sub>(10GHz)</sub>", "дБ"),
                    GetFullStatisticsFromList(id10List, "S12<sub>(20GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetS21X5(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var s21List = new List<double>();
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
 
             List<double> id5List = new List<double>();
             List<double> id10List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 s21List.Add(yListdouble[0]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -3963,7 +3479,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(s21List, "S<sub>21(минимальная частота)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S21<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
@@ -3973,64 +3488,48 @@ namespace VueExample.StatisticsCoreRework
             var s21List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 s21List.Add(yListdouble[0]);
             }
 
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(s21List, "S<sub>21(минимальная частота)</sub>", "дБ"),
-
-
                 };
             return returnList;
         }
-
-
 
         private List<Statistics> GetS22X5(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var s21List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 s21List.Add(yListdouble[0]);
             }
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(s21List, "S<sub>21(минимальная частота)</sub>", "дБ"),
-
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetS12X5(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             var s21List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 s21List.Add(yListdouble[0]);
             }
 
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(s21List, "S<sub>21(минимальная частота)</sub>", "дБ"),
-
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetIgss025(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-2 - item)).FirstOrDefault());
-            var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-8 - item)).FirstOrDefault());
+            var twoIndex = GetIndexOfList(xListdouble, -2.0);
+            var eightIndex = GetIndexOfList(xListdouble, -8.0);
             var ig2List = new List<double>();
             var ig8List = new List<double>();
             var vbdgList = new List<double>();
@@ -4048,7 +3547,6 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes.Add(index);
                         }
-
                     }
                 }
                 vbdgList.Add(indexes.Count == 0
@@ -4060,7 +3558,6 @@ namespace VueExample.StatisticsCoreRework
                 {
                     GetFullStatisticsFromList(ig2List, "I<sub>g2V</sub> (ток при Uзи=-2В)", "А"),
                     GetFullStatisticsFromList(ig8List, "I<sub>g8V</sub> (ток при Uзи=-8В)", "А")
-                  
                 };
             return returnList;
         }
@@ -4078,7 +3575,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(cvList, "С (емкость при V=0В)", "Ф"),
-                  
                 };
             return returnList;
         }
@@ -4101,7 +3597,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vbrdgList, "V<sub>(br)dg</sub> (напряжение при Ig=100мкА)", "В"),
-
                 };
             return returnList;
         }
@@ -4109,13 +3604,13 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetIdVd_Progress(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var ocIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.15 - item)).FirstOrDefault());
-            var oneIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.0 - item)).FirstOrDefault());
-            var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
-            var fourIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.0 - item)).FirstOrDefault());
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
+            var ocIndex = GetIndexOfList(xListdouble, 0.15);
+            var oneIndex = GetIndexOfList(xListdouble, 1.0);
+            var twoIndex = GetIndexOfList(xListdouble, 2.0);
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fourIndex = GetIndexOfList(xListdouble, 4.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var onehalfIndex = GetIndexOfList(xListdouble, 1.5);
 
             var id2List = new List<double>();
             var id3List = new List<double>();
@@ -4131,12 +3626,8 @@ namespace VueExample.StatisticsCoreRework
                 var interpolationmethod = Interpolate.Linear(xListdouble, yListdouble);
                 var tempList = xListdouble.Where(x => x >= xListdouble[onehalfIndex]).Select(interpolationmethod.Differentiate).ToList();
                 sfList.Add(Math.Abs(tempList.Max() - tempList.Min()) * 1000);
-
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
-
-
-
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
             }
 
             foreach (List<double> yListdouble in enumerable.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
@@ -4159,19 +3650,17 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetIdVd(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var ocIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.05 - item)).FirstOrDefault());
-            var oneIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.0 - item)).FirstOrDefault());
-            var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
-            var fourIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.0 - item)).FirstOrDefault());
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
-            
+            var ocIndex = GetIndexOfList(xListdouble, 0.15);
+            var oneIndex = GetIndexOfList(xListdouble, 1.0);
+            var twoIndex = GetIndexOfList(xListdouble, 2.0);
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fourIndex = GetIndexOfList(xListdouble, 4.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var onehalfIndex = GetIndexOfList(xListdouble, 1.5);
+
             var id2List = new List<double>();
             var id3List = new List<double>();
             var id4List = new List<double>();
@@ -4189,11 +3678,9 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id4List.Add(yListdouble[fourIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
                 ocList.Add(xListdouble[ocIndex] / yListdouble[ocIndex]);
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4208,17 +3695,16 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
         private List<Statistics> GetIdVd025(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var ocIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.15 - item)).FirstOrDefault());
-            var twoIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.0 - item)).FirstOrDefault());
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
-            var fourIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.0 - item)).FirstOrDefault());
-            var onehalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
-
+             var ocIndex = GetIndexOfList(xListdouble, 0.15);
+            var oneIndex = GetIndexOfList(xListdouble, 1.0);
+            var twoIndex = GetIndexOfList(xListdouble, 2.0);
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fourIndex = GetIndexOfList(xListdouble, 4.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var onehalfIndex = GetIndexOfList(xListdouble, 1.5);
 
             var id2List = new List<double>();
             var id3List = new List<double>();
@@ -4238,10 +3724,9 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id4List.Add(yListdouble[fourIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
-                s31List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100);
-                s51List.Add(100 - (yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100);
+                s31List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[threeIndex]) * 100));
+                s51List.Add(100 - ((yListdouble[onehalfIndex] / yListdouble[fiveIndex]) * 100));
                 ocList.Add(xListdouble[ocIndex]/yListdouble[ocIndex]);
-
             }
 
             var returnList = new List<Statistics>
@@ -4257,22 +3742,19 @@ namespace VueExample.StatisticsCoreRework
             return returnList;
         }
 
-       
-
         private List<Statistics> GetS21Markers025(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
@@ -4285,34 +3767,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S21<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S21<sub>(18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
-     
-
         private List<Statistics> GetS12MarkersORION002(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 3.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 4.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 6.0);
             var id25List = new List<double>();
-
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4320,32 +3791,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S12<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S12<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S12<sub>(6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS22MarkersORION002(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 3.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 4.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 6.0);
             var id25List = new List<double>();
-
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4353,7 +3815,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S22<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S22<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S22<sub>(6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -4361,24 +3822,18 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS11MarkersORION002(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 3.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 4.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 6.0);
             var id25List = new List<double>();
 
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4386,32 +3841,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S11<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S11<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S11<sub>(6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS21MarkersORION002(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 3.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 4.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 6.0);
             var id25List = new List<double>();
-
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4419,33 +3865,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S21<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S21<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S21<sub>(6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetS21MarkersORION006(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex =  GetIndexOfList(xListdouble, 2.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex =  GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
-
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4453,36 +3889,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S21<sub>(2GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S21<sub>(18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
-
-
-       
-
         private List<Statistics> GetS22MarkersORION006(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex =  GetIndexOfList(xListdouble, 2.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex =  GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
-
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4490,32 +3913,23 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S22<sub>(2GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S22<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S22<sub>(18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS11MarkersORION006(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex =  GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
-
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
-
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4523,32 +3937,26 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id25List, "S11<sub>(2GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S11<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S11<sub>(18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS22Markers025(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex =  GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex =  GetIndexOfList(xListdouble, 5.0);
+            var tenIndex =  GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -4557,38 +3965,26 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S22<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S22<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S22<sub>(18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetS12Markers_ORION003(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-           
-            var index06 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.6 - item)).FirstOrDefault());
-            var index225 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.25 - item)).FirstOrDefault());
-           
+            var index06 = GetIndexOfList(xListdouble, 0.6);
+            var index225 = GetIndexOfList(xListdouble, 2.25);
             var id06List = new List<double>();
             var id225List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-               
                 id06List.Add(yListdouble[index06]);
                 id225List.Add(yListdouble[index225]);
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-                  
                     GetFullStatisticsFromList( id06List, "S12<sub>(0.6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id225List, "S12<sub>(2.25GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -4596,60 +3992,40 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS22Markers_ORION003(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index06 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.6 - item)).FirstOrDefault());
-            var index225 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.25 - item)).FirstOrDefault());
-
+            var index06 = GetIndexOfList(xListdouble, 0.6);
+            var index225 = GetIndexOfList(xListdouble, 2.25);
             var id06List = new List<double>();
             var id225List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id06List.Add(yListdouble[index06]);
                 id225List.Add(yListdouble[index225]);
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id06List, "S22<sub>(0.6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id225List, "S22<sub>(2.25GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetS21Markers_ORION003(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index06 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.6 - item)).FirstOrDefault());
-            var index225 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.25 - item)).FirstOrDefault());
-
+            var index06 = GetIndexOfList(xListdouble, 0.6);
+            var index225 = GetIndexOfList(xListdouble, 2.25);
             var id06List = new List<double>();
             var id225List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id06List.Add(yListdouble[index06]);
                 id225List.Add(yListdouble[index225]);
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id06List, "S21<sub>(0.6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id225List, "S21<sub>(2.25GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -4658,16 +4034,13 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-            
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
                 var y46List = new List<double>();
@@ -4676,29 +4049,23 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-                
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S21<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S21<sub>(6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S21_delta<sub>(4-6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS21MarkersMP245(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.5 - item)).FirstOrDefault());
-            var index5 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(11.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.5 - item)).FirstOrDefault());
+            var index4 = GetIndexOfList(xListdouble, 8.5);
+            var index5 = GetIndexOfList(xListdouble, 11.0);
+            var index6 = GetIndexOfList(xListdouble, 12.5);
 
             var id4List = new List<double>();
             var id5List = new List<double>();
@@ -4706,8 +4073,6 @@ namespace VueExample.StatisticsCoreRework
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id5List.Add(yListdouble[index5]);
                 id6List.Add(yListdouble[index6]);
@@ -4717,38 +4082,29 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S21<sub>(8.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id5List, "S21<sub>(11GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S21<sub>(12.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S21_delta<sub>(12.5-8.5GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS12MarkersMP245(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.5 - item)).FirstOrDefault());
-            var index5 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(11.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.5 - item)).FirstOrDefault());
-
+            var index4 = GetIndexOfList(xListdouble, 8.5);
+            var index5 = GetIndexOfList(xListdouble, 11.0);
+            var index6 = GetIndexOfList(xListdouble, 12.5);
             var id4List = new List<double>();
             var id5List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id5List.Add(yListdouble[index5]);
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
@@ -4758,28 +4114,22 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S11<sub>(8.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id5List, "S11<sub>(11GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S11<sub>(12.5GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
         private List<Statistics> GetS11MarkersMP245(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.5 - item)).FirstOrDefault());
-            var index5 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(11.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.5 - item)).FirstOrDefault());
+            var index4 = GetIndexOfList(xListdouble, 8.5);
+            var index5 = GetIndexOfList(xListdouble, 11.0);
+            var index6 = GetIndexOfList(xListdouble, 12.5);
 
             var id4List = new List<double>();
             var id5List = new List<double>();
@@ -4787,8 +4137,6 @@ namespace VueExample.StatisticsCoreRework
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id5List.Add(yListdouble[index5]);
                 id6List.Add(yListdouble[index6]);
@@ -4798,36 +4146,28 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S11<sub>(8.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id5List, "S11<sub>(11GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S11<sub>(12.5GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS22MarkersMP245(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.5 - item)).FirstOrDefault());
-            var index5 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(11.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.5 - item)).FirstOrDefault());
+            var index4 = GetIndexOfList(xListdouble, 8.5);
+            var index5 = GetIndexOfList(xListdouble, 11.0);
+            var index6 = GetIndexOfList(xListdouble, 12.5);
             var id5List = new List<double>();
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id5List.Add(yListdouble[index5]);
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
@@ -4837,36 +4177,26 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S22<sub>(8.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id5List, "S22<sub>(11GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S22<sub>(12.5GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS21Markers_FLASH_001_002(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
                 var y46List = new List<double>();
@@ -4875,18 +4205,13 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S21<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S21<sub>(6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S21_delta<sub>(4-6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -4895,9 +4220,9 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index8 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.0 - item)).FirstOrDefault());
-            var index10 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
-            var index12 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.0 - item)).FirstOrDefault());
+            var index8 = GetIndexOfList(xListdouble, 8.0);
+            var index10 = GetIndexOfList(xListdouble, 10.0);
+            var index12 = GetIndexOfList(xListdouble, 12.0);
 
             var id8List = new List<double>();
             var id10List = new List<double>();
@@ -4905,8 +4230,6 @@ namespace VueExample.StatisticsCoreRework
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id8List.Add(yListdouble[index8]);
                 id10List.Add(yListdouble[index10]);
                 id12List.Add(yListdouble[index12]);
@@ -4916,19 +4239,14 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id8List, "S21<sub>(8GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id10List, "S21<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id12List, "S21<sub>(12GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S21_delta<sub>(8-12GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -4937,16 +4255,14 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index16 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(16.0 - item)).FirstOrDefault());
-            var index18 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18.0 - item)).FirstOrDefault());
+            var index16 = GetIndexOfList(xListdouble, 16.0);
+            var index18 = GetIndexOfList(xListdouble, 18.0);
 
             var id16List = new List<double>();
             var id18List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id16List.Add(yListdouble[index16]);
                 id18List.Add(yListdouble[index18]);
                 var y46List = new List<double>();
@@ -4955,18 +4271,13 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id16List, "S21<sub>(16GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id18List, "S21<sub>(18GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S21_delta<sub>(16-18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -4974,16 +4285,14 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
 
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
                 var y46List = new List<double>();
@@ -4992,18 +4301,13 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S11<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S11<sub>(6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S11_delta<sub>(4-6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5012,9 +4316,9 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index8 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.0 - item)).FirstOrDefault());
-            var index10 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
-            var index12 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.0 - item)).FirstOrDefault());
+            var index8 = GetIndexOfList(xListdouble, 8.0);
+            var index10 = GetIndexOfList(xListdouble, 10.0);
+            var index12 = GetIndexOfList(xListdouble, 12.0);
 
             var id8List = new List<double>();
             var id10List = new List<double>();
@@ -5022,8 +4326,6 @@ namespace VueExample.StatisticsCoreRework
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id8List.Add(yListdouble[index8]);
                 id10List.Add(yListdouble[index10]);
                 id12List.Add(yListdouble[index12]);
@@ -5033,19 +4335,14 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id8List, "S11<sub>(8GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id10List, "S11<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id12List, "S11<sub>(12GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S11_delta<sub>(8-12GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5054,16 +4351,14 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index16 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(16.0 - item)).FirstOrDefault());
-            var index18 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18.0 - item)).FirstOrDefault());
+            var index16 = GetIndexOfList(xListdouble, 16.0);
+            var index18 = GetIndexOfList(xListdouble, 18.0);
 
             var id16List = new List<double>();
             var id18List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id16List.Add(yListdouble[index16]);
                 id18List.Add(yListdouble[index18]);
                 var y46List = new List<double>();
@@ -5072,18 +4367,13 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id16List, "S11<sub>(16GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id18List, "S11<sub>(18GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S11_delta<sub>(16-18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5092,16 +4382,13 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
                 var y46List = new List<double>();
@@ -5110,18 +4397,13 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S22<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S22<sub>(6GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S22_delta<sub>(4-6GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5130,9 +4412,9 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index8 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8.0 - item)).FirstOrDefault());
-            var index10 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
-            var index12 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12.0 - item)).FirstOrDefault());
+            var index8 = GetIndexOfList(xListdouble, 8.0);
+            var index10 = GetIndexOfList(xListdouble, 10.0);
+            var index12 = GetIndexOfList(xListdouble, 12.0);
 
             var id8List = new List<double>();
             var id10List = new List<double>();
@@ -5140,8 +4422,6 @@ namespace VueExample.StatisticsCoreRework
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id8List.Add(yListdouble[index8]);
                 id10List.Add(yListdouble[index10]);
                 id12List.Add(yListdouble[index12]);
@@ -5151,19 +4431,14 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id8List, "S22<sub>(8GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id10List, "S22<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id12List, "S22<sub>(12GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S22_delta<sub>(8-12GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5172,16 +4447,14 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index16 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(16.0 - item)).FirstOrDefault());
-            var index18 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18.0 - item)).FirstOrDefault());
+            var index16 = GetIndexOfList(xListdouble, 16.0);
+            var index18 = GetIndexOfList(xListdouble, 18.0);
 
             var id16List = new List<double>();
             var id18List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id16List.Add(yListdouble[index16]);
                 id18List.Add(yListdouble[index18]);
                 var y46List = new List<double>();
@@ -5190,18 +4463,13 @@ namespace VueExample.StatisticsCoreRework
                     y46List.Add(yListdouble[i]);
                 }
                 deltaList.Add(Math.Abs(y46List.Max() - y46List.Min()));
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id16List, "S22<sub>(16GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id18List, "S22<sub>(18GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( deltaList, "S22_delta<sub>(16-18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5209,32 +4477,22 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS12Markers_ORION001(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
 
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
-             
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S12<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S12<sub>(6GHz)</sub>", "дБ"),
-                   
-
                 };
             return returnList;
         }
@@ -5243,31 +4501,21 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
-              
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S22<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S22<sub>(6GHz)</sub>", "дБ"),
-                   
-
                 };
             return returnList;
         }
@@ -5275,32 +4523,21 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS11Markers_ORION001(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var index4 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var index6 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-
+            var index4 = GetIndexOfList(xListdouble, 4.0);
+            var index6 = GetIndexOfList(xListdouble, 6.0);
             var id4List = new List<double>();
             var id6List = new List<double>();
             var deltaList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id4List.Add(yListdouble[index4]);
                 id6List.Add(yListdouble[index6]);
-              
-
-
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList( id4List, "S11<sub>(4GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList( id6List, "S11<sub>(6GHz)</sub>", "дБ"),
-                  
-
                 };
             return returnList;
         }
@@ -5308,53 +4545,42 @@ namespace VueExample.StatisticsCoreRework
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
 
-            var index06 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.6 - item)).FirstOrDefault());
-            var index225 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.25 - item)).FirstOrDefault());
+            var index06 = GetIndexOfList(xListdouble, 0.6);
+            var index225 = GetIndexOfList(xListdouble, 2.25);
 
             var id06List = new List<double>();
             var id225List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
-
                 id06List.Add(yListdouble[index06]);
                 id225List.Add(yListdouble[index225]);
-
-
-
             }
 
             var returnList = new List<Statistics>
-                {
-
-                    GetFullStatisticsFromList( id06List, "S11<sub>(0.6GHz)</sub>", "дБ"),
-                    GetFullStatisticsFromList( id225List, "S11<sub>(2.25GHz)</sub>", "дБ"),
-
-                };
+            {
+                GetFullStatisticsFromList( id06List, "S11<sub>(0.6GHz)</sub>", "дБ"),
+                GetFullStatisticsFromList( id225List, "S11<sub>(2.25GHz)</sub>", "дБ"),
+            };
             return returnList;
         }
 
         private List<Statistics> GetS12Markers025(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex =GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5363,32 +4589,27 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S12<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S12<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S12<sub>(18GHz)</sub>", "дБ"),
-
                 };
-            return returnList; 
+            return returnList;
         }
 
         private List<Statistics> GetS11Markers025(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+             var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5397,7 +4618,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S11<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S11<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S11<sub>(18GHz)</sub>", "дБ"),
-
                 };
             return returnList;
         }
@@ -5405,24 +4625,20 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetS21Markers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex =GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5431,174 +4647,134 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S21<sub>(5GHz)</sub>(коэффициент передачи)", "дБ", 19),
                     GetFullStatisticsFromList(id10List, "S21<sub>(10GHz)</sub>(коэффициент передачи)", "дБ", 20),
                     GetFullStatisticsFromList(id18List, "S21<sub>(18GHz)</sub>(коэффициент передачи)", "дБ", 21),
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetATTMongo(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-
-            var twelveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8 - item)).FirstOrDefault());
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
             var s21at10List = new List<double>();
-           
+
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => x / divider).ToList()))
             {
-
                 s21sigmaList.Add(Math.Abs(yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Max() - yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Min()));
                 s21at10List.Add(yListdouble[tenIndex]);
-              
             }
 
             var returnList = new List<Statistics>
                 {
-                 
                     GetFullStatisticsFromList(s21at10List, "S21<sub>(10GHz)</sub>$$" + type, "дБ"),
                     GetFullStatisticsFromList(s21sigmaList, "S21<sub>sigma(8GHz-12GHz)</sub>$$" + type, "дБ"),
-
                 };
             return returnList;
         }
-
         private string GetATTMongoPoint(List<double> xListdouble, List<List<double>> commonYList, string type, Dictionary<string, double> points)
         {
-
             var index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(points["SinglePoint"] - item)).FirstOrDefault());
             var s21at10List = new List<double>();
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => x).ToList()))
             {
                 s21at10List.Add(yListdouble[index]);
-
             }
-            
             return GetFullStatisticsFromList(s21at10List, "S21<sub>(10GHz)</sub>", "дБ").ExpectedValue;
         }
-
-       
-
         private string GetATTMongoSigma(List<double> xListdouble, List<List<double>> commonYList, string type, Dictionary<string, double> points)
         {
-
             var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(points["StartRangeGatePoint"] - item)).FirstOrDefault());
             var twelveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(points["EndRangeGatePoint"] - item)).FirstOrDefault());
             var s21sigmaList = new List<double>();
-           
+
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => x).ToList()))
             {
-
                 s21sigmaList.Add(Math.Abs(yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Max() - yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Min()));
-              
             }
-            
             return GetFullStatisticsFromList(s21sigmaList, "S21<sub>sigma(8GHz-12GHz)</sub>", "дБ").ExpectedValue;
         }
 
         private string GetATTMongoPointPair(List<double> xListdouble, Dictionary<string, List<List<double>>> commonYList, Dictionary<string,string> type, Dictionary<string, double> points)
         {
-
             var index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(points["SinglePoint"] - item)).FirstOrDefault());
-
             var firstslash = commonYList[type["FirstSlashType"]].Select(yList => yList.Select(x => x).ToList()).Select(yListdouble => yListdouble[index]).ToList();
             var secondslash = commonYList[type["SecondSlashType"]].Select(yList => yList.Select(x => x).ToList()).Select(yListdouble => yListdouble[index]).ToList();
-
             return GetFullStatisticsFromList(firstslash, "S21<sub>(10GHz)</sub> - type: ", "дБ").ExpectedValue + "/" + GetFullStatisticsFromList(secondslash, "S21<sub>(10GHz)</sub> - type: ", "дБ").ExpectedValue;
         }
 
         private List<Statistics> GetPSMongo(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-
-            var twelveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8 - item)).FirstOrDefault());
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
             var s21at10List = new List<double>();
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => x / divider).ToList()))
             {
-
                 s21sigmaList.Add(Math.Abs(yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Max() - yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Min()));
                 s21at10List.Add(yListdouble[tenIndex]);
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(s21at10List, "S21<sub>(10GHz)</sub> - type: " + type, "дБ"),
                     GetFullStatisticsFromList(s21sigmaList, "S21<sub>sigma(8GHz-12GHz)</sub> - type: " + type, "дБ"),
-
                 };
             return returnList;
         }
-
-
-
         private List<Statistics> GetATTMongoPhase(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-
-            var twelveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8 - item)).FirstOrDefault());
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
             var s21at10List = new List<double>();
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => x / divider).ToList()))
             {
-
                 s21sigmaList.Add(Math.Abs(yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Max() - yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Min()));
                 s21at10List.Add(yListdouble[tenIndex]);
-
             }
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(s21at10List, "Phase_S21<sub>(10GHz)</sub>$$" + type, "дБ"),
                     GetFullStatisticsFromList(s21sigmaList, "Phase_S21<sub>sigma(8GHz-12GHz)</sub>$$" + type, "дБ"),
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetPSMongoPhase(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-
-            var twelveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8 - item)).FirstOrDefault());
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightIndex = GetIndexOfList(xListdouble, 8.0);
             var s21sigmaList = new List<double>();
             var s21at10List = new List<double>();
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => x / divider).ToList()))
             {
-
                 s21sigmaList.Add(
                     Math.Abs(yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Max() -
                              yListdouble.Skip(eightIndex).Take(twelveIndex - eightIndex).Min()));
                 s21at10List.Add(yListdouble[tenIndex]);
-
             }
 
             var returnList = new List<Statistics>
             {
-
                 GetFullStatisticsFromList(s21at10List, "Phase_S21<sub>(10GHz)</sub> - type: " + type, "дБ"),
                 GetFullStatisticsFromList(s21sigmaList, "Phase_S21<sub>sigma(8GHz-12GHz)</sub> - type: " + type, "дБ"),
-
             };
             return returnList;
         }
-
         private List<Statistics> GetATTMongoS21(List<double> xListdouble, List<List<double>> commonYList, double divider, string type)
         {
-
-            var twelveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(8 - item)).FirstOrDefault());
+            var twelveIndex = GetIndexOfList(xListdouble, 12.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightIndex = GetIndexOfList(xListdouble, 8.0);
 
             var s21at8List = new List<double>();
             var s21at10List = new List<double>();
@@ -5613,29 +4789,25 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(s21at8List, type + "<sub>(8GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(s21at10List, type + "<sub>(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(s21at12List, type + "<sub>(12GHz)</sub>", "дБ")
-                 
-
                 };
             return returnList;
         }
 
         private List<Statistics> GetS21MarkersFilter(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
-
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.85 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.22 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.77 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.1 - item)).FirstOrDefault());
-            var eightteen2Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var eightteen1Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7.1 - item)).FirstOrDefault());
-            var a0Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.7 - item)).FirstOrDefault());
-            var a45Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.5 - item)).FirstOrDefault());
-            var a078Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.78 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 0.85);
+            var fiveIndex = GetIndexOfList(xListdouble, 1.22);
+            var tenIndex = GetIndexOfList(xListdouble, 1.77);
+            var eightteenIndex = GetIndexOfList(xListdouble, 2.1);
+            var eightteen2Index = GetIndexOfList(xListdouble, 3.0);
+            var eightteen1Index = GetIndexOfList(xListdouble, 7.1);
+            var a0Index = GetIndexOfList(xListdouble, 1.7);
+            var a45Index = GetIndexOfList(xListdouble, 4.5);
+            var a078Index = GetIndexOfList(xListdouble, 0.78);
             var id085List = new List<double>();
             var id122List = new List<double>();
             var id177List = new List<double>();
@@ -5647,7 +4819,6 @@ namespace VueExample.StatisticsCoreRework
             List<double> a078List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id085List.Add(yListdouble[twohalfIndex]);
                 id122List.Add(yListdouble[fiveIndex]);
                 id177List.Add(yListdouble[tenIndex]);
@@ -5657,11 +4828,7 @@ namespace VueExample.StatisticsCoreRework
                 a0List.Add(yListdouble[a0Index]);
                 a45List.Add(yListdouble[a45Index]);
                 a078List.Add(yListdouble[a078Index]);
-
-
             }
-
-           
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(a0List, "A0/F0<sub>(1.7GHz)</sub>", "дБ", 42),
@@ -5670,24 +4837,21 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id085List, "S21<sub>(0.85GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id122List,  "S21<sub>(1.22GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id177List, "S21<sub>(1.77GHz)</sub>", "дБ"),
-                    GetFullStatisticsFromList(id21List, "S21<sub>(2.1GHz)</sub>", "дБ"), 
+                    GetFullStatisticsFromList(id21List, "S21<sub>(2.1GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id3List, "S21<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id71List, "S21<sub>(7.1GHz)</sub>", "дБ")
-
-                   
                 };
             return returnList;
         }
-
         private List<Statistics> GetS11MarkersFilter(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.85 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.22 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.77 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.1 - item)).FirstOrDefault());
-            var eightteen2Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var eightteen1Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7.1 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 0.85);
+            var fiveIndex = GetIndexOfList(xListdouble, 1.22);
+            var tenIndex = GetIndexOfList(xListdouble, 1.77);
+            var eightteenIndex = GetIndexOfList(xListdouble, 2.1);
+            var eightteen2Index = GetIndexOfList(xListdouble, 3.0);
+            var eightteen1Index = GetIndexOfList(xListdouble, 7.1);
             var id085List = new List<double>();
             var id122List = new List<double>();
             var id177List = new List<double>();
@@ -5696,16 +4860,12 @@ namespace VueExample.StatisticsCoreRework
             var id71List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id085List.Add(yListdouble[twohalfIndex]);
                 id122List.Add(yListdouble[fiveIndex]);
                 id177List.Add(yListdouble[tenIndex]);
                 id21List.Add(yListdouble[eightteenIndex]);
                 id3List.Add(yListdouble[eightteen2Index]);
                 id71List.Add(yListdouble[eightteen1Index]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5713,24 +4873,21 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id085List, "S11<sub>(0.85GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id122List,  "S11<sub>(1.22GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id177List, "S11<sub>(1.77GHz)</sub>", "дБ"),
-                    GetFullStatisticsFromList(id21List, "S11<sub>(2.1GHz)</sub>", "дБ"), 
+                    GetFullStatisticsFromList(id21List, "S11<sub>(2.1GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id3List, "S11<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id71List, "S11<sub>(7.1GHz)</sub>", "дБ")
-
-                   
                 };
             return returnList;
         }
-
         private List<Statistics> GetS22MarkersFilter(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.85 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.22 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.77 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.1 - item)).FirstOrDefault());
-            var eightteen2Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var eightteen1Index = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7.1 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 0.85);
+            var fiveIndex = GetIndexOfList(xListdouble, 1.22);
+            var tenIndex = GetIndexOfList(xListdouble, 1.77);
+            var eightteenIndex = GetIndexOfList(xListdouble, 2.1);
+            var eightteen2Index = GetIndexOfList(xListdouble, 3.0);
+            var eightteen1Index = GetIndexOfList(xListdouble, 7.1);
             var id085List = new List<double>();
             var id122List = new List<double>();
             var id177List = new List<double>();
@@ -5739,16 +4896,12 @@ namespace VueExample.StatisticsCoreRework
             var id71List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id085List.Add(yListdouble[twohalfIndex]);
                 id122List.Add(yListdouble[fiveIndex]);
                 id177List.Add(yListdouble[tenIndex]);
                 id21List.Add(yListdouble[eightteenIndex]);
                 id3List.Add(yListdouble[eightteen2Index]);
                 id71List.Add(yListdouble[eightteen1Index]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5756,44 +4909,29 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id085List, "S22<sub>(0.85GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id122List,  "S22<sub>(1.22GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id177List, "S22<sub>(1.77GHz)</sub>", "дБ"),
-                    GetFullStatisticsFromList(id21List, "S22<sub>(2.1GHz)</sub>", "дБ"), 
+                    GetFullStatisticsFromList(id21List, "S22<sub>(2.1GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id3List, "S22<sub>(3GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id71List, "S22<sub>(7.1GHz)</sub>", "дБ")
-
-                   
                 };
             return returnList;
         }
-
-       
-
-        
-       
-
-       
-
-
         private List<Statistics> GetS11Markers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5802,18 +4940,16 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>11(5GHz)</sub>", "дБ", 23),
                     GetFullStatisticsFromList(id10List, "S<sub>11(10GHz)</sub>", "дБ", 24),
                     GetFullStatisticsFromList(id18List, "S<sub>11(18GHz)</sub>", "дБ", 25)
-                   
                 };
             return returnList;
         }
-
 
         private List<Statistics> GetNoiseMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList,
             double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var firstIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9.5 - item)).FirstOrDefault());
-            var secondIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
+            var firstIndex = GetIndexOfList(xListdouble, 9.5);
+            var secondIndex = GetIndexOfList(xListdouble, 12.0);
             var id95List = new List<double>();
             var id12List = new List<double>();
             foreach (
@@ -5832,14 +4968,12 @@ namespace VueExample.StatisticsCoreRework
             };
             return returnList;
         }
-
-
         private List<Statistics> GetGainMarkers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList,
             double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var firstIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9.5 - item)).FirstOrDefault());
-            var secondIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(12 - item)).FirstOrDefault());
+            var firstIndex = GetIndexOfList(xListdouble, 9.5);
+            var secondIndex = GetIndexOfList(xListdouble, 12.0);
             var id95List = new List<double>();
             var id12List = new List<double>();
             foreach (
@@ -5858,28 +4992,23 @@ namespace VueExample.StatisticsCoreRework
             };
             return returnList;
         }
-
         private List<Statistics> GetS22Markers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5888,32 +5017,26 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>22(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>22(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>22(18GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS12Markers(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var twohalfIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10 - item)).FirstOrDefault());
-            var eightteenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(18 - item)).FirstOrDefault());
+            var twohalfIndex = GetIndexOfList(xListdouble, 2.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var eightteenIndex = GetIndexOfList(xListdouble, 18.0);
             var id25List = new List<double>();
             var id5List = new List<double>();
             var id10List = new List<double>();
             var id18List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id25List.Add(yListdouble[twohalfIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id10List.Add(yListdouble[tenIndex]);
                 id18List.Add(yListdouble[eightteenIndex]);
-
-
-
             }
 
             var returnList = new List<Statistics>
@@ -5922,7 +5045,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id5List,  "S<sub>12(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id10List, "S<sub>12(10GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id18List, "S<sub>12(18GHz)</sub>", "дБ")
-
                 };
             return returnList;
         }
@@ -5931,7 +5053,7 @@ namespace VueExample.StatisticsCoreRework
         {
             var enumerable = xList as IList<string> ?? xList.ToList();
             List<double> xListdouble = enumerable.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-           
+
             var z11List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
@@ -5941,14 +5063,11 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(z11List, "Z<sub>11(" + enumerable.FirstOrDefault() + "GHz)" + "</sub>", "дБ")
-                  
                 };
             return returnList;
         }
-
         private List<Statistics> GetCAP_LEAK(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-            
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var vbrList = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
@@ -5963,29 +5082,24 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes.Add(index);
                         }
-
                     }
-                } 
+                }
                 vbrList.Add(indexes.Count == 0
                                 ? xListdouble.Last()
                                 : indexes.Select(index => xListdouble[index]).ToList().Min());
             }
             var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(20 - item)).FirstOrDefault());
             var twentyList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)/divider).ToList()).Select(yListdouble => yListdouble[twentyIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-                   
                     GetFullStatisticsFromList(twentyList, "Утечка на 20В", "А"),
                     GetFullStatisticsFromList(vbrList, "U<sub>BRC</sub> (пробивное напряжение МДМ-конденсатора)", "В", 50),
-                   
                 };
             return returnList;
         }
 
         private List<Statistics> GetVbrx5(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
             var vbr100List = new List<double>();
             var vbr10List = new List<double>();
@@ -5997,12 +5111,11 @@ namespace VueExample.StatisticsCoreRework
                 {
                     double d = yListdouble[index];
                     if (Math.Abs(d) >= 100E-3 - 1E-3)
-                    { 
+                    {
                         if (index < xListdouble.Count)
                         {
                             indexes100.Add(index);
                         }
-
                     }
                     if (Math.Abs(d) >= 10E-3 - 0.5E-3)
                     {
@@ -6010,7 +5123,6 @@ namespace VueExample.StatisticsCoreRework
                         {
                             indexes10.Add(index);
                         }
-
                     }
                 }
                 vbr100List.Add(indexes100.Count == 0
@@ -6020,24 +5132,17 @@ namespace VueExample.StatisticsCoreRework
                                ? double.NaN
                                : indexes10.Select(index => Math.Abs(xListdouble[index])).ToList().Min());
             }
-           
-          
-
             var returnList = new List<Statistics>
                 {
-                   
                    GetFullStatisticsFromList(vbr100List.Select(x => Double.IsNaN(x) ? 999.0 : x).ToList(), "V<sub>brc</sub> (напряжение пробоя, ограничение I=100мА )", "В", 15),
                    GetFullStatisticsFromList(vbr10List.Select(x => Double.IsNaN(x) ? 999.0 : x).ToList(), "V<sub>brc</sub> (напряжение пробоя, ограничение I=10мА )", "В", 62)
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetPinPout(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-10 - item)).FirstOrDefault());
+            var tenIndex = GetIndexOfList(xListdouble, -10.0);
             var pinList = new List<double>();
             var poutList = new List<double>();
             var pexit = new List<double>();
@@ -6055,12 +5160,9 @@ namespace VueExample.StatisticsCoreRework
                         break;
                     }
                 }
-
                 pinList.Add(xListdouble[mainindex]);
                 poutList.Add(yListdouble[mainindex]);
                 pexit.Add(yListdouble[yListdouble.Count - 1]);
-
-
             }
 
             var returnList = new List<Statistics>
@@ -6068,8 +5170,6 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(pinList, "Р<sub>лин вх(Рвых1дБ)</sub>", "дБм"),
                     GetFullStatisticsFromList(poutList,  "Р<sub>вых1дБ</sub> (Рвых при компрессии Ку=1дБ)", "дБм"),
                     GetFullStatisticsFromList(pexit,  "Р<sub>выхнас</sub> (Рвых в режиме насыщения)", "дБм"),
-                    
-                   
                 };
             return returnList;
         }
@@ -6080,7 +5180,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                      GetFullStatisticsFromList(poutList, "Ку в малосигнальном режиме", "дБ"),
-                   
                 };
             return returnList;
         }
@@ -6101,16 +5200,11 @@ namespace VueExample.StatisticsCoreRework
                         pList.Add(yListdouble[i]);
                     }
                 }
-
                 pinList.Add(pList.FirstOrDefault());
-
             }
-          
-
             var returnList = new List<Statistics>
                 {
                      GetFullStatisticsFromList(pinList, "Р<sub>вых1дБ</sub> (Рвых при компрессии Ку=1дБ)", "дБм"),
-
                 };
             return returnList;
         }
@@ -6134,10 +5228,8 @@ namespace VueExample.StatisticsCoreRework
                 }
                 pinList.Add(yListdouble[0]);
                 poutList.Add(xListdouble[mainindex]);
-
-
             }
-            
+
             var returnList = new List<Statistics>
                 {
                      GetFullStatisticsFromList(pinList, "Ку в малосигнальном режиме", "дБ"),
@@ -6145,10 +5237,6 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
-
-
         private List<Statistics> GetVboandN(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = new List<double>();
@@ -6160,35 +5248,28 @@ namespace VueExample.StatisticsCoreRework
             List<double> xListdoublefornn = new List<double>();
             List<int> indexesListfornn = new List<int>();
 
-
             for (int index = 0; index < xList.Count; index++)
             {
                 var x = double.Parse(xList[index], CultureInfo.InvariantCulture);
-                if (0.15 <= x && x <= 0.2)
+                if (x >= 0.15 && x <= 0.2)
                 {
                     xListdouble.Add(x);
                     indexesList.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoubleforn.Add(x);
                     indexesListforn.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoublefornn.Add(x);
                     indexesListfornn.Add(index);
                 }
-
             }
-
             var vboList = new List<double>();
             var nList = new List<double>();
             var n1List = new List<double>();
-
-          
-
-           
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
             {
                 var yListdoubletemp = new List<double>();
@@ -6220,14 +5301,12 @@ namespace VueExample.StatisticsCoreRework
              //  var interpolationmethodvpofornn = Interpolate.Linear(xListdoublefornn, yListdoublelog10Fornn);
                 var Is = interpolationmethodvpo.Interpolate(0);
                 var nnList = new List<double>();
-              
-                
              //   var dn = interpolationmethodvpofornn.Differentiate(0.6);
                 const double contactArea = 7.5E-9;
-                const double A = 8.17E+4;//постоянная Ричардсона
+                const double A = 8.17E+4; //постоянная Ричардсона
                 const int T = 295;
                 const double k = 8.617332E-5;
-                var k2 = 1.380648E-23;//постоянная Больцмана
+                var k2 = 1.380648E-23; //постоянная Больцмана
                 var e = 1.60218E-19;
                 var vbo = k * T * Math.Log(10) * (Math.Log10(contactArea * A * Math.Pow(T, 2)) - Is);
                 for (double i = 0.2; i < 0.75; i = i + 0.0025)
@@ -6237,7 +5316,6 @@ namespace VueExample.StatisticsCoreRework
                     {
                         nnList.Add(a);
                     }
-                    
                 }
                // var n1 = (1 / Math.Log(10)) * (e / (k2 * T)) * (1 / dn);
                 vboList.Add(vbo);
@@ -6247,21 +5325,15 @@ namespace VueExample.StatisticsCoreRework
                 {
                      nList.Add(newList.Min());
                 }
-              
              // n1List.Add(n1);
             }
-
-            
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vboList, "Vbo (высота барьера Шоттки)", "эВ", 13),
                     GetFullStatisticsFromList(nList, "n (коэффициент неидеальности)", " ", 16),
-                   
-                 
                 };
             return returnList;
         }
-
         public bool UseScietificNotation(IEnumerable<List<string>> commonYList)
         {
             var boolList = new List<bool>();
@@ -6270,7 +5342,6 @@ namespace VueExample.StatisticsCoreRework
                 var boolsinglelistList = new List<bool>();
                 foreach (string s in list)
                 {
-
                     if (Math.Abs(double.Parse(s, CultureInfo.InvariantCulture)) > 1E-3 && Math.Abs(double.Parse(s, CultureInfo.InvariantCulture)) < 1000)
                     {
                         boolsinglelistList.Add(false);
@@ -6279,7 +5350,6 @@ namespace VueExample.StatisticsCoreRework
                     {
                         boolsinglelistList.Add(true);
                     }
-
                 }
                 var boolcount = boolsinglelistList.Count(x => !x);
                 boolList.Add(boolcount > 0);
@@ -6287,16 +5357,14 @@ namespace VueExample.StatisticsCoreRework
             var boolcountmain = boolList.Count(x => x);
             return !(boolcountmain > 0);
         }
-
         //ED
         private List<Statistics> GetRis_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var sixIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
-            var index100 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(100.0 - item)).FirstOrDefault());
-            var index150 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(150.0 - item)).FirstOrDefault());
-
+            var sixIndex = GetIndexOfList(xListdouble, 6.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var index100 = GetIndexOfList(xListdouble, 100.0);
+            var index150 = GetIndexOfList(xListdouble, 150.0);
 
             var sixList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => sixIndex < 0 ? yListdouble[0] : yListdouble[sixIndex]).ToList();
             var tenList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => tenIndex < 0 ? yListdouble[0] : yListdouble[tenIndex]).ToList();
@@ -6305,7 +5373,6 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(sixList, "R<sub>IS(6V)</sub>", "Ом"),
                     GetFullStatisticsFromList(tenList, "R<sub>IS(10V)</sub>", "Ом"),
                     GetFullStatisticsFromList(list100, "R<sub>IS(100V)</sub>", "Ом"),
@@ -6317,12 +5384,10 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetIis_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var sixIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(6.0 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(10.0 - item)).FirstOrDefault());
-            var index100 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(100.0 - item)).FirstOrDefault());
-            var index150 = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(150.0 - item)).FirstOrDefault());
-
-
+            var sixIndex = GetIndexOfList(xListdouble, 6.0);
+            var tenIndex = GetIndexOfList(xListdouble, 10.0);
+            var index100 = GetIndexOfList(xListdouble, 100.0);
+            var index150 = GetIndexOfList(xListdouble, 150.0);
 
             var sixList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => sixIndex < 0 ? yListdouble[0] : yListdouble[sixIndex]).ToList();
             var tenList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => tenIndex < 0 ? yListdouble[0] : yListdouble[tenIndex]).ToList();
@@ -6331,31 +5396,26 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(sixList, "I<sub>IS(6V)</sub>", "А"),
                     GetFullStatisticsFromList(tenList, "I<sub>IS(10V)</sub>", "А"),
                     GetFullStatisticsFromList(list100, "I<sub>IS(100V)</sub>", "А"),
                     GetFullStatisticsFromList(list150, "I<sub>IS(150V)</sub>", "А"),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetIDSS35_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.0 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
             var unit = "A";
             var threeList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => threeIndex < 0 ? yListdouble[0] : yListdouble[threeIndex]).ToList();
             var fiveList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => fiveIndex < 0 ? yListdouble[0] : yListdouble[fiveIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(threeList, "I<sub>D(3V)</sub>", unit, 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(fiveList, "I<sub>D(5V)</sub>", unit, 0, DividerProfile.WithDivider),
-
                 };
             return returnList;
         }
@@ -6363,27 +5423,24 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetIDSS310_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-3.0 - item)).FirstOrDefault());
-            var tenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(-10.0 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, -3.0);
+            var tenIndex = GetIndexOfList(xListdouble, -10.0);
             var unit = "A";
             var threeList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => threeIndex < 0 ? yListdouble[0] : yListdouble[threeIndex]).ToList();
             var tenList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => tenIndex < 0 ? yListdouble[0] : yListdouble[tenIndex]).ToList();
 
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(threeList, "I<sub>GSS(-3V)</sub>", unit, 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(tenList, "I<sub>GSS(-10V)</sub>", unit, 0, DividerProfile.WithDivider),
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetIdssAndUgsoff_ED_D(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.5 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 0.5);
             var idssList = new List<double>();
             var id05List = new List<double>();
             var ugsoffList = new List<double>();
@@ -6399,14 +5456,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
             {
-
-
                     GetFullStatisticsFromList(ugsoffList, "V<sub>GS(off)</sub>", "В"),
                     GetFullStatisticsFromList(idssList, "I<sub>DSS</sub>", unit, 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(id05List, "I<sub>D(max)</sub>", unit, 0, DividerProfile.WithDivider),
-                 
-                    
-
             };
             return returnList;
         }
@@ -6414,8 +5466,8 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetIdssAndUgsoff_ED_E(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0.0 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(1.5 - item)).FirstOrDefault());
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 1.5);
             var idssList = new List<double>();
             var id05List = new List<double>();
             var ugsoffList = new List<double>();
@@ -6431,13 +5483,9 @@ namespace VueExample.StatisticsCoreRework
 
             var returnList = new List<Statistics>
             {
-
                     GetFullStatisticsFromList(ugsoffList, "V<sub>GS(th)</sub>", "В"),
                     GetFullStatisticsFromList(idssList, "I<sub>DSS</sub>", unit, 0, DividerProfile.WithDivider),
                     GetFullStatisticsFromList(id05List, "I<sub>D(max)</sub>", unit, 0, DividerProfile.WithDivider),
-
-
-
             };
             return returnList;
         }
@@ -6467,9 +5515,7 @@ namespace VueExample.StatisticsCoreRework
                 {
                     zeroIndex = index;
                 }
-
             }
-
             var ronList = new List<double>();
             if (divider < 1)
             {
@@ -6498,35 +5544,28 @@ namespace VueExample.StatisticsCoreRework
             List<double> xListdoublefornn = new List<double>();
             List<int> indexesListfornn = new List<int>();
 
-
             for (int index = 0; index < xList.Count; index++)
             {
                 var x = double.Parse(xList[index], CultureInfo.InvariantCulture);
-                if (0.15 <= x && x <= 0.2)
+                if (x >= 0.15 && x <= 0.2)
                 {
                     xListdouble.Add(x);
                     indexesList.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoubleforn.Add(x);
                     indexesListforn.Add(index);
                 }
-                if (0.2 <= x && x <= 0.75)
+                if (x >= 0.2 && x <= 0.75)
                 {
                     xListdoublefornn.Add(x);
                     indexesListfornn.Add(index);
                 }
-
             }
-
             var vboList = new List<double>();
             var nList = new List<double>();
             var n1List = new List<double>();
-
-
-
-
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
             {
                 var yListdoubletemp = new List<double>();
@@ -6558,14 +5597,12 @@ namespace VueExample.StatisticsCoreRework
                 //  var interpolationmethodvpofornn = Interpolate.Linear(xListdoublefornn, yListdoublelog10Fornn);
                 var Is = interpolationmethodvpo.Interpolate(0);
                 var nnList = new List<double>();
-
-
                 //   var dn = interpolationmethodvpofornn.Differentiate(0.6);
                 const double contactArea = 7.5E-9;
-                const double A = 8.17E+4;//постоянная Ричардсона
+                const double A = 8.17E+4; //постоянная Ричардсона
                 const int T = 295;
                 const double k = 8.617332E-5;
-                var k2 = 1.380648E-23;//постоянная Больцмана
+                var k2 = 1.380648E-23; //постоянная Больцмана
                 var e = 1.60218E-19;
                 var vbo = k * T * Math.Log(10) * (Math.Log10(contactArea * A * Math.Pow(T, 2)) - Is);
                 for (double i = 0.2; i < 0.75; i = i + 0.0025)
@@ -6575,7 +5612,6 @@ namespace VueExample.StatisticsCoreRework
                     {
                         nnList.Add(a);
                     }
-
                 }
                 // var n1 = (1 / Math.Log(10)) * (e / (k2 * T)) * (1 / dn);
                 vboList.Add(vbo);
@@ -6585,30 +5621,23 @@ namespace VueExample.StatisticsCoreRework
                 {
                     nList.Add(newList.Min());
                 }
-
                 // n1List.Add(n1);
             }
-
-
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vboList, "Ф<sub>В</sub>", "эВ"),
                     GetFullStatisticsFromList(nList, "n", " ")
-
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetS21ZIONTYPE1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7 - item)).FirstOrDefault());
-            var nineIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9 - item)).FirstOrDefault());
-            var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var sevenIndex = GetIndexOfList(xListdouble, 7.0);
+            var nineIndex = GetIndexOfList(xListdouble, 9.0);
+            var twentyIndex = GetIndexOfList(xListdouble, 2.0);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
@@ -6618,7 +5647,6 @@ namespace VueExample.StatisticsCoreRework
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id7List.Add(yListdouble[sevenIndex]);
@@ -6631,19 +5659,16 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id2List, "S21<sub>(2GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S21<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id7List, "S21<sub>(7GHz)</sub>", "дБ"),
-                  
                 };
             return returnList;
         }
         private List<Statistics> GetS21ZIONTYPE2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var fIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9.5 - item)).FirstOrDefault());
-            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.5 - item)).FirstOrDefault());
-     
+            var fIndex = GetIndexOfList(xListdouble, 4.0);
+            var threeIndex = GetIndexOfList(xListdouble, 5.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 9.5);
+            var sevenIndex = GetIndexOfList(xListdouble, 13.5);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
@@ -6657,7 +5682,6 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id7List.Add(yListdouble[sevenIndex]);
-               
             }
 
             var returnList = new List<Statistics>
@@ -6666,20 +5690,17 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id3List, "S21<sub>(5.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S21<sub>(9.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id7List, "S21<sub>(13.5GHz)</sub>", "дБ"),
-                 
-
                 };
             return returnList;
         }
         private List<Statistics> GetS31ZIONTYPE1(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(3 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5 - item)).FirstOrDefault());
-            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(7 - item)).FirstOrDefault());
-            var nineIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9 - item)).FirstOrDefault());
-            var twentyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(2 - item)).FirstOrDefault());
+            var threeIndex = GetIndexOfList(xListdouble, 3.0);
+            var fiveIndex = GetIndexOfList(xListdouble, 5.0);
+            var sevenIndex = GetIndexOfList(xListdouble, 7.0);
+            var nineIndex = GetIndexOfList(xListdouble, 9.0);
+            var twentyIndex = GetIndexOfList(xListdouble, 2.0);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
@@ -6689,7 +5710,6 @@ namespace VueExample.StatisticsCoreRework
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id7List.Add(yListdouble[sevenIndex]);
@@ -6702,21 +5722,16 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id2List, "S31<sub>(2GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List, "S31<sub>(5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id7List, "S31<sub>(7GHz)</sub>", "дБ"),
-                    
-
                 };
             return returnList;
         }
         private List<Statistics> GetS31ZIONTYPE2(IEnumerable<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
-
-           
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var fIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(4.0 - item)).FirstOrDefault());
-            var threeIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(5.5 - item)).FirstOrDefault());
-            var fiveIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(9.5 - item)).FirstOrDefault());
-            var sevenIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(13.5 - item)).FirstOrDefault());
-     
+            var fIndex = GetIndexOfList(xListdouble, 4.0);
+            var threeIndex = GetIndexOfList(xListdouble, 5.5);
+            var fiveIndex = GetIndexOfList(xListdouble, 9.5);
+            var sevenIndex = GetIndexOfList(xListdouble, 13.5);
 
             List<double> id3List = new List<double>();
             List<double> id5List = new List<double>();
@@ -6730,7 +5745,6 @@ namespace VueExample.StatisticsCoreRework
                 id3List.Add(yListdouble[threeIndex]);
                 id5List.Add(yListdouble[fiveIndex]);
                 id7List.Add(yListdouble[sevenIndex]);
-               
             }
 
             var returnList = new List<Statistics>
@@ -6739,12 +5753,9 @@ namespace VueExample.StatisticsCoreRework
                     GetFullStatisticsFromList(id3List, "S31<sub>(5.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id5List,  "S31<sub>(9.5GHz)</sub>", "дБ"),
                     GetFullStatisticsFromList(id7List,  "S31<sub>(13.5GHz)</sub>", "дБ"),
-                 
-
                 };
             return returnList;
         }
-
         private List<Statistics> GetVbrdg_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
@@ -6763,7 +5774,6 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vbrdgList.Where(x => x < xListdouble.Last()).ToList(), "V<sub>(BR)DG</sub>", "В"),
-
                 };
             returnList[0].FullList = vbrdgList.ToList();
             return returnList;
@@ -6787,27 +5797,20 @@ namespace VueExample.StatisticsCoreRework
             var returnList = new List<Statistics>
                 {
                     GetFullStatisticsFromList(vbrdgList.Where(x => x < xListdouble.Last()).ToList(), "V<sub>(BR)</sub>", "В"),
-
                 };
             returnList[0].FullList = vbrdgList.ToList();
             return returnList;
         }
 
-
         private List<Statistics> GetCMIM_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var zeroIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(0 - item)).FirstOrDefault());
-
-
+            var zeroIndex = GetIndexOfList(xListdouble, 0.0);
             var zeroList = commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()).Select(yListdouble => zeroIndex < 0 ? yListdouble[0] : yListdouble[zeroIndex]).ToList();
-
             var returnList = new List<Statistics>
                 {
-
                     GetFullStatisticsFromList(zeroList, "C", "Ф"),
                     GetFullStatisticsFromList(zeroList.Select(x=>x*1E12/0.04).ToList(), "C<sub>MIM</sub>", "пФ/мм²")
-
                 };
             return returnList;
         }
@@ -6815,7 +5818,7 @@ namespace VueExample.StatisticsCoreRework
         private List<Statistics> GetLeak_ED(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var thirtyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(30.0 - item)).FirstOrDefault());
+            var thirtyIndex = GetIndexOfList(xListdouble, 30.0);
             var vbrdgList = new List<double>();
             var ig30List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
@@ -6828,19 +5831,15 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
-
         private List<Statistics> GetLeak_SKY(List<string> xList, IEnumerable<List<string>> commonYList, double divider)
         {
             List<double> xListdouble = xList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-            var thirtyIndex = xListdouble.IndexOf(xListdouble.OrderBy(item => Math.Abs(30.0 - item)).FirstOrDefault());
+            var thirtyIndex =  GetIndexOfList(xListdouble, 30.0);
             var vbrdgList = new List<double>();
             var ig30List = new List<double>();
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture) / divider).ToList()))
             {
-
                 ig30List.Add(thirtyIndex < 0 ? yListdouble[0] : yListdouble[thirtyIndex]);
-
             }
 
             foreach (List<double> yListdouble in commonYList.Select(yList => yList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList()))
@@ -6861,8 +5860,5 @@ namespace VueExample.StatisticsCoreRework
                 };
             return returnList;
         }
-
     }
-
-
 }

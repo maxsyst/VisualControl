@@ -102,7 +102,7 @@ export default {
               this.measuredDevices = response.data;
             }
           })
-          .catch((error) => {
+          .catch(() => {
             // snack
           });
       },
@@ -116,7 +116,7 @@ export default {
               this.newMeasurement.materialId = this.materials[0].materialId;
             }
           })
-          .catch((error) => {
+          .catch(() => {
             // snack
           });
       },
@@ -130,7 +130,7 @@ export default {
               this.newMeasurement.facilityId = this.facilities[0].facilityId;
             }
           })
-          .catch((error) => {
+          .catch(() => {
             // snack
           });
       },

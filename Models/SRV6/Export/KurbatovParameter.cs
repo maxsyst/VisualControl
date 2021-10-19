@@ -17,10 +17,10 @@ namespace VueExample.Models.SRV6.Export
         public double Upper { get; set; } = Double.NaN;
         public double Divider { get; set; } = 1.0;
         public int DividerId { get; set; }
-        public double AverageGood { get; set;}
+        public double AverageGood { get; set; }
         public int MeasurementRecordingId { get; set; }
         [JsonProperty(Order = -1)]
-        public List<AtomicDieValue> advList = new List<AtomicDieValue>();          
+        public List<AtomicDieValue> advList = new List<AtomicDieValue>();
 
         public void FindGoodAverage(HashSet<string> dirtyCodesList)
         {

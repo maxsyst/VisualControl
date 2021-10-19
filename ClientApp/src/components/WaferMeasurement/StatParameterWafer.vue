@@ -7,9 +7,16 @@
               <rect :dieIndex="key" :id="die.id"
                     :x="die.x" :y="die.y"
                     :width="die.width" :height="die.height"
-                    :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDie"/>
+                    :fill="die.fill" :fill-opacity="die.fillOpacity" @click="selectDieWithTimer"  @contextmenu="selectDie"/>
             </g>
           </svg>
+        </v-col>
+        <v-col>
+            <v-progress-circular
+              v-if="updateCircular.value > 0"
+              :value="updateCircular.value"
+              color="primary">
+          </v-progress-circular>
         </v-col>
       </v-row>
     </v-container>
@@ -22,6 +29,12 @@ export default {
   props: ['keyGraphicState', 'statParameter'],
   data() {
     return {
+      capSelectedDies: [],
+      updateTimer: null,
+      updateCircular: {
+        value: 0,
+        interval: {},
+      },
       dies: [],
       isloading: false,
       activeBtn: 1,
@@ -56,21 +69,63 @@ export default {
       }));
     },
 
+    selectDieWithTimer(e) {
+      e.preventDefault();
+      const die = this.dies[+e.currentTarget.attributes.dieIndex.value];
+      const dieId = die.id;
+      if (die.isActive) {
+        if (this.updateTimer) {
+          clearInterval(this.updateCircular.interval);
+          this.updateCircular.value = 0.1;
+          clearTimeout(this.updateTimer);
+        } else {
+          this.capSelectedDies = [...this.selectedDies];
+        }
+        const position = this.capSelectedDies.indexOf(dieId);
+        // eslint-disable-next-line no-bitwise
+        if (~position) {
+          this.capSelectedDies.splice(position, 1);
+          die.fill = this.dieFillStrategy(die, this.mode, new Set([...this.capSelectedDies]), this.$store.getters['wafermeas/dieColors']);
+          this.updateTimer = setTimeout(this.updateSelectedDies, 2000, this.capSelectedDies);
+          this.updateCircular.interval = setInterval(() => {
+            this.updateCircular.value += 25;
+          }, 250);
+        } else {
+          this.capSelectedDies.push(dieId);
+          die.fill = this.dieFillStrategy(die, this.mode, new Set([...this.capSelectedDies]), this.$store.getters['wafermeas/dieColors']);
+          this.updateTimer = setTimeout(this.updateSelectedDies, 2000, this.capSelectedDies);
+          this.updateCircular.interval = setInterval(() => {
+            this.updateCircular.value += 25;
+          }, 250);
+        }
+      }
+    },
+
     selectDie(e) {
       e.preventDefault();
       const die = this.dies[+e.currentTarget.attributes.dieIndex.value];
       const dieId = die.id;
       if (die.isActive) {
-        const position = this.selectedDies.indexOf(dieId);
+        this.capSelectedDies = [...this.selectedDies];
+        const position = this.capSelectedDies.indexOf(dieId);
         // eslint-disable-next-line no-bitwise
         if (~position) {
-          this.selectedDies.splice(position, 1);
-          this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies);
+          this.capSelectedDies.splice(position, 1);
+          die.fill = this.dieFillStrategy(die, this.mode, new Set([...this.capSelectedDies]), this.$store.getters['wafermeas/dieColors']);
+          this.updateSelectedDies([...this.capSelectedDies]);
         } else {
-          this.selectedDies.push(dieId);
-          this.$store.dispatch('wafermeas/updateSelectedDies', this.selectedDies);
+          this.capSelectedDies.push(dieId);
+          die.fill = this.dieFillStrategy(die, this.mode, new Set([...this.capSelectedDies]), this.$store.getters['wafermeas/dieColors']);
+          this.updateSelectedDies([...this.capSelectedDies]);
         }
       }
+    },
+
+    updateSelectedDies(selectedDies) {
+      clearInterval(this.updateCircular.interval);
+      this.updateCircular.value = 100;
+      this.$store.dispatch('wafermeas/updateSelectedDies', selectedDies);
+      this.updateCircular.value = 0;
     },
 
     goToInitial(selectedDies) {
@@ -79,13 +134,29 @@ export default {
       const avbSelectedDies = this.$store.getters['wafermeas/avbSelectedDies'];
       avbSelectedDies.forEach((avb) => {
         const die = this.dies.find((d) => d.id === avb);
-        // eslint-disable-next-line no-nested-ternary
-        die.fill = this.dirtyCellsSnapshotBadDies.has(die.id)
-          ? selectedDiesSet.has(die.id) ? '#F50057' : '#580000'
-          : selectedDiesSet.has(die.id) ? '#00E676' : '#1B5E20';
+        die.fill = this.dieFillStrategy(die, 'initial', selectedDiesSet);
         die.fillOpacity = 1.0;
         die.isActive = true;
       });
+    },
+
+    dieFillStrategy(die, mode, selectedDiesSet) {
+      if (mode === 'initial' || mode === 'dirty') {
+        const isDirtyCellsSnapshotBadDiesHas = this.dirtyCellsSnapshotBadDies.has(die.id);
+        const selectedDiesSetHas = selectedDiesSet.has(die.id);
+        if (isDirtyCellsSnapshotBadDiesHas) {
+          if (selectedDiesSetHas) {
+            return '#F50057';
+          }
+
+          return '#580000';
+        }
+        if (selectedDiesSetHas) {
+          return '#00E676';
+        }
+        return '#1B5E20';
+      }
+      return '#424242';
     },
 
   },

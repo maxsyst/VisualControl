@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VueExample.StatisticsCore.DirtyCellsCore
+namespace VueExample.StatisticsCoreRework.Models
 {
     public class StatParameterDirtyCells
     {
@@ -10,7 +10,6 @@ namespace VueExample.StatisticsCore.DirtyCellsCore
         public Dictionary<string, Limitation> Fixed { get; set; }
         public StatParameterDirtyCells()
         {
-            
         }
         public StatParameterDirtyCells(string name)
         {
@@ -19,5 +18,4 @@ namespace VueExample.StatisticsCore.DirtyCellsCore
             Fixed = new Dictionary<string, Limitation>();
         }
     }
-    
 }

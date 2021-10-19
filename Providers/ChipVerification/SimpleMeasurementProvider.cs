@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using VueExample.Contexts;
 using VueExample.Models;
 using VueExample.ViewModels;
-using System.Data.SqlClient;
 using VueExample.Providers.ChipVerification.Abstract;
 using System.Threading.Tasks;
 using VueExample.ResponseObjects;
@@ -18,22 +17,21 @@ namespace VueExample.Providers.ChipVerification
         private readonly IMapper _mapper;
         private readonly ApplicationContext _applicationContext;
         private readonly Srv6Context _srv6Context;
-        public SimpleMeasurementProvider(IMapper mapper, ApplicationContext applicationContext, Srv6Context srv6Context) 
+        public SimpleMeasurementProvider(IMapper mapper, ApplicationContext applicationContext, Srv6Context srv6Context)
         {
-            _mapper = mapper;  
+            _mapper = mapper;
             _applicationContext = applicationContext;
             _srv6Context = srv6Context;
-        }    
+        }
         public (List<Process>, List<CodeProduct>, List<MeasuredDevice>, List<Measurement>) GetAllMeasurementInfo(int facilityId)
         {
-          
             var codeProductIdList = new List<int>();
             var codeProductList = new List<CodeProduct>();
             var processList = new List<Process>();
             var measuredDeviceList = new List<MeasuredDevice>();
             var measurementList = new List<Measurement>();
             var processIdList = new List<int>();
-           
+
             foreach (var deviceId in _applicationContext.Measurement.Where(x => x.FacilityId == facilityId).ToList().Select(x => x.MeasuredDeviceId).Distinct().Where(x => x != null).ToList())
             {
                 codeProductIdList.Add(_applicationContext.MeasuredDevice.FirstOrDefault(x => x.MeasuredDeviceId == deviceId).CodeProductId);
@@ -41,9 +39,7 @@ namespace VueExample.Providers.ChipVerification
             }
 
             measurementList = _applicationContext.Measurement.ToList();
-            
 
-           
             foreach (var codeproductid in codeProductIdList.Distinct().ToList())
             {
                 processIdList.Add(_srv6Context.CodeProducts.FirstOrDefault(x=>x.IdCp == codeproductid).ProcessId);
@@ -54,43 +50,40 @@ namespace VueExample.Providers.ChipVerification
             {
                 processList.Add(_srv6Context.Processes.FirstOrDefault(x=>x.ProcessId == processid));
             }
-            
 
             measurementList.Reverse();
             return (processList.Distinct().ToList(), codeProductList.Distinct().ToList(), measuredDeviceList.Distinct().OrderBy(_ => _.Name).ToList(), measurementList);
         }
 
-       
-
         public Measurement GetById(int measurementId)
-        {           
-            return _applicationContext.Measurement.Find(measurementId);            
+        {
+            return _applicationContext.Measurement.Find(measurementId);
         }
 
         public MaterialViewModel GetMaterial(int measurementId)
-        {           
+        {
             return _mapper.Map<MaterialViewModel>(_applicationContext.Measurement.
                                                                         Include(_ => _.Material).
-                                                                        FirstOrDefault(_ => _.MeasurementId == measurementId).Material);           
+                                                                        FirstOrDefault(_ => _.MeasurementId == measurementId).Material);
         }
 
         public MeasurementOnlineStatus GetMeasurementOnlineStatus(int measurementId)
-        {         
+        {
             var measurementOnlineStatus = _applicationContext.MeasurementOnlineStatus.FromSqlInterpolated($"EXECUTE GetMeasurementOnlineStatus @measurementID = {measurementId}").FirstOrDefault();
-            return measurementOnlineStatus;            
+            return measurementOnlineStatus;
         }
 
         public bool IsMeasurementOnline(int measurementId) => GetMeasurementOnlineStatus(measurementId).IsOnline;
-        
+
         public List<MeasurementStatisticsViewModel> GetMeasurementStatistics(List<AtomicMeasurementExtendedViewModel> atomicMeasurementViewModelList)
         {
-            var measurementStatisticsViewModelList = new List<MeasurementStatisticsViewModel>();            
+            var measurementStatisticsViewModelList = new List<MeasurementStatisticsViewModel>();
             var measurementStatisticsList = _applicationContext.Point.GroupBy(x => new {MeasurementId = x.MeasurementId, DeviceId = x.DeviceId, GraphicId = x.GraphicId, PortNumber = x.PortNumber})
-                                                        .Select(x => new MeasurementStatisticsViewModel{Maximum = Convert.ToString(x.Max(_ => _.Value)), Minimum = Convert.ToString(x.Min(_ => _.Value)), 
-                                                         MeasurementId = x.Key.MeasurementId, GraphicId = x.Key.GraphicId, PortNumber = x.Key.PortNumber, DeviceId = x.Key.DeviceId, 
+                                                        .Select(x => new MeasurementStatisticsViewModel{Maximum = Convert.ToString(x.Max(_ => _.Value)), Minimum = Convert.ToString(x.Min(_ => _.Value)),
+                                                         MeasurementId = x.Key.MeasurementId, GraphicId = x.Key.GraphicId, PortNumber = x.Key.PortNumber, DeviceId = x.Key.DeviceId,
                                                          LastValue = x.OrderByDescending(_ => _.PointId).FirstOrDefault().Value, After300Value = x.OrderBy(_ => _.PointId).Skip(300).FirstOrDefault().Value,
                                                          FirstPointValue = x.OrderBy(_ => _.PointId).FirstOrDefault().Value }).ToList();
-         
+
             foreach (var atomic in atomicMeasurementViewModelList)
             {
                 var atomicStatistics = measurementStatisticsList.FirstOrDefault(x => x.MeasurementId == atomic.MeasurementId && x.DeviceId == atomic.DeviceId && x.GraphicId == atomic.GraphicId && x.PortNumber == atomic.PortNumber);
@@ -98,7 +91,7 @@ namespace VueExample.Providers.ChipVerification
                 atomicStatistics.DeviceName = atomic.DeviceName;
                 atomicStatistics.GraphicUnit = atomic.GraphicUnit;
                 measurementStatisticsViewModelList.Add(atomicStatistics);
-            }                                                
+            }
             return measurementStatisticsViewModelList;
         }
 
@@ -120,7 +113,6 @@ namespace VueExample.Providers.ChipVerification
                  await _applicationContext.SaveChangesAsync();
                  return new AfterDbManipulationObject<MeasurementViewModel>(_mapper.Map<MeasurementViewModel>(measurement));
             }
-           
         }
 
         public async Task<AfterDbManipulationObject<MeasurementViewModel>> Delete(int measurementId)
@@ -138,7 +130,7 @@ namespace VueExample.Providers.ChipVerification
             }
             catch(Exception)
             {
-                 return new AfterDbManipulationObject<MeasurementViewModel>(new Error(@"Ошибка при удалении"));            
+                 return new AfterDbManipulationObject<MeasurementViewModel>(new Error(@"Ошибка при удалении"));
             }
         }
 

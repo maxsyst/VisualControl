@@ -63,11 +63,21 @@
             </v-flex>
             <v-flex lg4 offset-lg1>
                  <v-text-field v-model="dieTypeName" label="Введите название монитора" outlined></v-text-field>
-                 <v-checkbox :value="dieTypeName" color="success" on-icon="done_outline" off-icon="report" readonly class="mx-2" label="У монитора должно быть название"></v-checkbox>
-                 <v-checkbox :value="dieTypeName && !isDuplicateDieTypeExist" color="success" on-icon="done_outline" off-icon="report" readonly class="mx-2" label="Название не должно совпадать с существующим"></v-checkbox>
-                 <v-checkbox :value="selectedCodeProducts.length > 0" color="success" on-icon="done_outline" off-icon="report" readonly class="mx-2" label="Выберите шаблоны на которых расположен монитор"></v-checkbox>
-                 <v-checkbox :value="elements.length > 0" color="success" readonly  on-icon="done_outline" off-icon="report" class="mx-2" label="Создайте элементы для монитора"></v-checkbox>
-                 <v-btn v-if="readyToCreate" color="success" @click="createDieType(dieTypeName, selectedCodeProducts, elements)">Создать монитор</v-btn>
+                 <v-checkbox :value="dieTypeName"
+                             color="success" on-icon="done_outline"
+                             off-icon="report" readonly class="mx-2" label="У монитора должно быть название"></v-checkbox>
+                 <v-checkbox :value="dieTypeName && !isDuplicateDieTypeExist"
+                             color="success" on-icon="done_outline" off-icon="report"
+                             readonly class="mx-2" label="Название не должно совпадать с существующим"></v-checkbox>
+                 <v-checkbox :value="selectedCodeProducts.length > 0"
+                             color="success" on-icon="done_outline" off-icon="report"
+                             readonly class="mx-2" label="Выберите шаблоны на которых расположен монитор"></v-checkbox>
+                 <v-checkbox :value="elements.length > 0"
+                             color="success" readonly  on-icon="done_outline"
+                             off-icon="report" class="mx-2" label="Создайте элементы для монитора"></v-checkbox>
+                 <v-btn v-if="readyToCreate" color="success" @click="createDieType(dieTypeName, selectedCodeProducts, elements)">
+                  Создать монитор
+                  </v-btn>
             </v-flex>
 
         </v-layout>
@@ -153,7 +163,7 @@ export default {
   },
 
   watch: {
-    async selectedProcess(newVal, oldVal) {
+    async selectedProcess(newVal) {
       await this.$http
         .get(`/api/codeproduct/processid/${newVal}`)
         .then((response) => this.avCodeProducts = response.data)
@@ -162,7 +172,8 @@ export default {
   },
 
   async mounted() {
-    await this.getProcesses().then(() => this.selectedProcess = 333);
+    await this.getProcesses();
+    this.selectedProcess = 333;
   },
 };
 </script>

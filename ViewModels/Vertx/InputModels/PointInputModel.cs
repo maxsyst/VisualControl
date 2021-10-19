@@ -19,6 +19,5 @@ namespace VueExample.ViewModels.Vertx.InputModels
         public List<CharacteristicWithValueInputModel> CharacteristicWithValues { get; set; } = new List<CharacteristicWithValueInputModel>();
         public bool IsNewSet { get; set; }
         public DateTime? CreationDate { get; set; }
-
     }
 }

@@ -19,7 +19,6 @@ namespace VueExample.Services.Vertx.Implementation
             _measurementCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<Measurement>("measurements");
             _measurementService = measurementService;
         }
-
         public async Task<MeasurementSetPlusUnit> Create(Characteristic characteristic, int quantTime, ObjectId measurementId, DateTime creationDate)
         {
             var measurementSetPlusUnit = new MeasurementSetPlusUnit(characteristic, quantTime, creationDate);
@@ -30,7 +29,6 @@ namespace VueExample.Services.Vertx.Implementation
                 new UpdateOptions { IsUpsert = true });
             return measurementSetPlusUnit;
         }
-
         public async Task<LastUpdate> ChangeLastUpdate(string characteristicName, LastUpdate lastUpdate,
             ObjectId measurementId)
         {
@@ -46,7 +44,6 @@ namespace VueExample.Services.Vertx.Implementation
             await _measurementService.SetLastUpdate(measurementId, lastUpdate);
             return lastUpdate;
         }
-
         public async Task<bool> ChangeCharacteristicUnit(string characteristicName, string characteristicUnit, ObjectId measurementId)
         {
            var measurementSetPlusUnit =
@@ -63,7 +60,6 @@ namespace VueExample.Services.Vertx.Implementation
                 new FindOneAndUpdateOptions<Measurement> { IsUpsert = true });
             return true;
         }
-
         public async Task<MeasurementSetPlusUnit> GetById(string generatedId, ObjectId measurementId)
         {
             var measurement = await _measurementCollection
@@ -71,7 +67,6 @@ namespace VueExample.Services.Vertx.Implementation
                 .FirstOrDefaultAsync();
             return measurement.MeasurementSetPlusUnits.FirstOrDefault(x => x.GeneratedId == generatedId);
         }
-
         public async Task<MeasurementSetPlusUnit> GetByCharacteristicNameAndMeasurementId(string characteristicName,
             ObjectId measurementId)
         {
@@ -80,12 +75,10 @@ namespace VueExample.Services.Vertx.Implementation
                 .FirstOrDefaultAsync();
             return measurement.MeasurementSetPlusUnits.FirstOrDefault(x => x.Characteristic.Name == characteristicName);
         }
-
         public bool IsNecessaryToCreateNewMeasurementSet(bool isNewSet, MeasurementSet measurementSet)
         {
             return measurementSet == null || isNewSet || measurementSet.Points.Count >= 1000;
         }
-
         public async Task<string> Delete(string characteristicName, ObjectId measurementId)
         {
             var measurementSetPlusUnit =

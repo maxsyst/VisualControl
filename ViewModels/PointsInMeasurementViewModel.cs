@@ -5,11 +5,7 @@ namespace VueExample.ViewModels
 {
     public class PointsInMeasurementViewModel
     {
-      
         public string MeasurementName { get; set; }
-        public List<PointViewModel> PointsList { get; set; }        
-      
-       
-       
+        public List<PointViewModel> PointsList { get; set; }
     }
 }

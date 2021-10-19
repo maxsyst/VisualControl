@@ -26,7 +26,7 @@ namespace VueExample.Providers.Srv6
             await _srv6Context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id) 
+        public async Task Delete(int id)
         {
             var dieTypeElements = await _srv6Context.DieTypeElements.Where(x => x.ElementId == id).ToListAsync();
             _srv6Context.DieTypeElements.RemoveRange(dieTypeElements);
@@ -43,7 +43,6 @@ namespace VueExample.Providers.Srv6
             await _srv6Context.SaveChangesAsync();
             return element;
         }
-        
         public async Task<Element> Update(ElementViewModel elementViewModel)
         {
             var element = await _srv6Context.Elements.FirstOrDefaultAsync(x => x.ElementId == elementViewModel.ElementId);
@@ -51,46 +50,42 @@ namespace VueExample.Providers.Srv6
             await _srv6Context.SaveChangesAsync();
             return element;
         }
-
         public async Task<List<Element>> GetByDieTypeId(int dieTypeId)
         {
             var elementList = await _srv6Context.Elements
-                                                .Join(_srv6Context.DieTypeElements, 
-                                                        c => c.ElementId, 
-                                                        p => p.ElementId, 
+                                                .Join(_srv6Context.DieTypeElements,
+                                                        c => c.ElementId,
+                                                        p => p.ElementId,
                                                         (c,p) => new {Element = c, DieTypeElement = p})
-                                                .Join(_srv6Context.DieTypes, 
+                                                .Join(_srv6Context.DieTypes,
                                                         c => c.DieTypeElement.DieTypeId,
                                                         p => p.DieTypeId,
                                                         (c,p) => new {DieType = p, Element = c.Element})
                                                 .Where(x => x.DieType.DieTypeId == dieTypeId)
-                                                .Select(x => x.Element)     
+                                                .Select(x => x.Element)
                                                 .ToListAsync();
             return elementList;
         }
-
         public async Task<List<Element>> GetByDieTypeName(string dieTypeName)
         {
             var dieType = await _srv6Context.DieTypes.FirstOrDefaultAsync(x => x.Name == dieTypeName);
-            if(dieType is null) 
+            if(dieType is null)
                 return new List<Element>();
             return await GetByDieTypeId(dieType.DieTypeId);
         }
-
         public async Task<Element> GetById(int elementId) => await _srv6Context.Elements.FindAsync(elementId);
-
-        public async Task<List<Element>> GetByIdmr(int idmr) 
+        public async Task<List<Element>> GetByIdmr(int idmr)
         {
-            var elementList = await _srv6Context.Elements.Join(_srv6Context.MeasurementRecordingElements, 
-                                                        c => c.ElementId, 
-                                                        p => p.ElementId, 
+            var elementList = await _srv6Context.Elements.Join(_srv6Context.MeasurementRecordingElements,
+                                                        c => c.ElementId,
+                                                        p => p.ElementId,
                                                         (c,p) => new {Element = c, MeasurementRecordingElement = p})
-                                                .Join(_srv6Context.MeasurementRecordings, 
+                                                .Join(_srv6Context.MeasurementRecordings,
                                                         c => c.MeasurementRecordingElement.MeasurementRecordingId,
                                                         p => p.Id,
                                                         (c,p) => new {MeasurementRecording = p, Element = c.Element})
                                                 .Where(x => x.MeasurementRecording.Id == idmr)
-                                                .Select(x => x.Element)     
+                                                .Select(x => x.Element)
                                                 .ToListAsync();
             return elementList;
         }
@@ -104,19 +99,18 @@ namespace VueExample.Providers.Srv6
                               join dieTypeElementType in _srv6Context.DieTypeElements on dieType.DieTypeId equals dieTypeElementType.DieTypeId
                               join element in _srv6Context.Elements on dieTypeElementType.ElementId equals element.ElementId
                               where wafer.WaferId == waferId && element.Name == name
-                              select new Element {Name = element.Name, 
-                                                  ElementId = element.ElementId, 
-                                                  TypeId = element.TypeId, 
-                                                  Comment = element.Comment, 
-                                                  PhotoPath = element.PhotoPath, 
+                              select new Element {Name = element.Name,
+                                                  ElementId = element.ElementId,
+                                                  TypeId = element.TypeId,
+                                                  Comment = element.Comment,
+                                                  PhotoPath = element.PhotoPath,
                                                   DocName = element.DocName};
-            return await elementList.FirstOrDefaultAsync();            
+            return await elementList.FirstOrDefaultAsync();
         }
-
         public async Task<Element> UpdateElementOnIdmr(int measurementRecordingId, int newElementId)
         {
             var measurementRecordingElement = _srv6Context.MeasurementRecordingElements.FirstOrDefault(x => x.MeasurementRecordingId == measurementRecordingId);
-            if(measurementRecordingElement is null) 
+            if(measurementRecordingElement is null)
             {
                 _srv6Context.MeasurementRecordingElements.Add(new MeasurementRecordingElement{ElementId = newElementId, MeasurementRecordingId = measurementRecordingId});
             }
@@ -127,7 +121,6 @@ namespace VueExample.Providers.Srv6
             await _srv6Context.SaveChangesAsync();
             return await _srv6Context.Elements.FirstOrDefaultAsync(x => x.ElementId == newElementId);
         }
-
         public async Task<Element> GetByDieTypeIdAndName(int dieTypeId, string name)
         {
             var elementList = await GetByDieTypeId(dieTypeId);

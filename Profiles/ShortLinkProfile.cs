@@ -12,6 +12,5 @@ namespace VueExample.Profiles
              CreateMap<ShortLinkEntity, ShortLink>().ForMember(dest => dest.GeneratedId, source => source.MapFrom(_ => _.GeneratedId));
              CreateMap<ShortLink, ShortLinkInfoViewModel>();
         }
-        
     }
 }

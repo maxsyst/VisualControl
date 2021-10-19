@@ -26,8 +26,8 @@ namespace VueExample.Providers.ChipVerification
             if(HasDuplicate(measuredDeviceViewModel.Name, measuredDeviceViewModel.WaferId))
             {
                 obj.AddError(new Error(@"Такое устройство уже добавлено"));
-            }             
-             
+            }
+
             if(obj.HasErrors)
             {
                 return obj;
@@ -36,7 +36,7 @@ namespace VueExample.Providers.ChipVerification
             var measuredDevice = _mapper.Map<MeasuredDevice>(measuredDeviceViewModel);
             _applicationContext.Add(measuredDevice);
             await _applicationContext.SaveChangesAsync();
-            obj.SetObject(measuredDevice);    
+            obj.SetObject(measuredDevice);
             return obj;
         }
 
@@ -45,7 +45,6 @@ namespace VueExample.Providers.ChipVerification
             var deleted = await _applicationContext.MeasuredDevice.FirstOrDefaultAsync(x => x.Name == code && x.WaferId == waferId);
             _applicationContext.MeasuredDevice.Remove(deleted);
             await _applicationContext.SaveChangesAsync();
-
         }
 
         public async Task<AfterDbManipulationObject<List<MeasuredDeviceViewModel>>> GetAll()
@@ -67,7 +66,7 @@ namespace VueExample.Providers.ChipVerification
             var obj = new AfterDbManipulationObject<MeasuredDevice>(measuredDevice);
             if(measuredDevice is null)
             {
-                obj.AddError(new Error(@"Кристалл не найден"));  
+                obj.AddError(new Error(@"Кристалл не найден"));
             }
             return obj;
         }
@@ -78,7 +77,7 @@ namespace VueExample.Providers.ChipVerification
             var obj = new AfterDbManipulationObject<MeasuredDevice>(measuredDevice);
             if(measuredDevice is null)
             {
-                obj.AddError(new Error(@"Кристалл не найден"));  
+                obj.AddError(new Error(@"Кристалл не найден"));
             }
             return obj;
         }

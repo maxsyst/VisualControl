@@ -9,7 +9,7 @@ using VueExample.ViewModels;
 
 namespace VueExample.Controllers
 {
-    
+
     [Route("api/[controller]")]
     public class MeasuredDeviceController : Controller
     {
@@ -54,13 +54,13 @@ namespace VueExample.Controllers
     /// <remarks>
     /// Sample
     ///
-    /// measuredDeviceViewModel: 
+    /// measuredDeviceViewModel:
     /// {
     ///     name: string,
     ///     codeProductId: int,
     ///     waferId: string
     /// }
-    /// </remarks>  
+    /// </remarks>
         [HttpPut]
         [ProducesResponseType(typeof(MeasuredDeviceViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseObjects.Error), StatusCodes.Status409Conflict)]
@@ -68,9 +68,8 @@ namespace VueExample.Controllers
         public async Task<IActionResult> Create([FromBody] JObject measuredDeviceViewModel)
         {
             var result = await _measuredDeviceProvider.Create(measuredDeviceViewModel.ToObject<MeasuredDeviceViewModel>());
-            return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)CreatedAtAction("Create", _mapper.Map<MeasuredDeviceViewModel>(result.TObject));           
+            return result.HasErrors ? (IActionResult)Conflict(result.GetErrors()) : (IActionResult)CreatedAtAction("Create", _mapper.Map<MeasuredDeviceViewModel>(result.TObject));
         }
-
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

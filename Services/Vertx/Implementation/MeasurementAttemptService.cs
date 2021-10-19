@@ -55,7 +55,6 @@ namespace VueExample.Services.Vertx.Implementation
             return dictionary;
         }
 
-
         public async Task<List<ObjectId>> GetAllMeasurementIds(ObjectId measurementAttemptId)
         {
             var measurementsList = new List<ObjectId>();

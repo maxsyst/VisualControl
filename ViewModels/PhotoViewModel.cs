@@ -6,8 +6,7 @@ using VueExample.Models;
 
 namespace VueExample.ViewModels
 {
-    public class PhotoViewModel 
+    public class PhotoViewModel
     {
-
     }
 }

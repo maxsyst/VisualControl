@@ -30,7 +30,6 @@ namespace VueExample.Controllers
         {
             var defect = await _defectProvider.GetByIdAsync(defectId);
             return CreatedAtAction(nameof(GetById), defect);
-
         }
 
         [HttpGet]
@@ -72,7 +71,6 @@ namespace VueExample.Controllers
                     {
                         DefectId = defectId,
                         Guid = photoGuid
-                      
                     };
                     _photoProvider.InsertPhoto(photo);
                     FileSystemService.DeleteFolderInTemporaryFolder(photoGuid);

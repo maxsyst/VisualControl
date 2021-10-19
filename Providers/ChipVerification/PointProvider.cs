@@ -16,10 +16,10 @@ namespace VueExample.Providers.ChipVerification
     public class PointProvider : IPointProvider
     {
         private readonly ApplicationContext _applicationContext;
-        private readonly IMapper _mapper;              
-        public PointProvider(ApplicationContext applicationContext, IMapper mapper) 
+        private readonly IMapper _mapper;
+        public PointProvider(ApplicationContext applicationContext, IMapper mapper)
         {
-            _mapper = mapper;  
+            _mapper = mapper;
             _applicationContext = applicationContext;
         }
 
@@ -28,7 +28,7 @@ namespace VueExample.Providers.ChipVerification
             var pointsList = new List<Point>();
             foreach (var atomicPoint in pointSetViewModel.AtomicPointList)
             {
-                var point = new Point{  MeasurementId = pointSetViewModel.MeasurementId, 
+                var point = new Point{  MeasurementId = pointSetViewModel.MeasurementId,
                                         DeviceId = pointSetViewModel.DeviceId,
                                         PortNumber = pointSetViewModel.PortNumber,
                                         GraphicId = atomicPoint.GraphicId,
@@ -40,7 +40,6 @@ namespace VueExample.Providers.ChipVerification
             await _applicationContext.SaveChangesAsync();
             var obj = new AfterDbManipulationObject<List<long>>(pointsList.Select(x => x.PointId).ToList());
             return obj;
-
         }
 
         public async Task<AfterDbManipulationObject<PointViewModel>> CreateSinglePoint(PointViewModel pointViewModel)
@@ -55,9 +54,9 @@ namespace VueExample.Providers.ChipVerification
         public async Task<AfterDbManipulationObject<List<LivePointViewModel>>> GetLivePoints(List<AtomicMeasurementExtendedViewModel> atomicMeasurementViewModelList)
         {
            var livePointViewModelList = new List<LivePointViewModel>();
-           var obj = new AfterDbManipulationObject<List<LivePointViewModel>>(livePointViewModelList);         
+           var obj = new AfterDbManipulationObject<List<LivePointViewModel>>(livePointViewModelList);
 
-           for(int i = 0;  i < atomicMeasurementViewModelList.Count(); i++) 
+           for(int i = 0;  i < atomicMeasurementViewModelList.Count(); i++)
            {
                 var lastPoint = await _applicationContext.Point.FromSqlInterpolated($"EXECUTE GetLastPoint @MeasurementID = {atomicMeasurementViewModelList[i].MeasurementId}, @DeviceID = {atomicMeasurementViewModelList[i].DeviceId}, @GraphicID = {atomicMeasurementViewModelList[i].GraphicId}, @PortNumber = {atomicMeasurementViewModelList[i].PortNumber}")
                                                                .FirstOrDefaultAsync();
@@ -74,14 +73,14 @@ namespace VueExample.Providers.ChipVerification
 
         public async Task<AfterDbManipulationObject<List<PointViewModel>>> GetPoints(int measurementId, int deviceId, int graphicId, int port)
         {
-            var pointsList = await _applicationContext.Point.Where(x => x.MeasurementId == measurementId 
-                                               && x.DeviceId == deviceId 
-                                               && x.GraphicId == graphicId 
+            var pointsList = await _applicationContext.Point.Where(x => x.MeasurementId == measurementId
+                                               && x.DeviceId == deviceId
+                                               && x.GraphicId == graphicId
                                                && x.PortNumber == port).
                                                OrderBy(x => x.PointId).
                                                AsNoTracking().
                                                ProjectTo<PointViewModel>(_mapper.ConfigurationProvider).
-                                               ToListAsync();      
+                                               ToListAsync();
             var obj = new AfterDbManipulationObject<List<PointViewModel>>();
             if(pointsList.Count == 0)
             {

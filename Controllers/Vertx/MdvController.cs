@@ -25,16 +25,16 @@ namespace VueExample.Controllers.Vertx
 
         [HttpGet]
         [Route("wafers/all")]
-        public async Task<IActionResult> GetAllWafers() 
+        public async Task<IActionResult> GetAllWafers()
         {
             var mdvList = await _mdvService.GetAll();
             var wafersList = mdvList.Select(x => x.WaferId).Distinct().ToList();
             return wafersList.Count == 0 ? (IActionResult)NotFound() : Ok(wafersList);
         }
-        
+
         [HttpGet]
         [Route("waferId/{waferId}")]
-        public async Task<IActionResult> GetByWaferId([FromRoute] string waferId) 
+        public async Task<IActionResult> GetByWaferId([FromRoute] string waferId)
         {
             var mdvList = await _mdvService.GetByWafer(waferId);
             return mdvList.Count == 0 ? (IActionResult)NotFound() : Ok(mdvList);
@@ -42,7 +42,7 @@ namespace VueExample.Controllers.Vertx
 
         [HttpGet]
         [Route("waferId/{waferId}/code/{code}")]
-        public async Task<IActionResult> GetByWaferIdAndCode([FromRoute] string waferId, [FromRoute] string code) 
+        public async Task<IActionResult> GetByWaferIdAndCode([FromRoute] string waferId, [FromRoute] string code)
         {
             var mdv = await _mdvService.GetByWaferAndCode(waferId, code);
             return mdv == null ? (IActionResult)NotFound() : Ok(mdv);
@@ -52,7 +52,7 @@ namespace VueExample.Controllers.Vertx
         [Route("create")]
         public async Task<IActionResult> CreateMdv([FromBody] MdvInputModel mdvInputModel)
         {
-            if(String.IsNullOrEmpty(mdvInputModel.Code) || String.IsNullOrEmpty(mdvInputModel.WaferId)) 
+            if(String.IsNullOrEmpty(mdvInputModel.Code) || String.IsNullOrEmpty(mdvInputModel.WaferId))
             {
                 return BadRequest();
             }
@@ -65,15 +65,13 @@ namespace VueExample.Controllers.Vertx
                     Code = mdvInputModel.Code,
                     Description = mdvInputModel.Description
                 });
-                mdvResponse = _mapper.Map<MdvResponseModel>(mdv);        
+                mdvResponse = _mapper.Map<MdvResponseModel>(mdv);
             }
-            catch(DuplicateException e) 
+            catch(DuplicateException e)
             {
                 return (IActionResult)Conflict(e);
-            }    
+            }
             return CreatedAtAction("CreateMdv", mdvResponse);
         }
-
-
     }
 }

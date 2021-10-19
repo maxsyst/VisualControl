@@ -14,7 +14,7 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item" v-for="(route, index) in routes.filter(x=>x.nav === true)" :key="index">
                             <router-link :to="route.path" exact-active-class="active">
-                                <icon :icon="route.icon" class="mr-2" /><span>{{ route.display }}</span> 
+                                <icon :icon="route.icon" class="mr-2" /><span>{{ route.display }}</span>
                             </router-link>
                         </li>
                     </ul>
@@ -25,21 +25,21 @@
 </template>
 
 <script>
-    import { routes } from '../router/routes'
+import { routes } from '../router/routes';
 
-    export default {
-      data () {
-        return {
-          routes,
-          collapsed: true
-        }
-      },
-      methods: {
-        toggleCollapsed: function (event) {
-          this.collapsed = !this.collapsed
-        }
-      }
-    }
+export default {
+  data() {
+    return {
+      routes,
+      collapsed: true,
+    };
+  },
+  methods: {
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
+    },
+  },
+};
 </script>
 
 <style scoped>

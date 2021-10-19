@@ -8,8 +8,7 @@ namespace VueExample.Profiles
     {
         public ProcessProfile()
         {
-            CreateMap<ProcessViewModel, Process>().ReverseMap();            
+            CreateMap<ProcessViewModel, Process>().ReverseMap();
         }
-       
     }
 }

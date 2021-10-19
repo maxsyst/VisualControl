@@ -19,11 +19,11 @@ namespace VueExample.StatisticsCoreRework.CachedServices
         private readonly StatisticService _statisticService;
         private readonly IStatisticCalculationService _statisticCalculationService;
         private readonly IDieValueService _dieValueService;
-        public StatisticCachedService(ICacheProvider cacheProvider, 
-                                      StatisticService statisticService, 
-                                      IStatisticCalculationService statisticCalculationService, 
-                                      IDieValueService dieValueService) 
-            => (_cacheProvider, _statisticService, _statisticCalculationService, _dieValueService) 
+        public StatisticCachedService(ICacheProvider cacheProvider,
+                                      StatisticService statisticService,
+                                      IStatisticCalculationService statisticCalculationService,
+                                      IDieValueService dieValueService)
+            => (_cacheProvider, _statisticService, _statisticCalculationService, _dieValueService)
                 = (cacheProvider, statisticService, statisticCalculationService, dieValueService);
 
         public async Task<Dictionary<string, SingleParameterStatisticCalculated>> GetCalculatedStatisticByMeasurementRecordingGraphicStateAndDies(int measurementRecordingId, string keyGraphicState, double divider, List<long> dieIdList)
@@ -35,12 +35,11 @@ namespace VueExample.StatisticsCoreRework.CachedServices
                                     .ToDictionary(e => e.Key, e => e.Value);
             return CreateSingleParameterStatisticCalculated(statParameterDict, divider, dieIdList);
         }
-        
 
         public async Task<Dictionary<string, Dictionary<string, SingleParameterStatisticValues>>> GetSingleParameterStatisticByMeasurementRecording(int measurementRecordingId)
         {
             var dict = await _cacheProvider.GetFromCache<Dictionary<string, Dictionary<string, SingleParameterStatisticValues>>>($"SPS:MEASUREMENTRECORDINGID:{measurementRecordingId}");
-            if(dict is null) 
+            if(dict is null)
             {
                 var dieValues = await _dieValueService.GetDieValuesByMeasurementRecording(measurementRecordingId);
                 dict = await _statisticService.GetSingleParameterStatisticByDieValues(new ConcurrentDictionary<string, List<DieValue>>(dieValues), measurementRecordingId);
@@ -50,9 +49,9 @@ namespace VueExample.StatisticsCoreRework.CachedServices
             return dict;
         }
 
-        private Dictionary<string, SingleParameterStatisticCalculated> CreateSingleParameterStatisticCalculated(Dictionary<string, SingleParameterStatisticValues> statParameterDict, double divider, List<long> dieIdList) 
+        private Dictionary<string, SingleParameterStatisticCalculated> CreateSingleParameterStatisticCalculated(Dictionary<string, SingleParameterStatisticValues> statParameterDict, double divider, List<long> dieIdList)
         {
-            if(dieIdList.Count == 0) 
+            if(dieIdList.Count == 0)
             {
                 return CreateDefaultSingleParameterStatisticCalculated(statParameterDict);
             }
@@ -66,7 +65,7 @@ namespace VueExample.StatisticsCoreRework.CachedServices
             return dict;
         }
 
-        private Dictionary<string, SingleParameterStatisticCalculated> CreateDefaultSingleParameterStatisticCalculated(Dictionary<string, SingleParameterStatisticValues> statParameterDict) 
+        private Dictionary<string, SingleParameterStatisticCalculated> CreateDefaultSingleParameterStatisticCalculated(Dictionary<string, SingleParameterStatisticValues> statParameterDict)
         {
             var dict = new Dictionary<string, SingleParameterStatisticCalculated>();
             foreach (var stat in statParameterDict)

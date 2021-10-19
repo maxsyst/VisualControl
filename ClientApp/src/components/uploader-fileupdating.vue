@@ -26,12 +26,17 @@
                                         <v-card>
                                             <v-row>
                                                 <v-col lg="11" class="px-8">
-                                                    <v-text-field v-model="newGraphic" :error-messages="validateNewGraphic" label="Название графика"></v-text-field>
+                                                    <v-text-field v-model="newGraphic"
+                                                                  :error-messages="validateNewGraphic" label="Название графика"></v-text-field>
                                                 </v-col>
                                             </v-row>
                                             <v-row>
                                                 <v-col lg="6" offset-lg="5" class="pe-8">
-                                                    <v-btn color="indigo" v-show="validateNewGraphic.length === 0" block @click="createGraphic(newGraphic, selectedVariant, fileName.id)">Создать график</v-btn>
+                                                    <v-btn color="indigo"
+                                                           v-show="validateNewGraphic.length === 0"
+                                                           block @click="createGraphic(newGraphic, selectedVariant, fileName.id)">
+                                                      Создать график
+                                                    </v-btn>
                                                 </v-col>
                                             </v-row>
                                         </v-card>
@@ -46,7 +51,10 @@
                                                 <v-list-item-title>{{graphic.name}}</v-list-item-title>
                                             </v-list-item-content>
                                             <v-list-item-action>
-                                                <v-btn icon color="pink" @click="deleteGraphic(graphic, fileName.id)"><v-icon>delete_outline</v-icon></v-btn>
+                                                <v-btn icon color="pink"
+                                                       @click="deleteGraphic(graphic, fileName.id)">
+                                                       <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-list-item-action>
                                         </v-list-item>
                                     </v-list-item-group>
@@ -110,13 +118,13 @@ export default {
   watch: {
     'fileName.id': {
       immediate: true,
-      async handler(newVal, oldVal) {
+      async handler(newVal) {
         await this.$http
           .get(`/api/filegraphicuploader/graphics/${newVal}`)
           .then((response) => {
             this.graphics = response.data.map((x) => ({ id: x.id, name: x.name, variant: `Вариант ${x.variant}` }));
             this.variants = _.uniq(response.data.map((x) => `Вариант ${x.variant}`));
-            this.selectedVariant = this.variants[0];
+            [this.selectedVariant] = this.variants;
           })
           .catch((error) => {
             if (error.response.status === 404) {
@@ -140,7 +148,7 @@ export default {
           },
         },
       })
-        .then((response) => {
+        .then(() => {
           this.$emit('show-snackbar', `Файл ${fileName.name} успешно удален`, 'success');
           this.$emit('file-deleted', fileName.id);
         })
@@ -184,7 +192,7 @@ export default {
           },
         },
       })
-        .then((response) => {
+        .then(() => {
           this.$emit('show-snackbar', `График ${graphic.name} успешно удален`, 'success');
           this.graphics = this.graphics.filter((g) => g.id !== graphic.id);
         })
@@ -207,12 +215,8 @@ export default {
         this.variants = this.variants.filter((x) => x !== this.selectedVariant);
         this.graphics = this.graphics.filter((x) => x.variant !== this.selectedVariant);
       }
-      this.selectedVariant = this.variants[0];
+      [this.selectedVariant] = this.variants;
     },
-  },
-
-  async mounted() {
-
   },
 };
 </script>

@@ -16,7 +16,7 @@ namespace VueExample.StatisticsCoreRework.Services
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ISRV6GraphicService _graphicService;
-       
+
         public StatisticService(IServiceProvider serviceProvider, ISRV6GraphicService graphicService)
         {
             _serviceProvider = serviceProvider;
@@ -47,8 +47,6 @@ namespace VueExample.StatisticsCoreRework.Services
                     return services.First(x => x.GetType() == typeof(SingleParameterCachedServiceGR4));
             }
             return services.First(x => x.GetType() == typeof(SingleParameterCachedServiceHSTG));
-
        }
-
     }
 }

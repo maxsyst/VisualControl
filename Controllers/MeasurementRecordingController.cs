@@ -10,7 +10,7 @@ using VueExample.Helpers;
 using VueExample.Models.SRV6;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.Services.Abstract;
-using VueExample.StatisticsCore.Abstract;
+using VueExample.StatisticsCoreRework.Abstract;
 using VueExample.ViewModels;
 
 namespace VueExample.Controllers
@@ -211,7 +211,7 @@ namespace VueExample.Controllers
                     Id = measurementRecording.Id,
                     Name = measurementRecording.Name,
                     WaferId = waferId,
-                    avStatisticParameters = await _exportProvider.GetStatisticsNameByMeasurementId(measurementRecording.Id, 1.5)
+                    avStatisticParameters = await _exportProvider.GetStatisticsNameByMeasurementId(measurementRecording.Id)
                 });
             }
             return mrList.Count == 0 ? (IActionResult)NotFound() : Ok(mrList);

@@ -12,7 +12,6 @@ public class LivePointResponseModel
 
         public LivePointResponseModel()
         {
-            
         }
 
         public LivePointResponseModel(LivePoint livePoint, string unit)
@@ -24,5 +23,4 @@ public class LivePointResponseModel
             this.Date = livePoint.Date;
             this.MeasurementName = livePoint.MeasurementName;
         }
-      
 }

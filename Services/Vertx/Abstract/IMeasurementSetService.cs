@@ -12,8 +12,6 @@ namespace VueExample.Services.Vertx.Abstract
         Task UpdatePoints(ObjectId id, List<Point> pointsList);
         Task<MeasurementSet> GetById(ObjectId id);
         Task<MeasurementSet> GetLastMeasurementSet(ObjectId measurementId, string measurementSetPlusUnitId);
-        Task<IList<string>> GetAllByMeasurementIdsSetPlusUnitId(ObjectId measurementId,
-            string measurementSetPlusUnitId);
-
+        Task<IList<string>> GetAllByMeasurementIdsSetPlusUnitId(ObjectId measurementId, string measurementSetPlusUnitId);
     }
 }

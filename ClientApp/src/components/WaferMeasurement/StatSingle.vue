@@ -79,7 +79,7 @@
                           <v-chip v-else>
                             <span>?</span>
                           </v-chip>
-                          <v-btn  v-if="item.dirtyCells.percentage != 100 && !isNaN(item.dirtyCells.percentage)" 
+                          <v-btn  v-if="item.dirtyCells.percentage != 100 && !isNaN(item.dirtyCells.percentage)"
                                   text icon color='primary' @click="delDirtyCells(item.dirtyCells.array)">
                             <v-icon>cached</v-icon>
                           </v-btn>

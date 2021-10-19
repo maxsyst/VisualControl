@@ -7,6 +7,7 @@ using VueExample.Exceptions;
 using VueExample.Models.SRV6.Uploader;
 using VueExample.Providers.Srv6.Interfaces;
 using VueExample.ViewModels;
+using VueExample.ViewModels.FileNameUploader;
 
 namespace VueExample.Providers.Srv6
 {
@@ -20,7 +21,7 @@ namespace VueExample.Providers.Srv6
 
         public async Task<GraphicName> AddGraphicToFileName(int fileNameId, GraphicNameUploaderViewModel graphicNameUploaderViewModel)
         {
-            var graphicName = await _srv6Context.GraphicNames.Join(_srv6Context.FileNameGraphics.Where(x => x.Variant == graphicNameUploaderViewModel.Variant && x.FileNameId == fileNameId), 
+            var graphicName = await _srv6Context.GraphicNames.Join(_srv6Context.FileNameGraphics.Where(x => x.Variant == graphicNameUploaderViewModel.Variant && x.FileNameId == fileNameId),
                                                        c => c.Id,
                                                        p => p.GraphicNameId,
                                                        (c,p) => p.GraphicName).Where(x => x.Name == graphicNameUploaderViewModel.Name).FirstOrDefaultAsync();
@@ -29,8 +30,8 @@ namespace VueExample.Providers.Srv6
                 var graphic = new GraphicName{Name = graphicNameUploaderViewModel.Name};
                 _srv6Context.GraphicNames.Add(graphic);
                 await _srv6Context.SaveChangesAsync();
-                _srv6Context.FileNameGraphics.Add(new FileNameGraphic{FileNameId = fileNameId, 
-                                                            GraphicNameId = graphic.Id, 
+                _srv6Context.FileNameGraphics.Add(new FileNameGraphic{FileNameId = fileNameId,
+                                                            GraphicNameId = graphic.Id,
                                                             Variant = graphicNameUploaderViewModel.Variant});
                 await _srv6Context.SaveChangesAsync();
                 return graphic;
@@ -47,7 +48,7 @@ namespace VueExample.Providers.Srv6
             foreach (var fileName in fileNamesList)
             {
                 var graphicNamesList = await GetGraphicsByFileName(fileName.Id);
-                var newFileName = await CreateFileName(new FileNameUploaderViewModel{Name = fileName.Name, ProcessId = destProcessId, GraphicNames = graphicNamesList.ToList()});               
+                var newFileName = await CreateFileName(new FileNameUploaderViewModel{Name = fileName.Name, ProcessId = destProcessId, GraphicNames = graphicNamesList.ToList()});
             }
         }
 
@@ -77,12 +78,12 @@ namespace VueExample.Providers.Srv6
 
         public async Task DeleteGraphicFromFileName(int fileNameId, GraphicNameUploaderViewModel graphicNameUploaderViewModel)
         {
-            var fileNameGraphic = await _srv6Context.FileNameGraphics.FirstOrDefaultAsync(x => x.Variant == graphicNameUploaderViewModel.Variant 
-                                                                && x.GraphicNameId == graphicNameUploaderViewModel.Id 
+            var fileNameGraphic = await _srv6Context.FileNameGraphics.FirstOrDefaultAsync(x => x.Variant == graphicNameUploaderViewModel.Variant
+                                                                && x.GraphicNameId == graphicNameUploaderViewModel.Id
                                                                 && x.FileNameId == fileNameId);
             _srv6Context.FileNameGraphics.Remove(fileNameGraphic);
             await _srv6Context.SaveChangesAsync();
-        }       
+        }
 
         public async Task<IList<FileName>> GetAllFileNamesByProcessId(int processId) => await _srv6Context.FileNames.Where(x => x.ProcessId == processId).ToListAsync();
 
@@ -90,10 +91,10 @@ namespace VueExample.Providers.Srv6
         {
             var graphicNameUploaderViewModelList =  await _srv6Context.FileNames
                                                     .Where(x => x.Id == fileNameId)
-                                                    .Join(_srv6Context.FileNameGraphics, 
+                                                    .Join(_srv6Context.FileNameGraphics,
                                                         c => c.Id,
                                                         p => p.FileNameId,
-                                                        (c,p) => new GraphicNameUploaderViewModel{Id = p.GraphicNameId, Name = p.GraphicName.Name, Variant = p.Variant})                                         
+                                                        (c,p) => new GraphicNameUploaderViewModel{Id = p.GraphicNameId, Name = p.GraphicName.Name, Variant = p.Variant})
                                                     .ToListAsync();
             return graphicNameUploaderViewModelList;
         }

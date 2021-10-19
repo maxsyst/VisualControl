@@ -7,7 +7,5 @@ namespace VueExample.Providers.ChipVerification.Abstract
     {
         int AddToMeasurementSet(AtomicMeasurementViewModel atomicMeasurementViewModel);
         void DeleteFromMeasurementSet(Guid measurementSetId, int atomicId);
-
-
     }
 }

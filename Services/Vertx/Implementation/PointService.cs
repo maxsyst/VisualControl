@@ -21,7 +21,6 @@ namespace VueExample.Services.Vertx.Implementation
         private readonly IMeasurementSetPlusUnitService _measurementSetPlusUnitService;
         private readonly IMeasurementSetService _measurementSetService;
 
-
         public PointService(IMongoClient mongoClient,
                             ILivePointService livePointService,
                             IMeasurementAttemptService measurementAttemptService,
@@ -123,11 +122,11 @@ namespace VueExample.Services.Vertx.Implementation
                         Id = measurement.Id.ToString(),
                         Name = measurement.Name,
                         CreationDate = measurement.CreationDate,
-                        Points = pointsList.Count > siftedK 
+                        Points = pointsList.Count > siftedK
                                                     ? withoutBadPoints
                                                         ? RemoveBadPoints(SiftPoints(pointsList, siftedK))
                                                         : SiftPoints(pointsList, siftedK)
-                                                    : pointsList           
+                                                    : pointsList
                     }
                 }
             };
@@ -181,7 +180,7 @@ namespace VueExample.Services.Vertx.Implementation
                 }
 
                 measurementResponseModelWithPoints.Points = pointsList.ToList();
-                if(measurementResponseModelWithPoints.Points.Count > siftedK) 
+                if(measurementResponseModelWithPoints.Points.Count > siftedK)
                 {
                     measurementResponseModelWithPoints.Points = withoutBadPoints
                         ? RemoveBadPoints(SiftPoints(measurementResponseModelWithPoints.Points, siftedK))
@@ -203,12 +202,12 @@ namespace VueExample.Services.Vertx.Implementation
             {
                 var measurementResponseModelWithPoints =
                     await GetByMeasurement(new ObjectId(measurementId), characteristicName);
-                if(measurementResponseModelWithPoints.Points.Count > siftedK) 
+                if(measurementResponseModelWithPoints.Points.Count > siftedK)
                 {
                     measurementResponseModelWithPoints.Points = withoutBadPoints
                     ? RemoveBadPoints(SiftPoints(measurementResponseModelWithPoints.Points, siftedK))
                     : SiftPoints(measurementResponseModelWithPoints.Points, siftedK);
-                }             
+                }
                 pointsDictionary.Add(measurementId, measurementResponseModelWithPoints);
             }
             return pointsDictionary;

@@ -14,6 +14,5 @@ namespace VueExample.ViewModels
         public int PortNumber { get; set; }
         public bool IsOnline { get; set; }
         public string Live { get; set; } = "0";
-      
     }
 }

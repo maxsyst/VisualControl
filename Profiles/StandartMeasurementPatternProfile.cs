@@ -1,7 +1,7 @@
 using AutoMapper;
 using VueExample.Entities;
 using VueExample.Models.SRV6;
-using VueExample.ViewModels;
+using VueExample.ViewModels.StandartMeasurementPattern;
 
 namespace VueExample.Profiles
 {

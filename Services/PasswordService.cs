@@ -35,7 +35,6 @@ namespace VueExample.Services
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
-
             }
             return salt;
         }

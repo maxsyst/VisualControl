@@ -15,14 +15,12 @@ namespace VueExample.Services.Vertx.Implementation
         private readonly IMongoCollection<Measurement> _measurementCollection;
         private readonly IMongoCollection<MeasurementSet> _measurementSetsCollection;
         private readonly IMeasurementSetPlusUnitService _measurementSetPlusUnitService;
-
         public MeasurementSetService(IMongoClient mongoClient, IMeasurementSetPlusUnitService measurementSetPlusUnitService)
         {
             _measurementSetsCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<MeasurementSet>("measurement_sets");
             _measurementCollection = mongoClient.GetDatabase("vertx_excel").GetCollection<Measurement>("measurements");
             _measurementSetPlusUnitService = measurementSetPlusUnitService;
         }
-
         public async Task<MeasurementSet> Create(ObjectId measurementId, string measurementSetPlusUnitId)
         {
             var measurementSet = new MeasurementSet(measurementSetPlusUnitId);
@@ -36,7 +34,6 @@ namespace VueExample.Services.Vertx.Implementation
             await _measurementCollection.FindOneAndUpdateAsync(filter, update);
             return measurementSet;
         }
-
         public async Task UpdatePoints(ObjectId id, List<Point> pointsList)
         {
             await _measurementSetsCollection.UpdateOneAsync(Builders<MeasurementSet>.Filter.Where(x => x.Id == id),
@@ -44,14 +41,12 @@ namespace VueExample.Services.Vertx.Implementation
                 new UpdateOptions { IsUpsert = true });
 
         }
-
         public async Task<MeasurementSet> GetById(ObjectId id)
         {
             return await _measurementSetsCollection
                 .Find(Builders<MeasurementSet>.Filter.Where(x => x.Id == id))
                 .FirstOrDefaultAsync();
         }
-
         public async Task<MeasurementSet> GetLastMeasurementSet(ObjectId measurementId, string measurementSetPlusUnitId)
         {
             var measurementSetsIds = await GetAllByMeasurementIdsSetPlusUnitId(measurementId, measurementSetPlusUnitId);
@@ -61,7 +56,6 @@ namespace VueExample.Services.Vertx.Implementation
             }
             return null;
         }
-
         public async Task<IList<string>> GetAllByMeasurementIdsSetPlusUnitId(ObjectId measurementId, string measurementSetPlusUnitId)
         {
             var measurement = await _measurementCollection
@@ -71,6 +65,5 @@ namespace VueExample.Services.Vertx.Implementation
                 measurement.MeasurementSetPlusUnits.FirstOrDefault(x => x.GeneratedId == measurementSetPlusUnitId);
             return measurementSetPlusUnits != null ? measurementSetPlusUnits.MeasurementSetIds : new List<string>();
         }
-
     }
 }

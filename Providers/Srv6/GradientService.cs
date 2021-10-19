@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using VueExample.Color;
 using VueExample.Providers.Srv6.Interfaces;
-using VueExample.StatisticsCore;
 using VueExample.StatisticsCoreRework;
 using VueExample.StatisticsCoreRework.Models;
 using VueExample.ViewModels;
@@ -24,7 +22,7 @@ namespace VueExample.Providers.Srv6
         {
             var gradientViewModel = new GradientViewModel();
             var colorList = stepsQuantity <= 32 ? _colorService.GetGradientColors().Select(x => x.Hex).ToList() : Enumerable.Repeat("#3F51B5", stepsQuantity).ToList();
-            if(singleParameterStatisticValues is null) 
+            if(singleParameterStatisticValues is null)
             {
                 return new GradientViewModel();
             }
@@ -42,18 +40,18 @@ namespace VueExample.Providers.Srv6
 
             foreach (var dieStat in singleParameterStatisticValues.DieStatDictionary)
             {
-                var step = extremeLowGradientStep.LowBorder == extremeHighGradientStep.TopBorder 
-                           ? gradientViewModel.GradientSteps[(int)stepsQuantity / 2] 
+                var step = extremeLowGradientStep.LowBorder == extremeHighGradientStep.TopBorder
+                           ? gradientViewModel.GradientSteps[(int)stepsQuantity / 2]
                            : gradientViewModel.GradientSteps
-                                              .FirstOrDefault(x => x.IsInStep(Divider(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture), 
+                                              .FirstOrDefault(x => x.IsInStep(Divider(Convert.ToDouble(dieStat.Value, CultureInfo.InvariantCulture),
                                                               singleParameterStatisticValues.DividerProfile, divider)));
                 step.DieList.Add(dieStat.Key);
             }
             return gradientViewModel;
         }
 
-        private double Divider(double value, DividerProfile profile, string divider) 
-        { 
+        private double Divider(double value, DividerProfile profile, string divider)
+        {
             if(profile == DividerProfile.WithDivider)
             {
                return value / Convert.ToDouble(divider, CultureInfo.InvariantCulture);
@@ -65,5 +63,4 @@ namespace VueExample.Providers.Srv6
             return value;
         }
     }
-
 }

@@ -7,7 +7,6 @@ using VueExample.Extensions;
 using VueExample.Parsing.Models;
 using VueExample.Parsing.StrategyInterface;
 
-
 namespace VueExample.Parsing.File
 {
     public class CsvParserS2PBasic : ICsvParsingS2PStrategy

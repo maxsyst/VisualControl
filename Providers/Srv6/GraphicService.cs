@@ -33,7 +33,7 @@ namespace VueExample.Providers.Srv6
             return await _graphicProvider.GetByCodeProduct(codeProductId);
         }
 
-        public async Task<Graphic> GetByCodeProductAndName(int codeProductId, string name) 
+        public async Task<Graphic> GetByCodeProductAndName(int codeProductId, string name)
         {
             return await _graphicProvider.GetByCodeProductAndName(codeProductId, name);
         }
@@ -55,6 +55,5 @@ namespace VueExample.Providers.Srv6
             Func<Task<Graphic>> cachedService = async () => await _graphicProvider.GetById(graphicId);
             return await _appCache.GetOrAddAsync($"GRAPHIC:KGS:{graphicId}", cachedService);
         }
-
     }
 }

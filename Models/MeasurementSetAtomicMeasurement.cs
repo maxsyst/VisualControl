@@ -13,7 +13,7 @@ namespace VueExample.Models
         public int AtomicMeasurementId { get; set; }
         [Column("id_ms")]
         public Guid MeasurementSetId { get; set; }
-        public AtomicMeasurement AtomicMeasurement {get; set;}
+        public AtomicMeasurement AtomicMeasurement {get; set; }
         public MeasurementSet MeasurementSet { get; set; }
     }
 }

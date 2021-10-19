@@ -43,6 +43,22 @@
             dark
             color="indigo"
             v-on="on"
+            @click="unselectAllDies">
+            <v-icon>not_interested</v-icon>
+          </v-btn>
+          </template>
+          <span>Снять выбор со всех кристаллов</span>
+      </v-tooltip>
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-scroll="onScroll"
+            v-show="fabToTop"
+            fab
+            small
+            dark
+            color="indigo"
+            v-on="on"
             @click="delDirtyCells(dirtyCellsSnapshot.badDies, selectedDies)">
             <v-icon>cached</v-icon>
           </v-btn>
@@ -404,7 +420,8 @@ export default {
         this.$store.dispatch('wafermeas/updateSelectedDies', params.shortLinkVm.selectedDies);
         this.$store.dispatch('wafermeas/updateSelectedGraphics', [...params.shortLinkVm.selectedGraphics.map((g) => g.keyGraphicState)]);
         this.selectedMeasurementId = selectedMeasurementId;
-        const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
+        const avPath = `/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`;
+        const availiableGraphics = (await this.$http.get(avPath)).data;
         this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
         this.selectAllGraphics();
         this.loading = false;
@@ -423,7 +440,8 @@ export default {
       this.$store.dispatch('wafermeas/updateAvbSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.$store.dispatch('wafermeas/updateSelectedDies', dirtyCellsSnapshot.selectedDies);
       this.delDirtyCells(this.dirtyCellsSnapshot.badDies, this.avbSelectedDies);
-      const availiableGraphics = (await this.$http.get(`/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`)).data;
+      const avPath = `/api/graphicsrv6/GetAvailiableGraphicsByKeyGraphicStateList?keyGraphicStateJSON=${keyGraphicStateJSON}`;
+      const availiableGraphics = (await this.$http.get(avPath)).data;
       this.$store.dispatch('wafermeas/updateAvbGraphics', availiableGraphics);
       this.selectAllGraphics();
       this.loading = false;
@@ -440,6 +458,10 @@ export default {
 
     selectAllDies(avbSelectedDies) {
       this.$store.dispatch('wafermeas/updateSelectedDies', [...avbSelectedDies]);
+    },
+
+    unselectAllDies() {
+      this.$store.dispatch('wafermeas/updateSelectedDies', []);
     },
 
     selectAllGraphics() {

@@ -21,7 +21,6 @@ namespace VueExample.Providers.ChipVerification
         {
             _appSettings = appSettings.Value;
             _applicationContext = applicationContext;
-
         }
 
         public (MeasurementSetViewModel, Error) Create(string name)
@@ -64,7 +63,6 @@ namespace VueExample.Providers.ChipVerification
             _applicationContext.Remove(deleted);
             _applicationContext.SaveChanges();
             return true;
-
         }
 
         public List<MeasurementSetViewModel> GetAllSets(int facilityId)
@@ -83,16 +81,11 @@ namespace VueExample.Providers.ChipVerification
                                                   });
 
             return measurementSetsViewModelList;
-
         }
-
-
 
         public List<AtomicMeasurementExtendedViewModel> GetAtomicsById(Guid measurementSetId, IMeasurementProvider measurementProvider)
         {
             var atomicViewModelList = new List<AtomicMeasurementExtendedViewModel>();
-
-
             var atomicList = _applicationContext.AtomicMeasurement.Include(_ => _.MeasurementSetAtomicMeasurement).
                                                                   ThenInclude(_ => _.MeasurementSet).
                                                                   Include(_ => _.Device).
@@ -115,17 +108,12 @@ namespace VueExample.Providers.ChipVerification
                                              MeasurementSetId = measurementSetId,
                                              IsOnline = measurementProvider.IsMeasurementOnline(atomic.MeasurementId)
                                          });
-
-
-
             return atomicViewModelList;
         }
 
         public List<AtomicMeasurementExtendedViewModel> GetAtomicsByMaterial(int materialId, IMeasurementProvider measurementProvider, int facilityId)
         {
             var atomicViewModelList = new List<AtomicMeasurementExtendedViewModel>();
-
-
             var atomicList = _applicationContext.AtomicMeasurement.Include(_ => _.Device).
                                                                     Include(_ => _.Graphic).
                                                                     Include(_ => _.Measurement).
@@ -146,8 +134,6 @@ namespace VueExample.Providers.ChipVerification
                                              PortNumber = atomic.PortNumber,
                                              IsOnline = measurementProvider.IsMeasurementOnline(atomic.MeasurementId)
                                          });
-
-
             return atomicViewModelList;
         }
 
@@ -198,7 +184,6 @@ namespace VueExample.Providers.ChipVerification
             {
                 return true;
             }
-
             return false;
         }
 
@@ -227,10 +212,7 @@ namespace VueExample.Providers.ChipVerification
                     Route = $"material/{material.MaterialId}"
                 });
             }
-
             return materialBasedMeasurementSetsList;
         }
-
-
     }
 }
