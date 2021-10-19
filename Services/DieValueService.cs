@@ -31,7 +31,7 @@ namespace VueExample.Services
         public async Task<Dictionary<string, List<DieValue>>> GetDieValuesByMeasurementRecording(int measurementRecordingId)
         {
             var dieGraphicsList = await _srv6Context.DieGraphics.AsNoTracking().Where(x => x.MeasurementRecordingId == measurementRecordingId).ToListAsync();
-            if(dieGraphicsList.Count == 0) 
+            if(dieGraphicsList.Count == 0)
             {
                 return new Dictionary<string, List<DieValue>>();
             }
@@ -55,23 +55,23 @@ namespace VueExample.Services
             return await _srv6Context.DiesParameterOld.Where(x => x.MeasurementRecordingId == measurementRecordingId).Select(x => x.DieId).ToListAsync();
         }
 
-        private short GetTypeFromGraphicState(string keyGraphicState) 
+        private short GetTypeFromGraphicState(string keyGraphicState)
         {
-            if(keyGraphicState == "LNR") 
+            if(keyGraphicState == "LNR")
             {
                 return 1;
             }
-            if(keyGraphicState == "HSTG") 
+            if(keyGraphicState == "HSTG")
             {
                 return 2;
             }
             return 1;
         }
-       
+
         private ConcurrentDictionary<string, List<DieValue>> DieGraphicsMappingParallel(Dictionary<int, List<DieGraphics>> dieGraphicsDictionary, List<Graphic> graphicsList)
         {
             var dieValueDictionary = new ConcurrentDictionary<string, List<DieValue>>();
-            Parallel.ForEach(dieGraphicsDictionary, dieGraphicList => 
+            Parallel.ForEach(dieGraphicsDictionary, dieGraphicList =>
             {
                 var dieValueList = new List<DieValue>();
                 foreach(var dieGraphic in dieGraphicList.Value)
@@ -79,16 +79,15 @@ namespace VueExample.Services
                     var type = graphicsList.FirstOrDefault(x => x.Id == dieGraphic.GraphicId).Type;
                     var afterParseDieValue = (SelectGraphicSrv6ParsingStrategy(type)).ParseStringGraphic(dieGraphic);
                     dieValueList.Add(afterParseDieValue);
-                }   
-                if(dieValueList.Count > 0) 
+                }
+                if(dieValueList.Count > 0)
                 {
                     dieValueDictionary.TryAdd($"{dieGraphicList.Key}_{dieValueList.FirstOrDefault().State}", dieValueList);
                 }
-               
             });
             return dieValueDictionary;
-        }               
-        
+        }
+
         private IStringGraphicSRV6ParsingStrategy SelectGraphicSrv6ParsingStrategy(int type)
         {
             IStringGraphicSRV6ParsingStrategy stringGraphicSrv6ParsingStrategy = new CommonLinearStringGraphicParsingStrategy();

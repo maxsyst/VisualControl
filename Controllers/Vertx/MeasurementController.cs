@@ -43,10 +43,8 @@ namespace VueExample.Controllers.Vertx
             {
                 return Conflict(e);
             }
-
             return CreatedAtAction("CreateMeasurement", measurementResponseModel);
         }
-
 
         [HttpPost("create/withmdv")]
         public async Task<IActionResult> CreateMeasurementWithMdv([FromBody] MeasurementWithMdvInputModel measurementWithMdvInputModel)

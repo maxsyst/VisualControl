@@ -13,7 +13,6 @@ namespace VueExample.Models.Vertx
         [BsonElement("measurementSetPlusUnitId")]
         public string MeasurementSetPlusUnitId { get; set; }
 
-
         [BsonElement("points")]
         public List<Point> Points { get; set; }
 
@@ -22,6 +21,5 @@ namespace VueExample.Models.Vertx
             MeasurementSetPlusUnitId = measurementSetPlusUnitId;
             Points = new List<Point>();
         }
-
     }
 }
